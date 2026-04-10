@@ -1,61 +1,494 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FCC Budget</title>
-<style>
-body{margin:0;font-family:Arial;background:#071520;color:white;}
-.container{max-width:430px;margin:auto;padding:20px;}
-.header{display:flex;justify-content:space-between;align-items:center;}
-.add-btn{background:#2563eb;border:none;color:white;font-size:20px;border-radius:10px;padding:5px 12px;}
-.toggle{display:flex;gap:10px;margin:20px 0;}
-.toggle button{flex:1;padding:10px;border:none;border-radius:10px;background:#102a43;color:white;}
-.toggle button.active{background:#2563eb;}
-.card{background:#0f2a44;padding:15px;border-radius:15px;margin-bottom:15px;}
-.amount{font-size:20px;font-weight:bold;}
-.bottom-nav{position:fixed;bottom:0;width:100%;max-width:430px;display:flex;background:#061220;}
-.bottom-nav button{flex:1;padding:12px;border:none;background:transparent;color:#9fb3c8;}
-.bottom-nav button.active{color:white;background:#2563eb;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financial Command Center</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #06263a 0%, #031525 100%);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    .app-shell {
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100vh;
+      position: relative;
+      background: linear-gradient(180deg, #06263a 0%, #031525 100%);
+    }
+
+    .screen {
+      display: none;
+      min-height: 100vh;
+      padding: 22px 18px 96px;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* Loading screen */
+    #loadingScreen {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: linear-gradient(180deg, #071c2b 0%, #04111b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      opacity: 0;
+      animation: splashFadeIn 1.4s forwards;
+    }
+
+    #loadingScreen.fade-out {
+      animation: splashFadeOut 0.9s forwards;
+    }
+
+    .loading-logo {
+      width: 84px;
+      height: 84px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      margin-bottom: 18px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.18);
+    }
+
+    .loading-title {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .loading-subtitle {
+      color: #9fb3c8;
+      text-align: center;
+      max-width: 280px;
+      line-height: 1.4;
+    }
+
+    @keyframes splashFadeIn {
+      from { opacity: 0; transform: scale(1.02); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes splashFadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    /* Shared */
+    .header {
+      margin-top: 8px;
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    .header h1, .header h2 {
+      margin: 0;
+      font-size: 1.9rem;
+      font-weight: 700;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      font-size: 1rem;
+      color: #9fb3c8;
+    }
+
+    .card {
+      background: rgba(16, 33, 57, 0.96);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+
+    /* Main menu screen */
+    .top-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .circle-card {
+      padding: 16px 12px 18px;
+      text-align: center;
+    }
+
+    .circle-card h3 {
+      margin: 0 0 14px;
+      font-size: 1rem;
+      color: #b7c7d9;
+      font-weight: 500;
+    }
+
+    .circle {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #dce7f2;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 60%);
+    }
+
+    .circle.red {
+      border: 10px solid #ef4444;
+    }
+
+    .circle.green {
+      border: 10px solid #22c55e;
+    }
+
+    .circle-card .amount {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .networth-card {
+      padding: 22px 18px;
+      margin-top: 10px;
+    }
+
+    .networth-card h3 {
+      margin: 0 0 12px;
+      color: #b7c7d9;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .networth {
+      font-size: 2.2rem;
+      font-weight: 800;
+    }
+
+    /* Budget screen */
+    .budget-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .month-select {
+      flex: 1;
+      background: #0f2a44;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 15px;
+    }
+
+    .add-btn {
+      width: 48px;
+      height: 48px;
+      border: none;
+      color: white;
+      background: #2563eb;
+      border-radius: 14px;
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .toggle {
+      display: flex;
+      gap: 10px;
+      margin: 8px 0 16px;
+    }
+
+    .toggle button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 12px;
+      background: #102a43;
+      color: white;
+      font-size: 14px;
+    }
+
+    .toggle button.active {
+      background: #2563eb;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .summary-card {
+      padding: 16px;
+    }
+
+    .summary-card h4,
+    .category-card h4 {
+      margin: 0 0 10px;
+      color: #9fb3c8;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .big-amount {
+      font-size: 1.45rem;
+      font-weight: 700;
+    }
+
+    .left-budget-card {
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .category-card {
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .category-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .category-sub {
+      color: #9fb3c8;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    /* Bottom nav */
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0;
+      width: 100%;
+      max-width: 430px;
+      background: rgba(6, 18, 32, 0.98);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 10px 6px 14px;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: #a9bbcf;
+      font-size: 0.82rem;
+      padding: 10px 2px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .nav-btn.active {
+      color: #fff;
+      background: rgba(59,130,246,0.16);
+      font-weight: 700;
+    }
+
+    .placeholder-note {
+      text-align: center;
+      color: #9fb3c8;
+      margin-top: 40px;
+      line-height: 1.5;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-<div class="header">
-<h2>Budget</h2>
-<button class="add-btn">+</button>
-</div>
-<div class="toggle">
-<button class="active" onclick="setMode(event,'planned')">Planned</button>
-<button onclick="setMode(event,'spent')">Spent</button>
-<button onclick="setMode(event,'remaining')">Remaining</button>
-</div>
-<div class="card"><h3>$ Left to Budget</h3><div class="amount" id="left">$2000</div></div>
-<div class="card"><h3>Savings</h3><div class="amount" id="savings">$500</div></div>
-<div class="card"><h3>Housing</h3><div class="amount" id="housing">$1200</div></div>
-<div class="card"><h3>Transportation</h3><div class="amount" id="transport">$300</div></div>
-</div>
-<div class="bottom-nav">
-<button>Dashboard</button>
-<button class="active">Budget</button>
-<button>Invest</button>
-<button>Assets</button>
-<button>Goals</button>
-</div>
-<script>
-let data={
-planned:{left:2000,savings:500,housing:1200,transport:300},
-spent:{left:1500,savings:200,housing:1000,transport:300},
-remaining:{left:500,savings:300,housing:200,transport:0}
-};
-function setMode(e,mode){
-document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('active'));
-e.target.classList.add('active');
-document.getElementById('left').innerText='$'+data[mode].left;
-document.getElementById('savings').innerText='$'+data[mode].savings;
-document.getElementById('housing').innerText='$'+data[mode].housing;
-document.getElementById('transport').innerText='$'+data[mode].transport;
-}
-</script>
+  <div id="loadingScreen">
+    <div class="loading-logo">🪖</div>
+    <div class="loading-title">Financial Command Center</div>
+    <div class="loading-subtitle">Budget, invest, and track your mission with a cleaner command-center redesign.</div>
+  </div>
+
+  <div class="app-shell">
+    <section id="mainMenuScreen" class="screen active">
+      <div class="header">
+        <h1>Financial Command Center</h1>
+        <p>Main Menu</p>
+      </div>
+
+      <div class="top-row">
+        <div class="card circle-card">
+          <h3>Spending</h3>
+          <div class="circle red">Pie Chart</div>
+          <div class="amount">$0</div>
+        </div>
+
+        <div class="card circle-card">
+          <h3>Portfolio</h3>
+          <div class="circle green">Pie Chart</div>
+          <div class="amount">$0</div>
+        </div>
+      </div>
+
+      <div class="card networth-card">
+        <h3>Net Worth</h3>
+        <div class="networth">$0</div>
+      </div>
+    </section>
+
+    <section id="budgetScreen" class="screen">
+      <div class="header">
+        <h2>Budget</h2>
+        <p>Track your plan, spending, and remaining balance</p>
+      </div>
+
+      <div class="budget-top">
+        <select class="month-select">
+          <option>April 2026</option>
+          <option>May 2026</option>
+          <option>June 2026</option>
+        </select>
+        <button class="add-btn" aria-label="Add transaction">+</button>
+      </div>
+
+      <div class="toggle">
+        <button class="active" onclick="setBudgetMode(event, 'planned')">Planned</button>
+        <button onclick="setBudgetMode(event, 'spent')">Spent</button>
+        <button onclick="setBudgetMode(event, 'remaining')">Remaining</button>
+      </div>
+
+      <div class="card left-budget-card">
+        <h4>$ Left to Budget</h4>
+        <div class="big-amount" id="leftToBudget">$2,000</div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="card summary-card">
+          <h4>Planned Income</h4>
+          <div class="big-amount" id="plannedIncome">$4,000</div>
+        </div>
+
+        <div class="card summary-card">
+          <h4>Monthly Cash Flow</h4>
+          <div class="big-amount" id="monthlyCashFlow">$2,000</div>
+        </div>
+      </div>
+
+      <div class="card category-card">
+        <h4>Savings</h4>
+        <div class="category-row">
+          <span>Emergency Fund</span>
+          <span id="savingsAmount">$500</span>
+        </div>
+        <div class="category-sub">Tap + later to add more savings items</div>
+      </div>
+
+      <div class="card category-card">
+        <h4>Housing</h4>
+        <div class="category-row">
+          <span>Mortgage</span>
+          <span id="housingAmount">$1,200</span>
+        </div>
+        <div class="category-sub">Planned, spent, and remaining all use the same category card</div>
+      </div>
+
+      <div class="card category-card">
+        <h4>Transportation</h4>
+        <div class="category-row">
+          <span>Gas / Auto</span>
+          <span id="transportAmount">$300</span>
+        </div>
+        <div class="category-sub">Ready for more items later</div>
+      </div>
+    </section>
+
+    <section id="investScreen" class="screen">
+      <div class="header">
+        <h2>Invest</h2>
+        <p>Placeholder screen for your next redesign step</p>
+      </div>
+      <div class="placeholder-note">This button is connected now.<br>We can design the Invest screen next.</div>
+    </section>
+
+    <section id="assetsScreen" class="screen">
+      <div class="header">
+        <h2>Assets</h2>
+        <p>Placeholder screen for your collection and valuables</p>
+      </div>
+      <div class="placeholder-note">This button is connected now.<br>We can design the Assets screen next.</div>
+    </section>
+
+    <section id="goalsScreen" class="screen">
+      <div class="header">
+        <h2>Goals</h2>
+        <p>Placeholder screen for debt, savings, and mission targets</p>
+      </div>
+      <div class="placeholder-note">This button is connected now.<br>We can design the Goals screen next.</div>
+    </section>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-screen="mainMenuScreen" onclick="showScreen('mainMenuScreen', this)">Dashboard</button>
+      <button class="nav-btn" data-screen="budgetScreen" onclick="showScreen('budgetScreen', this)">Budget</button>
+      <button class="nav-btn" data-screen="investScreen" onclick="showScreen('investScreen', this)">Invest</button>
+      <button class="nav-btn" data-screen="assetsScreen" onclick="showScreen('assetsScreen', this)">Assets</button>
+      <button class="nav-btn" data-screen="goalsScreen" onclick="showScreen('goalsScreen', this)">Goals</button>
+    </nav>
+  </div>
+
+  <script>
+    const budgetData = {
+      planned: { left: 2000, income: 4000, cashflow: 2000, savings: 500, housing: 1200, transport: 300 },
+      spent: { left: 1100, income: 4000, cashflow: 1200, savings: 180, housing: 980, transport: 240 },
+      remaining: { left: 900, income: 4000, cashflow: 800, savings: 320, housing: 220, transport: 60 }
+    };
+
+    function money(value) {
+      return '$' + Number(value).toLocaleString();
+    }
+
+    function setBudgetMode(event, mode) {
+      document.querySelectorAll('.toggle button').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      document.getElementById('leftToBudget').textContent = money(budgetData[mode].left);
+      document.getElementById('plannedIncome').textContent = money(budgetData[mode].income);
+      document.getElementById('monthlyCashFlow').textContent = money(budgetData[mode].cashflow);
+      document.getElementById('savingsAmount').textContent = money(budgetData[mode].savings);
+      document.getElementById('housingAmount').textContent = money(budgetData[mode].housing);
+      document.getElementById('transportAmount').textContent = money(budgetData[mode].transport);
+    }
+
+    function showScreen(screenId, button) {
+      document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      if (button) button.classList.add('active');
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('loadingScreen');
+        splash.classList.add('fade-out');
+      }, 2200);
+    });
+  </script>
 </body>
 </html>
