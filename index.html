@@ -5,361 +5,639 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Financial Command Center</title>
   <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    :root{
+      --bg1:#03111c;
+      --bg2:#071d2d;
+      --panel:rgba(9,27,45,.82);
+      --panel-2:rgba(13,34,56,.88);
+      --border:rgba(255,255,255,.08);
+      --text:#eef4fb;
+      --muted:#97abc0;
+      --accent:#3b82f6;
+      --accent-soft:rgba(59,130,246,.18);
+      --good:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --shadow:0 18px 40px rgba(0,0,0,.28);
+      --radius:26px;
+    }
+
+    body{
+      margin:0;
+      color:var(--text);
       font-family: Arial, sans-serif;
-      background: linear-gradient(180deg, #06263a 0%, #031525 100%);
-      color: #fff;
-      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 50% 10%, rgba(20,84,153,.28), transparent 26%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 100%);
+      min-height:100vh;
+      overflow-x:hidden;
     }
 
-    .app-shell {
-      max-width: 430px;
-      margin: 0 auto;
-      min-height: 100vh;
-      position: relative;
-      background: linear-gradient(180deg, #06263a 0%, #031525 100%);
+    .app-shell{
+      max-width:430px;
+      margin:0 auto;
+      min-height:100vh;
+      position:relative;
+      background:
+        radial-gradient(circle at 50% 10%, rgba(20,84,153,.20), transparent 28%),
+        linear-gradient(180deg, rgba(6,24,40,.98) 0%, rgba(2,13,22,.98) 100%);
+      border-left:1px solid rgba(255,255,255,.04);
+      border-right:1px solid rgba(255,255,255,.04);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.02);
     }
 
-    .screen {
-      display: none;
-      min-height: 100vh;
-      padding: 22px 18px 96px;
+    .screen{
+      display:none;
+      min-height:100vh;
+      padding:24px 18px 108px;
+      position:relative;
     }
 
-    .screen.active {
-      display: block;
+    .screen.active{ display:block; }
+
+    .screen::before{
+      content:"";
+      position:absolute;
+      inset:18px 10px 90px;
+      border:1px solid rgba(255,255,255,.05);
+      border-radius:34px;
+      pointer-events:none;
     }
 
-    /* Loading screen */
-    #loadingScreen {
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
-      background: linear-gradient(180deg, #071c2b 0%, #04111b 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      opacity: 0;
-      animation: splashFadeIn 1.4s forwards;
-    }
-
-    #loadingScreen.fade-out {
-      animation: splashFadeOut 0.9s forwards;
-    }
-
-    .loading-logo {
-      width: 84px;
-      height: 84px;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 34px;
-      margin-bottom: 18px;
-      box-shadow: 0 0 30px rgba(0,0,0,0.18);
-    }
-
-    .loading-title {
-      font-size: 30px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-
-    .loading-subtitle {
-      color: #9fb3c8;
-      text-align: center;
-      max-width: 280px;
-      line-height: 1.4;
-    }
-
-    @keyframes splashFadeIn {
-      from { opacity: 0; transform: scale(1.02); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    @keyframes splashFadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; visibility: hidden; }
-    }
-
-    /* Shared */
-    .header {
-      margin-top: 8px;
-      margin-bottom: 22px;
-      text-align: center;
-    }
-
-    .header h1, .header h2 {
-      margin: 0;
-      font-size: 1.9rem;
-      font-weight: 700;
-    }
-
-    .header p {
-      margin: 8px 0 0;
-      font-size: 1rem;
-      color: #9fb3c8;
-    }
-
-    .card {
-      background: rgba(16, 33, 57, 0.96);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 22px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
-    }
-
-    /* Main menu screen */
-    .top-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 18px;
-    }
-
-    .circle-card {
-      padding: 16px 12px 18px;
-      text-align: center;
-    }
-
-    .circle-card h3 {
-      margin: 0 0 14px;
-      font-size: 1rem;
-      color: #b7c7d9;
-      font-weight: 500;
-    }
-
-    .circle {
-      width: 120px;
-      height: 120px;
-      margin: 0 auto 12px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: #dce7f2;
-      background: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 60%);
-    }
-
-    .circle.red {
-      border: 10px solid #ef4444;
-    }
-
-    .circle.green {
-      border: 10px solid #22c55e;
-    }
-
-    .circle-card .amount {
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-
-    .networth-card {
-      padding: 22px 18px;
-      margin-top: 10px;
-    }
-
-    .networth-card h3 {
-      margin: 0 0 12px;
-      color: #b7c7d9;
-      font-size: 1rem;
-      font-weight: 500;
-    }
-
-    .networth {
-      font-size: 2.2rem;
-      font-weight: 800;
-    }
-
-    /* Budget screen */
-    .budget-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .month-select {
-      flex: 1;
-      background: #0f2a44;
-      color: white;
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 12px 14px;
-      border-radius: 14px;
-      font-size: 15px;
-    }
-
-    .add-btn {
-      width: 48px;
-      height: 48px;
-      border: none;
-      color: white;
-      background: #2563eb;
-      border-radius: 14px;
-      font-size: 28px;
-      line-height: 1;
-    }
-
-    .toggle {
-      display: flex;
-      gap: 10px;
-      margin: 8px 0 16px;
-    }
-
-    .toggle button {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 12px;
-      background: #102a43;
-      color: white;
-      font-size: 14px;
-    }
-
-    .toggle button.active {
-      background: #2563eb;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-
-    .summary-card {
-      padding: 16px;
-    }
-
-    .summary-card h4,
-    .category-card h4 {
-      margin: 0 0 10px;
-      color: #9fb3c8;
-      font-size: 15px;
-      font-weight: 500;
-    }
-
-    .big-amount {
-      font-size: 1.45rem;
-      font-weight: 700;
-    }
-
-    .left-budget-card {
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-
-    .category-card {
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-
-    .category-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0 0;
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .category-sub {
-      color: #9fb3c8;
-      font-size: 13px;
-      margin-top: 4px;
-    }
-
-    /* Bottom nav */
-    .bottom-nav {
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 0;
-      width: 100%;
-      max-width: 430px;
-      background: rgba(6, 18, 32, 0.98);
-      border-top: 1px solid rgba(255,255,255,0.08);
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      padding: 10px 6px 14px;
-      z-index: 50;
+    .card{
+      background:linear-gradient(180deg, rgba(10,29,49,.92), rgba(5,21,36,.88));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
       backdrop-filter: blur(10px);
     }
 
-    .nav-btn {
-      background: transparent;
-      border: none;
-      color: #a9bbcf;
-      font-size: 0.82rem;
-      padding: 10px 2px;
-      border-radius: 12px;
-      cursor: pointer;
+    .header{
+      text-align:center;
+      padding-top:20px;
+      margin-bottom:22px;
     }
 
-    .nav-btn.active {
-      color: #fff;
-      background: rgba(59,130,246,0.16);
-      font-weight: 700;
+    .eyebrow{
+      color:#7fa7d8;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      font-size:.7rem;
+      margin-bottom:10px;
     }
 
-    .placeholder-note {
-      text-align: center;
-      color: #9fb3c8;
-      margin-top: 40px;
-      line-height: 1.5;
+    h1,h2,h3,h4,p{ margin:0; }
+    .header h1, .header h2{
+      font-size:2rem;
+      line-height:1.08;
+      margin-bottom:10px;
+      font-weight:800;
+    }
+
+    .header p{
+      color:var(--muted);
+      line-height:1.35;
+      font-size:1rem;
+      max-width:320px;
+      margin:0 auto;
+    }
+
+    /* Loading screen */
+    #loadingScreen{
+      position:fixed;
+      inset:0;
+      z-index:999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:
+        radial-gradient(circle at 50% 24%, rgba(42,110,204,.28), transparent 24%),
+        linear-gradient(180deg, #061827 0%, #020c15 100%);
+      opacity:0;
+      animation:fadeIn .9s forwards;
+    }
+
+    #loadingScreen.fade-out{
+      animation:fadeOut .75s forwards;
+    }
+
+    .splash-panel{
+      width:min(360px, 100%);
+      padding:28px 24px;
+      text-align:center;
+    }
+
+    .logo-wrap{
+      width:88px;
+      height:88px;
+      margin:0 auto 18px;
+      border-radius:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg, rgba(38,82,140,.42), rgba(12,32,53,.66));
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 0 40px rgba(59,130,246,.18);
+      font-size:34px;
+    }
+
+    .splash-title{
+      font-size:2rem;
+      font-weight:800;
+      line-height:1.08;
+      margin-bottom:12px;
+    }
+
+    .splash-subtitle{
+      color:var(--muted);
+      line-height:1.45;
+      font-size:1rem;
+      margin-bottom:20px;
+    }
+
+    .loading-bar{
+      height:7px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.04);
+    }
+
+    .loading-bar span{
+      display:block;
+      height:100%;
+      width:0;
+      border-radius:999px;
+      background:linear-gradient(90deg, #295eb4, #5ea0ff);
+      box-shadow:0 0 18px rgba(94,160,255,.35);
+      animation:loadBar 2s ease forwards;
+    }
+
+    /* Overview screen */
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-bottom:14px;
+    }
+
+    .chart-card{
+      padding:18px 14px 16px;
+      text-align:center;
+      min-height:310px;
+    }
+
+    .chart-card h3{
+      font-size:1rem;
+      color:#c4d3e5;
+      font-weight:500;
+      line-height:1.2;
+      min-height:44px;
+      margin-bottom:14px;
+    }
+
+    .donut{
+      --p1:40%;
+      --p2:68%;
+      width:160px;
+      height:160px;
+      margin:0 auto 16px;
+      border-radius:50%;
+      position:relative;
+      display:grid;
+      place-items:center;
+    }
+
+    .donut::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:50%;
+    }
+
+    .donut.spending::before{
+      background:conic-gradient(#f17070 0 var(--p1), #efb84a var(--p1) var(--p2), #6e92b8 var(--p2) 100%);
+    }
+
+    .donut.portfolio::before{
+      background:conic-gradient(#73d58f 0 38%, #74aef0 38% 74%, #9b78f0 74% 100%);
+    }
+
+    .donut::after{
+      content:"";
+      position:absolute;
+      inset:22%;
+      background:linear-gradient(180deg, rgba(5,23,38,.96), rgba(7,26,45,.96));
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:50%;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
+    }
+
+    .donut-center{
+      position:relative;
+      z-index:1;
+      width:90px;
+      text-align:center;
+      font-size:.88rem;
+      letter-spacing:.08em;
+      color:#dbe8f4;
+      line-height:1.05;
+    }
+
+    .chart-value{
+      font-size:2rem;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    .chart-note{
+      color:var(--muted);
+      line-height:1.28;
+      font-size:.93rem;
+    }
+
+    .networth-card{
+      padding:18px 18px 20px;
+      margin-bottom:14px;
+    }
+
+    .networth-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .networth-label{
+      color:#b2c3d5;
+      font-size:1rem;
+    }
+
+    .status-pill{
+      padding:11px 18px;
+      border-radius:999px;
+      background:linear-gradient(180deg, rgba(50,87,128,.65), rgba(34,61,92,.75));
+      color:#dce9f7;
+      border:1px solid rgba(255,255,255,.08);
+      font-weight:700;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+    }
+
+    .networth-value{
+      font-size:4rem;
+      font-weight:800;
+      line-height:1;
+      margin-bottom:18px;
+    }
+
+    .networth-copy{
+      color:var(--muted);
+      line-height:1.34;
+      font-size:1rem;
+      margin-bottom:16px;
+    }
+
+    .mini-stats{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+    }
+
+    .mini-stat{
+      background:rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.05);
+      border-radius:18px;
+      padding:12px 10px;
+      text-align:center;
+    }
+
+    .mini-stat-label{
+      color:var(--muted);
+      font-size:.76rem;
+      margin-bottom:8px;
+    }
+
+    .mini-stat-value{
+      font-size:1.45rem;
+      font-weight:800;
+    }
+
+    /* Budget */
+    .top-row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-bottom:16px;
+    }
+
+    .month-select{
+      flex:1;
+      height:52px;
+      border-radius:16px;
+      padding:0 14px;
+      color:var(--text);
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(14,37,59,.95), rgba(8,25,42,.95));
+      font-size:15px;
+    }
+
+    .add-btn{
+      width:52px;
+      height:52px;
+      border:none;
+      border-radius:16px;
+      font-size:28px;
+      background:linear-gradient(180deg, #478ff8, #2966d7);
+      color:white;
+      box-shadow:0 10px 26px rgba(41,102,215,.35);
+    }
+
+    .toggle{
+      display:flex;
+      gap:8px;
+      margin-bottom:14px;
+    }
+
+    .toggle button{
+      flex:1;
+      height:44px;
+      border:none;
+      border-radius:14px;
+      color:#dce7f3;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.05);
+      transition:all .18s ease;
+      font-weight:700;
+    }
+
+    .toggle button.active{
+      background:linear-gradient(180deg, rgba(65,123,216,.95), rgba(42,86,179,.95));
+      box-shadow:0 8px 22px rgba(59,130,246,.25);
+    }
+
+    .wide-card{
+      padding:18px;
+      margin-bottom:14px;
+    }
+
+    .wide-card h4,
+    .info-card h4,
+    .category-card h4{
+      color:#b6c6d6;
+      font-size:.95rem;
+      font-weight:500;
+      margin-bottom:10px;
+    }
+
+    .budget-big{
+      font-size:2.1rem;
+      font-weight:800;
+    }
+
+    .budget-big.good{ color:var(--good); }
+    .budget-big.warn{ color:var(--warn); }
+    .budget-big.bad{ color:var(--bad); }
+
+    .info-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .info-card{
+      padding:16px;
+    }
+
+    .info-value{
+      font-size:1.5rem;
+      font-weight:800;
+    }
+
+    .category-card{
+      padding:16px 16px 14px;
+      margin-bottom:12px;
+    }
+
+    .category-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .category-tag{
+      color:#7da3d6;
+      font-size:.78rem;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .line-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:10px;
+      padding:8px 0 12px;
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+
+    .line-title{
+      font-size:1.05rem;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+
+    .line-sub{
+      color:var(--muted);
+      font-size:.86rem;
+    }
+
+    .line-amount{
+      font-size:1.25rem;
+      font-weight:800;
+    }
+
+    .line-amount.good{ color:var(--good); }
+    .line-amount.warn{ color:var(--warn); }
+    .line-amount.bad{ color:var(--bad); }
+
+    .add-item-row{
+      padding-top:12px;
+      display:flex;
+      justify-content:flex-start;
+    }
+
+    .add-item-btn{
+      border:none;
+      border-radius:999px;
+      padding:10px 14px;
+      color:#dbe8f7;
+      background:rgba(59,130,246,.14);
+      border:1px solid rgba(59,130,246,.20);
+      font-weight:700;
+    }
+
+    /* Placeholders */
+    .placeholder-wrap{
+      padding-top:36px;
+      text-align:center;
+    }
+
+    .placeholder-card{
+      padding:28px 18px;
+    }
+
+    .placeholder-card h3{
+      font-size:1.35rem;
+      margin-bottom:10px;
+    }
+
+    .placeholder-card p{
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    /* Nav */
+    .bottom-nav{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:0;
+      width:100%;
+      max-width:430px;
+      padding:12px 10px 18px;
+      background:linear-gradient(180deg, rgba(4,17,30,.74), rgba(2,10,18,.96));
+      backdrop-filter:blur(14px);
+      border-top:1px solid rgba(255,255,255,.06);
+      display:grid;
+      grid-template-columns:repeat(5, 1fr);
+      gap:8px;
+      z-index:80;
+    }
+
+    .nav-btn{
+      border:none;
+      border-radius:18px;
+      padding:10px 4px 12px;
+      background:transparent;
+      color:#9cb0c5;
+      transition:all .18s ease;
+      min-height:58px;
+    }
+
+    .nav-btn.active{
+      background:linear-gradient(180deg, rgba(58,100,150,.58), rgba(34,61,92,.72));
+      color:#fff;
+      box-shadow:0 0 0 1px rgba(255,255,255,.05), 0 10px 20px rgba(0,0,0,.22);
+    }
+
+    .nav-icon{
+      display:block;
+      font-size:1.08rem;
+      margin-bottom:5px;
+    }
+
+    .nav-label{
+      display:block;
+      font-size:.78rem;
+      font-weight:700;
+    }
+
+    button{ cursor:pointer; }
+    button:active{ transform:scale(.97); }
+
+    @keyframes fadeIn{
+      from{ opacity:0; }
+      to{ opacity:1; }
+    }
+
+    @keyframes fadeOut{
+      from{ opacity:1; }
+      to{ opacity:0; visibility:hidden; }
+    }
+
+    @keyframes loadBar{
+      from{ width:0; }
+      to{ width:100%; }
     }
   </style>
 </head>
 <body>
   <div id="loadingScreen">
-    <div class="loading-logo">🪖</div>
-    <div class="loading-title">Financial Command Center</div>
-    <div class="loading-subtitle">Budget, invest, and track your mission with a cleaner command-center redesign.</div>
+    <div class="card splash-panel">
+      <div class="logo-wrap">🪖</div>
+      <div class="splash-title">Financial Command Center</div>
+      <div class="splash-subtitle">Initializing your redesigned command system for budgeting, planning, and financial tracking.</div>
+      <div class="loading-bar"><span></span></div>
+    </div>
   </div>
 
   <div class="app-shell">
-    <section id="mainMenuScreen" class="screen active">
+    <section id="overviewScreen" class="screen active">
       <div class="header">
-        <h1>Financial Command Center</h1>
-        <p>Main Menu</p>
+        <div class="eyebrow">FCC System</div>
+        <h1>Command Overview</h1>
+        <p>Your redesigned front page for the Financial Command Center.</p>
       </div>
 
-      <div class="top-row">
-        <div class="card circle-card">
-          <h3>Spending</h3>
-          <div class="circle red">Pie Chart</div>
-          <div class="amount">$0</div>
+      <div class="grid-2">
+        <div class="card chart-card">
+          <h3>Spending<br>Breakdown</h3>
+          <div class="donut spending">
+            <div class="donut-center">MONTHLY<br>SPEND</div>
+          </div>
+          <div class="chart-value">$0</div>
+          <div class="chart-note">Housing, food, debt, and daily spending</div>
         </div>
 
-        <div class="card circle-card">
-          <h3>Portfolio</h3>
-          <div class="circle green">Pie Chart</div>
-          <div class="amount">$0</div>
+        <div class="card chart-card">
+          <h3>Portfolio<br>Breakdown</h3>
+          <div class="donut portfolio">
+            <div class="donut-center">INVEST<br>MIX</div>
+          </div>
+          <div class="chart-value">$0</div>
+          <div class="chart-note">Cash, Roth, brokerage, crypto, collectibles</div>
         </div>
       </div>
 
       <div class="card networth-card">
-        <h3>Net Worth</h3>
-        <div class="networth">$0</div>
+        <div class="networth-top">
+          <div class="networth-label">Net Worth</div>
+          <div class="status-pill">Mission Ready</div>
+        </div>
+        <div class="networth-value">$0</div>
+        <div class="networth-copy">This becomes your main snapshot before diving into Budget, Invest, Assets, and Goals.</div>
+
+        <div class="mini-stats">
+          <div class="mini-stat">
+            <div class="mini-stat-label">Income</div>
+            <div class="mini-stat-value">$0</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-label">Invest</div>
+            <div class="mini-stat-value">$0</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-label">Cash Flow</div>
+            <div class="mini-stat-value">$0</div>
+          </div>
+        </div>
       </div>
     </section>
 
     <section id="budgetScreen" class="screen">
       <div class="header">
-        <h2>Budget</h2>
-        <p>Track your plan, spending, and remaining balance</p>
+        <div class="eyebrow">Budget Ops</div>
+        <h2>Budget Operations</h2>
+        <p>Toggle between your plan, what was spent, and what remains.</p>
       </div>
 
-      <div class="budget-top">
+      <div class="top-row">
         <select class="month-select">
           <option>April 2026</option>
           <option>May 2026</option>
@@ -374,81 +652,137 @@
         <button onclick="setBudgetMode(event, 'remaining')">Remaining</button>
       </div>
 
-      <div class="card left-budget-card">
+      <div class="card wide-card">
         <h4>$ Left to Budget</h4>
-        <div class="big-amount" id="leftToBudget">$2,000</div>
+        <div class="budget-big good" id="leftToBudget">$2,000</div>
       </div>
 
-      <div class="summary-grid">
-        <div class="card summary-card">
-          <h4>Planned Income</h4>
-          <div class="big-amount" id="plannedIncome">$4,000</div>
+      <div class="info-grid">
+        <div class="card info-card">
+          <h4>Income</h4>
+          <div class="info-value" id="incomeValue">$4,000</div>
         </div>
-
-        <div class="card summary-card">
+        <div class="card info-card">
           <h4>Monthly Cash Flow</h4>
-          <div class="big-amount" id="monthlyCashFlow">$2,000</div>
+          <div class="info-value" id="cashFlowValue">$2,000</div>
         </div>
       </div>
 
       <div class="card category-card">
-        <h4>Savings</h4>
-        <div class="category-row">
-          <span>Emergency Fund</span>
-          <span id="savingsAmount">$500</span>
+        <div class="category-head">
+          <h4>Savings</h4>
+          <div class="category-tag">Category</div>
         </div>
-        <div class="category-sub">Tap + later to add more savings items</div>
+        <div class="line-item">
+          <div>
+            <div class="line-title">Emergency Fund</div>
+            <div class="line-sub">Primary reserve target</div>
+          </div>
+          <div class="line-amount good" id="savingsAmount">$500</div>
+        </div>
+        <div class="add-item-row">
+          <button class="add-item-btn">Add Item</button>
+        </div>
       </div>
 
       <div class="card category-card">
-        <h4>Housing</h4>
-        <div class="category-row">
-          <span>Mortgage</span>
-          <span id="housingAmount">$1,200</span>
+        <div class="category-head">
+          <h4>Housing</h4>
+          <div class="category-tag">Category</div>
         </div>
-        <div class="category-sub">Planned, spent, and remaining all use the same category card</div>
+        <div class="line-item">
+          <div>
+            <div class="line-title">Mortgage</div>
+            <div class="line-sub">Main monthly housing cost</div>
+          </div>
+          <div class="line-amount warn" id="housingAmount">$1,200</div>
+        </div>
+        <div class="add-item-row">
+          <button class="add-item-btn">Add Item</button>
+        </div>
       </div>
 
       <div class="card category-card">
-        <h4>Transportation</h4>
-        <div class="category-row">
-          <span>Gas / Auto</span>
-          <span id="transportAmount">$300</span>
+        <div class="category-head">
+          <h4>Transportation</h4>
+          <div class="category-tag">Category</div>
         </div>
-        <div class="category-sub">Ready for more items later</div>
+        <div class="line-item">
+          <div>
+            <div class="line-title">Gas</div>
+            <div class="line-sub">Fuel and transport costs</div>
+          </div>
+          <div class="line-amount warn" id="transportAmount">$300</div>
+        </div>
+        <div class="add-item-row">
+          <button class="add-item-btn">Add Item</button>
+        </div>
       </div>
     </section>
 
     <section id="investScreen" class="screen">
       <div class="header">
-        <h2>Invest</h2>
-        <p>Placeholder screen for your next redesign step</p>
+        <div class="eyebrow">Invest</div>
+        <h2>Investment Command</h2>
+        <p>This screen is connected and ready for the next redesign phase.</p>
       </div>
-      <div class="placeholder-note">This button is connected now.<br>We can design the Invest screen next.</div>
+      <div class="placeholder-wrap">
+        <div class="card placeholder-card">
+          <h3>Invest Screen Placeholder</h3>
+          <p>Next we can design your Roth, brokerage, crypto, and account mix using this same command-center style.</p>
+        </div>
+      </div>
     </section>
 
     <section id="assetsScreen" class="screen">
       <div class="header">
-        <h2>Assets</h2>
-        <p>Placeholder screen for your collection and valuables</p>
+        <div class="eyebrow">Assets</div>
+        <h2>Asset Control</h2>
+        <p>This screen is connected and ready for the next redesign phase.</p>
       </div>
-      <div class="placeholder-note">This button is connected now.<br>We can design the Assets screen next.</div>
+      <div class="placeholder-wrap">
+        <div class="card placeholder-card">
+          <h3>Assets Screen Placeholder</h3>
+          <p>This is where we can build your valuables, collection inventory, and larger asset tracking next.</p>
+        </div>
+      </div>
     </section>
 
     <section id="goalsScreen" class="screen">
       <div class="header">
-        <h2>Goals</h2>
-        <p>Placeholder screen for debt, savings, and mission targets</p>
+        <div class="eyebrow">Goals</div>
+        <h2>Mission Goals</h2>
+        <p>This screen is connected and ready for the next redesign phase.</p>
       </div>
-      <div class="placeholder-note">This button is connected now.<br>We can design the Goals screen next.</div>
+      <div class="placeholder-wrap">
+        <div class="card placeholder-card">
+          <h3>Goals Screen Placeholder</h3>
+          <p>This will be the best place for savings missions, debt targets, and milestone tracking.</p>
+        </div>
+      </div>
     </section>
 
     <nav class="bottom-nav">
-      <button class="nav-btn active" data-screen="mainMenuScreen" onclick="showScreen('mainMenuScreen', this)">Dashboard</button>
-      <button class="nav-btn" data-screen="budgetScreen" onclick="showScreen('budgetScreen', this)">Budget</button>
-      <button class="nav-btn" data-screen="investScreen" onclick="showScreen('investScreen', this)">Invest</button>
-      <button class="nav-btn" data-screen="assetsScreen" onclick="showScreen('assetsScreen', this)">Assets</button>
-      <button class="nav-btn" data-screen="goalsScreen" onclick="showScreen('goalsScreen', this)">Goals</button>
+      <button class="nav-btn active" onclick="showScreen('overviewScreen', this)">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Dashboard</span>
+      </button>
+      <button class="nav-btn" onclick="showScreen('budgetScreen', this)">
+        <span class="nav-icon">💰</span>
+        <span class="nav-label">Budget</span>
+      </button>
+      <button class="nav-btn" onclick="showScreen('investScreen', this)">
+        <span class="nav-icon">📈</span>
+        <span class="nav-label">Invest</span>
+      </button>
+      <button class="nav-btn" onclick="showScreen('assetsScreen', this)">
+        <span class="nav-icon">📦</span>
+        <span class="nav-label">Assets</span>
+      </button>
+      <button class="nav-btn" onclick="showScreen('goalsScreen', this)">
+        <span class="nav-icon">🎯</span>
+        <span class="nav-label">Goals</span>
+      </button>
     </nav>
   </div>
 
@@ -459,35 +793,63 @@
       remaining: { left: 900, income: 4000, cashflow: 800, savings: 320, housing: 220, transport: 60 }
     };
 
-    function money(value) {
-      return '$' + Number(value).toLocaleString();
+    function money(v){
+      return '$' + Number(v).toLocaleString();
     }
 
-    function setBudgetMode(event, mode) {
+    function toneClass(v){
+      if (v < 0) return 'bad';
+      if (v <= 300) return 'warn';
+      return 'good';
+    }
+
+    function setClass(el, base, value){
+      el.className = base + ' ' + toneClass(value);
+    }
+
+    function setBudgetMode(event, mode){
       document.querySelectorAll('.toggle button').forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
 
-      document.getElementById('leftToBudget').textContent = money(budgetData[mode].left);
-      document.getElementById('plannedIncome').textContent = money(budgetData[mode].income);
-      document.getElementById('monthlyCashFlow').textContent = money(budgetData[mode].cashflow);
-      document.getElementById('savingsAmount').textContent = money(budgetData[mode].savings);
-      document.getElementById('housingAmount').textContent = money(budgetData[mode].housing);
-      document.getElementById('transportAmount').textContent = money(budgetData[mode].transport);
+      const left = budgetData[mode].left;
+      const income = budgetData[mode].income;
+      const cashflow = budgetData[mode].cashflow;
+      const savings = budgetData[mode].savings;
+      const housing = budgetData[mode].housing;
+      const transport = budgetData[mode].transport;
+
+      const leftEl = document.getElementById('leftToBudget');
+      const incomeEl = document.getElementById('incomeValue');
+      const cashEl = document.getElementById('cashFlowValue');
+      const savingsEl = document.getElementById('savingsAmount');
+      const housingEl = document.getElementById('housingAmount');
+      const transportEl = document.getElementById('transportAmount');
+
+      leftEl.textContent = money(left);
+      incomeEl.textContent = money(income);
+      cashEl.textContent = money(cashflow);
+      savingsEl.textContent = money(savings);
+      housingEl.textContent = money(housing);
+      transportEl.textContent = money(transport);
+
+      setClass(leftEl, 'budget-big', left);
+      setClass(savingsEl, 'line-amount', savings);
+      setClass(housingEl, 'line-amount', housing);
+      setClass(transportEl, 'line-amount', transport);
     }
 
-    function showScreen(screenId, button) {
-      document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-      document.getElementById(screenId).classList.add('active');
+    function showScreen(id, button){
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
 
       document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-      if (button) button.classList.add('active');
+      button.classList.add('active');
     }
 
     window.addEventListener('load', () => {
       setTimeout(() => {
-        const splash = document.getElementById('loadingScreen');
-        splash.classList.add('fade-out');
-      }, 2200);
+        document.getElementById('loadingScreen').classList.add('fade-out');
+      }, 2100);
     });
   </script>
 </body>
