@@ -45,6 +45,11 @@
       border-left:1px solid rgba(255,255,255,.04);
       border-right:1px solid rgba(255,255,255,.04);
       box-shadow: 0 0 0 1px rgba(255,255,255,.02);
+      visibility:hidden;
+    }
+
+    .app-shell.ready{
+      visibility:visible;
     }
 
     .screen{
@@ -103,24 +108,25 @@
       margin:0 auto;
     }
 
-    /* Loading screen */
     #loadingScreen{
       position:fixed;
       inset:0;
-      z-index:999;
+      z-index:9999;
       display:flex;
       align-items:center;
       justify-content:center;
       padding:24px;
       background:
-        radial-gradient(circle at 50% 24%, rgba(42,110,204,.28), transparent 24%),
+        radial-gradient(circle at 50% 24%, rgba(42,110,204,.18), transparent 24%),
         linear-gradient(180deg, #061827 0%, #020c15 100%);
-      opacity:0;
-      animation:fadeIn .9s forwards;
+      opacity:1;
+      visibility:visible;
+      transition:opacity .75s ease, visibility .75s ease;
     }
 
     #loadingScreen.fade-out{
-      animation:fadeOut .75s forwards;
+      opacity:0;
+      visibility:hidden;
     }
 
     .splash-panel{
@@ -175,7 +181,6 @@
       animation:loadBar 2s ease forwards;
     }
 
-    /* Overview screen */
     .grid-2{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -325,7 +330,6 @@
       font-weight:800;
     }
 
-    /* Budget */
     .top-row{
       display:flex;
       gap:10px;
@@ -482,7 +486,6 @@
       font-weight:700;
     }
 
-    /* Placeholders */
     .placeholder-wrap{
       padding-top:36px;
       text-align:center;
@@ -502,7 +505,6 @@
       line-height:1.45;
     }
 
-    /* Nav */
     .bottom-nav{
       position:fixed;
       left:50%;
@@ -551,16 +553,6 @@
     button{ cursor:pointer; }
     button:active{ transform:scale(.97); }
 
-    @keyframes fadeIn{
-      from{ opacity:0; }
-      to{ opacity:1; }
-    }
-
-    @keyframes fadeOut{
-      from{ opacity:1; }
-      to{ opacity:0; visibility:hidden; }
-    }
-
     @keyframes loadBar{
       from{ width:0; }
       to{ width:100%; }
@@ -577,7 +569,7 @@
     </div>
   </div>
 
-  <div class="app-shell">
+  <div class="app-shell" id="appShell">
     <section id="overviewScreen" class="screen active">
       <div class="header">
         <div class="eyebrow">FCC System</div>
@@ -849,6 +841,7 @@
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('loadingScreen').classList.add('fade-out');
+        document.getElementById('appShell').classList.add('ready');
       }, 2100);
     });
   </script>
