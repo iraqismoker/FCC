@@ -1,477 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Financial Command Center - Redesign</title>
-  <style>
-    :root {
-      --bg: #07141f;
-      --bg-2: #0b2234;
-      --panel: rgba(13, 28, 43, 0.88);
-      --panel-2: rgba(16, 37, 56, 0.95);
-      --line: rgba(255, 255, 255, 0.08);
-      --text: #f4f8fb;
-      --muted: #9fb2c3;
-      --accent: #75b7ff;
-      --accent-soft: rgba(117, 183, 255, 0.18);
-      --danger: #f06a6a;
-      --success: #6fd68f;
-      --shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
-      --radius-xl: 26px;
-      --radius-lg: 22px;
-      --radius-md: 18px;
-    }
-
-    * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      background:
-        radial-gradient(circle at top, rgba(117, 183, 255, 0.12), transparent 26%),
-        linear-gradient(180deg, #08131d 0%, #06111a 100%);
-      color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      padding: 18px;
-    }
-
-    .phone {
-      width: min(100%, 430px);
-      min-height: calc(100vh - 36px);
-      border: 1px solid var(--line);
-      border-radius: 34px;
-      overflow: hidden;
-      position: relative;
-      background:
-        linear-gradient(180deg, rgba(10, 25, 38, 0.94), rgba(5, 16, 26, 0.98));
-      box-shadow: 0 30px 80px rgba(0,0,0,.45);
-    }
-
-    .screen {
-      position: absolute;
-      inset: 0;
-      transition: opacity .7s ease, transform .7s ease, visibility .7s ease;
-    }
-
-    .hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transform: scale(1.02);
-    }
-
-    .splash {
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 32px;
-      background:
-        radial-gradient(circle at 50% 18%, rgba(117, 183, 255, 0.18), transparent 25%),
-        linear-gradient(180deg, #0a2133 0%, #06111a 100%);
-      animation: splashFadeIn 1.1s ease forwards;
-    }
-
-    .splash-inner {
-      width: 100%;
-      max-width: 290px;
-      transform: translateY(10px);
-      opacity: 0;
-      animation: contentRise .9s ease .25s forwards;
-    }
-
-    .seal {
-      width: 96px;
-      height: 96px;
-      margin: 0 auto 18px;
-      border-radius: 28px;
-      border: 1px solid rgba(255,255,255,.1);
-      display: grid;
-      place-items: center;
-      background: linear-gradient(180deg, rgba(117, 183, 255, 0.18), rgba(255,255,255,0.03));
-      box-shadow: var(--shadow);
-      font-size: 38px;
-      letter-spacing: 1px;
-      font-weight: 800;
-    }
-
-    .eyebrow {
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .22em;
-      font-size: .72rem;
-      margin-bottom: 12px;
-    }
-
-    .splash h1 {
-      margin: 0;
-      font-size: 2rem;
-      line-height: 1.05;
-    }
-
-    .splash p {
-      margin: 14px 0 0;
-      color: var(--muted);
-      line-height: 1.45;
-      font-size: .98rem;
-    }
-
-    .status {
-      margin-top: 28px;
-      color: #d7e8f5;
-      font-size: .92rem;
-    }
-
-    .progress {
-      width: 100%;
-      height: 8px;
-      border-radius: 999px;
-      margin-top: 12px;
-      background: rgba(255,255,255,.08);
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,.06);
-    }
-
-    .progress > span {
-      display: block;
-      height: 100%;
-      width: 0;
-      border-radius: inherit;
-      background: linear-gradient(90deg, rgba(117,183,255,.6), rgba(117,183,255,1));
-      animation: loadBar 2.6s ease forwards;
-    }
-
-    .menu {
-      padding: 18px 18px 108px;
-      background:
-        radial-gradient(circle at top, rgba(117,183,255,.08), transparent 26%),
-        linear-gradient(180deg, #091723 0%, #06111a 100%);
-    }
-
-    .statusbar {
-      height: 22px;
-    }
-
-    .header {
-      padding-top: 12px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .header h2 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-
-    .header p {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: .95rem;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
-    }
-
-    .chart-card {
-      padding: 14px 12px 16px;
-      text-align: center;
-      min-height: 212px;
-    }
-
-    .card-label {
-      color: var(--muted);
-      font-size: .88rem;
-      margin-bottom: 12px;
-    }
-
-    .ring {
-      width: 126px;
-      height: 126px;
-      margin: 0 auto 12px;
-      border-radius: 50%;
-      position: relative;
-      display: grid;
-      place-items: center;
-      box-shadow: inset 0 0 18px rgba(255,255,255,.05);
-    }
-
-    .ring::after {
-      content: "";
-      position: absolute;
-      width: 74px;
-      height: 74px;
-      border-radius: 50%;
-      background: #0a1824;
-      border: 1px solid rgba(255,255,255,.06);
-    }
-
-    .ring span {
-      position: relative;
-      z-index: 1;
-      font-size: .76rem;
-      color: #dce9f5;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      text-align: center;
-      width: 60px;
-      line-height: 1.15;
-    }
-
-    .ring.spending {
-      background: conic-gradient(var(--danger) 0 42%, #f1b24a 42% 67%, #5b7ea2 67% 100%);
-    }
-
-    .ring.portfolio {
-      background: conic-gradient(var(--success) 0 38%, #75b7ff 38% 74%, #9875ff 74% 100%);
-    }
-
-    .amount {
-      font-size: 1.25rem;
-      font-weight: 800;
-      letter-spacing: -.02em;
-    }
-
-    .subnote {
-      margin-top: 8px;
-      font-size: .8rem;
-      color: var(--muted);
-    }
-
-    .networth {
-      padding: 18px;
-      margin-bottom: 14px;
-    }
-
-    .networth-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .badge {
-      font-size: .78rem;
-      color: #dce9f5;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      border: 1px solid rgba(117,183,255,.15);
-    }
-
-    .networth-value {
-      font-size: 2rem;
-      font-weight: 900;
-      margin-bottom: 8px;
-    }
-
-    .mini-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .mini {
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      padding: 12px 10px;
-    }
-
-    .mini .title {
-      font-size: .75rem;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    .mini .value {
-      font-size: .98rem;
-      font-weight: 700;
-    }
-
-    .cta {
-      padding: 16px 18px;
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      align-items: center;
-    }
-
-    .cta strong {
-      display: block;
-      margin-bottom: 5px;
-      font-size: .96rem;
-    }
-
-    .cta span {
-      color: var(--muted);
-      font-size: .84rem;
-      line-height: 1.35;
-    }
-
-    .arrow {
-      width: 42px;
-      height: 42px;
-      flex: 0 0 42px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(117,183,255,.14);
-      background: var(--accent-soft);
-      font-size: 1.05rem;
-    }
-
-    .nav {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      bottom: 16px;
-      padding: 10px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      background: rgba(8, 17, 26, 0.92);
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
-    }
-
-    .nav button {
-      appearance: none;
-      border: 0;
-      border-radius: 16px;
-      padding: 12px 8px;
-      background: transparent;
-      color: var(--muted);
-      font-size: .84rem;
-      font-weight: 600;
-    }
-
-    .nav button.active {
-      background: var(--accent-soft);
-      color: var(--text);
-      border: 1px solid rgba(117,183,255,.14);
-    }
-
-    @keyframes splashFadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes contentRise {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes loadBar {
-      from { width: 0; }
-      to { width: 100%; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FCC Budget</title>
+<style>
+body{margin:0;font-family:Arial;background:#071520;color:white;}
+.container{max-width:430px;margin:auto;padding:20px;}
+.header{display:flex;justify-content:space-between;align-items:center;}
+.add-btn{background:#2563eb;border:none;color:white;font-size:20px;border-radius:10px;padding:5px 12px;}
+.toggle{display:flex;gap:10px;margin:20px 0;}
+.toggle button{flex:1;padding:10px;border:none;border-radius:10px;background:#102a43;color:white;}
+.toggle button.active{background:#2563eb;}
+.card{background:#0f2a44;padding:15px;border-radius:15px;margin-bottom:15px;}
+.amount{font-size:20px;font-weight:bold;}
+.bottom-nav{position:fixed;bottom:0;width:100%;max-width:430px;display:flex;background:#061220;}
+.bottom-nav button{flex:1;padding:12px;border:none;background:transparent;color:#9fb3c8;}
+.bottom-nav button.active{color:white;background:#2563eb;}
+</style>
 </head>
 <body>
-  <div class="phone">
-    <section class="screen splash" id="splashScreen">
-      <div class="splash-inner">
-        <div class="seal">FCC</div>
-        <div class="eyebrow">Financial System</div>
-        <h1>Financial Command Center</h1>
-        <p>Budget, invest, track assets, and support veteran-specific planning with Roth-first guidance.</p>
-        <div class="status">Initializing secure dashboard…</div>
-        <div class="progress"><span></span></div>
-      </div>
-    </section>
-
-    <section class="screen menu hidden" id="menuScreen">
-      <div class="statusbar"></div>
-      <div class="header">
-        <h2>Main Menu</h2>
-        <p>Your redesigned front page for the Financial Command Center</p>
-      </div>
-
-      <div class="grid-2">
-        <article class="card chart-card">
-          <div class="card-label">Spending Breakdown</div>
-          <div class="ring spending"><span>Monthly Spend</span></div>
-          <div class="amount">$0</div>
-          <div class="subnote">Housing, food, debt, and daily spending</div>
-        </article>
-
-        <article class="card chart-card">
-          <div class="card-label">Portfolio Breakdown</div>
-          <div class="ring portfolio"><span>Invest Mix</span></div>
-          <div class="amount">$0</div>
-          <div class="subnote">Cash, Roth, brokerage, crypto, collectibles</div>
-        </article>
-      </div>
-
-      <article class="card networth">
-        <div class="networth-head">
-          <div>
-            <div class="card-label">Net Worth</div>
-            <div class="networth-value">$0</div>
-          </div>
-          <div class="badge">Mission Ready</div>
-        </div>
-        <div class="subnote">This becomes your main snapshot before diving into Budget, Invest, Assets, Goals, and Veteran Mode.</div>
-        <div class="mini-grid">
-          <div class="mini">
-            <div class="title">Income</div>
-            <div class="value">$0</div>
-          </div>
-          <div class="mini">
-            <div class="title">Bills</div>
-            <div class="value">$0</div>
-          </div>
-          <div class="mini">
-            <div class="title">Roth Left</div>
-            <div class="value">$0</div>
-          </div>
-        </div>
-      </article>
-
-      <article class="card cta">
-        <div>
-          <strong>Recommended Next Move</strong>
-          <span>Once we wire the app logic back in, this card can pull live guidance from your Roth, mortgage, and emergency-fund numbers.</span>
-        </div>
-        <div class="arrow">→</div>
-      </article>
-
-      <nav class="nav">
-        <button class="active">Home</button>
-        <button>Budget</button>
-        <button>Assets</button>
-      </nav>
-    </section>
-  </div>
-
-  <script>
-    const splash = document.getElementById('splashScreen');
-    const menu = document.getElementById('menuScreen');
-
-    setTimeout(() => {
-      splash.classList.add('hidden');
-      menu.classList.remove('hidden');
-    }, 2800);
-  </script>
+<div class="container">
+<div class="header">
+<h2>Budget</h2>
+<button class="add-btn">+</button>
+</div>
+<div class="toggle">
+<button class="active" onclick="setMode(event,'planned')">Planned</button>
+<button onclick="setMode(event,'spent')">Spent</button>
+<button onclick="setMode(event,'remaining')">Remaining</button>
+</div>
+<div class="card"><h3>$ Left to Budget</h3><div class="amount" id="left">$2000</div></div>
+<div class="card"><h3>Savings</h3><div class="amount" id="savings">$500</div></div>
+<div class="card"><h3>Housing</h3><div class="amount" id="housing">$1200</div></div>
+<div class="card"><h3>Transportation</h3><div class="amount" id="transport">$300</div></div>
+</div>
+<div class="bottom-nav">
+<button>Dashboard</button>
+<button class="active">Budget</button>
+<button>Invest</button>
+<button>Assets</button>
+<button>Goals</button>
+</div>
+<script>
+let data={
+planned:{left:2000,savings:500,housing:1200,transport:300},
+spent:{left:1500,savings:200,housing:1000,transport:300},
+remaining:{left:500,savings:300,housing:200,transport:0}
+};
+function setMode(e,mode){
+document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('active'));
+e.target.classList.add('active');
+document.getElementById('left').innerText='$'+data[mode].left;
+document.getElementById('savings').innerText='$'+data[mode].savings;
+document.getElementById('housing').innerText='$'+data[mode].housing;
+document.getElementById('transport').innerText='$'+data[mode].transport;
+}
+</script>
 </body>
 </html>
