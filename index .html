@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FCC Budget</title>
+<style>
+body{margin:0;font-family:Arial;background:#071520;color:white;}
+.container{max-width:430px;margin:auto;padding:20px;}
+.header{display:flex;justify-content:space-between;align-items:center;}
+.add-btn{background:#2563eb;border:none;color:white;font-size:20px;border-radius:10px;padding:5px 12px;}
+.toggle{display:flex;gap:10px;margin:20px 0;}
+.toggle button{flex:1;padding:10px;border:none;border-radius:10px;background:#102a43;color:white;}
+.toggle button.active{background:#2563eb;}
+.card{background:#0f2a44;padding:15px;border-radius:15px;margin-bottom:15px;}
+.amount{font-size:20px;font-weight:bold;}
+.bottom-nav{position:fixed;bottom:0;width:100%;max-width:430px;display:flex;background:#061220;}
+.bottom-nav button{flex:1;padding:12px;border:none;background:transparent;color:#9fb3c8;}
+.bottom-nav button.active{color:white;background:#2563eb;}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h2>Budget</h2>
+<button class="add-btn">+</button>
+</div>
+<div class="toggle">
+<button class="active" onclick="setMode(event,'planned')">Planned</button>
+<button onclick="setMode(event,'spent')">Spent</button>
+<button onclick="setMode(event,'remaining')">Remaining</button>
+</div>
+<div class="card"><h3>$ Left to Budget</h3><div class="amount" id="left">$2000</div></div>
+<div class="card"><h3>Savings</h3><div class="amount" id="savings">$500</div></div>
+<div class="card"><h3>Housing</h3><div class="amount" id="housing">$1200</div></div>
+<div class="card"><h3>Transportation</h3><div class="amount" id="transport">$300</div></div>
+</div>
+<div class="bottom-nav">
+<button>Dashboard</button>
+<button class="active">Budget</button>
+<button>Invest</button>
+<button>Assets</button>
+<button>Goals</button>
+</div>
+<script>
+let data={
+planned:{left:2000,savings:500,housing:1200,transport:300},
+spent:{left:1500,savings:200,housing:1000,transport:300},
+remaining:{left:500,savings:300,housing:200,transport:0}
+};
+function setMode(e,mode){
+document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('active'));
+e.target.classList.add('active');
+document.getElementById('left').innerText='$'+data[mode].left;
+document.getElementById('savings').innerText='$'+data[mode].savings;
+document.getElementById('housing').innerText='$'+data[mode].housing;
+document.getElementById('transport').innerText='$'+data[mode].transport;
+}
+</script>
+</body>
+</html>
