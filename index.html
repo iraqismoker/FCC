@@ -94,6 +94,14 @@
     .info-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;}
     .info-card{padding:16px;} .info-value{font-size:1.45rem; font-weight:800;}
 
+    .income-card-row{display:flex; justify-content:space-between; align-items:flex-end; gap:12px; padding:10px 0 12px; border-bottom:1px solid rgba(255,255,255,.05);}
+    .income-card-row:last-child{border-bottom:none;}
+    .income-name{font-size:1.02rem; font-weight:700; margin-bottom:4px;}
+    .income-note{color:var(--muted); font-size:.85rem;}
+    .income-amount{font-size:1.2rem; font-weight:800; cursor:pointer; min-width:96px; text-align:right; color:#dffcf8;}
+    .income-panel{display:grid; gap:10px; padding-top:12px;}
+    .income-row{display:grid; grid-template-columns:1fr 110px; gap:10px;}
+
     .category-card{padding:16px; margin-bottom:12px;}
     .category-head{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px;}
     .category-tag{color:#7dd3c7; font-size:.76rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;}
@@ -169,7 +177,23 @@
         </div>
       </div>
 
-      <div class="card wide-card"><h4>Monthly Income</h4><input type="number" id="incomeInput" class="input-field" placeholder="Enter your monthly income" inputmode="decimal" oninput="updateIncome(this.value)" /></div>
+      <div class="card wide-card">
+        <h4>Monthly Income</h4>
+        <div id="incomeList"></div>
+        <div class="income-panel" id="incomePanel" style="display:none;">
+          <div class="income-row">
+            <input class="small-input" id="new-income-name" placeholder="Income source" />
+            <input class="small-input" id="new-income-amount" type="number" step="0.01" placeholder="Amount" />
+          </div>
+          <div class="new-item-actions">
+            <button class="save-item-btn" onclick="saveNewIncome()">Save Income</button>
+            <button class="ghost-btn" onclick="cancelNewIncome()">Cancel</button>
+          </div>
+        </div>
+        <div class="add-item-row">
+          <button class="add-item-btn" onclick="showNewIncome()">Add Income Source</button>
+        </div>
+      </div>
 
       <div class="toggle">
         <button class="active" onclick="setBudgetMode(event,'planned')">Planned</button>
@@ -206,9 +230,9 @@
 
   <script>
     const defaultBudgetData = {
-      planned:{income:4000,invested:0,items:{savings:[{name:'Emergency Fund',note:'Primary reserve target',amount:500}],housing:[{name:'Mortgage',note:'Main monthly housing cost',amount:1200}],transportation:[{name:'Gas',note:'Fuel and transport costs',amount:300}]}},
-      spent:{income:4000,invested:0,items:{savings:[{name:'Emergency Fund',note:'Primary reserve target',amount:180}],housing:[{name:'Mortgage',note:'Main monthly housing cost',amount:980}],transportation:[{name:'Gas',note:'Fuel and transport costs',amount:240}]}},
-      remaining:{income:4000,invested:0,items:{savings:[{name:'Emergency Fund',note:'Primary reserve target',amount:320}],housing:[{name:'Mortgage',note:'Main monthly housing cost',amount:220}],transportation:[{name:'Gas',note:'Fuel and transport costs',amount:60}]}}
+      planned:{invested:0,incomes:[{name:'Primary Income',note:'Main monthly income',amount:4000}],items:{savings:[{name:'Emergency Fund',note:'Primary reserve target',amount:500}],housing:[{name:'Mortgage',note:'Main monthly housing cost',amount:1200}],transportation:[{name:'Gas',note:'Fuel and transport costs',amount:300}]}},
+      spent:{invested:0,incomes:[{name:'Primary Income',note:'Main monthly income',amount:4000}],items:{savings:[{name:'Emergency Fund',note:'Primary reserve target',amount:180}],housing:[{name:'Mortgage',note:'Main monthly housing cost',amount:980}],transportation:[{name:'Gas',note:'Fuel and transport costs',amount:240}]}},
+      remaining:{invested:0,incomes:[{name:'Primary Income',note:'Main monthly income',amount:4000}],items:{savings:[{name:'Emergency Fund',note:'Primary reserve target',amount:320}],housing:[{name:'Mortgage',note:'Main monthly housing cost',amount:220}],transportation:[{name:'Gas',note:'Fuel and transport costs',amount:60}]}}
     };
     let budgetData = JSON.parse(JSON.stringify(defaultBudgetData));
     let currentMode='planned';
@@ -218,15 +242,16 @@
     function money(v){ return '$'+Number(v).toLocaleString(); }
     function toneClass(v){ if(v<0) return 'bad'; if(v<=300) return 'warn'; return 'good'; }
     function currentGroups(){ return Object.keys(budgetData[currentMode].items); }
+    function getIncomeTotal(mode){ return (budgetData[mode].incomes||[]).reduce((sum,item)=>sum+Number(item.amount||0),0); }
     function getCategoryTotal(mode, group){ return (budgetData[mode].items[group]||[]).reduce((s,i)=>s+Number(i.amount||0),0); }
     function getSpendingTotal(mode){ return currentGroups().reduce((sum, group)=> sum + getCategoryTotal(mode, group), 0); }
-    function getCashFlow(mode){ return Number(budgetData[mode].income||0)-getSpendingTotal(mode); }
-    function getNetWorth(mode){ return Number(budgetData[mode].income||0)+Number(budgetData[mode].invested||0)-getSpendingTotal(mode); }
+    function getCashFlow(mode){ return getIncomeTotal(mode)-getSpendingTotal(mode); }
+    function getNetWorth(mode){ return getIncomeTotal(mode)+Number(budgetData[mode].invested||0)-getSpendingTotal(mode); }
     function updateCategoryLabels(mode){ document.querySelectorAll('.category-tag').forEach(l=>l.textContent=mode.toUpperCase()); }
 
     function updateOverview(mode){
-      const spending=getSpendingTotal(mode), invested=Number(budgetData[mode].invested||0), cashFlow=getCashFlow(mode), netWorth=getNetWorth(mode);
-      document.getElementById('overviewIncome').textContent=money(budgetData[mode].income);
+      const income=getIncomeTotal(mode), spending=getSpendingTotal(mode), invested=Number(budgetData[mode].invested||0), cashFlow=getCashFlow(mode), netWorth=getNetWorth(mode);
+      document.getElementById('overviewIncome').textContent=money(income);
       document.getElementById('overviewCashFlow').textContent=money(cashFlow);
       document.getElementById('overviewSpending').textContent=money(spending);
       document.getElementById('overviewInvested').textContent=money(invested);
@@ -236,6 +261,24 @@
     }
 
     function escapeHtml(str){ return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
+
+    function renderIncomeList(){
+      const container = document.getElementById('incomeList');
+      container.innerHTML = '';
+      (budgetData[currentMode].incomes || []).forEach((item,index)=>{
+        const row = document.createElement('div');
+        row.className = 'income-card-row';
+        const left = document.createElement('div');
+        left.innerHTML = '<div class="income-name">'+escapeHtml(item.name)+'</div><div class="income-note">'+escapeHtml(item.note||'')+'</div>';
+        const amount = document.createElement('div');
+        amount.className = 'income-amount';
+        amount.textContent = money(item.amount);
+        amount.onclick = ()=>makeIncomeEditable(amount,index);
+        row.appendChild(left);
+        row.appendChild(amount);
+        container.appendChild(row);
+      });
+    }
 
     function renderCategoriesShell(){
       const wrap = document.getElementById('categoriesContainer');
@@ -285,8 +328,9 @@
     }
 
     function renderMode(mode){
+      renderIncomeList();
       renderCategoriesShell();
-      const income=Number(budgetData[mode].income||0), spending=getSpendingTotal(mode), left=income-spending, cashflow=income-spending;
+      const income=getIncomeTotal(mode), spending=getSpendingTotal(mode), left=income-spending, cashflow=income-spending;
       document.getElementById('leftToBudget').textContent=money(left);
       document.getElementById('leftToBudget').className='budget-big '+toneClass(left);
       document.getElementById('incomeValue').textContent=money(income);
@@ -300,12 +344,42 @@
       currentMode=mode;
       document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('active'));
       event.target.classList.add('active');
+      cancelNewIncome();
       renderMode(mode);
     }
 
-    function updateIncome(value){
-      const income=Number(value)||0;
-      budgetData.planned.income=income; budgetData.spent.income=income; budgetData.remaining.income=income;
+    function makeIncomeEditable(el, index){
+      if(el.querySelector('input')) return;
+      const input=document.createElement('input');
+      input.type='number'; input.step='0.01'; input.className='amount-edit';
+      input.value=Number(budgetData[currentMode].incomes[index].amount||0);
+      input.addEventListener('blur',()=>saveIncomeEditable(index,input));
+      input.addEventListener('keydown',(e)=>{ if(e.key==='Enter') input.blur(); });
+      el.textContent=''; el.appendChild(input); input.focus(); input.select();
+    }
+
+    function saveIncomeEditable(index, input){
+      budgetData[currentMode].incomes[index].amount=Number(input.value)||0;
+      renderMode(currentMode);
+    }
+
+    function showNewIncome(){
+      document.getElementById('incomePanel').style.display='grid';
+      document.getElementById('new-income-name').focus();
+    }
+
+    function cancelNewIncome(){
+      document.getElementById('incomePanel').style.display='none';
+      document.getElementById('new-income-name').value='';
+      document.getElementById('new-income-amount').value='';
+    }
+
+    function saveNewIncome(){
+      const name=document.getElementById('new-income-name').value.trim();
+      const amount=Number(document.getElementById('new-income-amount').value)||0;
+      if(!name) return;
+      budgetData[currentMode].incomes.push({name, note:'', amount});
+      cancelNewIncome();
       renderMode(currentMode);
     }
 
@@ -366,9 +440,10 @@
 
     function resetBudget(){
       budgetData = JSON.parse(JSON.stringify(defaultBudgetData));
-      document.getElementById('incomeInput').value = budgetData.planned.income;
       currentMode = 'planned';
       document.querySelectorAll('.toggle button').forEach((b,i)=> b.classList.toggle('active', i===0));
+      cancelNewIncome();
+      toggleNewCategoryPanel(false);
       renderMode(currentMode);
     }
 
@@ -380,7 +455,6 @@
     }
 
     window.addEventListener('load',()=>{
-      document.getElementById('incomeInput').value=budgetData.planned.income;
       renderMode(currentMode);
       setTimeout(()=>{
         document.getElementById('loadingScreen').classList.add('fade-out');
