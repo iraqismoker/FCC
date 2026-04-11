@@ -16,7 +16,6 @@
       --muted:#94a3b8;
       --accent:#14b8a6;
       --accent-2:#2dd4bf;
-      --accent-soft:rgba(20,184,166,.14);
       --good:#22c55e;
       --warn:#f59e0b;
       --bad:#ef4444;
@@ -168,7 +167,7 @@
       height:100%;
       width:0;
       border-radius:999px;
-      background:linear-gradient(90deg, var(--accent), var(--accent-2));
+      background:linear-gradient(90deg, var(--accent), #2dd4bf);
       box-shadow:0 0 18px rgba(45,212,191,.28);
       animation:loadBar 2s ease forwards;
     }
@@ -216,7 +215,7 @@
     }
 
     .donut.portfolio::before{
-      background:conic-gradient(#22c55e 0 30%, var(--accent-2) 30% 62%, #8b5cf6 62% 100%);
+      background:conic-gradient(#22c55e 0 30%, #2dd4bf 30% 62%, #8b5cf6 62% 100%);
     }
 
     .donut::after{
@@ -324,7 +323,7 @@
       display:flex;
       gap:10px;
       align-items:center;
-      margin-bottom:16px;
+      margin-bottom:14px;
     }
 
     .month-select{
@@ -343,11 +342,39 @@
       height:52px;
       border:none;
       border-radius:16px;
-      background:linear-gradient(180deg, var(--accent-2), var(--accent));
+      background:linear-gradient(180deg, #2dd4bf, var(--accent));
       color:#041112;
       font-size:28px;
       font-weight:700;
       box-shadow:0 12px 24px rgba(20,184,166,.22);
+    }
+
+    .wide-card{
+      padding:18px;
+      margin-bottom:14px;
+    }
+
+    .wide-card h4, .info-card h4, .category-card h4{
+      margin:0 0 10px;
+      color:#c7d1dc;
+      font-size:.95rem;
+      font-weight:600;
+    }
+
+    .input-field{
+      width:100%;
+      height:50px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      padding:0 14px;
+      font-size:16px;
+      outline:none;
+    }
+
+    .input-field::placeholder{
+      color:#8091a7;
     }
 
     .toggle{
@@ -372,18 +399,6 @@
       border-color:rgba(45,212,191,.22);
       box-shadow:0 10px 20px rgba(20,184,166,.10);
       color:#e7fffb;
-    }
-
-    .wide-card{
-      padding:18px;
-      margin-bottom:14px;
-    }
-
-    .wide-card h4, .info-card h4, .category-card h4{
-      margin:0 0 10px;
-      color:#c7d1dc;
-      font-size:.95rem;
-      font-weight:600;
     }
 
     .budget-big{
@@ -575,7 +590,7 @@
           <div class="donut spending">
             <div class="donut-center">SPENDING</div>
           </div>
-          <div class="chart-value">$0</div>
+          <div class="chart-value" id="overviewSpending">$2,000</div>
           <div class="chart-note">Housing, bills, savings, and variable spending</div>
         </div>
 
@@ -584,7 +599,7 @@
           <div class="donut portfolio">
             <div class="donut-center">PORTFOLIO</div>
           </div>
-          <div class="chart-value">$0</div>
+          <div class="chart-value" id="overviewInvested">$0</div>
           <div class="chart-note">Cash, retirement, brokerage, crypto, and assets</div>
         </div>
       </div>
@@ -592,23 +607,23 @@
       <div class="card networth-card">
         <div class="networth-top">
           <div class="networth-label">Net Worth</div>
-          <div class="status-pill">On Track</div>
+          <div class="status-pill" id="statusPill">On Track</div>
         </div>
-        <div class="networth-value">$0</div>
+        <div class="networth-value" id="netWorthValue">$0</div>
         <div class="networth-copy">A quick snapshot of where you stand before diving into your budget and longer-term planning.</div>
 
         <div class="mini-stats">
           <div class="mini-stat">
             <div class="mini-stat-label">Income</div>
-            <div class="mini-stat-value">$0</div>
+            <div class="mini-stat-value" id="overviewIncome">$4,000</div>
           </div>
           <div class="mini-stat">
             <div class="mini-stat-label">Invested</div>
-            <div class="mini-stat-value">$0</div>
+            <div class="mini-stat-value" id="overviewInvestedMini">$0</div>
           </div>
           <div class="mini-stat">
             <div class="mini-stat-label">Cash Flow</div>
-            <div class="mini-stat-value">$0</div>
+            <div class="mini-stat-value" id="overviewCashFlow">$2,000</div>
           </div>
         </div>
       </div>
@@ -628,6 +643,18 @@
           <option>June 2026</option>
         </select>
         <button class="add-btn" aria-label="Add transaction">+</button>
+      </div>
+
+      <div class="card wide-card">
+        <h4>Monthly Income</h4>
+        <input
+          type="number"
+          id="incomeInput"
+          class="input-field"
+          placeholder="Enter your monthly income"
+          inputmode="decimal"
+          oninput="updateIncome(this.value)"
+        />
       </div>
 
       <div class="toggle">
@@ -772,10 +799,12 @@
 
   <script>
     const budgetData = {
-      planned: { left: 2000, income: 4000, cashflow: 2000, savings: 500, housing: 1200, transport: 300 },
-      spent: { left: 1100, income: 4000, cashflow: 1200, savings: 180, housing: 980, transport: 240 },
-      remaining: { left: 900, income: 4000, cashflow: 800, savings: 320, housing: 220, transport: 60 }
+      planned: { income: 4000, spending: 2000, invested: 500, left: 2000, cashflow: 2000, savings: 500, housing: 1200, transport: 300 },
+      spent: { income: 4000, spending: 1400, invested: 180, left: 2600, cashflow: 2600, savings: 180, housing: 980, transport: 240 },
+      remaining: { income: 4000, spending: 600, invested: 320, left: 3400, cashflow: 3400, savings: 320, housing: 220, transport: 60 }
     };
+
+    let currentMode = 'planned';
 
     function money(v){
       return '$' + Number(v).toLocaleString();
@@ -791,10 +820,25 @@
       el.className = base + ' ' + toneClass(value);
     }
 
-    function setBudgetMode(event, mode){
-      document.querySelectorAll('.toggle button').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
+    function computeNetWorth(mode){
+      return budgetData[mode].income + budgetData[mode].invested - budgetData[mode].spending;
+    }
 
+    function updateOverview(mode){
+      document.getElementById('overviewIncome').textContent = money(budgetData[mode].income);
+      document.getElementById('overviewCashFlow').textContent = money(budgetData[mode].cashflow);
+      document.getElementById('overviewSpending').textContent = money(budgetData[mode].spending);
+      document.getElementById('overviewInvested').textContent = money(budgetData[mode].invested);
+      document.getElementById('overviewInvestedMini').textContent = money(budgetData[mode].invested);
+      document.getElementById('netWorthValue').textContent = money(computeNetWorth(mode));
+
+      const pill = document.getElementById('statusPill');
+      if (budgetData[mode].cashflow > 1000) pill.textContent = 'On Track';
+      else if (budgetData[mode].cashflow > 0) pill.textContent = 'Watch Spending';
+      else pill.textContent = 'Over Budget';
+    }
+
+    function renderMode(mode){
       const left = budgetData[mode].left;
       const income = budgetData[mode].income;
       const cashflow = budgetData[mode].cashflow;
@@ -820,6 +864,34 @@
       setClass(savingsEl, 'line-amount', savings);
       setClass(housingEl, 'line-amount', housing);
       setClass(transportEl, 'line-amount', transport);
+
+      updateOverview(mode);
+    }
+
+    function setBudgetMode(event, mode){
+      currentMode = mode;
+      document.querySelectorAll('.toggle button').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderMode(mode);
+    }
+
+    function updateIncome(value){
+      const income = Number(value) || 0;
+
+      budgetData.planned.income = income;
+      budgetData.spent.income = income;
+      budgetData.remaining.income = income;
+
+      budgetData.planned.left = income - budgetData.planned.spending;
+      budgetData.planned.cashflow = income - budgetData.planned.spending;
+
+      budgetData.spent.left = income - budgetData.spent.spending;
+      budgetData.spent.cashflow = income - budgetData.spent.spending;
+
+      budgetData.remaining.left = income - budgetData.remaining.spending;
+      budgetData.remaining.cashflow = income - budgetData.remaining.spending;
+
+      renderMode(currentMode);
     }
 
     function showScreen(id, button){
@@ -831,6 +903,9 @@
     }
 
     window.addEventListener('load', () => {
+      document.getElementById('incomeInput').value = budgetData.planned.income;
+      renderMode(currentMode);
+
       setTimeout(() => {
         document.getElementById('loadingScreen').classList.add('fade-out');
         document.getElementById('appShell').classList.add('ready');
