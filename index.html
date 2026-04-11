@@ -39,7 +39,7 @@
     .donut-center{position:relative;z-index:1;text-align:center;font-size:.8rem;font-weight:700;letter-spacing:.08em;color:#d9f3ef;line-height:1.1;}
     .chart-value{font-size:1.8rem;font-weight:800;margin-bottom:8px;}
     .chart-note{color:var(--muted);font-size:.9rem;line-height:1.35;}
-    .networth-card{padding:18px;margin-bottom:14px;}
+    .networth-card,.activity-card{padding:18px;margin-bottom:14px;}
     .networth-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;}
     .networth-label{color:#d2dae5;font-size:1rem;font-weight:600;}
     .status-pill{padding:9px 14px;border-radius:999px;font-size:.84rem;font-weight:700;color:#dffcf8;background:rgba(20,184,166,.12);border:1px solid rgba(45,212,191,.18);}
@@ -49,6 +49,17 @@
     .mini-stat{padding:12px 10px;border-radius:18px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);text-align:center;}
     .mini-stat-label{color:var(--muted);font-size:.75rem;margin-bottom:6px;}
     .mini-stat-value{font-size:1.25rem;font-weight:800;}
+    .activity-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;}
+    .activity-title{font-size:1rem;font-weight:700;color:#d2dae5;}
+    .activity-clear{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#d0d9e5;border-radius:999px;padding:8px 12px;font-weight:700;}
+    .activity-item{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+    .activity-item:last-child{border-bottom:none;}
+    .activity-main{font-size:.95rem;font-weight:700;margin-bottom:4px;}
+    .activity-meta{font-size:.82rem;color:var(--muted);line-height:1.35;}
+    .activity-amount{font-size:.98rem;font-weight:800;white-space:nowrap;}
+    .activity-amount.good{color:var(--good);}
+    .activity-amount.bad{color:var(--bad);}
+    .activity-empty{color:var(--muted);font-size:.92rem;line-height:1.4;}
     .top-row{display:flex;gap:10px;align-items:center;margin-bottom:14px;}
     .month-select{flex:1;height:52px;border-radius:16px;padding:0 14px;color:var(--text);font-size:15px;border:1px solid var(--border);background:rgba(15,23,42,.8);}
     .add-btn,.category-btn{border:none;border-radius:16px;background:linear-gradient(180deg,#2dd4bf,var(--accent));color:#041112;font-weight:700;box-shadow:0 12px 24px rgba(20,184,166,.22);}
@@ -132,6 +143,13 @@
           <div class="mini-stat"><div class="mini-stat-label">Invested</div><div class="mini-stat-value" id="overviewInvestedMini">$0</div></div>
           <div class="mini-stat"><div class="mini-stat-label">Cash Flow</div><div class="mini-stat-value" id="overviewCashFlow">$0</div></div>
         </div>
+      </div>
+      <div class="card activity-card">
+        <div class="activity-head">
+          <div class="activity-title">Recent Activity</div>
+          <button class="activity-clear" onclick="clearActivity()">Clear</button>
+        </div>
+        <div id="activityList"></div>
       </div>
     </section>
 
@@ -250,9 +268,10 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'fcc_budget_data_v2';
+    const STORAGE_KEY = 'fcc_budget_data_v3';
     const defaultBudgetData = {
       collapsedGroups:{},
+      activity:[],
       planned:{invested:0,incomes:[{name:'Primary Income',note:'Main monthly income',amount:4000}],investments:[{name:'Roth IRA',note:'Retirement account',amount:0},{name:'Brokerage',note:'Taxable investing',amount:0},{name:'Cash',note:'Available cash',amount:0},{name:'Crypto',note:'Digital assets',amount:0},{name:'Collectibles',note:'Cards and other items',amount:0}],items:{savings:[{name:'Emergency Fund',note:'Primary reserve target',amount:500}],housing:[{name:'Mortgage',note:'Main monthly housing cost',amount:1200}],transportation:[{name:'Gas',note:'Fuel and transport costs',amount:300}]}},
       spent:{invested:0,incomes:[{name:'Primary Income',note:'Main monthly income',amount:4000}],investments:[{name:'Roth IRA',note:'Retirement account',amount:0},{name:'Brokerage',note:'Taxable investing',amount:0},{name:'Cash',note:'Available cash',amount:0},{name:'Crypto',note:'Digital assets',amount:0},{name:'Collectibles',note:'Cards and other items',amount:0}],items:{savings:[{name:'Emergency Fund',note:'Primary reserve target',amount:180}],housing:[{name:'Mortgage',note:'Main monthly housing cost',amount:980}],transportation:[{name:'Gas',note:'Fuel and transport costs',amount:240}]}},
       remaining:{invested:0,incomes:[{name:'Primary Income',note:'Main monthly income',amount:4000}],investments:[{name:'Roth IRA',note:'Retirement account',amount:0},{name:'Brokerage',note:'Taxable investing',amount:0},{name:'Cash',note:'Available cash',amount:0},{name:'Crypto',note:'Digital assets',amount:0},{name:'Collectibles',note:'Cards and other items',amount:0}],items:{savings:[{name:'Emergency Fund',note:'Primary reserve target',amount:320}],housing:[{name:'Mortgage',note:'Main monthly housing cost',amount:220}],transportation:[{name:'Gas',note:'Fuel and transport costs',amount:60}]}}
@@ -275,6 +294,28 @@
     function getNetWorth(mode){ return getIncomeTotal(mode)+getInvestmentTotal(mode)-getSpendingTotal(mode); }
     function updateCategoryLabels(mode){ document.querySelectorAll('.category-tag').forEach(l=>l.textContent=mode.toUpperCase()); }
     function escapeHtml(str){ return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
+    function addActivity(type, title, meta, amount, sign){
+      if(!budgetData.activity) budgetData.activity = [];
+      budgetData.activity.unshift({type, title, meta, amount, sign, timestamp:new Date().toISOString()});
+      budgetData.activity = budgetData.activity.slice(0, 20);
+    }
+    function renderActivity(){
+      const list = document.getElementById('activityList');
+      if(!list) return;
+      const items = budgetData.activity || [];
+      if(!items.length){
+        list.innerHTML = '<div class="activity-empty">No recent activity yet. Add income, expenses, or investments and they will show here.</div>';
+        return;
+      }
+      list.innerHTML = items.map(item => {
+        const amountClass = item.sign === 'plus' ? 'good' : item.sign === 'minus' ? 'bad' : '';
+        const label = item.sign === 'plus' ? '+' : item.sign === 'minus' ? '-' : '';
+        const date = new Date(item.timestamp);
+        const when = isNaN(date) ? '' : date.toLocaleString();
+        return '<div class="activity-item"><div><div class="activity-main">'+escapeHtml(item.title)+'</div><div class="activity-meta">'+escapeHtml(item.meta || '')+(when ? ' • '+escapeHtml(when) : '')+'</div></div><div class="activity-amount '+amountClass+'">'+label+money(item.amount || 0)+'</div></div>';
+      }).join('');
+    }
+    function clearActivity(){ budgetData.activity = []; saveToStorage(); renderActivity(); }
 
     function updateOverview(mode){
       const income=getIncomeTotal(mode), spending=getSpendingTotal(mode), invested=getInvestmentTotal(mode), cashFlow=getCashFlow(mode), netWorth=getNetWorth(mode);
@@ -318,7 +359,7 @@
         noteDiv.onclick = ()=> renderEditableText(noteDiv, item.note || '', (val)=>{ budgetData[currentMode].incomes[index].note = val.trim(); saveToStorage(); renderMode(currentMode); });
         left.appendChild(nameDiv); left.appendChild(noteDiv);
         const amount = document.createElement('div'); amount.className = 'income-amount'; amount.textContent = money(item.amount);
-        amount.onclick = ()=>makeAmountEditable(amount, ()=>Number(budgetData[currentMode].incomes[index].amount||0), (val)=>{ budgetData[currentMode].incomes[index].amount = val; saveToStorage(); renderMode(currentMode); });
+        amount.onclick = ()=>makeAmountEditable(amount, ()=>Number(budgetData[currentMode].incomes[index].amount||0), (val)=>{ budgetData[currentMode].incomes[index].amount = val; addActivity('income','Income updated', budgetData[currentMode].incomes[index].name, val, 'plus'); saveToStorage(); renderMode(currentMode); });
         row.appendChild(left); row.appendChild(amount); container.appendChild(row);
       });
     }
@@ -334,7 +375,7 @@
         noteDiv.onclick = ()=> renderEditableText(noteDiv, item.note || '', (val)=>{ budgetData[currentMode].investments[index].note = val.trim(); saveToStorage(); renderMode(currentMode); });
         left.appendChild(nameDiv); left.appendChild(noteDiv);
         const amount = document.createElement('div'); amount.className = 'invest-amount'; amount.textContent = money(item.amount);
-        amount.onclick = ()=>makeAmountEditable(amount, ()=>Number(budgetData[currentMode].investments[index].amount||0), (val)=>{ budgetData[currentMode].investments[index].amount = val; saveToStorage(); renderMode(currentMode); });
+        amount.onclick = ()=>makeAmountEditable(amount, ()=>Number(budgetData[currentMode].investments[index].amount||0), (val)=>{ budgetData[currentMode].investments[index].amount = val; addActivity('investment','Investment updated', budgetData[currentMode].investments[index].name, val, 'plus'); saveToStorage(); renderMode(currentMode); });
         row.appendChild(left); row.appendChild(amount); container.appendChild(row);
       });
     }
@@ -395,7 +436,7 @@
         noteDiv.onclick = (e)=>{ e.stopPropagation(); renderEditableText(noteDiv, item.note || '', (val)=>{ budgetData[currentMode].items[group][index].note = val.trim(); saveToStorage(); renderMode(currentMode); }); };
         left.appendChild(titleDiv); left.appendChild(noteDiv);
         const amount=document.createElement('div'); amount.className='line-amount '+toneClass(item.amount); amount.textContent=money(item.amount);
-        amount.onclick=(e)=>{ e.stopPropagation(); makeAmountEditable(amount, ()=>Number(budgetData[currentMode].items[group][index].amount||0), (val)=>{ budgetData[currentMode].items[group][index].amount = val; saveToStorage(); renderMode(currentMode); }); };
+        amount.onclick=(e)=>{ e.stopPropagation(); makeAmountEditable(amount, ()=>Number(budgetData[currentMode].items[group][index].amount||0), (val)=>{ budgetData[currentMode].items[group][index].amount = val; addActivity('expense','Expense updated', budgetData[currentMode].items[group][index].name + ' • ' + titleCase(group.replace(/-/g,' ')), val, 'minus'); saveToStorage(); renderMode(currentMode); }); };
         row.appendChild(left); row.appendChild(amount); container.appendChild(row);
       });
     }
@@ -408,7 +449,7 @@
       document.getElementById('incomeValue').textContent=money(income);
       document.getElementById('cashFlowValue').textContent=money(cashflow);
       currentGroups().forEach(renderCategory);
-      updateCategoryLabels(mode); updateOverview(mode); populateExpenseCategories();
+      updateCategoryLabels(mode); updateOverview(mode); populateExpenseCategories(); renderActivity();
     }
 
     function setBudgetMode(event, mode){
@@ -422,7 +463,7 @@
     function cancelNewIncome(){ document.getElementById('incomePanel').style.display='none'; document.getElementById('new-income-name').value=''; document.getElementById('new-income-amount').value=''; }
     function saveNewIncome(){
       const name=document.getElementById('new-income-name').value.trim(); const amount=Number(document.getElementById('new-income-amount').value)||0;
-      if(!name) return; budgetData[currentMode].incomes.push({name, note:'', amount}); saveToStorage(); cancelNewIncome(); renderMode(currentMode);
+      if(!name) return; budgetData[currentMode].incomes.push({name, note:'', amount}); addActivity('income','Income added', name, amount, 'plus'); saveToStorage(); cancelNewIncome(); renderMode(currentMode);
     }
 
     function toggleInvestPanel(force){
@@ -433,14 +474,14 @@
     }
     function saveNewInvestment(){
       const name=document.getElementById('invest-name').value.trim(); const amount=Number(document.getElementById('invest-amount').value)||0;
-      if(!name) return; budgetData[currentMode].investments.push({name, note:'', amount}); saveToStorage(); toggleInvestPanel(false); renderMode(currentMode);
+      if(!name) return; budgetData[currentMode].investments.push({name, note:'', amount}); addActivity('investment','Investment account added', name, amount, 'plus'); saveToStorage(); toggleInvestPanel(false); renderMode(currentMode);
     }
 
     function showNewItem(group){ document.getElementById('panel-'+group).style.display='grid'; document.getElementById('new-name-'+group).focus(); }
     function cancelNewItem(group){ document.getElementById('panel-'+group).style.display='none'; document.getElementById('new-name-'+group).value=''; document.getElementById('new-amount-'+group).value=''; }
     function saveNewItem(group){
       const name=document.getElementById('new-name-'+group).value.trim(); const amount=Number(document.getElementById('new-amount-'+group).value)||0;
-      if(!name) return; budgetData[currentMode].items[group].push({name, note:'', amount}); saveToStorage(); cancelNewItem(group); renderMode(currentMode);
+      if(!name) return; budgetData[currentMode].items[group].push({name, note:'', amount}); addActivity('expense','Expense item added', name + ' • ' + titleCase(group.replace(/-/g,' ')), amount, 'minus'); saveToStorage(); cancelNewItem(group); renderMode(currentMode);
     }
 
     function toggleNewCategoryPanel(force){
@@ -453,7 +494,7 @@
       const raw = document.getElementById('new-category-name').value.trim(); if(!raw) return;
       const key = slugify(raw); if(!key) return;
       ['planned','spent','remaining'].forEach(mode => { if(!budgetData[mode].items[key]) budgetData[mode].items[key] = []; });
-      budgetData.collapsedGroups[key] = false; saveToStorage(); toggleNewCategoryPanel(false); renderMode(currentMode);
+      budgetData.collapsedGroups[key] = false; addActivity('category','Category added', titleCase(key.replace(/-/g,' ')), 0, 'neutral'); saveToStorage(); toggleNewCategoryPanel(false); renderMode(currentMode);
     }
 
     function toggleCategoryCollapse(group){ budgetData.collapsedGroups[group] = !budgetData.collapsedGroups[group]; saveToStorage(); renderMode(currentMode); }
@@ -477,13 +518,14 @@
       if(!group || !name) return;
       const fullNote = [note, date ? 'Due ' + date : ''].filter(Boolean).join(' • ');
       budgetData[currentMode].items[group].push({name, note:fullNote, amount});
+      addActivity('expense','Expense added', name + ' • ' + titleCase(group.replace(/-/g,' ')), amount, 'minus');
       saveToStorage(); toggleExpensePanel(false); renderMode(currentMode);
     }
 
     function resetBudget(){
       budgetData = JSON.parse(JSON.stringify(defaultBudgetData)); currentMode = 'planned';
       document.querySelectorAll('.toggle button').forEach((b,i)=> b.classList.toggle('active', i===0));
-      cancelNewIncome(); toggleNewCategoryPanel(false); toggleExpensePanel(false); toggleInvestPanel(false);
+      cancelNewIncome(); toggleNewCategoryPanel(false); toggleExpensePanel(false);
       saveToStorage(); renderMode(currentMode);
     }
 
@@ -499,7 +541,7 @@
         try {
           const parsed = JSON.parse(reader.result);
           if(parsed && parsed.planned && parsed.spent && parsed.remaining){
-            budgetData = parsed; if(!budgetData.collapsedGroups) budgetData.collapsedGroups = {};
+            budgetData = parsed; if(!budgetData.collapsedGroups) budgetData.collapsedGroups = {}; if(!budgetData.activity) budgetData.activity = [];
             saveToStorage(); renderMode(currentMode);
           }
         } catch(e) {}
@@ -518,7 +560,7 @@
     function openInvestFromOverview(){ const btns = document.querySelectorAll('.nav-btn'); showScreen('investScreen', btns[2]); }
 
     window.addEventListener('load',()=>{
-      loadFromStorage(); if(!budgetData.collapsedGroups) budgetData.collapsedGroups = {};
+      loadFromStorage(); if(!budgetData.collapsedGroups) budgetData.collapsedGroups = {}; if(!budgetData.activity) budgetData.activity = [];
       renderMode(currentMode);
       setTimeout(()=>{
         document.getElementById('loadingScreen').classList.add('fade-out');
