@@ -471,11 +471,29 @@
     .line-amount{
       font-size:1.2rem;
       font-weight:800;
+      cursor:pointer;
+      min-width:96px;
+      text-align:right;
     }
 
     .line-amount.good{ color:var(--good); }
     .line-amount.warn{ color:var(--warn); }
     .line-amount.bad{ color:var(--bad); }
+
+    .amount-edit{
+      width:110px;
+      height:42px;
+      border-radius:12px;
+      border:1px solid rgba(45,212,191,.28);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      text-align:right;
+      padding:0 12px;
+      font-size:1rem;
+      font-weight:700;
+      outline:none;
+      box-shadow:0 0 0 2px rgba(20,184,166,.08);
+    }
 
     .add-item-row{
       padding-top:12px;
@@ -682,14 +700,14 @@
       <div class="card category-card">
         <div class="category-head">
           <h4>Savings</h4>
-          <div class="category-tag">Category</div>
+          <div class="category-tag">PLANNED</div>
         </div>
         <div class="line-item">
           <div>
             <div class="line-title">Emergency Fund</div>
             <div class="line-sub">Primary reserve target</div>
           </div>
-          <div class="line-amount good" id="savingsAmount">$500</div>
+          <div class="line-amount good editable-amount" data-group="savings" data-mode="planned" id="savingsAmountPlanned">$500</div>
         </div>
         <div class="add-item-row">
           <button class="add-item-btn">Add Item</button>
@@ -699,14 +717,14 @@
       <div class="card category-card">
         <div class="category-head">
           <h4>Housing</h4>
-          <div class="category-tag">Category</div>
+          <div class="category-tag">PLANNED</div>
         </div>
         <div class="line-item">
           <div>
             <div class="line-title">Mortgage</div>
             <div class="line-sub">Main monthly housing cost</div>
           </div>
-          <div class="line-amount warn" id="housingAmount">$1,200</div>
+          <div class="line-amount warn editable-amount" data-group="housing" data-mode="planned" id="housingAmountPlanned">$1,200</div>
         </div>
         <div class="add-item-row">
           <button class="add-item-btn">Add Item</button>
@@ -716,14 +734,14 @@
       <div class="card category-card">
         <div class="category-head">
           <h4>Transportation</h4>
-          <div class="category-tag">Category</div>
+          <div class="category-tag">PLANNED</div>
         </div>
         <div class="line-item">
           <div>
             <div class="line-title">Gas</div>
             <div class="line-sub">Fuel and transport costs</div>
           </div>
-          <div class="line-amount warn" id="transportAmount">$300</div>
+          <div class="line-amount warn editable-amount" data-group="transport" data-mode="planned" id="transportAmountPlanned">$300</div>
         </div>
         <div class="add-item-row">
           <button class="add-item-btn">Add Item</button>
@@ -799,9 +817,9 @@
 
   <script>
     const budgetData = {
-      planned: { income: 4000, spending: 2000, invested: 500, left: 2000, cashflow: 2000, savings: 500, housing: 1200, transport: 300 },
-      spent: { income: 4000, spending: 1400, invested: 180, left: 2600, cashflow: 2600, savings: 180, housing: 980, transport: 240 },
-      remaining: { income: 4000, spending: 600, invested: 320, left: 3400, cashflow: 3400, savings: 320, housing: 220, transport: 60 }
+      planned: { income: 4000, invested: 0, savings: 500, housing: 1200, transport: 300 },
+      spent: { income: 4000, invested: 0, savings: 180, housing: 980, transport: 240 },
+      remaining: { income: 4000, invested: 0, savings: 320, housing: 220, transport: 60 }
     };
 
     let currentMode = 'planned';
@@ -817,55 +835,86 @@
     }
 
     function setClass(el, base, value){
-      el.className = base + ' ' + toneClass(value);
+      el.className = base + ' ' + toneClass(value) + ' editable-amount';
+      el.dataset.group = el.dataset.group || '';
+      el.dataset.mode = currentMode;
     }
 
-    function computeNetWorth(mode){
-      return budgetData[mode].income + budgetData[mode].invested - budgetData[mode].spending;
+    function getSpendingTotal(mode){
+      return Number(budgetData[mode].savings || 0) + Number(budgetData[mode].housing || 0) + Number(budgetData[mode].transport || 0);
+    }
+
+    function getCashFlow(mode){
+      return Number(budgetData[mode].income || 0) - getSpendingTotal(mode);
+    }
+
+    function getNetWorth(mode){
+      return Number(budgetData[mode].income || 0) + Number(budgetData[mode].invested || 0) - getSpendingTotal(mode);
+    }
+
+    function updateCategoryLabels(mode){
+      document.querySelectorAll('.category-tag').forEach(label => {
+        label.textContent = mode.toUpperCase();
+      });
     }
 
     function updateOverview(mode){
+      const spending = getSpendingTotal(mode);
+      const invested = Number(budgetData[mode].invested || 0);
+      const cashFlow = getCashFlow(mode);
+      const netWorth = getNetWorth(mode);
+
       document.getElementById('overviewIncome').textContent = money(budgetData[mode].income);
-      document.getElementById('overviewCashFlow').textContent = money(budgetData[mode].cashflow);
-      document.getElementById('overviewSpending').textContent = money(budgetData[mode].spending);
-      document.getElementById('overviewInvested').textContent = money(budgetData[mode].invested);
-      document.getElementById('overviewInvestedMini').textContent = money(budgetData[mode].invested);
-      document.getElementById('netWorthValue').textContent = money(computeNetWorth(mode));
+      document.getElementById('overviewCashFlow').textContent = money(cashFlow);
+      document.getElementById('overviewSpending').textContent = money(spending);
+      document.getElementById('overviewInvested').textContent = money(invested);
+      document.getElementById('overviewInvestedMini').textContent = money(invested);
+      document.getElementById('netWorthValue').textContent = money(netWorth);
 
       const pill = document.getElementById('statusPill');
-      if (budgetData[mode].cashflow > 1000) pill.textContent = 'On Track';
-      else if (budgetData[mode].cashflow > 0) pill.textContent = 'Watch Spending';
+      if (cashFlow > 1000) pill.textContent = 'On Track';
+      else if (cashFlow > 0) pill.textContent = 'Watch Spending';
       else pill.textContent = 'Over Budget';
     }
 
     function renderMode(mode){
-      const left = budgetData[mode].left;
-      const income = budgetData[mode].income;
-      const cashflow = budgetData[mode].cashflow;
-      const savings = budgetData[mode].savings;
-      const housing = budgetData[mode].housing;
-      const transport = budgetData[mode].transport;
+      const income = Number(budgetData[mode].income || 0);
+      const savings = Number(budgetData[mode].savings || 0);
+      const housing = Number(budgetData[mode].housing || 0);
+      const transport = Number(budgetData[mode].transport || 0);
+      const spending = getSpendingTotal(mode);
+      const left = income - spending;
+      const cashflow = income - spending;
 
       const leftEl = document.getElementById('leftToBudget');
       const incomeEl = document.getElementById('incomeValue');
       const cashEl = document.getElementById('cashFlowValue');
-      const savingsEl = document.getElementById('savingsAmount');
-      const housingEl = document.getElementById('housingAmount');
-      const transportEl = document.getElementById('transportAmount');
+
+      const savingsEl = document.getElementById('savingsAmountPlanned');
+      const housingEl = document.getElementById('housingAmountPlanned');
+      const transportEl = document.getElementById('transportAmountPlanned');
 
       leftEl.textContent = money(left);
       incomeEl.textContent = money(income);
       cashEl.textContent = money(cashflow);
+
       savingsEl.textContent = money(savings);
       housingEl.textContent = money(housing);
       transportEl.textContent = money(transport);
 
-      setClass(leftEl, 'budget-big', left);
+      savingsEl.dataset.mode = mode;
+      housingEl.dataset.mode = mode;
+      transportEl.dataset.mode = mode;
+
       setClass(savingsEl, 'line-amount', savings);
       setClass(housingEl, 'line-amount', housing);
       setClass(transportEl, 'line-amount', transport);
 
+      leftEl.className = 'budget-big ' + toneClass(left);
+
+      updateCategoryLabels(mode);
       updateOverview(mode);
+      bindEditableAmounts();
     }
 
     function setBudgetMode(event, mode){
@@ -877,21 +926,46 @@
 
     function updateIncome(value){
       const income = Number(value) || 0;
-
       budgetData.planned.income = income;
       budgetData.spent.income = income;
       budgetData.remaining.income = income;
-
-      budgetData.planned.left = income - budgetData.planned.spending;
-      budgetData.planned.cashflow = income - budgetData.planned.spending;
-
-      budgetData.spent.left = income - budgetData.spent.spending;
-      budgetData.spent.cashflow = income - budgetData.spent.spending;
-
-      budgetData.remaining.left = income - budgetData.remaining.spending;
-      budgetData.remaining.cashflow = income - budgetData.remaining.spending;
-
       renderMode(currentMode);
+    }
+
+    function makeEditable(el){
+      if (el.querySelector('input')) return;
+
+      const group = el.dataset.group;
+      const mode = el.dataset.mode || currentMode;
+      const currentValue = Number(budgetData[mode][group] || 0);
+
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.step = '0.01';
+      input.className = 'amount-edit';
+      input.value = currentValue;
+
+      input.addEventListener('blur', () => saveEditable(el, input, group, mode));
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') input.blur();
+      });
+
+      el.textContent = '';
+      el.appendChild(input);
+      input.focus();
+      input.select();
+    }
+
+    function saveEditable(wrapper, input, group, mode){
+      const value = Number(input.value) || 0;
+      budgetData[mode][group] = value;
+      renderMode(currentMode);
+    }
+
+    function bindEditableAmounts(){
+      document.querySelectorAll('.editable-amount').forEach(el => {
+        el.onclick = () => makeEditable(el);
+      });
     }
 
     function showScreen(id, button){
