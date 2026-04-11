@@ -679,7 +679,7 @@
   <div id="loadingScreen"><div class="card splash-panel"><div class="brand-mark">FCC</div><div class="splash-title">Financial Command Center</div><div class="splash-subtitle">Loading your budget, assets, and planning dashboard.</div><div class="loading-track"><span></span></div></div></div>
   <div class="app-shell" id="appShell">
     <section id="overviewScreen" class="screen active">
-      <div class="header"><div class="eyebrow">Overview</div><h1>Financial Command Center</h1><p>A cleaner dashboard for spending, investing, and net worth at a glance.</p></div>
+      <div class="header"><div class="eyebrow">Overview</div><h1>Financial Command Center</h1><p>A cleaner dashboard for spending, investing, and net worth at a glance.</p><div style="margin-top:12px;display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(20,184,166,.12);border:1px solid rgba(45,212,191,.18);font-size:.8rem;font-weight:800;color:#dffcf8;">Updated build • UI cleanup + activity</div></div>
       <div class="overview-grid">
         <div class="card chart-card" onclick="openBudgetFromOverview()"><h3>Spending<br>Breakdown</h3><div class="donut spending"><div class="donut-center">SPENDING</div></div><div class="chart-value" id="overviewSpending">$0</div><div class="chart-note">Tap to jump to Budget</div></div>
         <div class="card chart-card" onclick="openInvestFromOverview()"><h3>Portfolio<br>Breakdown</h3><div class="donut portfolio"><div class="donut-center">PORTFOLIO</div></div><div class="chart-value" id="overviewInvested">$0</div><div class="chart-note">Tap to jump to Invest</div></div>
@@ -704,7 +704,7 @@
     </section>
 
     <section id="budgetScreen" class="screen">
-      <div class="header"><div class="eyebrow">Budget</div><h2>Monthly Budget</h2><p>Use one clean workflow for planned, spent, and remaining.</p></div>
+      <div class="header"><div class="eyebrow">Budget</div><h2>Monthly Budget</h2><p>Use one clean workflow for planned, spent, and remaining.</p><div style="margin-top:12px;color:#94a3b8;font-size:.85rem;">Includes: add expense, custom categories, recent activity, and cleaner UI</div></div>
       <div class="top-row">
         <select class="month-select"><option>April 2026</option><option>May 2026</option><option>June 2026</option></select>
         <button class="add-btn" aria-label="Add expense" onclick="toggleExpensePanel()">+</button>
@@ -798,6 +798,7 @@
       <div class="header"><div class="eyebrow">Settings</div><h2>Settings</h2><p>Backups, imports, and a few basics for how the app behaves.</p></div>
       <div class="card settings-card">
         <h4>Data</h4>
+        <div style="margin-bottom:10px;display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(20,184,166,.12);border:1px solid rgba(45,212,191,.18);font-size:.8rem;font-weight:800;color:#dffcf8;">Build check: v-clean-2</div>
         <div class="settings-note">Your budget auto-saves in this browser. Export a backup to keep a copy somewhere safe.</div>
         <div class="settings-actions">
           <button class="settings-action" onclick="exportBackup()">Export Backup</button>
