@@ -171,6 +171,15 @@
       width:18px;height:18px;
     }
 
+    
+    .pinned-note{
+      color:#7dd3c7;
+      font-size:.74rem;
+      font-weight:800;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      margin-top:6px;
+    }
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -190,7 +199,7 @@
         <div class="eyebrow">Overview</div>
         <h1>Financial Command Center</h1>
         <p>Your money dashboard for spending, investing, and cash flow at a glance.</p>
-        <div class="status-pill" style="display:inline-flex;margin-top:12px;">Stable rebuild • loading fix</div>
+        <div class="status-pill" style="display:inline-flex;margin-top:12px;">Pinned-only build • stable</div>
       </div>
       <div class="top-row">
         <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
@@ -274,7 +283,7 @@
 
       <div class="card budget-card">
         <div class="section-head">
-          <div class="section-title label-with-info">Monthly Income <span class="info-dot" onclick="toggleTip('tipBudgetIncome')">i</span></div>
+          <div><div class="section-title label-with-info">Monthly Income <span class="info-dot" onclick="toggleTip('tipBudgetIncome')">i</span></div><div class="pinned-note">Pinned</div></div>
           <button class="add-btn pill" onclick="togglePanel('incomePanelWrap')">+ Income</button>
         </div>
         <div id="tipBudgetIncome" class="tooltip-card hidden-tip">This is where you enter the actual income sources and amounts for the selected month. Cash Flow uses schedules to decide when they hit.</div>
@@ -301,7 +310,7 @@
       </div>
 
       <div class="card budget-card">
-        <h4 class="label-with-info">Left to Budget <span class="info-dot" onclick="toggleTip('tipLeftToBudget')">i</span></h4><div id="tipLeftToBudget" class="tooltip-card hidden-tip">This is your income minus the expenses shown in the current budget mode.</div>
+        <h4 class="label-with-info">Left to Budget <span class="info-dot" onclick="toggleTip('tipLeftToBudget')">i</span></h4><div id="tipLeftToBudget" class="tooltip-card hidden-tip">This is your income minus the expenses shown in the current budget mode.</div><div class="pinned-note">Pinned</div>
         <div class="budget-big good" id="leftToBudget">$0</div>
       </div>
 
@@ -326,46 +335,11 @@
         <select class="month-select" id="cashflowMonth" onchange="changeMonth(this.value)"></select>
       </div>
       <div class="card forecast-card">
-        <div class="section-head"><div class="section-title label-with-info">Forecast Summary <span class="info-dot" onclick="toggleTip('tipForecastSummary')">i</span></div></div>
-        <div id="tipForecastSummary" class="tooltip-card hidden-tip">This uses your starting balance, recurring bills, and income schedule to estimate how your money moves through the month.</div>
-        <div class="forecast-grid">
-          <div class="forecast-stat"><div class="forecast-label">Current Balance</div><div class="forecast-value" id="cfCurrentBalance">$0</div></div>
-          <div class="forecast-stat"><div class="forecast-label">Lowest Balance</div><div class="forecast-value warn" id="cfLowestBalance">$0</div></div>
-          <div class="forecast-stat"><div class="forecast-label">Safe to Spend</div><div class="forecast-value good" id="cfSafeToSpend">$0</div></div>
-        </div>
-      </div>
-
+        <div class="section-head"><div><div class="section-title label-with-info">Cash Flow Accounts <span class="info-dot" onclick="toggleTip('tipStartingBalance')">i</span></div><div class="pinned-note">Pinned</div></div>
       <div class="card forecast-card">
-        <div class="section-head"><div class="section-title label-with-info">Cash Flow Accounts <span class="info-dot" onclick="toggleTip('tipStartingBalance')">i</span></div><button class="add-btn pill" onclick="togglePanel('accountPanelWrap')">+ Account</button></div>
-        <div id="tipStartingBalance" class="tooltip-card hidden-tip">Add checking, savings, and high-yield accounts here. Only accounts marked “Include in Cash Flow” are used for your forecast starting balance.</div>
-        <div class="helper-copy" style="margin-bottom:12px;">Checking accounts are usually included. Savings and HYSA are usually tracked, but excluded from monthly cash flow unless the user chooses otherwise.</div>
-        <div id="accountsList"></div>
-        <div id="accountPanelWrap" style="display:none;">
-          <div class="stack" style="margin-top:12px;">
-            <div class="two-col">
-              <input class="small-input" id="accountName" placeholder="Account name" />
-              <input class="small-input" id="accountBalance" type="number" step="0.01" placeholder="Balance" />
-            </div>
-            <div class="two-col">
-              <select class="form-select" id="accountType">
-                <option value="checking">Checking</option>
-                <option value="savings">Savings</option>
-                <option value="high-yield-savings">High-Yield Savings</option>
-                <option value="cash">Cash</option>
-              </select>
-              <select class="form-select" id="accountInclude">
-                <option value="true">Include in Cash Flow</option>
-                <option value="false">Exclude from Cash Flow</option>
-              </select>
-            </div>
-            <div class="actions">
-              <button class="save-btn pill" onclick="addAccount()">Save Account</button>
-              <button class="secondary-btn pill" onclick="togglePanel('accountPanelWrap', false)">Cancel</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
+        <div class="section-head"><div><div class="section-title label-with-info">Income Schedule <span class="info-dot" onclick="toggleTip('tipIncomeSchedule')">i</span></div><div class="pinned-note">Pinned</div></div>
+      <div class="card forecast-card">
+        <div class="section-head"><div class="section-title label-with-info">Forecast Summary <span class="info-dot" onclick="toggleTip('tipForecastSummary')">i</span></div></div>
       <div class="card forecast-card">
         <div class="section-head"><div class="section-title label-with-info">Recurring Bills <span class="info-dot" onclick="toggleTip('tipBills')">i</span></div><button class="add-btn pill" onclick="togglePanel('billPanelWrap')">+ Bill</button></div>
         <div id="tipBills" class="tooltip-card hidden-tip">Use this for bills that repeat monthly, quarterly, or yearly. These feed into your cash flow forecast automatically.</div>
@@ -397,43 +371,9 @@
               <button class="secondary-btn pill" onclick="togglePanel('billPanelWrap', false)">Cancel</button>
             </div>
           </div>
-        </div>
-      </div>
-
-      
-      <div class="card forecast-card">
-        <div class="section-head"><div class="section-title label-with-info">Income Schedule <span class="info-dot" onclick="toggleTip('tipIncomeSchedule')">i</span></div><button class="add-btn pill" onclick="togglePanel('schedulePanelWrap')">+ Schedule</button></div>
-        <div id="tipIncomeSchedule" class="tooltip-card hidden-tip">Pick an income source from Budget and tell the app when it lands. This controls timing only, not the amount.</div>
-        <div class="helper-copy" style="margin-bottom:10px;">Income amounts are managed in Budget → Monthly Income.</div>
-        <div id="scheduleList"></div>
-        <div id="schedulePanelWrap" style="display:none;">
-          <div class="helper-copy" style="margin-bottom:10px;">Pick an income source from Budget, then set the day and frequency. No need to enter the amount again here.</div>
-          <div class="stack" style="margin-top:12px;">
-            <select class="form-select" id="scheduleIncomeId"></select>
-            <div class="two-col">
-              <input class="small-input" id="scheduleDay" type="number" min="1" max="31" placeholder="Day of month" />
-              <select class="form-select" id="scheduleFrequency">
-                <option value="weekly">Weekly</option>
-                <option value="biweekly">Biweekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="quarterly">Quarterly</option>
-                <option value="yearly">Yearly</option>
-              </select>
-            </div>
-            <div class="actions">
-              <button class="save-btn pill" onclick="addIncomeSchedule()">Save Schedule</button>
-              <button class="secondary-btn pill" onclick="togglePanel('schedulePanelWrap', false)">Cancel</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="card forecast-card">
         <div class="section-head"><div class="section-title label-with-info">Timeline <span class="info-dot" onclick="toggleTip('tipTimeline')">i</span></div></div>
-        <div id="tipTimeline" class="tooltip-card hidden-tip">This shows the order of bills and income hits across the month, plus the running balance after each event.</div>
-        <div id="timelineList"></div>
-      </div>
-    </section>
+</section>
 
     <section id="investScreen" class="screen">
       <div class="header">
