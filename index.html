@@ -208,6 +208,24 @@
       font-size:.92rem;
     }
 
+    
+    .chart-card{
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      min-height:520px;
+    }
+    .chart-note{
+      min-height:74px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      text-align:center;
+    }
+    .tap-link{
+      margin-top:auto !important;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -241,14 +259,14 @@
 <div class="chart-note" id="overviewSpendingNote">Add budget items to see your top categories</div>
 <div class="tap-link">Open Budget</div>
 </div>
-<div class="card chart-card" onclick="openScreen('investScreen', 3)">
-<h3>Portfolio Breakdown</h3>
+<div class="card chart-card" onclick="openScreen('assetsScreen', 4)">
+<h3>Asset Mix</h3>
 <div class="donut portfolio" id="overviewInvestDonut">
 <div class="donut-center" id="overviewInvestCenter">PORTFOLIO</div>
 </div>
 <div class="chart-value" id="overviewInvested">$0</div>
-<div class="chart-note" id="overviewInvestNote">Track investments and assets to build your mix</div>
-<div class="tap-link">Open Invest</div>
+<div class="chart-note" id="overviewInvestNote">Largest mix: Cash</div>
+<div class="tap-link">Open Assets</div>
 </div>
 </div>
 <div class="card networth-card">
