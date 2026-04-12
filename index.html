@@ -188,6 +188,42 @@
     .asset-meta{color:var(--muted);font-size:.8rem;line-height:1.35;margin-top:4px;}
     .receipt-note{color:var(--muted);font-size:.82rem;line-height:1.4;margin-top:8px;}
     .small-stack{display:grid;gap:8px;}
+    
+    .insight-card{
+      padding:18px;
+      margin-bottom:14px;
+    }
+    .insight-grid{
+      display:grid;
+      gap:10px;
+    }
+    .insight-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      padding:12px 0;
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+    .insight-row:last-child{border-bottom:none;}
+    .insight-label{
+      color:#dfe8f3;
+      font-size:.9rem;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .insight-sub{
+      color:var(--muted);
+      font-size:.82rem;
+      line-height:1.35;
+    }
+    .insight-value{
+      font-size:.95rem;
+      font-weight:800;
+      text-align:right;
+      white-space:nowrap;
+    }
+    
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -237,6 +273,34 @@
 <div class="mini-stat"><div class="mini-stat-label">Income</div><div class="mini-stat-value" id="overviewIncome">$0</div></div>
 <div class="mini-stat"><div class="mini-stat-label">Invested</div><div class="mini-stat-value" id="overviewInvestedMini">$0</div></div>
 <div class="mini-stat"><div class="mini-stat-label">Cash Flow</div><div class="mini-stat-value" id="overviewCashFlow">$0</div></div>
+</div>
+</div><div class="card insight-card" id="smartInsightsCard">
+<div class="section-head">
+<div class="section-title label-with-info">Smart Insights <span class="info-dot" onclick="toggleTip('tipSmartInsights')">i</span></div>
+</div>
+<div class="tooltip-card hidden-tip" id="tipSmartInsights">These highlight the most useful overview signals right now: biggest expense, next bill, and next scheduled income hit.</div>
+<div class="insight-grid">
+<div class="insight-row">
+<div>
+<div class="insight-label">Biggest Expense</div>
+<div class="insight-sub" id="insightBiggestExpenseSub">No expenses yet.</div>
+</div>
+<div class="insight-value" id="insightBiggestExpenseValue">$0</div>
+</div>
+<div class="insight-row">
+<div>
+<div class="insight-label">Next Bill</div>
+<div class="insight-sub" id="insightNextBillSub">No recurring bills scheduled.</div>
+</div>
+<div class="insight-value bad" id="insightNextBillValue">$0</div>
+</div>
+<div class="insight-row">
+<div>
+<div class="insight-label">Next Income Hit</div>
+<div class="insight-sub" id="insightNextIncomeSub">No income schedule set.</div>
+</div>
+<div class="insight-value good" id="insightNextIncomeValue">$0</div>
+</div>
 </div>
 </div>
 <div class="card activity-card">
@@ -767,6 +831,34 @@
       return { income, expenses, cashFlow, leftToBudget: cashFlow };
     }
 
+    
+    function getBiggestExpenseItem(monthKey=data.currentMonth){
+      const month = getMonthData(monthKey);
+      const items = [];
+      Object.keys(month.categories || {}).forEach(cat => {
+        (month.categories[cat] || []).forEach(item => {
+          items.push({
+            name: item.name,
+            amount: Number(item.amount || 0),
+            category: titleCase(cat)
+          });
+        });
+      });
+      items.sort((a,b) => b.amount - a.amount);
+      return items[0] || null;
+    }
+
+    function getNextBill(monthKey=data.currentMonth){
+      const bills = getRecurringBillEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date));
+      return bills[0] || null;
+    }
+
+    function getNextIncomeHit(monthKey=data.currentMonth){
+      const hits = getIncomeScheduleEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date));
+      return hits[0] || null;
+    }
+
+
     function renderOverview(){
       const monthKey = data.currentMonth;
       const manualIncome = getManualIncomeTotal(monthKey);
@@ -785,6 +877,47 @@
       document.getElementById('overviewCashFlow').textContent = money(cashFlow);
       document.getElementById('netWorthValue').textContent = money(netWorth);
       document.getElementById('statusPill').textContent = cashFlow > 1000 ? 'On Track' : cashFlow > 0 ? 'Watch Spending' : 'Over Budget';
+      const biggestExpense = getBiggestExpenseItem(monthKey);
+      const nextBill = getNextBill(monthKey);
+      const nextIncome = getNextIncomeHit(monthKey);
+
+      const biggestSub = document.getElementById('insightBiggestExpenseSub');
+      const biggestVal = document.getElementById('insightBiggestExpenseValue');
+      const billSub = document.getElementById('insightNextBillSub');
+      const billVal = document.getElementById('insightNextBillValue');
+      const incomeSub = document.getElementById('insightNextIncomeSub');
+      const incomeVal = document.getElementById('insightNextIncomeValue');
+
+      if(biggestSub && biggestVal){
+        if(biggestExpense){
+          biggestSub.textContent = biggestExpense.name + ' • ' + biggestExpense.category;
+          biggestVal.textContent = money(biggestExpense.amount);
+        } else {
+          biggestSub.textContent = 'No expenses yet.';
+          biggestVal.textContent = '$0';
+        }
+      }
+
+      if(billSub && billVal){
+        if(nextBill){
+          billSub.textContent = nextBill.name + ' • due ' + nextBill.date;
+          billVal.textContent = money(nextBill.amount);
+        } else {
+          billSub.textContent = 'No recurring bills scheduled.';
+          billVal.textContent = '$0';
+        }
+      }
+
+      if(incomeSub && incomeVal){
+        if(nextIncome){
+          incomeSub.textContent = nextIncome.name + ' • ' + nextIncome.date;
+          incomeVal.textContent = money(nextIncome.amount);
+        } else {
+          incomeSub.textContent = 'No income schedule set.';
+          incomeVal.textContent = '$0';
+        }
+      }
+
       renderActivity();
     }
 
