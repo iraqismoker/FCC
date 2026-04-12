@@ -136,7 +136,7 @@
     .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
     .actions{display:flex;gap:8px;flex-wrap:wrap;}
 
-    .bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:440px;padding:12px 10px 16px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;background:linear-gradient(180deg, rgba(5,8,22,.72), rgba(5,8,22,.96));backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.05);z-index:100;}
+    .bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:440px;padding:12px 10px 16px;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;background:linear-gradient(180deg, rgba(5,8,22,.72), rgba(5,8,22,.96));backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.05);z-index:100;}
     .nav-btn{border:none;min-height:56px;border-radius:18px;background:transparent;color:#8fa0b4;padding:10px 4px 12px;cursor:pointer;}
     .nav-btn.active{color:#effffc;background:rgba(20,184,166,.12);border:1px solid rgba(45,212,191,.16);}
     .nav-icon{display:block;font-size:1.02rem;margin-bottom:4px;}
@@ -185,6 +185,9 @@
       border:none;border-radius:10px;padding:6px 10px;font-size:.8rem;font-weight:800;cursor:pointer;
       background:rgba(255,255,255,.05);color:#dbe7f1;border:1px solid rgba(255,255,255,.08);
     }
+    .asset-meta{color:var(--muted);font-size:.8rem;line-height:1.35;margin-top:4px;}
+    .receipt-note{color:var(--muted);font-size:.82rem;line-height:1.4;margin-top:8px;}
+    .small-stack{display:grid;gap:8px;}
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -203,7 +206,7 @@
 <div class="eyebrow">Overview</div>
 <h1>Financial Command Center</h1>
 <p>Your money dashboard for spending, investing, and cash flow at a glance.</p>
-<div class="status-pill" style="display:inline-flex;margin-top:12px;">Pinned + reorder build • fixed</div>
+<div class="status-pill" style="display:inline-flex;margin-top:12px;">Assets build • stable</div>
 </div>
 <div class="top-row">
 <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
@@ -441,7 +444,49 @@
 </div>
 </div>
 </section>
-<section class="screen" id="settingsScreen">
+<section class="screen" id="assetsScreen">
+<div class="header">
+<div class="eyebrow">Assets</div>
+<h2>Assets</h2>
+<p>Track valuables and property that should count toward net worth, including serial numbers and receipt references.</p>
+</div>
+<div class="top-row">
+<select class="month-select" id="assetsMonth" onchange="changeMonth(this.value)"></select>
+</div>
+<div class="card invest-card">
+<div class="section-head">
+<div class="section-title label-with-info">Asset Total <span class="info-dot" onclick="toggleTip('tipAssetsTotal')">i</span></div>
+</div>
+<div class="tooltip-card hidden-tip" id="tipAssetsTotal">Assets here add into net worth. Use this for collectibles, electronics, tools, jewelry, furniture, and other items you want tracked.</div>
+<div class="budget-big good" id="assetsTotal">$0</div>
+</div>
+<div class="card invest-card">
+<div class="section-head">
+<div class="section-title label-with-info">Tracked Assets <span class="info-dot" onclick="toggleTip('tipTrackedAssets')">i</span></div>
+<button class="add-btn pill" onclick="togglePanel('assetPanelWrap')">+ Asset</button>
+</div>
+<div class="tooltip-card hidden-tip" id="tipTrackedAssets">Receipt files are not permanently stored in a browser-only app. This version saves the receipt file name or reference so you know what belongs to the asset.</div>
+<div id="assetsList"></div>
+<div id="assetPanelWrap" style="display:none;">
+<div class="stack" style="margin-top:12px;">
+<div class="two-col">
+<input class="small-input" id="assetName" placeholder="Asset name"/>
+<input class="small-input" id="assetAmount" placeholder="Estimated value" step="0.01" type="number"/>
+</div>
+<input class="small-input" id="assetSerial" placeholder="Serial number"/>
+<div class="small-stack">
+<input class="small-input" id="assetReceiptName" placeholder="Receipt name or reference (optional)"/>
+<input class="small-input" id="assetReceipt" type="file"/>
+<div class="receipt-note">You can pick a receipt file here for reference, but only the file name is saved in this browser-based version.</div>
+</div>
+<div class="actions">
+<button class="save-btn pill" onclick="addAsset()">Save Asset</button>
+<button class="secondary-btn pill" onclick="togglePanel('assetPanelWrap', false)">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+</section><section class="screen" id="settingsScreen">
 <div class="header">
 <div class="eyebrow">Settings</div>
 <h2>Settings</h2>
@@ -462,13 +507,7 @@
 </div>
 </div>
 </section>
-<nav class="bottom-nav">
-<button class="nav-btn active" onclick="openScreen('overviewScreen', 0)"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
-<button class="nav-btn" onclick="openScreen('budgetScreen', 1)"><span class="nav-icon">💸</span><span class="nav-label">Budget</span></button>
-<button class="nav-btn" onclick="openScreen('cashflowScreen', 2)"><span class="nav-icon">📅</span><span class="nav-label">Cash Flow</span></button>
-<button class="nav-btn" onclick="openScreen('investScreen', 3)"><span class="nav-icon">📈</span><span class="nav-label">Invest</span></button>
-<button class="nav-btn" onclick="openScreen('settingsScreen', 4)"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
-</nav>
+<nav class="bottom-nav"><button class="nav-btn active" onclick="openScreen('overviewScreen', 0)"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button><button class="nav-btn" onclick="openScreen('budgetScreen', 1)"><span class="nav-icon">💸</span><span class="nav-label">Budget</span></button><button class="nav-btn" onclick="openScreen('cashflowScreen', 2)"><span class="nav-icon">📅</span><span class="nav-label">Cash Flow</span></button><button class="nav-btn" onclick="openScreen('investScreen', 3)"><span class="nav-icon">📈</span><span class="nav-label">Invest</span></button><button class="nav-btn" onclick="openScreen('assetsScreen', 4)"><span class="nav-icon">📦</span><span class="nav-label">Assets</span></button><button class="nav-btn" onclick="openScreen('settingsScreen', 5)"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button></nav>
 </div>
 <script>
     const STORAGE_KEY = 'fcc_full_v2';
@@ -478,7 +517,7 @@
     function createEmptyMonth(){
       const categories = {};
       DEFAULT_CATEGORIES.forEach(key => categories[key] = []);
-      return { startingBalance: 0, accounts: [], incomes: [], investments: [], categories };
+      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories };
     }
     function getCurrentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
     function defaultData(){
@@ -536,6 +575,7 @@
         }
       }
       if(!data.months[key].accounts) data.months[key].accounts = [];
+      if(!data.months[key].assets) data.months[key].assets = [];
       DEFAULT_CATEGORIES.forEach(cat => { if(!data.months[key].categories[cat]) data.months[key].categories[cat] = []; });
       return data.months[key];
     }
@@ -555,7 +595,7 @@
       return [...new Set(keys)];
     }
     function syncMonthSelectors(){
-      const ids = ['overviewMonth','budgetMonth','cashflowMonth','investMonth'];
+      const ids = ['overviewMonth','budgetMonth','cashflowMonth','investMonth','assetsMonth'];
       const opts = monthOptions(data.currentMonth).map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
       ids.forEach(id => {
         const el = document.getElementById(id);
@@ -623,6 +663,7 @@
     function getCategoryNames(key=data.currentMonth){ return Object.keys(getMonthData(key).categories); }
     function getManualIncomeTotal(key=data.currentMonth){ return getMonthData(key).incomes.reduce((s, i) => s + Number(i.amount || 0), 0); }
     function getInvestmentTotal(key=data.currentMonth){ return getMonthData(key).investments.reduce((s, i) => s + Number(i.amount || 0), 0); }
+    function getAssetTotal(key=data.currentMonth){ return (getMonthData(key).assets || []).reduce((s, i) => s + Number(i.amount || 0), 0); }
     function getCategoryTotal(cat, key=data.currentMonth){ return (getMonthData(key).categories[cat] || []).reduce((s, i) => s + Number(i.amount || 0), 0); }
     function getManualExpenseTotal(key=data.currentMonth){ return getCategoryNames(key).reduce((sum, cat) => sum + getCategoryTotal(cat, key), 0); }
 
@@ -730,10 +771,11 @@
       const monthKey = data.currentMonth;
       const manualIncome = getManualIncomeTotal(monthKey);
       const investmentTotal = getInvestmentTotal(monthKey);
+      const assetTotal = getAssetTotal(monthKey);
       const manualExpenses = getManualExpenseTotal(monthKey);
       const recurringBills = getRecurringBillEvents(monthKey).reduce((s, e) => s + Number(e.amount || 0), 0);
       const totalAccounts = getAllAccountBalance(monthKey);
-      const netWorth = totalAccounts + investmentTotal - (manualExpenses + recurringBills);
+      const netWorth = totalAccounts + investmentTotal + assetTotal - (manualExpenses + recurringBills);
       const cashFlow = manualIncome - (manualExpenses + recurringBills);
 
       document.getElementById('overviewIncome').textContent = money(manualIncome);
@@ -871,6 +913,100 @@
 
     function renderIncomeSection(){ renderRowList('incomeList', getMonthData().incomes, 'income'); }
     function renderInvestSection(){ document.getElementById('portfolioTotal').textContent = money(getInvestmentTotal()); renderRowList('investList', getMonthData().investments, 'investment'); }
+    function renderAssetsSection(){
+      const month = getMonthData();
+      const wrap = document.getElementById('assetsList');
+      const totalEl = document.getElementById('assetsTotal');
+      if(totalEl) totalEl.textContent = money(getAssetTotal());
+      const items = month.assets || [];
+      if(!wrap) return;
+      if(!items.length){
+        wrap.innerHTML = `<div class="empty-state">No assets yet. Add valuables, collectibles, electronics, tools, or anything else you want counted in net worth.</div>`;
+        return;
+      }
+      wrap.innerHTML = items.map(item => `
+        <div class="row-item">
+          <div style="flex:1;min-width:0;">
+            <div class="row-name editable-copy" data-asset-name="${item.id}">${escapeHtml(item.name)}</div>
+            <div class="row-note editable-copy" data-asset-serial="${item.id}">Serial: ${escapeHtml(item.serial || 'None')}</div>
+            <div class="asset-meta editable-copy" data-asset-receipt="${item.id}">Receipt: ${escapeHtml(item.receiptName || 'None saved')}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="row-amount" data-asset-amount="${item.id}">${money(item.amount)}</div>
+            <button class="danger-btn pill" data-asset-delete="${item.id}">Delete</button>
+          </div>
+        </div>
+      `).join('');
+
+      wrap.querySelectorAll('[data-asset-name]').forEach(el => {
+        const id = el.dataset.assetName;
+        el.onclick = () => {
+          const item = month.assets.find(a => a.id === id);
+          makeTextEditable(el, item.name, val => {
+            item.name = val.trim() || item.name;
+            saveData(); render();
+          });
+        };
+      });
+      wrap.querySelectorAll('[data-asset-serial]').forEach(el => {
+        const id = el.dataset.assetSerial;
+        el.onclick = () => {
+          const item = month.assets.find(a => a.id === id);
+          makeTextEditable(el, item.serial || '', val => {
+            item.serial = val.trim();
+            saveData(); render();
+          });
+        };
+      });
+      wrap.querySelectorAll('[data-asset-receipt]').forEach(el => {
+        const id = el.dataset.assetReceipt;
+        el.onclick = () => {
+          const item = month.assets.find(a => a.id === id);
+          makeTextEditable(el, item.receiptName || '', val => {
+            item.receiptName = val.trim();
+            saveData(); render();
+          });
+        };
+      });
+      wrap.querySelectorAll('[data-asset-amount]').forEach(el => {
+        const id = el.dataset.assetAmount;
+        el.onclick = () => {
+          const item = month.assets.find(a => a.id === id);
+          makeAmountEditable(el, item.amount, val => {
+            item.amount = Number(val || 0);
+            addActivity('asset', 'Asset value updated', item.name, item.amount, 'plus');
+            saveData(); render();
+          });
+        };
+      });
+      wrap.querySelectorAll('[data-asset-delete]').forEach(el => {
+        const id = el.dataset.assetDelete;
+        el.onclick = () => {
+          const item = month.assets.find(a => a.id === id);
+          month.assets = month.assets.filter(a => a.id !== id);
+          if(item) addActivity('asset', 'Asset deleted', item.name, item.amount, 'minus');
+          saveData(); render();
+        };
+      });
+    }
+
+    function addAsset(){
+      const name = document.getElementById('assetName').value.trim();
+      const amount = Number(document.getElementById('assetAmount').value || 0);
+      const serial = document.getElementById('assetSerial').value.trim();
+      const receiptFile = document.getElementById('assetReceipt').files[0];
+      const receiptName = receiptFile ? receiptFile.name : (document.getElementById('assetReceiptName').value.trim() || '');
+      if(!name) return;
+      getMonthData().assets.push({id: uid('asset'), name, amount, serial, receiptName});
+      addActivity('asset', 'Asset added', name, amount, 'plus');
+      document.getElementById('assetName').value = '';
+      document.getElementById('assetAmount').value = '';
+      document.getElementById('assetSerial').value = '';
+      document.getElementById('assetReceipt').value = '';
+      document.getElementById('assetReceiptName').value = '';
+      togglePanel('assetPanelWrap', false);
+      saveData(); render();
+    }
 
     function renderBudgetCategories(){
       const wrap = document.getElementById('categoriesWrap');
@@ -1242,6 +1378,7 @@
       renderBudgetCategories();
       renderCashFlow();
       renderInvestSection();
+      renderAssetsSection();
     }
 
     window.addEventListener('load', () => {
