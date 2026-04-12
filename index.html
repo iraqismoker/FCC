@@ -321,6 +321,8 @@
             <div class="three-col">
               <input class="small-input" id="billDueDay" type="number" min="1" max="31" placeholder="Day" />
               <select class="form-select" id="billFrequency">
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Biweekly</option>
                 <option value="monthly">Monthly</option>
                 <option value="quarterly">Quarterly</option>
                 <option value="yearly">Yearly</option>
@@ -352,6 +354,8 @@
             <div class="two-col">
               <input class="small-input" id="income_scheduleDay" type="number" min="1" max="31" placeholder="Day of month" />
               <select class="form-select" id="income_scheduleFrequency">
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Biweekly</option>
                 <option value="monthly">Monthly</option>
                 <option value="quarterly">Quarterly</option>
                 <option value="yearly">Yearly</option>
@@ -553,7 +557,7 @@
 
     function occursThisMonth(item, monthKey){
       const month = Number(monthKey.split('-')[1]);
-      if(item.frequency === 'monthly') return true;
+      if(item.frequency === 'weekly' || item.frequency === 'biweekly' || item.frequency === 'monthly') return true;
       if(item.frequency === 'quarterly') return ((month - 1) % 3) === 0;
       if(item.frequency === 'yearly') return month === 1;
       return false;
