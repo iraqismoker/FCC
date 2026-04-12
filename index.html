@@ -157,6 +157,20 @@
       color:var(--muted);font-size:.88rem;line-height:1.4;
     }
     .hidden-tip{display:none;}
+    
+    .account-chip{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:6px 10px;border-radius:999px;font-size:.72rem;font-weight:800;
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#dbe7f1;
+    }
+    .account-include{
+      display:inline-flex;align-items:center;gap:8px;
+      color:var(--muted);font-size:.82rem;font-weight:700;
+    }
+    .account-toggle{
+      width:18px;height:18px;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -321,12 +335,33 @@
       </div>
 
       <div class="card forecast-card">
-        <div class="section-head"><div class="section-title label-with-info">Starting Balance <span class="info-dot" onclick="toggleTip('tipStartingBalance')">i</span></div></div>
-        <div id="tipStartingBalance" class="tooltip-card hidden-tip">This should be the money you have available at the start of the selected month, usually your checking balance. It powers the forecast.</div>
-        <div class="stack">
-          <div class="helper-copy" style="margin-bottom:0;">This auto-rolls from the previous month, but you can override it anytime.</div>
-          <input class="small-input" id="startingBalanceInput" type="number" step="0.01" placeholder="Starting balance for this month" />
-          <div class="actions"><button class="save-btn pill" onclick="saveStartingBalance()">Save Balance</button></div>
+        <div class="section-head"><div class="section-title label-with-info">Cash Flow Accounts <span class="info-dot" onclick="toggleTip('tipStartingBalance')">i</span></div><button class="add-btn pill" onclick="togglePanel('accountPanelWrap')">+ Account</button></div>
+        <div id="tipStartingBalance" class="tooltip-card hidden-tip">Add checking, savings, and high-yield accounts here. Only accounts marked “Include in Cash Flow” are used for your forecast starting balance.</div>
+        <div class="helper-copy" style="margin-bottom:12px;">Checking accounts are usually included. Savings and HYSA are usually tracked, but excluded from monthly cash flow unless the user chooses otherwise.</div>
+        <div id="accountsList"></div>
+        <div id="accountPanelWrap" style="display:none;">
+          <div class="stack" style="margin-top:12px;">
+            <div class="two-col">
+              <input class="small-input" id="accountName" placeholder="Account name" />
+              <input class="small-input" id="accountBalance" type="number" step="0.01" placeholder="Balance" />
+            </div>
+            <div class="two-col">
+              <select class="form-select" id="accountType">
+                <option value="checking">Checking</option>
+                <option value="savings">Savings</option>
+                <option value="high-yield-savings">High-Yield Savings</option>
+                <option value="cash">Cash</option>
+              </select>
+              <select class="form-select" id="accountInclude">
+                <option value="true">Include in Cash Flow</option>
+                <option value="false">Exclude from Cash Flow</option>
+              </select>
+            </div>
+            <div class="actions">
+              <button class="save-btn pill" onclick="addAccount()">Save Account</button>
+              <button class="secondary-btn pill" onclick="togglePanel('accountPanelWrap', false)">Cancel</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -466,11 +501,13 @@
     function createEmptyMonth(){
       const categories = {};
       DEFAULT_CATEGORIES.forEach(key => categories[key] = []);
-      return { startingBalance: 0, incomes: [], investments: [], categories };
+      return { startingBalance: 0, accounts: [], incomes: [], investments: [], categories };
     }
     function getCurrentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
     function defaultData(){
       const m = createEmptyMonth();
+      m.accounts.push({id: uid('acct'), name:'Primary Checking', type:'checking', balance:1800, includeInCashFlow:true});
+      m.accounts.push({id: uid('acct'), name:'Emergency Savings', type:'savings', balance:5000, includeInCashFlow:false});
       m.incomes.push({id: uid('inc'), name:'Primary Income', note:'Main monthly income', amount:4000});
       m.categories['fixed-bills'].push({id: uid('exp'), name:'Mortgage', note:'Main monthly housing cost', amount:1200});
       m.categories['fixed-bills'].push({id: uid('exp'), name:'Utilities', note:'Core household bills', amount:220});
@@ -514,9 +551,14 @@
         data.months[key] = createEmptyMonth();
         const prevKey = getPreviousMonthKey(key);
         if(data.months[prevKey]){
-          data.months[key].startingBalance = getEndOfMonthBalance(prevKey);
+          const prevMonth = data.months[prevKey];
+          data.months[key].accounts = (prevMonth.accounts || []).map(a => ({
+            ...a,
+            balance: a.includeInCashFlow ? getEndOfMonthBalance(prevKey) / Math.max(1, (prevMonth.accounts || []).filter(x => x.includeInCashFlow).length) : Number(a.balance || 0)
+          }));
         }
       }
+      if(!data.months[key].accounts) data.months[key].accounts = [];
       DEFAULT_CATEGORIES.forEach(cat => { if(!data.months[key].categories[cat]) data.months[key].categories[cat] = []; });
       return data.months[key];
     }
@@ -620,18 +662,33 @@
       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
     }
 
+    function getCashFlowAccountBalance(monthKey=data.currentMonth){
+      const month = getMonthData(monthKey);
+      return (month.accounts || []).filter(a => a.includeInCashFlow).reduce((sum, a) => sum + Number(a.balance || 0), 0);
+    }
+
+    function getExcludedAccountBalance(monthKey=data.currentMonth){
+      const month = getMonthData(monthKey);
+      return (month.accounts || []).filter(a => !a.includeInCashFlow).reduce((sum, a) => sum + Number(a.balance || 0), 0);
+    }
+
+    function getAllAccountBalance(monthKey=data.currentMonth){
+      const month = getMonthData(monthKey);
+      return (month.accounts || []).reduce((sum, a) => sum + Number(a.balance || 0), 0);
+    }
+
     function getEndOfMonthBalance(monthKey){
       const forecast = getForecast(monthKey);
       if(forecast.timeline.length){
         return forecast.timeline[forecast.timeline.length - 1].runningBalance;
       }
-      return Number(getMonthData(monthKey).startingBalance || 0);
+      return getCashFlowAccountBalance(monthKey);
     }
 
 
     function getForecast(monthKey=data.currentMonth){
       const month = getMonthData(monthKey);
-      const startingBalance = Number(month.startingBalance || 0);
+      const startingBalance = getCashFlowAccountBalance(monthKey);
       const events = [
         ...getRecurringPaycheckEvents(monthKey).map(e => ({...e, signed:Number(e.amount || 0), type:'income_schedule'})),
         ...getRecurringBillEvents(monthKey).map(e => ({...e, signed:-Number(e.amount || 0), type:'bill'}))
@@ -675,7 +732,8 @@
       const investmentTotal = getInvestmentTotal(monthKey);
       const manualExpenses = getManualExpenseTotal(monthKey);
       const recurringBills = getRecurringBillEvents(monthKey).reduce((s, e) => s + Number(e.amount || 0), 0);
-      const netWorth = manualIncome + investmentTotal - (manualExpenses + recurringBills);
+      const totalAccounts = getAllAccountBalance(monthKey);
+      const netWorth = totalAccounts + investmentTotal - (manualExpenses + recurringBills);
       const cashFlow = manualIncome - (manualExpenses + recurringBills);
 
       document.getElementById('overviewIncome').textContent = money(manualIncome);
@@ -889,7 +947,7 @@
 
     function renderCashFlow(){
       const month = getMonthData();
-      document.getElementById('startingBalanceInput').value = month.startingBalance || 0;
+      renderAccounts();
       const forecast = getForecast();
       document.getElementById('cfCurrentBalance').textContent = money(forecast.startingBalance);
       document.getElementById('cfLowestBalance').textContent = money(forecast.lowestBalance);
@@ -1029,10 +1087,100 @@
       saveData(); render();
     }
 
-    function saveStartingBalance(){
-      const value = Number(document.getElementById('startingBalanceInput').value || 0);
-      getMonthData().startingBalance = value;
-      addActivity('forecast', 'Starting balance updated', monthLabel(data.currentMonth), value, 'plus');
+    function renderAccounts(){
+      const month = getMonthData();
+      const wrap = document.getElementById('accountsList');
+      const accounts = month.accounts || [];
+      const included = accounts.filter(a => a.includeInCashFlow);
+      const excluded = accounts.filter(a => !a.includeInCashFlow);
+
+      let html = '';
+      if(included.length){
+        html += '<div class="helper-copy" style="margin-bottom:8px;">Included in Cash Flow</div>';
+        html += included.map(a => `
+          <div class="row-item">
+            <div style="flex:1;min-width:0;">
+              <div class="row-name editable-copy" data-acct-name="${a.id}">${escapeHtml(a.name)}</div>
+              <div class="row-note">${escapeHtml(titleCase(a.type))}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="row-amount" data-acct-balance="${a.id}">${money(a.balance)}</div>
+              <button class="danger-btn pill" data-acct-delete="${a.id}">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      }
+      html += `<div class="card" style="padding:14px 16px;margin:10px 0 12px;border-radius:18px;">
+        <div class="section-title" style="margin-bottom:6px;">Cash Flow Balance</div>
+        <div class="budget-big good">${money(getCashFlowAccountBalance())}</div>
+      </div>`;
+      if(excluded.length){
+        html += '<div class="helper-copy" style="margin:8px 0;">Tracked, but not used in Cash Flow</div>';
+        html += excluded.map(a => `
+          <div class="row-item">
+            <div style="flex:1;min-width:0;">
+              <div class="row-name editable-copy" data-acct-name="${a.id}">${escapeHtml(a.name)}</div>
+              <div class="row-note">${escapeHtml(titleCase(a.type))}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="row-amount" data-acct-balance="${a.id}">${money(a.balance)}</div>
+              <button class="danger-btn pill" data-acct-delete="${a.id}">Delete</button>
+            </div>
+          </div>
+        `).join('');
+      }
+      if(!accounts.length){
+        html = '<div class="empty-state">No accounts yet. Add checking, savings, or HYSA accounts here to power the forecast.</div>';
+      }
+
+      wrap.innerHTML = html;
+
+      wrap.querySelectorAll('[data-acct-name]').forEach(el => {
+        const id = el.dataset.acctName;
+        el.onclick = () => {
+          const acct = getMonthData().accounts.find(a => a.id === id);
+          makeTextEditable(el, acct.name, val => {
+            acct.name = val.trim() || acct.name;
+            saveData(); render();
+          });
+        };
+      });
+      wrap.querySelectorAll('[data-acct-balance]').forEach(el => {
+        const id = el.dataset.acctBalance;
+        el.onclick = () => {
+          const acct = getMonthData().accounts.find(a => a.id === id);
+          makeAmountEditable(el, acct.balance, val => {
+            acct.balance = Number(val || 0);
+            addActivity('account', 'Account balance updated', acct.name, acct.balance, acct.includeInCashFlow ? 'plus' : 'neutral');
+            saveData(); render();
+          });
+        };
+      });
+      wrap.querySelectorAll('[data-acct-delete]').forEach(el => {
+        const id = el.dataset.acctDelete;
+        el.onclick = () => {
+          const month = getMonthData();
+          const acct = month.accounts.find(a => a.id === id);
+          month.accounts = month.accounts.filter(a => a.id !== id);
+          if(acct) addActivity('account', 'Account deleted', acct.name, acct.balance, 'minus');
+          saveData(); render();
+        };
+      });
+    }
+
+    function addAccount(){
+      const name = document.getElementById('accountName').value.trim();
+      const balance = Number(document.getElementById('accountBalance').value || 0);
+      const type = document.getElementById('accountType').value;
+      const includeInCashFlow = document.getElementById('accountInclude').value === 'true';
+      if(!name) return;
+      getMonthData().accounts.push({id: uid('acct'), name, balance, type, includeInCashFlow});
+      addActivity('account', 'Account added', `${name} • ${titleCase(type)}`, balance, includeInCashFlow ? 'plus' : 'neutral');
+      document.getElementById('accountName').value = '';
+      document.getElementById('accountBalance').value = '';
+      document.getElementById('accountType').value = 'checking';
+      document.getElementById('accountInclude').value = 'true';
+      togglePanel('accountPanelWrap', false);
       saveData(); render();
     }
 
