@@ -195,9 +195,6 @@
       margin-top:6px;
     }
     
-    .header{
-      margin-bottom:20px;
-    }
     .overview-top-note{
       display:flex;
       align-items:center;
@@ -212,111 +209,34 @@
       font-size:.86rem;
       line-height:1.35;
     }
-    .overview-grid{
-      gap:14px;
-      margin-bottom:14px;
-    }
-    .chart-card{
-      min-height:auto;
-      padding:18px 16px 16px;
-      text-align:left;
-    }
-    .chart-card-head{
-      margin-bottom:14px;
-    }
+    .overview-grid{gap:14px;margin-bottom:14px;}
+    .chart-card{min-height:auto;padding:18px 16px 16px;text-align:left;}
+    .chart-card-head{margin-bottom:14px;}
     .chart-kicker{
-      color:#7dd3c7;
-      font-size:.72rem;
-      font-weight:800;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      margin-bottom:6px;
+      color:#7dd3c7;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;
     }
     .chart-title{
-      font-size:1.15rem;
-      font-weight:800;
-      line-height:1.1;
-      letter-spacing:-.02em;
-      margin-bottom:6px;
+      font-size:1.15rem;font-weight:800;line-height:1.1;letter-spacing:-.02em;margin-bottom:6px;
     }
     .chart-subtitle{
-      color:var(--muted);
-      font-size:.84rem;
-      line-height:1.35;
-      min-height:34px;
+      color:var(--muted);font-size:.84rem;line-height:1.35;min-height:34px;
     }
-    .chart-visual{
-      display:flex;
-      justify-content:center;
-      margin:8px 0 14px;
-    }
-    .donut{
-      width:118px;
-      height:118px;
-      margin:0;
-    }
-    .donut-center{
-      font-size:.72rem;
-      line-height:1.08;
-      letter-spacing:.06em;
-      padding:0 12px;
-    }
-    .overview-total{
-      font-size:1.5rem;
-      font-weight:800;
-      letter-spacing:-.03em;
-      margin-bottom:10px;
-    }
-    .legend-list{
-      display:grid;
-      gap:8px;
-    }
+    .chart-visual{display:flex;justify-content:center;margin:8px 0 14px;}
+    .donut{width:118px;height:118px;margin:0;}
+    .donut::after{inset:24%;}
+    .donut-center{font-size:.72rem;line-height:1.08;letter-spacing:.06em;padding:0 10px;}
+    .overview-total{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:10px;}
+    .legend-list{display:grid;gap:8px;}
     .legend-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:8px 10px;
-      border-radius:14px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.04);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:8px 10px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);
     }
-    .legend-left{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      min-width:0;
-    }
-    .legend-dot{
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      flex:0 0 auto;
-    }
+    .legend-left{display:flex;align-items:center;gap:8px;min-width:0;}
+    .legend-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto;}
     .legend-name{
-      font-size:.84rem;
-      color:#dfe8f3;
-      font-weight:700;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      font-size:.84rem;color:#dfe8f3;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     }
-    .legend-value{
-      font-size:.82rem;
-      color:var(--muted);
-      font-weight:700;
-      white-space:nowrap;
-    }
-    .networth-card,.activity-card,.invest-card,.settings-card,.forecast-card,.budget-card{
-      padding:18px;
-      margin-bottom:14px;
-    }
-    .networth-copy,.settings-note,.helper-copy{
-      margin-bottom:16px;
-    }
-    .mini-stats,.forecast-grid,.info-grid,.overview-grid{
-      align-items:stretch;
-    }
+    .legend-value{font-size:.82rem;color:var(--muted);font-weight:700;white-space:nowrap;}
 
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
@@ -335,11 +255,11 @@
 <div class="header">
 <div class="eyebrow">Overview</div>
 <h1>Financial Command Center</h1>
-<p>A cleaner snapshot of spending, cash flow, investments, and net worth.</p>
+<p>A cleaner snapshot of spending, wealth mix, and net worth at a glance.</p>
 <div class="status-pill" style="display:inline-flex;margin-top:12px;">Assets build • stable</div>
 <div class="overview-top-note">
-<span>Designed to surface your most important numbers first.</span>
-<span class="status-pill" style="margin:0;">Overview refresh</span>
+<span>Overview now uses real categories and tracked values.</span>
+<span class="status-pill" style="margin:0;">Overview data refresh</span>
 </div></div>
 <div class="top-row">
 <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
@@ -349,55 +269,29 @@
 <div class="chart-card-head">
 <div class="chart-kicker">Overview</div>
 <div class="chart-title">Top Spending</div>
-<div class="chart-subtitle">Your biggest budget buckets at a glance.</div>
+<div class="chart-subtitle" id="spendingInsightText">Your highest budget categories this month.</div>
 </div>
 <div class="chart-visual">
-<div class="donut spending">
-<div class="donut-center">TOP<br/>SPEND</div>
+<div class="donut spending" id="spendingDonut">
+<div class="donut-center" id="spendingDonutCenter">TOP<br/>SPEND</div>
 </div>
 </div>
 <div class="overview-total" id="overviewSpending">$0</div>
-<div class="legend-list">
-<div class="legend-row">
-<div class="legend-left"><span class="legend-dot" style="background:#14b8a6;"></span><span class="legend-name">Housing</span></div>
-<div class="legend-value">Core bills</div>
-</div>
-<div class="legend-row">
-<div class="legend-left"><span class="legend-dot" style="background:#3b82f6;"></span><span class="legend-name">Daily Spending</span></div>
-<div class="legend-value">Flexible spend</div>
-</div>
-<div class="legend-row">
-<div class="legend-left"><span class="legend-dot" style="background:#f59e0b;"></span><span class="legend-name">Other</span></div>
-<div class="legend-value">Everything else</div>
-</div>
-</div>
+<div class="legend-list" id="spendingLegend"></div>
 </div>
 <div class="card chart-card" onclick="openScreen('assetsScreen', 4)">
 <div class="chart-card-head">
 <div class="chart-kicker">Overview</div>
 <div class="chart-title">Asset Mix</div>
-<div class="chart-subtitle">How your tracked wealth is currently split.</div>
+<div class="chart-subtitle" id="assetMixInsightText">Cash, investments, and tracked assets.</div>
 </div>
 <div class="chart-visual">
-<div class="donut portfolio">
-<div class="donut-center">ASSET<br/>MIX</div>
+<div class="donut portfolio" id="assetMixDonut">
+<div class="donut-center" id="assetMixDonutCenter">ASSET<br/>MIX</div>
 </div>
 </div>
 <div class="overview-total" id="overviewInvested">$0</div>
-<div class="legend-list">
-<div class="legend-row">
-<div class="legend-left"><span class="legend-dot" style="background:#22c55e;"></span><span class="legend-name">Investments</span></div>
-<div class="legend-value">Market value</div>
-</div>
-<div class="legend-row">
-<div class="legend-left"><span class="legend-dot" style="background:#2dd4bf;"></span><span class="legend-name">Cash</span></div>
-<div class="legend-value">Available funds</div>
-</div>
-<div class="legend-row">
-<div class="legend-left"><span class="legend-dot" style="background:#8b5cf6;"></span><span class="legend-name">Assets</span></div>
-<div class="legend-value">Physical items</div>
-</div>
-</div>
+<div class="legend-list" id="assetMixLegend"></div>
 </div>
 </div>
 <div class="card networth-card">
@@ -952,6 +846,74 @@
       return { income, expenses, cashFlow, leftToBudget: cashFlow };
     }
 
+    
+    function getTopSpendingData(monthKey=data.currentMonth){
+      const names = getCategoryNames(monthKey);
+      const rows = names.map(cat => ({
+        key: cat,
+        label: titleCase(cat),
+        amount: getCategoryTotal(cat, monthKey)
+      })).filter(r => r.amount > 0).sort((a,b) => b.amount - a.amount);
+      const total = rows.reduce((sum, r) => sum + r.amount, 0);
+      return { rows, total };
+    }
+
+    function getAssetMixData(monthKey=data.currentMonth){
+      const cash = getAllAccountBalance(monthKey);
+      const investments = getInvestmentTotal(monthKey);
+      const assets = getAssetTotal(monthKey);
+      const rows = [
+        { label: 'Cash', amount: cash, color: '#2dd4bf' },
+        { label: 'Investments', amount: investments, color: '#22c55e' },
+        { label: 'Assets', amount: assets, color: '#8b5cf6' }
+      ].filter(r => r.amount > 0);
+      const total = rows.reduce((sum, r) => sum + r.amount, 0);
+      return { rows, total };
+    }
+
+    function renderLegendRows(containerId, rows, palette){
+      const container = document.getElementById(containerId);
+      if(!container) return;
+      if(!rows.length){
+        container.innerHTML = '<div class="empty-state">No data yet.</div>';
+        return;
+      }
+      container.innerHTML = rows.slice(0,3).map((row, idx) => `
+        <div class="legend-row">
+          <div class="legend-left">
+            <span class="legend-dot" style="background:${row.color || palette[idx % palette.length]};"></span>
+            <span class="legend-name">${escapeHtml(row.label)}</span>
+          </div>
+          <div class="legend-value">${money(row.amount)}</div>
+        </div>
+      `).join('');
+    }
+
+    function applyDynamicDonut(elId, rows, fallbackClass, palette){
+      const el = document.getElementById(elId);
+      if(!el) return;
+      if(!rows.length){
+        el.style.background = '';
+        return;
+      }
+      const total = rows.reduce((sum, r) => sum + r.amount, 0) || 1;
+      let start = 0;
+      const segments = rows.slice(0,3).map((row, idx) => {
+        const pct = (row.amount / total) * 100;
+        const end = start + pct;
+        const color = row.color || palette[idx % palette.length];
+        const seg = `${color} ${start}% ${end}%`;
+        start = end;
+        return seg;
+      });
+      if(start < 100){
+        segments.push(`rgba(255,255,255,.06) ${start}% 100%`);
+      }
+      el.style.background = `conic-gradient(${segments.join(', ')})`;
+      el.classList.remove(fallbackClass);
+    }
+
+
     function renderOverview(){
       const monthKey = data.currentMonth;
       const manualIncome = getManualIncomeTotal(monthKey);
@@ -960,16 +922,50 @@
       const manualExpenses = getManualExpenseTotal(monthKey);
       const recurringBills = getRecurringBillEvents(monthKey).reduce((s, e) => s + Number(e.amount || 0), 0);
       const totalAccounts = getAllAccountBalance(monthKey);
-      const netWorth = totalAccounts + investmentTotal + assetTotal - (manualExpenses + recurringBills);
-      const cashFlow = manualIncome - (manualExpenses + recurringBills);
+      const totalSpending = manualExpenses + recurringBills;
+      const netWorth = totalAccounts + investmentTotal + assetTotal - totalSpending;
+      const cashFlow = manualIncome - totalSpending;
+
+      const spendData = getTopSpendingData(monthKey);
+      const assetMix = getAssetMixData(monthKey);
 
       document.getElementById('overviewIncome').textContent = money(manualIncome);
-      document.getElementById('overviewInvested').textContent = money(investmentTotal + assetTotal + totalAccounts);
+      document.getElementById('overviewInvested').textContent = money(assetMix.total);
       document.getElementById('overviewInvestedMini').textContent = money(investmentTotal);
-      document.getElementById('overviewSpending').textContent = money(manualExpenses + recurringBills);
+      document.getElementById('overviewSpending').textContent = money(totalSpending);
       document.getElementById('overviewCashFlow').textContent = money(cashFlow);
       document.getElementById('netWorthValue').textContent = money(netWorth);
       document.getElementById('statusPill').textContent = cashFlow > 1000 ? 'On Track' : cashFlow > 0 ? 'Watch Spending' : 'Over Budget';
+
+      const spendTop = spendData.rows[0];
+      const spendCenter = document.getElementById('spendingDonutCenter');
+      const spendInsight = document.getElementById('spendingInsightText');
+      if(spendTop){
+        const pct = spendData.total > 0 ? Math.round((spendTop.amount / spendData.total) * 100) : 0;
+        if(spendCenter) spendCenter.innerHTML = pct + '%<br>' + escapeHtml(spendTop.label.toUpperCase());
+        if(spendInsight) spendInsight.textContent = spendTop.label + ' is your largest spending category this month.';
+      } else {
+        if(spendCenter) spendCenter.innerHTML = 'NO<br>SPEND';
+        if(spendInsight) spendInsight.textContent = 'Add budget items to see your top categories.';
+      }
+
+      const assetTop = assetMix.rows.sort((a,b) => b.amount - a.amount)[0];
+      const assetCenter = document.getElementById('assetMixDonutCenter');
+      const assetInsight = document.getElementById('assetMixInsightText');
+      if(assetTop){
+        const pct = assetMix.total > 0 ? Math.round((assetTop.amount / assetMix.total) * 100) : 0;
+        if(assetCenter) assetCenter.innerHTML = pct + '%<br>' + escapeHtml(assetTop.label.toUpperCase());
+        if(assetInsight) assetInsight.textContent = assetTop.label + ' is the largest part of your tracked wealth mix.';
+      } else {
+        if(assetCenter) assetCenter.innerHTML = 'NO<br>DATA';
+        if(assetInsight) assetInsight.textContent = 'Add accounts, investments, or assets to build your mix.';
+      }
+
+      renderLegendRows('spendingLegend', spendData.rows.map((r, i) => ({...r, color: ['#14b8a6','#3b82f6','#f59e0b'][i]})), ['#14b8a6','#3b82f6','#f59e0b']);
+      renderLegendRows('assetMixLegend', assetMix.rows, ['#2dd4bf','#22c55e','#8b5cf6']);
+      applyDynamicDonut('spendingDonut', spendData.rows.map((r, i) => ({...r, color: ['#14b8a6','#3b82f6','#f59e0b'][i]})), 'spending', ['#14b8a6','#3b82f6','#f59e0b']);
+      applyDynamicDonut('assetMixDonut', assetMix.rows, 'portfolio', ['#2dd4bf','#22c55e','#8b5cf6']);
+
       renderActivity();
     }
 
