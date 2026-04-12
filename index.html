@@ -194,6 +194,130 @@
       background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#dbe7f1;
       margin-top:6px;
     }
+    
+    .header{
+      margin-bottom:20px;
+    }
+    .overview-top-note{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      color:var(--muted);
+      font-size:.86rem;
+      line-height:1.35;
+    }
+    .overview-grid{
+      gap:14px;
+      margin-bottom:14px;
+    }
+    .chart-card{
+      min-height:auto;
+      padding:18px 16px 16px;
+      text-align:left;
+    }
+    .chart-card-head{
+      margin-bottom:14px;
+    }
+    .chart-kicker{
+      color:#7dd3c7;
+      font-size:.72rem;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    .chart-title{
+      font-size:1.15rem;
+      font-weight:800;
+      line-height:1.1;
+      letter-spacing:-.02em;
+      margin-bottom:6px;
+    }
+    .chart-subtitle{
+      color:var(--muted);
+      font-size:.84rem;
+      line-height:1.35;
+      min-height:34px;
+    }
+    .chart-visual{
+      display:flex;
+      justify-content:center;
+      margin:8px 0 14px;
+    }
+    .donut{
+      width:118px;
+      height:118px;
+      margin:0;
+    }
+    .donut-center{
+      font-size:.72rem;
+      line-height:1.08;
+      letter-spacing:.06em;
+      padding:0 12px;
+    }
+    .overview-total{
+      font-size:1.5rem;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:10px;
+    }
+    .legend-list{
+      display:grid;
+      gap:8px;
+    }
+    .legend-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:8px 10px;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.04);
+    }
+    .legend-left{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+    }
+    .legend-dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      flex:0 0 auto;
+    }
+    .legend-name{
+      font-size:.84rem;
+      color:#dfe8f3;
+      font-weight:700;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .legend-value{
+      font-size:.82rem;
+      color:var(--muted);
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .networth-card,.activity-card,.invest-card,.settings-card,.forecast-card,.budget-card{
+      padding:18px;
+      margin-bottom:14px;
+    }
+    .networth-copy,.settings-note,.helper-copy{
+      margin-bottom:16px;
+    }
+    .mini-stats,.forecast-grid,.info-grid,.overview-grid{
+      align-items:stretch;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -211,24 +335,69 @@
 <div class="header">
 <div class="eyebrow">Overview</div>
 <h1>Financial Command Center</h1>
-<p>Your money dashboard for spending, investing, and cash flow at a glance.</p>
+<p>A cleaner snapshot of spending, cash flow, investments, and net worth.</p>
 <div class="status-pill" style="display:inline-flex;margin-top:12px;">Assets build • stable</div>
-</div>
+<div class="overview-top-note">
+<span>Designed to surface your most important numbers first.</span>
+<span class="status-pill" style="margin:0;">Overview refresh</span>
+</div></div>
 <div class="top-row">
 <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
 </div>
 <div class="overview-grid">
 <div class="card chart-card" onclick="openScreen('budgetScreen', 1)">
-<h3>Spending<br/>Breakdown</h3>
-<div class="donut spending"><div class="donut-center">SPENDING</div></div>
-<div class="chart-value" id="overviewSpending">$0</div>
-<div class="chart-note">Tap to open Budget</div>
+<div class="chart-card-head">
+<div class="chart-kicker">Overview</div>
+<div class="chart-title">Top Spending</div>
+<div class="chart-subtitle">Your biggest budget buckets at a glance.</div>
 </div>
-<div class="card chart-card" onclick="openScreen('investScreen', 3)">
-<h3>Portfolio<br/>Breakdown</h3>
-<div class="donut portfolio"><div class="donut-center">PORTFOLIO</div></div>
-<div class="chart-value" id="overviewInvested">$0</div>
-<div class="chart-note">Tap to open Invest</div>
+<div class="chart-visual">
+<div class="donut spending">
+<div class="donut-center">TOP<br/>SPEND</div>
+</div>
+</div>
+<div class="overview-total" id="overviewSpending">$0</div>
+<div class="legend-list">
+<div class="legend-row">
+<div class="legend-left"><span class="legend-dot" style="background:#14b8a6;"></span><span class="legend-name">Housing</span></div>
+<div class="legend-value">Core bills</div>
+</div>
+<div class="legend-row">
+<div class="legend-left"><span class="legend-dot" style="background:#3b82f6;"></span><span class="legend-name">Daily Spending</span></div>
+<div class="legend-value">Flexible spend</div>
+</div>
+<div class="legend-row">
+<div class="legend-left"><span class="legend-dot" style="background:#f59e0b;"></span><span class="legend-name">Other</span></div>
+<div class="legend-value">Everything else</div>
+</div>
+</div>
+</div>
+<div class="card chart-card" onclick="openScreen('assetsScreen', 4)">
+<div class="chart-card-head">
+<div class="chart-kicker">Overview</div>
+<div class="chart-title">Asset Mix</div>
+<div class="chart-subtitle">How your tracked wealth is currently split.</div>
+</div>
+<div class="chart-visual">
+<div class="donut portfolio">
+<div class="donut-center">ASSET<br/>MIX</div>
+</div>
+</div>
+<div class="overview-total" id="overviewInvested">$0</div>
+<div class="legend-list">
+<div class="legend-row">
+<div class="legend-left"><span class="legend-dot" style="background:#22c55e;"></span><span class="legend-name">Investments</span></div>
+<div class="legend-value">Market value</div>
+</div>
+<div class="legend-row">
+<div class="legend-left"><span class="legend-dot" style="background:#2dd4bf;"></span><span class="legend-name">Cash</span></div>
+<div class="legend-value">Available funds</div>
+</div>
+<div class="legend-row">
+<div class="legend-left"><span class="legend-dot" style="background:#8b5cf6;"></span><span class="legend-name">Assets</span></div>
+<div class="legend-value">Physical items</div>
+</div>
+</div>
 </div>
 </div>
 <div class="card networth-card">
@@ -795,7 +964,7 @@
       const cashFlow = manualIncome - (manualExpenses + recurringBills);
 
       document.getElementById('overviewIncome').textContent = money(manualIncome);
-      document.getElementById('overviewInvested').textContent = money(investmentTotal);
+      document.getElementById('overviewInvested').textContent = money(investmentTotal + assetTotal + totalAccounts);
       document.getElementById('overviewInvestedMini').textContent = money(investmentTotal);
       document.getElementById('overviewSpending').textContent = money(manualExpenses + recurringBills);
       document.getElementById('overviewCashFlow').textContent = money(cashFlow);
