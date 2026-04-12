@@ -5,42 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Financial Command Center</title>
   <style>
-
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     :root{
       --bg1:#050816;
       --bg2:#0b1220;
-      --panelTop:rgba(18,26,44,.88);
-      --panelBottom:rgba(10,16,30,.92);
-      --border:rgba(255,255,255,.08);
-      --borderSoft:rgba(255,255,255,.05);
+      --panel:rgba(15,23,42,.68);
+      --panel-strong:rgba(15,23,42,.88);
+      --border:rgba(255,255,255,.07);
       --text:#f8fafc;
       --muted:#94a3b8;
       --accent:#14b8a6;
-      --accentSoft:rgba(20,184,166,.12);
+      --accent-2:#2dd4bf;
       --good:#22c55e;
       --warn:#f59e0b;
       --bad:#ef4444;
-      --shadow:0 18px 42px rgba(0,0,0,.24);
+      --shadow:0 16px 40px rgba(0,0,0,.28);
       --radius:24px;
-      --radiusSm:16px;
     }
-
-    html { scroll-behavior:smooth; }
 
     body{
       margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      font-family: Arial, sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at top, rgba(20,184,166,.11), transparent 24%),
-        linear-gradient(180deg,var(--bg2) 0%,var(--bg1) 100%);
+        radial-gradient(circle at top, rgba(20,184,166,.10), transparent 24%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 100%);
       min-height:100vh;
       overflow-x:hidden;
     }
 
     .app-shell{
-      max-width:440px;
+      max-width:430px;
       margin:0 auto;
       min-height:100vh;
       position:relative;
@@ -52,53 +47,52 @@
       border-right:1px solid rgba(255,255,255,.03);
     }
 
-    .app-shell.ready{visibility:visible;}
+    .app-shell.ready{ visibility:visible; }
 
     .screen{
       display:none;
       min-height:100vh;
-      padding:22px 18px 132px;
+      padding:24px 18px 108px;
     }
 
-    .screen.active{display:block;}
+    .screen.active{ display:block; }
 
     .card{
-      background:linear-gradient(180deg,var(--panelTop),var(--panelBottom));
+      background:linear-gradient(180deg, rgba(20,27,45,.82), rgba(12,18,32,.82));
       border:1px solid var(--border);
       border-radius:var(--radius);
-      backdrop-filter:blur(18px);
+      backdrop-filter: blur(16px);
       box-shadow:var(--shadow);
     }
 
     .header{
-      text-align:left;
-      padding-top:10px;
-      margin-bottom:18px;
+      text-align:center;
+      padding-top:14px;
+      margin-bottom:22px;
     }
 
-    .header h1,.header h2{
+    .header h1, .header h2{
       margin:0 0 8px;
       font-size:1.9rem;
-      line-height:1.05;
+      line-height:1.1;
       font-weight:800;
-      letter-spacing:-.03em;
+      letter-spacing:-.02em;
     }
 
     .header p{
-      margin:0;
-      max-width:340px;
+      margin:0 auto;
+      max-width:310px;
       color:var(--muted);
-      line-height:1.45;
-      font-size:.96rem;
+      line-height:1.4;
+      font-size:.98rem;
     }
 
     .eyebrow{
       color:#7dd3c7;
-      font-size:.72rem;
-      letter-spacing:.14em;
+      font-size:.74rem;
+      letter-spacing:.12em;
       text-transform:uppercase;
       margin-bottom:10px;
-      font-weight:700;
     }
 
     #loadingScreen{
@@ -111,50 +105,53 @@
       padding:24px;
       background:
         radial-gradient(circle at top, rgba(20,184,166,.12), transparent 22%),
-        linear-gradient(180deg,#0b1220 0%,#050816 100%);
+        linear-gradient(180deg, #0b1220 0%, #050816 100%);
       opacity:1;
       visibility:visible;
       transition:opacity .7s ease, visibility .7s ease;
     }
 
-    #loadingScreen.fade-out{opacity:0;visibility:hidden;}
+    #loadingScreen.fade-out{
+      opacity:0;
+      visibility:hidden;
+    }
 
     .splash-panel{
-      width:min(360px,100%);
-      padding:30px 24px;
+      width:min(360px, 100%);
+      padding:28px 24px;
       text-align:center;
     }
 
     .brand-mark{
-      width:76px;
-      height:76px;
+      width:74px;
+      height:74px;
       margin:0 auto 18px;
-      border-radius:22px;
+      border-radius:20px;
       display:flex;
       align-items:center;
       justify-content:center;
       font-weight:800;
-      font-size:1.2rem;
+      font-size:1.25rem;
       letter-spacing:.08em;
       color:white;
       background:linear-gradient(180deg, rgba(45,212,191,.24), rgba(20,184,166,.12));
       border:1px solid rgba(45,212,191,.18);
-      box-shadow:0 12px 32px rgba(20,184,166,.12);
+      box-shadow:0 0 0 1px rgba(255,255,255,.02), 0 12px 28px rgba(20,184,166,.12);
     }
 
     .splash-title{
       font-size:2rem;
-      line-height:1.06;
+      line-height:1.08;
       font-weight:800;
       margin-bottom:10px;
-      letter-spacing:-.03em;
+      letter-spacing:-.02em;
     }
 
     .splash-subtitle{
       color:var(--muted);
       line-height:1.45;
       margin-bottom:20px;
-      font-size:.98rem;
+      font-size:1rem;
     }
 
     .loading-track{
@@ -170,52 +167,63 @@
       height:100%;
       width:0;
       border-radius:999px;
-      background:linear-gradient(90deg,var(--accent),#2dd4bf);
+      background:linear-gradient(90deg, var(--accent), #2dd4bf);
+      box-shadow:0 0 18px rgba(45,212,191,.28);
       animation:loadBar 2s ease forwards;
     }
 
     .overview-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-bottom:12px;
+      gap:14px;
+      margin-bottom:14px;
     }
 
     .chart-card{
-      padding:16px 14px;
+      padding:18px 14px 16px;
       text-align:center;
-      min-height:248px;
-      cursor:pointer;
-      transition:transform .18s ease,border-color .18s ease;
+      min-height:280px;
     }
 
     .chart-card h3{
       margin:0 0 12px;
-      font-size:.98rem;
-      font-weight:700;
+      font-size:1rem;
+      font-weight:600;
       color:#d7e1ec;
-      line-height:1.2;
+      line-height:1.25;
     }
 
     .donut{
-      width:126px;
-      height:126px;
-      margin:0 auto 12px;
+      width:138px;
+      height:138px;
+      margin:0 auto 14px;
       border-radius:50%;
       position:relative;
       display:grid;
       place-items:center;
     }
 
-    .donut::before{content:"";position:absolute;inset:0;border-radius:50%;}
-    .donut.spending::before{background:conic-gradient(var(--accent) 0 44%, #3b82f6 44% 72%, #f59e0b 72% 100%);}
-    .donut.portfolio::before{background:conic-gradient(#22c55e 0 30%, #2dd4bf 30% 62%, #8b5cf6 62% 100%);}
+    .donut::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:50%;
+    }
+
+    .donut.spending::before{
+      background:conic-gradient(var(--accent) 0 44%, #3b82f6 44% 72%, #f59e0b 72% 100%);
+    }
+
+    .donut.portfolio::before{
+      background:conic-gradient(#22c55e 0 30%, #2dd4bf 30% 62%, #8b5cf6 62% 100%);
+    }
+
     .donut::after{
       content:"";
       position:absolute;
       inset:22%;
       border-radius:50%;
-      background:linear-gradient(180deg, rgba(11,18,32,.99), rgba(15,23,42,.99));
+      background:linear-gradient(180deg, rgba(11,18,32,.98), rgba(15,23,42,.98));
       border:1px solid rgba(255,255,255,.05);
     }
 
@@ -223,32 +231,31 @@
       position:relative;
       z-index:1;
       text-align:center;
-      font-size:.78rem;
-      font-weight:800;
-      letter-spacing:.09em;
+      font-size:.8rem;
+      font-weight:700;
+      letter-spacing:.08em;
       color:#d9f3ef;
-      line-height:1.05;
+      line-height:1.1;
     }
 
     .chart-value{
-      font-size:1.7rem;
+      font-size:1.8rem;
       font-weight:800;
-      margin-bottom:6px;
-      letter-spacing:-.02em;
+      margin-bottom:8px;
     }
 
     .chart-note{
       color:var(--muted);
-      font-size:.86rem;
+      font-size:.9rem;
       line-height:1.35;
     }
 
-    .networth-card,.activity-card,.invest-card,.settings-card{
+    .networth-card{
       padding:18px;
-      margin-bottom:12px;
+      margin-bottom:14px;
     }
 
-    .networth-top,.activity-head{
+    .networth-top{
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -256,35 +263,35 @@
       margin-bottom:12px;
     }
 
-    .networth-label,.activity-title{
+    .networth-label{
       color:#d2dae5;
       font-size:1rem;
-      font-weight:700;
+      font-weight:600;
     }
 
     .status-pill{
-      padding:8px 12px;
+      padding:9px 14px;
       border-radius:999px;
-      font-size:.8rem;
-      font-weight:800;
+      font-size:.84rem;
+      font-weight:700;
       color:#dffcf8;
-      background:var(--accentSoft);
+      background:rgba(20,184,166,.12);
       border:1px solid rgba(45,212,191,.18);
     }
 
     .networth-value{
-      font-size:3rem;
+      font-size:3.3rem;
       line-height:1;
       font-weight:800;
-      letter-spacing:-.04em;
-      margin-bottom:10px;
+      letter-spacing:-.03em;
+      margin-bottom:12px;
     }
 
-    .networth-copy,.settings-note{
+    .networth-copy{
       color:var(--muted);
-      line-height:1.45;
+      line-height:1.4;
       margin-bottom:14px;
-      font-size:.92rem;
+      font-size:.95rem;
     }
 
     .mini-stats{
@@ -303,59 +310,14 @@
 
     .mini-stat-label{
       color:var(--muted);
-      font-size:.72rem;
+      font-size:.75rem;
       margin-bottom:6px;
-      text-transform:uppercase;
-      letter-spacing:.05em;
     }
 
     .mini-stat-value{
-      font-size:1.18rem;
+      font-size:1.25rem;
       font-weight:800;
-      letter-spacing:-.02em;
     }
-
-    .activity-clear,.ghost-btn{
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.08);
-      color:#d0d9e5;
-      border-radius:999px;
-      padding:8px 12px;
-      font-weight:700;
-    }
-
-    .activity-item{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      padding:12px 0;
-      border-bottom:1px solid rgba(255,255,255,.05);
-    }
-
-    .activity-item:last-child{border-bottom:none;}
-
-    .activity-main{
-      font-size:.93rem;
-      font-weight:700;
-      margin-bottom:4px;
-    }
-
-    .activity-meta{
-      font-size:.8rem;
-      color:var(--muted);
-      line-height:1.35;
-    }
-
-    .activity-amount{
-      font-size:.95rem;
-      font-weight:800;
-      white-space:nowrap;
-      letter-spacing:-.01em;
-    }
-
-    .activity-amount.good{color:var(--good);}
-    .activity-amount.bad{color:var(--bad);}
-    .activity-empty{color:var(--muted);font-size:.92rem;line-height:1.4;}
 
     .top-row{
       display:flex;
@@ -364,152 +326,106 @@
       margin-bottom:14px;
     }
 
-    .month-select,.small-input,.form-select{
+    .month-select{
+      flex:1;
+      height:52px;
+      border-radius:16px;
+      padding:0 14px;
+      color:var(--text);
+      font-size:15px;
+      border:1px solid var(--border);
+      background:rgba(15,23,42,.8);
+    }
+
+    .add-btn{
+      width:52px;
+      height:52px;
+      border:none;
+      border-radius:16px;
+      background:linear-gradient(180deg, #2dd4bf, var(--accent));
+      color:#041112;
+      font-size:28px;
+      font-weight:700;
+      box-shadow:0 12px 24px rgba(20,184,166,.22);
+    }
+
+    .wide-card{
+      padding:18px;
+      margin-bottom:14px;
+    }
+
+    .wide-card h4, .info-card h4, .category-card h4{
+      margin:0 0 10px;
+      color:#c7d1dc;
+      font-size:.95rem;
+      font-weight:600;
+    }
+
+    .input-field{
       width:100%;
-      height:44px;
+      height:50px;
       border-radius:14px;
       border:1px solid rgba(255,255,255,.06);
       background:rgba(255,255,255,.03);
       color:var(--text);
-      padding:0 12px;
-      font-size:.95rem;
+      padding:0 14px;
+      font-size:16px;
       outline:none;
     }
 
-    .small-input::placeholder{color:#8091a7;}
-
-    .month-select{flex:1;height:50px;}
-
-    .add-btn,.category-btn,.save-item-btn,.add-item-btn,.reset-btn,.settings-action{
-      border:none;
-      border-radius:16px;
-      background:linear-gradient(180deg,#2dd4bf,var(--accent));
-      color:#041112;
-      font-weight:800;
-      box-shadow:0 10px 24px rgba(20,184,166,.16);
-    }
-
-    .add-btn{
-      width:50px;
-      height:50px;
-      font-size:26px;
-      flex:0 0 auto;
-    }
-
-    .category-btn{
-      padding:0 14px;
-      height:50px;
-      font-size:14px;
-      white-space:nowrap;
-    }
-
-    .wide-card{padding:18px;margin-bottom:12px;}
-    .wide-card h4,.info-card h4,.category-card h4,.settings-card h4,.invest-card h4{
-      margin:0 0 10px;
-      color:#c7d1dc;
-      font-size:.92rem;
-      font-weight:700;
-      letter-spacing:.01em;
+    .input-field::placeholder{
+      color:#8091a7;
     }
 
     .toggle{
       display:flex;
       gap:8px;
-      margin-bottom:12px;
+      margin-bottom:14px;
     }
 
     .toggle button{
       flex:1;
-      height:42px;
+      height:44px;
       border-radius:14px;
       border:1px solid rgba(255,255,255,.05);
       background:rgba(255,255,255,.03);
       color:#dbe7f1;
-      font-weight:800;
+      font-weight:700;
+      transition:all .18s ease;
     }
 
     .toggle button.active{
       background:rgba(20,184,166,.14);
       border-color:rgba(45,212,191,.22);
+      box-shadow:0 10px 20px rgba(20,184,166,.10);
       color:#e7fffb;
     }
 
     .budget-big{
-      font-size:2rem;
+      font-size:2.1rem;
       font-weight:800;
-      letter-spacing:-.03em;
+      letter-spacing:-.02em;
     }
 
-    .budget-big.good{color:var(--good);}
-    .budget-big.warn{color:var(--warn);}
-    .budget-big.bad{color:var(--bad);}
+    .budget-big.good{ color:var(--good); }
+    .budget-big.warn{ color:var(--warn); }
+    .budget-big.bad{ color:var(--bad); }
 
     .info-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-bottom:12px;
-    }
-
-    .info-card{padding:16px;}
-    .info-value{
-      font-size:1.35rem;
-      font-weight:800;
-      letter-spacing:-.02em;
-    }
-
-    .income-card-row,.line-item,.invest-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-end;
       gap:12px;
-      padding:10px 0 12px;
-      border-bottom:1px solid rgba(255,255,255,.05);
+      margin-bottom:14px;
     }
 
-    .income-card-row:last-child,.invest-row:last-child{border-bottom:none;}
-
-    .income-name,.line-title,.invest-name{
-      font-size:.98rem;
-      font-weight:700;
-      margin-bottom:4px;
+    .info-card{
+      padding:16px;
     }
 
-    .income-note,.line-sub,.invest-note{
-      color:var(--muted);
-      font-size:.82rem;
-      line-height:1.3;
-    }
-
-    .income-amount,.line-amount,.invest-amount{
-      font-size:1.1rem;
+    .info-value{
+      font-size:1.45rem;
       font-weight:800;
-      cursor:pointer;
-      min-width:96px;
-      text-align:right;
-      letter-spacing:-.02em;
     }
-
-    .income-amount,.invest-amount{color:#dffcf8;}
-    .line-amount.good{color:var(--good);}
-    .line-amount.warn{color:var(--warn);}
-    .line-amount.bad{color:var(--bad);}
-    .editable-copy{cursor:pointer;}
-
-    .amount-edit,.text-edit{
-      width:100%;
-      min-width:92px;
-      height:40px;
-      border-radius:12px;
-      border:1px solid rgba(45,212,191,.24);
-      background:rgba(255,255,255,.04);
-      color:var(--text);
-      padding:0 10px;
-      font-size:.95rem;
-      outline:none;
-    }
-
-    .amount-edit{text-align:right;font-weight:800;}
 
     .category-card{
       padding:16px;
@@ -519,121 +435,99 @@
     .category-head{
       display:flex;
       justify-content:space-between;
-      align-items:flex-start;
+      align-items:center;
       gap:10px;
       margin-bottom:8px;
-      cursor:pointer;
-    }
-
-    .category-title-wrap{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
-
-    .category-total{
-      color:#d9f3ef;
-      font-size:.88rem;
-      font-weight:700;
     }
 
     .category-tag{
       color:#7dd3c7;
-      font-size:.74rem;
-      font-weight:800;
+      font-size:.76rem;
+      font-weight:700;
       letter-spacing:.08em;
       text-transform:uppercase;
     }
 
-    .category-progress-label{
+    .line-item{
       display:flex;
       justify-content:space-between;
-      gap:10px;
+      align-items:flex-end;
+      gap:12px;
+      padding:10px 0 12px;
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+
+    .line-title{
+      font-size:1.02rem;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+
+    .line-sub{
       color:var(--muted);
-      font-size:.8rem;
-      margin:8px 0 10px;
+      font-size:.85rem;
     }
 
-    .progress-track{
-      height:8px;
-      border-radius:999px;
-      background:rgba(255,255,255,.06);
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.04);
-      margin-bottom:8px;
-    }
-
-    .progress-fill{
-      height:100%;
-      border-radius:999px;
-      background:linear-gradient(90deg,var(--accent),#2dd4bf);
-      width:0%;
-    }
-
-    .progress-fill.warn{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
-    .progress-fill.bad{background:linear-gradient(90deg,#ef4444,#f87171);}
-
-    .collapse-indicator{
-      color:var(--muted);
-      font-size:.76rem;
-      margin-top:4px;
+    .line-amount{
+      font-size:1.2rem;
+      font-weight:800;
+      cursor:pointer;
+      min-width:96px;
       text-align:right;
     }
 
-    .collapsed .category-body{display:none;}
+    .line-amount.good{ color:var(--good); }
+    .line-amount.warn{ color:var(--warn); }
+    .line-amount.bad{ color:var(--bad); }
 
-    .new-item-panel,.new-category-panel,.income-panel,.expense-panel,.invest-panel{
-      display:grid;
-      gap:10px;
+    .amount-edit{
+      width:110px;
+      height:42px;
+      border-radius:12px;
+      border:1px solid rgba(45,212,191,.28);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      text-align:right;
+      padding:0 12px;
+      font-size:1rem;
+      font-weight:700;
+      outline:none;
+      box-shadow:0 0 0 2px rgba(20,184,166,.08);
+    }
+
+    .add-item-row{
       padding-top:12px;
     }
 
-    .new-item-row,.income-row,.invest-row-form{
-      display:grid;
-      grid-template-columns:1fr 110px;
-      gap:10px;
-    }
-
-    .expense-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-
-    .new-category-row{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:10px;
-    }
-
-    .new-item-actions{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .ghost-btn,.save-item-btn,.add-item-btn,.reset-btn,.settings-action,.activity-clear{
+    .add-item-btn{
+      border:none;
       border-radius:999px;
-      font-weight:800;
-    }
-
-    .save-item-btn,.add-item-btn,.reset-btn,.settings-action{
       padding:10px 14px;
-      color:#041112;
+      background:rgba(20,184,166,.10);
+      border:1px solid rgba(45,212,191,.16);
+      color:#dffcf8;
+      font-weight:700;
     }
 
-    .add-item-row{padding-top:12px;}
-    .budget-actions{display:grid;gap:12px;margin-top:16px;}
-    .reset-btn{font-size:.98rem;padding:13px 18px;}
+    .placeholder-wrap{
+      padding-top:40px;
+      text-align:center;
+    }
 
-    .settings-card,.invest-card{padding:18px;margin-bottom:12px;}
-    .settings-actions{display:grid;gap:10px;margin-top:12px;}
-    .hidden-input{display:none;}
+    .placeholder-card{
+      padding:28px 20px;
+    }
 
-    .placeholder-wrap{padding-top:40px;text-align:center;}
-    .placeholder-card{padding:28px 20px;}
-    .placeholder-card h3{margin:0 0 10px;font-size:1.3rem;}
-    .placeholder-card p{margin:0;color:var(--muted);line-height:1.45;}
+    .placeholder-card h3{
+      margin:0 0 10px;
+      font-size:1.3rem;
+    }
+
+    .placeholder-card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.45;
+    }
 
     .bottom-nav{
       position:fixed;
@@ -641,23 +535,24 @@
       transform:translateX(-50%);
       bottom:0;
       width:100%;
-      max-width:440px;
-      padding:12px 10px 16px;
+      max-width:430px;
+      padding:12px 10px 18px;
       display:grid;
       grid-template-columns:repeat(5,1fr);
       gap:8px;
-      background:linear-gradient(180deg, rgba(5,8,22,.72), rgba(5,8,22,.96));
-      backdrop-filter:blur(16px);
+      background:linear-gradient(180deg, rgba(5,8,22,.72), rgba(5,8,22,.95));
+      backdrop-filter:blur(14px);
       border-top:1px solid rgba(255,255,255,.05);
       z-index:100;
     }
 
     .nav-btn{
       border:none;
-      min-height:56px;
+      min-height:58px;
       border-radius:18px;
       background:transparent;
       color:#8fa0b4;
+      transition:all .18s ease;
       padding:10px 4px 12px;
     }
 
@@ -665,458 +560,430 @@
       color:#effffc;
       background:rgba(20,184,166,.12);
       border:1px solid rgba(45,212,191,.16);
+      box-shadow:0 10px 20px rgba(20,184,166,.08);
     }
 
-    .nav-icon{display:block;font-size:1.02rem;margin-bottom:4px;}
-    .nav-label{display:block;font-size:.74rem;font-weight:800;}
+    .nav-icon{
+      display:block;
+      font-size:1.04rem;
+      margin-bottom:4px;
+    }
 
-    button{cursor:pointer;}
-    @keyframes loadBar{from{width:0;}to{width:100%;}}
+    .nav-label{
+      display:block;
+      font-size:.76rem;
+      font-weight:700;
+    }
 
+    button{ cursor:pointer; }
+    button:active{ transform:scale(.97); }
+
+    @keyframes loadBar{
+      from { width:0; }
+      to { width:100%; }
+    }
   </style>
 </head>
 <body>
-  <div id="loadingScreen"><div class="card splash-panel"><div class="brand-mark">FCC</div><div class="splash-title">Financial Command Center</div><div class="splash-subtitle">Loading your budget, assets, and planning dashboard.</div><div class="loading-track"><span></span></div></div></div>
+  <div id="loadingScreen">
+    <div class="card splash-panel">
+      <div class="brand-mark">FCC</div>
+      <div class="splash-title">Financial Command Center</div>
+      <div class="splash-subtitle">Loading your budget, assets, and planning dashboard.</div>
+      <div class="loading-track"><span></span></div>
+    </div>
+  </div>
+
   <div class="app-shell" id="appShell">
     <section id="overviewScreen" class="screen active">
-      <div class="header"><div class="eyebrow">Overview</div><h1>Financial Command Center</h1><p>A cleaner dashboard for spending, investing, and net worth at a glance.</p><div style="margin-top:12px;display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(20,184,166,.12);border:1px solid rgba(45,212,191,.18);font-size:.8rem;font-weight:800;color:#dffcf8;">Updated build • UI cleanup + activity</div></div>
-      <div class="overview-grid">
-        <div class="card chart-card" onclick="openBudgetFromOverview()"><h3>Spending<br>Breakdown</h3><div class="donut spending"><div class="donut-center">SPENDING</div></div><div class="chart-value" id="overviewSpending">$0</div><div class="chart-note">Tap to jump to Budget</div></div>
-        <div class="card chart-card" onclick="openInvestFromOverview()"><h3>Portfolio<br>Breakdown</h3><div class="donut portfolio"><div class="donut-center">PORTFOLIO</div></div><div class="chart-value" id="overviewInvested">$0</div><div class="chart-note">Tap to jump to Invest</div></div>
+      <div class="header">
+        <div class="eyebrow">Overview</div>
+        <h1>Financial Command Center</h1>
+        <p>Your home screen for monthly spending, portfolio mix, and net worth.</p>
       </div>
+
+      <div class="overview-grid">
+        <div class="card chart-card">
+          <h3>Spending<br>Breakdown</h3>
+          <div class="donut spending">
+            <div class="donut-center">SPENDING</div>
+          </div>
+          <div class="chart-value" id="overviewSpending">$2,000</div>
+          <div class="chart-note">Housing, bills, savings, and variable spending</div>
+        </div>
+
+        <div class="card chart-card">
+          <h3>Portfolio<br>Breakdown</h3>
+          <div class="donut portfolio">
+            <div class="donut-center">PORTFOLIO</div>
+          </div>
+          <div class="chart-value" id="overviewInvested">$0</div>
+          <div class="chart-note">Cash, retirement, brokerage, crypto, and assets</div>
+        </div>
+      </div>
+
       <div class="card networth-card">
-        <div class="networth-top"><div class="networth-label">Net Worth</div><div class="status-pill" id="statusPill">On Track</div></div>
+        <div class="networth-top">
+          <div class="networth-label">Net Worth</div>
+          <div class="status-pill" id="statusPill">On Track</div>
+        </div>
         <div class="networth-value" id="netWorthValue">$0</div>
         <div class="networth-copy">A quick snapshot of where you stand before diving into your budget and longer-term planning.</div>
+
         <div class="mini-stats">
-          <div class="mini-stat"><div class="mini-stat-label">Income</div><div class="mini-stat-value" id="overviewIncome">$0</div></div>
-          <div class="mini-stat"><div class="mini-stat-label">Invested</div><div class="mini-stat-value" id="overviewInvestedMini">$0</div></div>
-          <div class="mini-stat"><div class="mini-stat-label">Cash Flow</div><div class="mini-stat-value" id="overviewCashFlow">$0</div></div>
+          <div class="mini-stat">
+            <div class="mini-stat-label">Income</div>
+            <div class="mini-stat-value" id="overviewIncome">$4,000</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-label">Invested</div>
+            <div class="mini-stat-value" id="overviewInvestedMini">$0</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-label">Cash Flow</div>
+            <div class="mini-stat-value" id="overviewCashFlow">$2,000</div>
+          </div>
         </div>
-      </div>
-      <div class="card activity-card">
-        <div class="activity-head">
-          <div class="activity-title">Recent Activity</div>
-          <button class="activity-clear" onclick="clearActivity()">Clear</button>
-        </div>
-        <div id="activityList"></div>
       </div>
     </section>
 
     <section id="budgetScreen" class="screen">
-      <div class="header"><div class="eyebrow">Budget</div><h2>Monthly Budget</h2><p>Use one clean workflow for planned, spent, and remaining.</p><div style="margin-top:12px;color:#94a3b8;font-size:.85rem;">Includes: add expense, custom categories, recent activity, and cleaner UI</div></div>
+      <div class="header">
+        <div class="eyebrow">Budget</div>
+        <h2>Monthly Budget</h2>
+        <p>Switch between your plan, what you spent, and what is still remaining.</p>
+      </div>
+
       <div class="top-row">
-        <select class="month-select"><option>April 2026</option><option>May 2026</option><option>June 2026</option></select>
-        <button class="add-btn" aria-label="Add expense" onclick="toggleExpensePanel()">+</button>
-        <button class="category-btn" onclick="toggleNewCategoryPanel()">+ Category</button>
-      </div>
-
-      <div class="card wide-card" id="expenseCard" style="display:none;">
-        <h4>Add Expense</h4>
-        <div class="expense-panel">
-          <select class="form-select" id="expense-category"></select>
-          <div class="expense-grid">
-            <input class="small-input" id="expense-name" placeholder="Expense name" />
-            <input class="small-input" id="expense-amount" type="number" step="0.01" placeholder="Amount" />
-          </div>
-          <input class="small-input" id="expense-note" placeholder="Notes" />
-          <input class="small-input" id="expense-date" type="date" />
-          <div class="new-item-actions">
-            <button class="save-item-btn" onclick="saveExpense()">Save Expense</button>
-            <button class="ghost-btn" onclick="toggleExpensePanel(false)">Cancel</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card wide-card" id="newCategoryCard" style="display:none;">
-        <h4>Add Category</h4>
-        <div class="new-category-panel">
-          <div class="new-category-row"><input class="small-input" id="new-category-name" placeholder="Category name" /></div>
-          <div class="new-item-actions">
-            <button class="save-item-btn" onclick="saveNewCategory()">Save Category</button>
-            <button class="ghost-btn" onclick="toggleNewCategoryPanel(false)">Cancel</button>
-          </div>
-        </div>
+        <select class="month-select">
+          <option>April 2026</option>
+          <option>May 2026</option>
+          <option>June 2026</option>
+        </select>
+        <button class="add-btn" aria-label="Add transaction">+</button>
       </div>
 
       <div class="card wide-card">
         <h4>Monthly Income</h4>
-        <div id="incomeList"></div>
-        <div class="income-panel" id="incomePanel" style="display:none;">
-          <div class="income-row">
-            <input class="small-input" id="new-income-name" placeholder="Income source" />
-            <input class="small-input" id="new-income-amount" type="number" step="0.01" placeholder="Amount" />
-          </div>
-          <div class="new-item-actions">
-            <button class="save-item-btn" onclick="saveNewIncome()">Save Income</button>
-            <button class="ghost-btn" onclick="cancelNewIncome()">Cancel</button>
-          </div>
-        </div>
-        <div class="add-item-row"><button class="add-item-btn" onclick="showNewIncome()">Add Income Source</button></div>
+        <input
+          type="number"
+          id="incomeInput"
+          class="input-field"
+          placeholder="Enter your monthly income"
+          inputmode="decimal"
+          oninput="updateIncome(this.value)"
+        />
       </div>
 
       <div class="toggle">
-        <button class="active" onclick="setBudgetMode(event,'planned')">Planned</button>
-        <button onclick="setBudgetMode(event,'spent')">Spent</button>
-        <button onclick="setBudgetMode(event,'remaining')">Remaining</button>
+        <button class="active" onclick="setBudgetMode(event, 'planned')">Planned</button>
+        <button onclick="setBudgetMode(event, 'spent')">Spent</button>
+        <button onclick="setBudgetMode(event, 'remaining')">Remaining</button>
       </div>
 
-      <div class="card wide-card"><h4>Left to Budget</h4><div class="budget-big good" id="leftToBudget">$0</div></div>
+      <div class="card wide-card">
+        <h4>Left to Budget</h4>
+        <div class="budget-big good" id="leftToBudget">$2,000</div>
+      </div>
 
       <div class="info-grid">
-        <div class="card info-card"><h4>Income</h4><div class="info-value" id="incomeValue">$0</div></div>
-        <div class="card info-card"><h4>Cash Flow</h4><div class="info-value" id="cashFlowValue">$0</div></div>
+        <div class="card info-card">
+          <h4>Income</h4>
+          <div class="info-value" id="incomeValue">$4,000</div>
+        </div>
+        <div class="card info-card">
+          <h4>Cash Flow</h4>
+          <div class="info-value" id="cashFlowValue">$2,000</div>
+        </div>
       </div>
 
-      <div id="categoriesContainer"></div>
-      <div class="budget-actions"><button class="reset-btn" onclick="resetBudget()">↻ Reset Budget</button></div>
+      <div class="card category-card">
+        <div class="category-head">
+          <h4>Savings</h4>
+          <div class="category-tag">PLANNED</div>
+        </div>
+        <div class="line-item">
+          <div>
+            <div class="line-title">Emergency Fund</div>
+            <div class="line-sub">Primary reserve target</div>
+          </div>
+          <div class="line-amount good editable-amount" data-group="savings" data-mode="planned" id="savingsAmountPlanned">$500</div>
+        </div>
+        <div class="add-item-row">
+          <button class="add-item-btn">Add Item</button>
+        </div>
+      </div>
+
+      <div class="card category-card">
+        <div class="category-head">
+          <h4>Housing</h4>
+          <div class="category-tag">PLANNED</div>
+        </div>
+        <div class="line-item">
+          <div>
+            <div class="line-title">Mortgage</div>
+            <div class="line-sub">Main monthly housing cost</div>
+          </div>
+          <div class="line-amount warn editable-amount" data-group="housing" data-mode="planned" id="housingAmountPlanned">$1,200</div>
+        </div>
+        <div class="add-item-row">
+          <button class="add-item-btn">Add Item</button>
+        </div>
+      </div>
+
+      <div class="card category-card">
+        <div class="category-head">
+          <h4>Transportation</h4>
+          <div class="category-tag">PLANNED</div>
+        </div>
+        <div class="line-item">
+          <div>
+            <div class="line-title">Gas</div>
+            <div class="line-sub">Fuel and transport costs</div>
+          </div>
+          <div class="line-amount warn editable-amount" data-group="transport" data-mode="planned" id="transportAmountPlanned">$300</div>
+        </div>
+        <div class="add-item-row">
+          <button class="add-item-btn">Add Item</button>
+        </div>
+      </div>
     </section>
 
     <section id="investScreen" class="screen">
-      <div class="header"><div class="eyebrow">Invest</div><h2>Investments</h2><p>Keep investment balances clean and connected to your overview.</p></div>
-      <div class="card invest-card"><h4>Portfolio Total</h4><div class="budget-big good" id="portfolioTotal">$0</div></div>
-      <div class="card invest-card">
-        <h4>Investment Accounts</h4>
-        <div id="investList"></div>
-        <div class="invest-panel" id="investPanel" style="display:none;">
-          <div class="invest-row-form">
-            <input class="small-input" id="invest-name" placeholder="Account name" />
-            <input class="small-input" id="invest-amount" type="number" step="0.01" placeholder="Amount" />
-          </div>
-          <div class="new-item-actions">
-            <button class="save-item-btn" onclick="saveNewInvestment()">Save Account</button>
-            <button class="ghost-btn" onclick="toggleInvestPanel(false)">Cancel</button>
-          </div>
+      <div class="header">
+        <div class="eyebrow">Invest</div>
+        <h2>Investments</h2>
+        <p>This screen is connected and ready for the next design pass.</p>
+      </div>
+      <div class="placeholder-wrap">
+        <div class="card placeholder-card">
+          <h3>Invest Screen Placeholder</h3>
+          <p>Next we can build Roth, brokerage, crypto, and account breakdowns in this same style.</p>
         </div>
-        <div class="add-item-row"><button class="add-item-btn" onclick="toggleInvestPanel(true)">Add Account</button></div>
       </div>
     </section>
 
-    <section id="assetsScreen" class="screen"><div class="header"><div class="eyebrow">Assets</div><h2>Assets</h2><p>This is where your collections, valuables, vehicles, and major assets can go next.</p></div><div class="placeholder-wrap"><div class="card placeholder-card"><h3>Assets Screen Placeholder</h3><p>Your asset inventory screen can be the next expansion after Invest.</p></div></div></section>
+    <section id="assetsScreen" class="screen">
+      <div class="header">
+        <div class="eyebrow">Assets</div>
+        <h2>Assets</h2>
+        <p>This screen is connected and ready for the next design pass.</p>
+      </div>
+      <div class="placeholder-wrap">
+        <div class="card placeholder-card">
+          <h3>Assets Screen Placeholder</h3>
+          <p>This is where your collections, valuables, vehicles, and major assets can go next.</p>
+        </div>
+      </div>
+    </section>
 
-    <section id="settingsScreen" class="screen">
-      <div class="header"><div class="eyebrow">Settings</div><h2>Settings</h2><p>Backups, imports, and a few basics for how the app behaves.</p></div>
-      <div class="card settings-card">
-        <h4>Data</h4>
-        <div style="margin-bottom:10px;display:inline-flex;padding:8px 12px;border-radius:999px;background:rgba(20,184,166,.12);border:1px solid rgba(45,212,191,.18);font-size:.8rem;font-weight:800;color:#dffcf8;">Build check: v-clean-2</div>
-        <div class="settings-note">Your budget auto-saves in this browser. Export a backup to keep a copy somewhere safe.</div>
-        <div class="settings-actions">
-          <button class="settings-action" onclick="exportBackup()">Export Backup</button>
-          <button class="settings-action" onclick="document.getElementById('importFile').click()">Import Backup</button>
-          <input class="hidden-input" id="importFile" type="file" accept=".json,application/json" onchange="importBackup(event)" />
-          <button class="settings-action" onclick="resetBudget()">Reset Budget</button>
+    <section id="goalsScreen" class="screen">
+      <div class="header">
+        <div class="eyebrow">Goals</div>
+        <h2>Goals</h2>
+        <p>This screen is connected and ready for the next design pass.</p>
+      </div>
+      <div class="placeholder-wrap">
+        <div class="card placeholder-card">
+          <h3>Goals Screen Placeholder</h3>
+          <p>This will be the place for savings goals, debt targets, and milestone tracking.</p>
         </div>
       </div>
     </section>
 
     <nav class="bottom-nav">
-      <button class="nav-btn active" onclick="showScreen('overviewScreen', this)"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button>
-      <button class="nav-btn" onclick="showScreen('budgetScreen', this)"><span class="nav-icon">💸</span><span class="nav-label">Budget</span></button>
-      <button class="nav-btn" onclick="showScreen('investScreen', this)"><span class="nav-icon">📈</span><span class="nav-label">Invest</span></button>
-      <button class="nav-btn" onclick="showScreen('assetsScreen', this)"><span class="nav-icon">📦</span><span class="nav-label">Assets</span></button>
-      <button class="nav-btn" onclick="showScreen('settingsScreen', this)"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+      <button class="nav-btn active" onclick="showScreen('overviewScreen', this)">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Overview</span>
+      </button>
+      <button class="nav-btn" onclick="showScreen('budgetScreen', this)">
+        <span class="nav-icon">💸</span>
+        <span class="nav-label">Budget</span>
+      </button>
+      <button class="nav-btn" onclick="showScreen('investScreen', this)">
+        <span class="nav-icon">📈</span>
+        <span class="nav-label">Invest</span>
+      </button>
+      <button class="nav-btn" onclick="showScreen('assetsScreen', this)">
+        <span class="nav-icon">📦</span>
+        <span class="nav-label">Assets</span>
+      </button>
+      <button class="nav-btn" onclick="showScreen('goalsScreen', this)">
+        <span class="nav-icon">🎯</span>
+        <span class="nav-label">Goals</span>
+      </button>
     </nav>
   </div>
 
   <script>
-    const STORAGE_KEY = 'fcc_budget_data_v3';
-    const defaultBudgetData = {
-      collapsedGroups:{},
-      activity:[],
-      planned:{invested:0,incomes:[{name:'Primary Income',note:'Main monthly income',amount:4000}],investments:[{name:'Roth IRA',note:'Retirement account',amount:0},{name:'Brokerage',note:'Taxable investing',amount:0},{name:'Cash',note:'Available cash',amount:0},{name:'Crypto',note:'Digital assets',amount:0},{name:'Collectibles',note:'Cards and other items',amount:0}],items:{savings:[{name:'Emergency Fund',note:'Primary reserve target',amount:500}],housing:[{name:'Mortgage',note:'Main monthly housing cost',amount:1200}],transportation:[{name:'Gas',note:'Fuel and transport costs',amount:300}]}},
-      spent:{invested:0,incomes:[{name:'Primary Income',note:'Main monthly income',amount:4000}],investments:[{name:'Roth IRA',note:'Retirement account',amount:0},{name:'Brokerage',note:'Taxable investing',amount:0},{name:'Cash',note:'Available cash',amount:0},{name:'Crypto',note:'Digital assets',amount:0},{name:'Collectibles',note:'Cards and other items',amount:0}],items:{savings:[{name:'Emergency Fund',note:'Primary reserve target',amount:180}],housing:[{name:'Mortgage',note:'Main monthly housing cost',amount:980}],transportation:[{name:'Gas',note:'Fuel and transport costs',amount:240}]}},
-      remaining:{invested:0,incomes:[{name:'Primary Income',note:'Main monthly income',amount:4000}],investments:[{name:'Roth IRA',note:'Retirement account',amount:0},{name:'Brokerage',note:'Taxable investing',amount:0},{name:'Cash',note:'Available cash',amount:0},{name:'Crypto',note:'Digital assets',amount:0},{name:'Collectibles',note:'Cards and other items',amount:0}],items:{savings:[{name:'Emergency Fund',note:'Primary reserve target',amount:320}],housing:[{name:'Mortgage',note:'Main monthly housing cost',amount:220}],transportation:[{name:'Gas',note:'Fuel and transport costs',amount:60}]}}
+    const budgetData = {
+      planned: { income: 4000, invested: 0, savings: 500, housing: 1200, transport: 300 },
+      spent: { income: 4000, invested: 0, savings: 180, housing: 980, transport: 240 },
+      remaining: { income: 4000, invested: 0, savings: 320, housing: 220, transport: 60 }
     };
-    let budgetData = JSON.parse(JSON.stringify(defaultBudgetData));
-    let currentMode='planned';
 
-    function saveToStorage(){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(budgetData)); } catch(e) {} }
-    function loadFromStorage(){ try { const raw = localStorage.getItem(STORAGE_KEY); if(raw){ const parsed = JSON.parse(raw); if(parsed && parsed.planned && parsed.spent && parsed.remaining){ budgetData = parsed; } } } catch(e) {} }
-    function titleCase(str){ return str.charAt(0).toUpperCase()+str.slice(1); }
-    function slugify(str){ return str.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }
-    function money(v){ return '$'+Number(v).toLocaleString(); }
-    function toneClass(v){ if(v<0) return 'bad'; if(v<=300) return 'warn'; return 'good'; }
-    function currentGroups(){ return Object.keys(budgetData[currentMode].items); }
-    function getIncomeTotal(mode){ return (budgetData[mode].incomes||[]).reduce((sum,item)=>sum+Number(item.amount||0),0); }
-    function getInvestmentTotal(mode){ return (budgetData[mode].investments||[]).reduce((sum,item)=>sum+Number(item.amount||0),0); }
-    function getCategoryTotal(mode, group){ return (budgetData[mode].items[group]||[]).reduce((s,i)=>s+Number(i.amount||0),0); }
-    function getSpendingTotal(mode){ return currentGroups().reduce((sum, group)=> sum + getCategoryTotal(mode, group), 0); }
-    function getCashFlow(mode){ return getIncomeTotal(mode)-getSpendingTotal(mode); }
-    function getNetWorth(mode){ return getIncomeTotal(mode)+getInvestmentTotal(mode)-getSpendingTotal(mode); }
-    function updateCategoryLabels(mode){ document.querySelectorAll('.category-tag').forEach(l=>l.textContent=mode.toUpperCase()); }
-    function escapeHtml(str){ return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
-    function addActivity(type, title, meta, amount, sign){
-      if(!budgetData.activity) budgetData.activity = [];
-      budgetData.activity.unshift({type, title, meta, amount, sign, timestamp:new Date().toISOString()});
-      budgetData.activity = budgetData.activity.slice(0, 20);
+    let currentMode = 'planned';
+
+    function money(v){
+      return '$' + Number(v).toLocaleString();
     }
-    function renderActivity(){
-      const list = document.getElementById('activityList');
-      if(!list) return;
-      const items = budgetData.activity || [];
-      if(!items.length){
-        list.innerHTML = '<div class="activity-empty">No recent activity yet. Add income, expenses, or investments and they will show here.</div>';
-        return;
-      }
-      list.innerHTML = items.map(item => {
-        const amountClass = item.sign === 'plus' ? 'good' : item.sign === 'minus' ? 'bad' : '';
-        const label = item.sign === 'plus' ? '+' : item.sign === 'minus' ? '-' : '';
-        const date = new Date(item.timestamp);
-        const when = isNaN(date) ? '' : date.toLocaleString();
-        return '<div class="activity-item"><div><div class="activity-main">'+escapeHtml(item.title)+'</div><div class="activity-meta">'+escapeHtml(item.meta || '')+(when ? ' • '+escapeHtml(when) : '')+'</div></div><div class="activity-amount '+amountClass+'">'+label+money(item.amount || 0)+'</div></div>';
-      }).join('');
+
+    function toneClass(v){
+      if (v < 0) return 'bad';
+      if (v <= 300) return 'warn';
+      return 'good';
     }
-    function clearActivity(){ budgetData.activity = []; saveToStorage(); renderActivity(); }
+
+    function setClass(el, base, value){
+      el.className = base + ' ' + toneClass(value) + ' editable-amount';
+      el.dataset.group = el.dataset.group || '';
+      el.dataset.mode = currentMode;
+    }
+
+    function getSpendingTotal(mode){
+      return Number(budgetData[mode].savings || 0) + Number(budgetData[mode].housing || 0) + Number(budgetData[mode].transport || 0);
+    }
+
+    function getCashFlow(mode){
+      return Number(budgetData[mode].income || 0) - getSpendingTotal(mode);
+    }
+
+    function getNetWorth(mode){
+      return Number(budgetData[mode].income || 0) + Number(budgetData[mode].invested || 0) - getSpendingTotal(mode);
+    }
+
+    function updateCategoryLabels(mode){
+      document.querySelectorAll('.category-tag').forEach(label => {
+        label.textContent = mode.toUpperCase();
+      });
+    }
 
     function updateOverview(mode){
-      const income=getIncomeTotal(mode), spending=getSpendingTotal(mode), invested=getInvestmentTotal(mode), cashFlow=getCashFlow(mode), netWorth=getNetWorth(mode);
-      document.getElementById('overviewIncome').textContent=money(income);
-      document.getElementById('overviewCashFlow').textContent=money(cashFlow);
-      document.getElementById('overviewSpending').textContent=money(spending);
-      document.getElementById('overviewInvested').textContent=money(invested);
-      document.getElementById('overviewInvestedMini').textContent=money(invested);
-      document.getElementById('netWorthValue').textContent=money(netWorth);
-      document.getElementById('statusPill').textContent = cashFlow>1000 ? 'On Track' : cashFlow>0 ? 'Watch Spending' : 'Over Budget';
-      const pt = document.getElementById('portfolioTotal');
-      if(pt) pt.textContent = money(invested);
-    }
+      const spending = getSpendingTotal(mode);
+      const invested = Number(budgetData[mode].invested || 0);
+      const cashFlow = getCashFlow(mode);
+      const netWorth = getNetWorth(mode);
 
-    function renderEditableText(wrapper, text, onSave){
-      if(wrapper.querySelector('input')) return;
-      const input = document.createElement('input');
-      input.type = 'text'; input.className = 'text-edit'; input.value = text;
-      input.addEventListener('blur', ()=> onSave(input.value));
-      input.addEventListener('keydown', e => { if(e.key === 'Enter') input.blur(); });
-      wrapper.innerHTML = ''; wrapper.appendChild(input); input.focus(); input.select();
-    }
+      document.getElementById('overviewIncome').textContent = money(budgetData[mode].income);
+      document.getElementById('overviewCashFlow').textContent = money(cashFlow);
+      document.getElementById('overviewSpending').textContent = money(spending);
+      document.getElementById('overviewInvested').textContent = money(invested);
+      document.getElementById('overviewInvestedMini').textContent = money(invested);
+      document.getElementById('netWorthValue').textContent = money(netWorth);
 
-    function makeAmountEditable(el, getValue, saveFn){
-      if(el.querySelector('input')) return;
-      const input=document.createElement('input');
-      input.type='number'; input.step='0.01'; input.className='amount-edit'; input.value=getValue();
-      input.addEventListener('blur',()=>saveFn(Number(input.value)||0));
-      input.addEventListener('keydown',(e)=>{ if(e.key==='Enter') input.blur(); });
-      el.textContent=''; el.appendChild(input); input.focus(); input.select();
-    }
-
-    function renderIncomeList(){
-      const container = document.getElementById('incomeList'); container.innerHTML = '';
-      (budgetData[currentMode].incomes || []).forEach((item,index)=>{
-        const row = document.createElement('div'); row.className = 'income-card-row';
-        const left = document.createElement('div');
-        const nameDiv = document.createElement('div'); nameDiv.className = 'income-name editable-copy'; nameDiv.textContent = item.name;
-        nameDiv.onclick = ()=> renderEditableText(nameDiv, item.name, (val)=>{ budgetData[currentMode].incomes[index].name = val.trim() || 'Income'; saveToStorage(); renderMode(currentMode); });
-        const noteDiv = document.createElement('div'); noteDiv.className = 'income-note editable-copy'; noteDiv.textContent = item.note || '';
-        noteDiv.onclick = ()=> renderEditableText(noteDiv, item.note || '', (val)=>{ budgetData[currentMode].incomes[index].note = val.trim(); saveToStorage(); renderMode(currentMode); });
-        left.appendChild(nameDiv); left.appendChild(noteDiv);
-        const amount = document.createElement('div'); amount.className = 'income-amount'; amount.textContent = money(item.amount);
-        amount.onclick = ()=>makeAmountEditable(amount, ()=>Number(budgetData[currentMode].incomes[index].amount||0), (val)=>{ budgetData[currentMode].incomes[index].amount = val; addActivity('income','Income updated', budgetData[currentMode].incomes[index].name, val, 'plus'); saveToStorage(); renderMode(currentMode); });
-        row.appendChild(left); row.appendChild(amount); container.appendChild(row);
-      });
-    }
-
-    function renderInvestList(){
-      const container = document.getElementById('investList'); if(!container) return; container.innerHTML = '';
-      (budgetData[currentMode].investments || []).forEach((item,index)=>{
-        const row = document.createElement('div'); row.className = 'invest-row';
-        const left = document.createElement('div');
-        const nameDiv = document.createElement('div'); nameDiv.className = 'invest-name editable-copy'; nameDiv.textContent = item.name;
-        nameDiv.onclick = ()=> renderEditableText(nameDiv, item.name, (val)=>{ budgetData[currentMode].investments[index].name = val.trim() || 'Account'; saveToStorage(); renderMode(currentMode); });
-        const noteDiv = document.createElement('div'); noteDiv.className = 'invest-note editable-copy'; noteDiv.textContent = item.note || '';
-        noteDiv.onclick = ()=> renderEditableText(noteDiv, item.note || '', (val)=>{ budgetData[currentMode].investments[index].note = val.trim(); saveToStorage(); renderMode(currentMode); });
-        left.appendChild(nameDiv); left.appendChild(noteDiv);
-        const amount = document.createElement('div'); amount.className = 'invest-amount'; amount.textContent = money(item.amount);
-        amount.onclick = ()=>makeAmountEditable(amount, ()=>Number(budgetData[currentMode].investments[index].amount||0), (val)=>{ budgetData[currentMode].investments[index].amount = val; addActivity('investment','Investment updated', budgetData[currentMode].investments[index].name, val, 'plus'); saveToStorage(); renderMode(currentMode); });
-        row.appendChild(left); row.appendChild(amount); container.appendChild(row);
-      });
-    }
-
-    function renderCategoriesShell(){
-      const wrap = document.getElementById('categoriesContainer'); wrap.innerHTML = '';
-      currentGroups().forEach(group => {
-        const pretty = titleCase(group.replace(/-/g,' '));
-        const currentTotal = getCategoryTotal(currentMode, group);
-        const plannedTotal = getCategoryTotal('planned', group);
-        let ratio = 0, summary = '';
-        if(currentMode === 'planned'){ ratio = plannedTotal > 0 ? 100 : 0; summary = 'Planned ' + money(currentTotal); }
-        else if(currentMode === 'spent'){ ratio = plannedTotal > 0 ? Math.min((currentTotal / plannedTotal) * 100, 100) : 0; summary = money(currentTotal) + ' of ' + money(plannedTotal) + ' spent'; }
-        else { ratio = plannedTotal > 0 ? Math.min((currentTotal / plannedTotal) * 100, 100) : 0; summary = money(currentTotal) + ' of ' + money(plannedTotal) + ' remaining'; }
-        const tone = ratio > 100 ? 'bad' : ratio > 80 ? 'warn' : '';
-        const collapsed = !!budgetData.collapsedGroups[group];
-
-        const card = document.createElement('div'); card.className = 'card category-card' + (collapsed ? ' collapsed' : '');
-        card.innerHTML = `
-          <div class="category-head" onclick="toggleCategoryCollapse('${group}')">
-            <div class="category-title-wrap">
-              <h4>${escapeHtml(pretty)}</h4>
-              <div class="category-total">Total ${money(currentTotal)}</div>
-            </div>
-            <div>
-              <div class="category-tag">${currentMode.toUpperCase()}</div>
-              <div class="collapse-indicator">${collapsed ? 'Expand' : 'Collapse'}</div>
-            </div>
-          </div>
-          <div class="category-body">
-            <div class="category-progress-label"><span>${escapeHtml(summary)}</span><span>${Math.round(ratio)}%</span></div>
-            <div class="progress-track"><div class="progress-fill ${tone}" style="width:${Math.min(ratio,100)}%"></div></div>
-            <div id="items-${group}"></div>
-            <div class="new-item-panel" id="panel-${group}" style="display:none;">
-              <div class="new-item-row">
-                <input class="small-input" id="new-name-${group}" placeholder="Item name" />
-                <input class="small-input" id="new-amount-${group}" type="number" step="0.01" placeholder="Amount" />
-              </div>
-              <div class="new-item-actions">
-                <button class="save-item-btn" onclick="saveNewItem('${group}'); event.stopPropagation();">Save Item</button>
-                <button class="ghost-btn" onclick="cancelNewItem('${group}'); event.stopPropagation();">Cancel</button>
-              </div>
-            </div>
-            <div class="add-item-row"><button class="add-item-btn" onclick="showNewItem('${group}'); event.stopPropagation();">Add Item</button></div>
-          </div>`;
-        wrap.appendChild(card);
-      });
-    }
-
-    function renderCategory(group){
-      const container=document.getElementById('items-'+group); if(!container) return; container.innerHTML='';
-      (budgetData[currentMode].items[group]||[]).forEach((item,index)=>{
-        const row=document.createElement('div'); row.className='line-item';
-        const left=document.createElement('div');
-        const titleDiv = document.createElement('div'); titleDiv.className = 'line-title editable-copy'; titleDiv.textContent = item.name;
-        titleDiv.onclick = (e)=>{ e.stopPropagation(); renderEditableText(titleDiv, item.name, (val)=>{ budgetData[currentMode].items[group][index].name = val.trim() || 'Item'; saveToStorage(); renderMode(currentMode); }); };
-        const noteDiv = document.createElement('div'); noteDiv.className = 'line-sub editable-copy'; noteDiv.textContent = item.note || '';
-        noteDiv.onclick = (e)=>{ e.stopPropagation(); renderEditableText(noteDiv, item.note || '', (val)=>{ budgetData[currentMode].items[group][index].note = val.trim(); saveToStorage(); renderMode(currentMode); }); };
-        left.appendChild(titleDiv); left.appendChild(noteDiv);
-        const amount=document.createElement('div'); amount.className='line-amount '+toneClass(item.amount); amount.textContent=money(item.amount);
-        amount.onclick=(e)=>{ e.stopPropagation(); makeAmountEditable(amount, ()=>Number(budgetData[currentMode].items[group][index].amount||0), (val)=>{ budgetData[currentMode].items[group][index].amount = val; addActivity('expense','Expense updated', budgetData[currentMode].items[group][index].name + ' • ' + titleCase(group.replace(/-/g,' ')), val, 'minus'); saveToStorage(); renderMode(currentMode); }); };
-        row.appendChild(left); row.appendChild(amount); container.appendChild(row);
-      });
+      const pill = document.getElementById('statusPill');
+      if (cashFlow > 1000) pill.textContent = 'On Track';
+      else if (cashFlow > 0) pill.textContent = 'Watch Spending';
+      else pill.textContent = 'Over Budget';
     }
 
     function renderMode(mode){
-      renderIncomeList(); renderInvestList(); renderCategoriesShell();
-      const income=getIncomeTotal(mode), spending=getSpendingTotal(mode), left=income-spending, cashflow=income-spending;
-      document.getElementById('leftToBudget').textContent=money(left);
-      document.getElementById('leftToBudget').className='budget-big '+toneClass(left);
-      document.getElementById('incomeValue').textContent=money(income);
-      document.getElementById('cashFlowValue').textContent=money(cashflow);
-      currentGroups().forEach(renderCategory);
-      updateCategoryLabels(mode); updateOverview(mode); populateExpenseCategories(); renderActivity();
+      const income = Number(budgetData[mode].income || 0);
+      const savings = Number(budgetData[mode].savings || 0);
+      const housing = Number(budgetData[mode].housing || 0);
+      const transport = Number(budgetData[mode].transport || 0);
+      const spending = getSpendingTotal(mode);
+      const left = income - spending;
+      const cashflow = income - spending;
+
+      const leftEl = document.getElementById('leftToBudget');
+      const incomeEl = document.getElementById('incomeValue');
+      const cashEl = document.getElementById('cashFlowValue');
+
+      const savingsEl = document.getElementById('savingsAmountPlanned');
+      const housingEl = document.getElementById('housingAmountPlanned');
+      const transportEl = document.getElementById('transportAmountPlanned');
+
+      leftEl.textContent = money(left);
+      incomeEl.textContent = money(income);
+      cashEl.textContent = money(cashflow);
+
+      savingsEl.textContent = money(savings);
+      housingEl.textContent = money(housing);
+      transportEl.textContent = money(transport);
+
+      savingsEl.dataset.mode = mode;
+      housingEl.dataset.mode = mode;
+      transportEl.dataset.mode = mode;
+
+      setClass(savingsEl, 'line-amount', savings);
+      setClass(housingEl, 'line-amount', housing);
+      setClass(transportEl, 'line-amount', transport);
+
+      leftEl.className = 'budget-big ' + toneClass(left);
+
+      updateCategoryLabels(mode);
+      updateOverview(mode);
+      bindEditableAmounts();
     }
 
     function setBudgetMode(event, mode){
-      currentMode=mode;
-      document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('active'));
+      currentMode = mode;
+      document.querySelectorAll('.toggle button').forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
-      cancelNewIncome(); toggleExpensePanel(false); renderMode(mode);
+      renderMode(mode);
     }
 
-    function showNewIncome(){ document.getElementById('incomePanel').style.display='grid'; document.getElementById('new-income-name').focus(); }
-    function cancelNewIncome(){ document.getElementById('incomePanel').style.display='none'; document.getElementById('new-income-name').value=''; document.getElementById('new-income-amount').value=''; }
-    function saveNewIncome(){
-      const name=document.getElementById('new-income-name').value.trim(); const amount=Number(document.getElementById('new-income-amount').value)||0;
-      if(!name) return; budgetData[currentMode].incomes.push({name, note:'', amount}); addActivity('income','Income added', name, amount, 'plus'); saveToStorage(); cancelNewIncome(); renderMode(currentMode);
+    function updateIncome(value){
+      const income = Number(value) || 0;
+      budgetData.planned.income = income;
+      budgetData.spent.income = income;
+      budgetData.remaining.income = income;
+      renderMode(currentMode);
     }
 
-    function toggleInvestPanel(force){
-      const panel = document.getElementById('investPanel'); const show = typeof force === 'boolean' ? force : panel.style.display === 'none';
-      panel.style.display = show ? 'grid' : 'none';
-      if(show) document.getElementById('invest-name').focus();
-      else { document.getElementById('invest-name').value=''; document.getElementById('invest-amount').value=''; }
-    }
-    function saveNewInvestment(){
-      const name=document.getElementById('invest-name').value.trim(); const amount=Number(document.getElementById('invest-amount').value)||0;
-      if(!name) return; budgetData[currentMode].investments.push({name, note:'', amount}); addActivity('investment','Investment account added', name, amount, 'plus'); saveToStorage(); toggleInvestPanel(false); renderMode(currentMode);
+    function makeEditable(el){
+      if (el.querySelector('input')) return;
+
+      const group = el.dataset.group;
+      const mode = el.dataset.mode || currentMode;
+      const currentValue = Number(budgetData[mode][group] || 0);
+
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.step = '0.01';
+      input.className = 'amount-edit';
+      input.value = currentValue;
+
+      input.addEventListener('blur', () => saveEditable(el, input, group, mode));
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') input.blur();
+      });
+
+      el.textContent = '';
+      el.appendChild(input);
+      input.focus();
+      input.select();
     }
 
-    function showNewItem(group){ document.getElementById('panel-'+group).style.display='grid'; document.getElementById('new-name-'+group).focus(); }
-    function cancelNewItem(group){ document.getElementById('panel-'+group).style.display='none'; document.getElementById('new-name-'+group).value=''; document.getElementById('new-amount-'+group).value=''; }
-    function saveNewItem(group){
-      const name=document.getElementById('new-name-'+group).value.trim(); const amount=Number(document.getElementById('new-amount-'+group).value)||0;
-      if(!name) return; budgetData[currentMode].items[group].push({name, note:'', amount}); addActivity('expense','Expense item added', name + ' • ' + titleCase(group.replace(/-/g,' ')), amount, 'minus'); saveToStorage(); cancelNewItem(group); renderMode(currentMode);
+    function saveEditable(wrapper, input, group, mode){
+      const value = Number(input.value) || 0;
+      budgetData[mode][group] = value;
+      renderMode(currentMode);
     }
 
-    function toggleNewCategoryPanel(force){
-      const card = document.getElementById('newCategoryCard'); const show = typeof force === 'boolean' ? force : card.style.display === 'none';
-      card.style.display = show ? 'block' : 'none';
-      if(show) document.getElementById('new-category-name').focus();
-      else document.getElementById('new-category-name').value = '';
-    }
-    function saveNewCategory(){
-      const raw = document.getElementById('new-category-name').value.trim(); if(!raw) return;
-      const key = slugify(raw); if(!key) return;
-      ['planned','spent','remaining'].forEach(mode => { if(!budgetData[mode].items[key]) budgetData[mode].items[key] = []; });
-      budgetData.collapsedGroups[key] = false; addActivity('category','Category added', titleCase(key.replace(/-/g,' ')), 0, 'neutral'); saveToStorage(); toggleNewCategoryPanel(false); renderMode(currentMode);
-    }
-
-    function toggleCategoryCollapse(group){ budgetData.collapsedGroups[group] = !budgetData.collapsedGroups[group]; saveToStorage(); renderMode(currentMode); }
-
-    function populateExpenseCategories(){
-      const select = document.getElementById('expense-category'); if(!select) return;
-      select.innerHTML = currentGroups().map(group => '<option value="'+group+'">'+titleCase(group.replace(/-/g,' '))+'</option>').join('');
-    }
-    function toggleExpensePanel(force){
-      const card = document.getElementById('expenseCard'); const show = typeof force === 'boolean' ? force : card.style.display === 'none';
-      card.style.display = show ? 'block' : 'none';
-      if(show){ populateExpenseCategories(); document.getElementById('expense-name').focus(); }
-      else { document.getElementById('expense-name').value=''; document.getElementById('expense-amount').value=''; document.getElementById('expense-note').value=''; document.getElementById('expense-date').value=''; }
-    }
-    function saveExpense(){
-      const group = document.getElementById('expense-category').value;
-      const name = document.getElementById('expense-name').value.trim();
-      const amount = Number(document.getElementById('expense-amount').value)||0;
-      const note = document.getElementById('expense-note').value.trim();
-      const date = document.getElementById('expense-date').value;
-      if(!group || !name) return;
-      const fullNote = [note, date ? 'Due ' + date : ''].filter(Boolean).join(' • ');
-      budgetData[currentMode].items[group].push({name, note:fullNote, amount});
-      addActivity('expense','Expense added', name + ' • ' + titleCase(group.replace(/-/g,' ')), amount, 'minus');
-      saveToStorage(); toggleExpensePanel(false); renderMode(currentMode);
-    }
-
-    function resetBudget(){
-      budgetData = JSON.parse(JSON.stringify(defaultBudgetData)); currentMode = 'planned';
-      document.querySelectorAll('.toggle button').forEach((b,i)=> b.classList.toggle('active', i===0));
-      cancelNewIncome(); toggleNewCategoryPanel(false); toggleExpensePanel(false);
-      saveToStorage(); renderMode(currentMode);
-    }
-
-    function exportBackup(){
-      const blob = new Blob([JSON.stringify(budgetData, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob); const a = document.createElement('a');
-      a.href = url; a.download = 'fcc-backup.json'; a.click(); URL.revokeObjectURL(url);
-    }
-    function importBackup(event){
-      const file = event.target.files[0]; if(!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const parsed = JSON.parse(reader.result);
-          if(parsed && parsed.planned && parsed.spent && parsed.remaining){
-            budgetData = parsed; if(!budgetData.collapsedGroups) budgetData.collapsedGroups = {}; if(!budgetData.activity) budgetData.activity = [];
-            saveToStorage(); renderMode(currentMode);
-          }
-        } catch(e) {}
-        event.target.value = '';
-      };
-      reader.readAsText(file);
+    function bindEditableAmounts(){
+      document.querySelectorAll('.editable-amount').forEach(el => {
+        el.onclick = () => makeEditable(el);
+      });
     }
 
     function showScreen(id, button){
-      document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+      document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      document.querySelectorAll('.nav-btn').forEach(btn=>btn.classList.remove('active'));
+
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
     }
-    function openBudgetFromOverview(){ const btns = document.querySelectorAll('.nav-btn'); showScreen('budgetScreen', btns[1]); }
-    function openInvestFromOverview(){ const btns = document.querySelectorAll('.nav-btn'); showScreen('investScreen', btns[2]); }
 
-    window.addEventListener('load',()=>{
-      loadFromStorage(); if(!budgetData.collapsedGroups) budgetData.collapsedGroups = {}; if(!budgetData.activity) budgetData.activity = [];
+    window.addEventListener('load', () => {
+      document.getElementById('incomeInput').value = budgetData.planned.income;
       renderMode(currentMode);
-      setTimeout(()=>{
+
+      setTimeout(() => {
         document.getElementById('loadingScreen').classList.add('fade-out');
         document.getElementById('appShell').classList.add('ready');
-      },2100);
+      }, 2100);
     });
   </script>
 </body>
