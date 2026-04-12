@@ -650,7 +650,7 @@
     function createEmptyMonth(){
       const categories = {};
       DEFAULT_CATEGORIES.forEach(key => categories[key] = []);
-      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories };
+      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories, deletedDefaultCategories: [] };
     }
     function getCurrentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
     function defaultData(){
@@ -705,11 +705,16 @@
             ...a,
             balance: a.includeInCashFlow ? getEndOfMonthBalance(prevKey) / Math.max(1, (prevMonth.accounts || []).filter(x => x.includeInCashFlow).length) : Number(a.balance || 0)
           }));
+          data.months[key].deletedDefaultCategories = [...(prevMonth.deletedDefaultCategories || [])];
         }
       }
       if(!data.months[key].accounts) data.months[key].accounts = [];
       if(!data.months[key].assets) data.months[key].assets = [];
-      DEFAULT_CATEGORIES.forEach(cat => { if(!data.months[key].categories[cat]) data.months[key].categories[cat] = []; });
+      if(!data.months[key].deletedDefaultCategories) data.months[key].deletedDefaultCategories = [];
+      DEFAULT_CATEGORIES.forEach(cat => {
+        if((data.months[key].deletedDefaultCategories || []).includes(cat)) return;
+        if(!data.months[key].categories[cat]) data.months[key].categories[cat] = [];
+      });
       return data.months[key];
     }
     function getMonthData(key=data.currentMonth){ return ensureMonth(key); }
@@ -1079,7 +1084,7 @@
         };
       });
       wrap.querySelectorAll(`[data-delete="${type}"]`).forEach(el => {
-        const id = el.getAttribute('data-id');
+        const id = el.dataset.id;
         el.onclick = (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
@@ -1089,6 +1094,7 @@
     }
 
     function deleteItem(type, id){
+      console.log('delete', type, id);
       const month = getMonthData();
       if(type === 'income'){
         const item = month.incomes.find(i => i.id === id);
@@ -1109,12 +1115,11 @@
         if(item) addActivity('income_schedule', 'Paycheck deleted', item.name, item.amount, 'minus');
       } else if(type === 'expense'){
         let removed = null;
-        for(const cat of Object.keys(month.categories || {})){
-          const list = month.categories[cat] || [];
-          const found = list.find(i => String(i.id) === String(id));
+        for(const cat of getCategoryNames()){
+          const found = month.categories[cat].find(i => i.id === id);
           if(found){
             removed = found;
-            month.categories[cat] = list.filter(i => String(i.id) !== String(id));
+            month.categories[cat] = month.categories[cat].filter(i => i.id !== id);
             break;
           }
         }
@@ -1123,6 +1128,12 @@
         const total = getCategoryTotal(id);
         delete month.categories[id];
         delete data.collapsedGroups[id];
+        if(DEFAULT_CATEGORIES.includes(id)){
+          if(!month.deletedDefaultCategories) month.deletedDefaultCategories = [];
+          if(!month.deletedDefaultCategories.includes(id)){
+            month.deletedDefaultCategories.push(id);
+          }
+        }
         addActivity('category', 'Category deleted', titleCase(id), total, 'minus');
       }
       saveData(); render();
@@ -1327,7 +1338,7 @@
               <div class="category-progress-label"><span>${escapeHtml(data.budgetMode === 'remaining' ? 'Remaining' : 'Progress')}</span><span>${pct}%</span></div>
               <div class="progress-track"><div class="progress-fill ${tone}" style="width:${pct}%"></div></div>
               <div id="cat-${cat}"></div>
-              <div class="actions" style="margin-top:12px;" onclick="event.stopPropagation();">
+              <div class="actions" style="margin-top:12px;">
                 <button class="add-btn pill" onclick="showExpenseQuick('${cat}'); event.stopPropagation();">+ Item</button>
                 <button class="danger-btn pill" onclick="deleteItem('category','${cat}'); event.stopPropagation();">Delete Category</button>
               </div>
@@ -1444,6 +1455,7 @@
       if(!key) return;
       const month = getMonthData();
       if(!month.categories[key]) month.categories[key] = [];
+      month.deletedDefaultCategories = (month.deletedDefaultCategories || []).filter(c => c !== key);
       addActivity('category', 'Category added', titleCase(key), 0, 'neutral');
       document.getElementById('newCategoryName').value = '';
       togglePanel('categoryPanelWrap', false);
