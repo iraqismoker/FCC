@@ -304,6 +304,95 @@
       white-space:nowrap;
     }
 
+    
+    .signal-card,.summary-card{
+      padding:18px;
+      margin-bottom:14px;
+    }
+    .signal-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+    .signal-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      padding:12px 0;
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+    .signal-row:last-child{border-bottom:none;}
+    .signal-label{
+      color:#dfe8f3;
+      font-size:.9rem;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .signal-sub{
+      color:var(--muted);
+      font-size:.82rem;
+      line-height:1.35;
+    }
+    .signal-value{
+      font-size:.95rem;
+      font-weight:800;
+      text-align:right;
+      white-space:nowrap;
+    }
+    .summary-inline{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:14px;
+    }
+    .summary-mini{
+      padding:14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.05);
+    }
+    .summary-mini-label{
+      color:var(--muted);
+      font-size:.75rem;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:8px;
+    }
+    .summary-mini-value{
+      font-size:1.25rem;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .asset-group{
+      margin-bottom:14px;
+      padding:12px 14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.05);
+    }
+    .asset-group-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:4px;
+    }
+    .asset-group-name{
+      color:#dfe8f3;
+      font-size:.92rem;
+      font-weight:800;
+    }
+    .asset-group-total{
+      color:#dffcf8;
+      font-size:.9rem;
+      font-weight:800;
+    }
+    .asset-group-count{
+      color:var(--muted);
+      font-size:.8rem;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -359,6 +448,21 @@
 <div class="mini-stat"><div class="mini-stat-label">Income</div><div class="mini-stat-value" id="overviewIncome">$0</div></div>
 <div class="mini-stat"><div class="mini-stat-label">Invested</div><div class="mini-stat-value" id="overviewInvestedMini">$0</div></div>
 <div class="mini-stat"><div class="mini-stat-label">Cash Flow</div><div class="mini-stat-value" id="overviewCashFlow">$0</div></div>
+</div>
+</div><div class="card signal-card" id="overviewSignalsCard">
+<div class="section-head">
+<div class="section-title label-with-info">Quick Signals <span class="info-dot" onclick="toggleTip('tipOverviewSignals')">i</span></div>
+</div>
+<div class="tooltip-card hidden-tip" id="tipOverviewSignals">These give you a faster read on what is spendable and what remains after recurring bills in the selected month.</div>
+<div class="summary-inline">
+<div class="summary-mini">
+<div class="summary-mini-label">Safe to Spend</div>
+<div class="summary-mini-value good" id="overviewSafeToSpend">$0</div>
+</div>
+<div class="summary-mini">
+<div class="summary-mini-label">Left After Bills</div>
+<div class="summary-mini-value" id="overviewLeftAfterBills">$0</div>
+</div>
 </div>
 </div>
 <div class="card activity-card">
@@ -501,6 +605,34 @@
 <div class="forecast-stat"><div class="forecast-label">Lowest Balance</div><div class="forecast-value warn" id="cfLowestBalance">$0</div></div>
 <div class="forecast-stat"><div class="forecast-label">Safe to Spend</div><div class="forecast-value good" id="cfSafeToSpend">$0</div></div>
 </div>
+</div><div class="card forecast-card" id="cashflowSignalsCard">
+<div class="section-head">
+<div class="section-title label-with-info">Cash Flow Signals <span class="info-dot" onclick="toggleTip('tipCashSignals')">i</span></div>
+</div>
+<div class="tooltip-card hidden-tip" id="tipCashSignals">This highlights the next bill, next income hit, and the date your running balance gets lowest.</div>
+<div class="signal-grid">
+<div class="signal-row">
+<div>
+<div class="signal-label">Next Bill Due</div>
+<div class="signal-sub" id="cfNextBillSub">No recurring bills scheduled.</div>
+</div>
+<div class="signal-value bad" id="cfNextBillValue">$0</div>
+</div>
+<div class="signal-row">
+<div>
+<div class="signal-label">Next Income Hit</div>
+<div class="signal-sub" id="cfNextIncomeSub">No income schedule set.</div>
+</div>
+<div class="signal-value good" id="cfNextIncomeValue">$0</div>
+</div>
+<div class="signal-row">
+<div>
+<div class="signal-label">Lowest Balance Date</div>
+<div class="signal-sub" id="cfLowestDateSub">No forecast events yet.</div>
+</div>
+<div class="signal-value warn" id="cfLowestDateValue">$0</div>
+</div>
+</div>
 </div><div class="card forecast-card" id="cashflowBillsCard">
 <div class="section-head"><div class="section-title label-with-info">Recurring Bills <span class="info-dot" onclick="toggleTip('tipBills')">i</span></div><button class="add-btn pill" onclick="togglePanel('billPanelWrap')">+ Bill</button><div class="section-controls"><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', -1)">↑</button><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', 1)">↓</button></div></div>
 <div class="tooltip-card hidden-tip" id="tipBills">Use this for bills that repeat monthly, quarterly, or yearly. These feed into your cash flow forecast automatically.</div>
@@ -592,6 +724,12 @@
 </div>
 <div class="tooltip-card hidden-tip" id="tipAssetsTotal">Assets here add into net worth. Use this for collectibles, electronics, tools, jewelry, furniture, and other items you want tracked.</div>
 <div class="budget-big good" id="assetsTotal">$0</div>
+</div><div class="card invest-card" id="assetTotalsByCategoryCard">
+<div class="section-head">
+<div class="section-title label-with-info">Asset Categories <span class="info-dot" onclick="toggleTip('tipAssetCategories')">i</span></div>
+</div>
+<div class="tooltip-card hidden-tip" id="tipAssetCategories">This groups your tracked assets by category and totals their current values.</div>
+<div id="assetCategoryTotals"></div>
 </div>
 <div class="card invest-card">
 <div class="section-head">
@@ -625,7 +763,20 @@
 <h2>Settings</h2>
 <p>Reliable browser save, export/import, and user-focused budgeting defaults.</p>
 </div>
-<div class="card settings-card">
+<div class="card settings-card" id="settingsReadinessCard">
+<h4>App Readiness</h4>
+<div class="helper-copy">You now have a stable browser build with local save, export/import, and separated tabs for Budget, Cash Flow, Invest, Assets, and Settings.</div>
+<div class="summary-inline">
+<div class="summary-mini">
+<div class="summary-mini-label">Storage</div>
+<div class="summary-mini-value">Local</div>
+</div>
+<div class="summary-mini">
+<div class="summary-mini-label">Build State</div>
+<div class="summary-mini-value">Stable</div>
+</div>
+</div>
+</div><div class="card settings-card">
 <h4>Budget Style</h4>
 <div class="helper-copy">Default category structure: Fixed Bills, Variable Spending, Investing, Lifestyle.</div>
 </div>
@@ -949,6 +1100,40 @@
     }
 
 
+    
+    function getCashFlowSignals(monthKey=data.currentMonth){
+      const forecast = getForecast(monthKey);
+      const nextBill = getRecurringBillEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date))[0] || null;
+      const nextIncome = getIncomeScheduleEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date))[0] || null;
+      let lowestEvent = null;
+      if(forecast.timeline && forecast.timeline.length){
+        lowestEvent = forecast.timeline.reduce((lowest, item) => {
+          if(!lowest) return item;
+          return item.runningBalance < lowest.runningBalance ? item : lowest;
+        }, null);
+      }
+      return { forecast, nextBill, nextIncome, lowestEvent };
+    }
+
+    function getLeftAfterBills(monthKey=data.currentMonth){
+      const income = getManualIncomeTotal(monthKey);
+      const bills = getRecurringBillEvents(monthKey).reduce((s, e) => s + Number(e.amount || 0), 0);
+      return income - bills;
+    }
+
+    function getAssetCategoryRows(monthKey=data.currentMonth){
+      const items = getMonthData(monthKey).assets || [];
+      const grouped = {};
+      items.forEach(item => {
+        const cat = item.category || 'Other';
+        if(!grouped[cat]) grouped[cat] = { label: cat, amount: 0, count: 0 };
+        grouped[cat].amount += Number(item.amount || 0);
+        grouped[cat].count += 1;
+      });
+      return Object.values(grouped).sort((a,b) => b.amount - a.amount);
+    }
+
+
     function renderOverview(){
       const monthKey = data.currentMonth;
       const manualIncome = getManualIncomeTotal(monthKey);
@@ -1214,8 +1399,25 @@
       const month = getMonthData();
       const wrap = document.getElementById('assetsList');
       const totalEl = document.getElementById('assetsTotal');
+      const catWrap = document.getElementById('assetCategoryTotals');
       if(totalEl) totalEl.textContent = money(getAssetTotal());
-      const items = month.assets || [];
+      const items = (month.assets || []).slice().sort((a,b) => Number(b.amount || 0) - Number(a.amount || 0));
+      if(catWrap){
+        const rows = getAssetCategoryRows();
+        if(!rows.length){
+          catWrap.innerHTML = `<div class="empty-state">No asset categories yet.</div>`;
+        } else {
+          catWrap.innerHTML = rows.map(row => `
+            <div class="asset-group">
+              <div class="asset-group-head">
+                <div class="asset-group-name">${escapeHtml(row.label)}</div>
+                <div class="asset-group-total">${money(row.amount)}</div>
+              </div>
+              <div class="asset-group-count">${row.count} item${row.count === 1 ? '' : 's'}</div>
+            </div>
+          `).join('');
+        }
+      }
       if(!wrap) return;
       if(!items.length){
         wrap.innerHTML = `<div class="empty-state">No assets yet. Add valuables, collectibles, electronics, tools, or anything else you want counted in net worth.</div>`;
@@ -1225,6 +1427,7 @@
         <div class="row-item">
           <div style="flex:1;min-width:0;">
             <div class="row-name editable-copy" data-asset-name="${item.id}">${escapeHtml(item.name)}</div>
+            <div class="row-note">${escapeHtml(item.category || 'Other')}</div>
             <div class="row-note editable-copy" data-asset-serial="${item.id}">Serial: ${escapeHtml(item.serial || 'None')}</div>
             <div class="asset-meta editable-copy" data-asset-receipt="${item.id}">Receipt: ${escapeHtml(item.receiptName || 'None saved')}</div>
           </div>
@@ -1277,8 +1480,10 @@
         };
       });
       wrap.querySelectorAll('[data-asset-delete]').forEach(el => {
-        const id = el.dataset.assetDelete;
-        el.onclick = () => {
+        const id = el.getAttribute('data-asset-delete');
+        el.onclick = (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
           const item = month.assets.find(a => a.id === id);
           month.assets = month.assets.filter(a => a.id !== id);
           if(item) addActivity('asset', 'Asset deleted', item.name, item.amount, 'minus');
@@ -1381,13 +1586,51 @@
     function renderCashFlow(){
       const month = getMonthData();
       renderAccounts();
-      const forecast = getForecast();
+      const signals = getCashFlowSignals();
+      const forecast = signals.forecast;
       document.getElementById('cfCurrentBalance').textContent = money(forecast.startingBalance);
       document.getElementById('cfLowestBalance').textContent = money(forecast.lowestBalance);
       document.getElementById('cfSafeToSpend').textContent = money(forecast.safeToSpend);
 
       renderRowList('billsList', data.recurringBills.map(b => ({...b, note:`${titleCase(b.frequency)} • due day ${b.dueDay} • ${b.autoPay ? 'Auto-pay' : 'Manual'} • remind ${b.reminderDays}d`})), 'bill');
       renderRowList('scheduleList', data.incomeSchedules.map(s => { const income = getMonthData().incomes.find(i => i.id === s.incomeId); return {...s, name: income ? income.name : 'Missing income', amount: income ? income.amount : 0, note:`${titleCase(s.frequency)} • day ${s.day} • from Budget income`}; }), 'income_schedule');
+
+      const nextBillSub = document.getElementById('cfNextBillSub');
+      const nextBillValue = document.getElementById('cfNextBillValue');
+      const nextIncomeSub = document.getElementById('cfNextIncomeSub');
+      const nextIncomeValue = document.getElementById('cfNextIncomeValue');
+      const lowestDateSub = document.getElementById('cfLowestDateSub');
+      const lowestDateValue = document.getElementById('cfLowestDateValue');
+
+      if(nextBillSub && nextBillValue){
+        if(signals.nextBill){
+          nextBillSub.textContent = signals.nextBill.name + ' • due ' + signals.nextBill.date;
+          nextBillValue.textContent = money(signals.nextBill.amount);
+        } else {
+          nextBillSub.textContent = 'No recurring bills scheduled.';
+          nextBillValue.textContent = '$0';
+        }
+      }
+
+      if(nextIncomeSub && nextIncomeValue){
+        if(signals.nextIncome){
+          nextIncomeSub.textContent = signals.nextIncome.name + ' • ' + signals.nextIncome.date;
+          nextIncomeValue.textContent = money(signals.nextIncome.amount);
+        } else {
+          nextIncomeSub.textContent = 'No income schedule set.';
+          nextIncomeValue.textContent = '$0';
+        }
+      }
+
+      if(lowestDateSub && lowestDateValue){
+        if(signals.lowestEvent){
+          lowestDateSub.textContent = signals.lowestEvent.name + ' • ' + signals.lowestEvent.date;
+          lowestDateValue.textContent = money(signals.lowestEvent.runningBalance);
+        } else {
+          lowestDateSub.textContent = 'No forecast events yet.';
+          lowestDateValue.textContent = '$0';
+        }
+      }
 
       const timeline = document.getElementById('timelineList');
       if(!forecast.timeline.length){ timeline.innerHTML = `<div class="empty-state">Add income schedule and recurring bills to see your timeline and lowest balance forecast.</div>`; }
