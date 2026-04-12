@@ -194,86 +194,6 @@
       background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#dbe7f1;
       margin-top:6px;
     }
-    
-    .overview-top-note{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-top:14px;
-      padding:12px 14px;
-      border-radius:18px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.06);
-      color:var(--muted);
-      font-size:.86rem;
-      line-height:1.35;
-    }
-    .overview-grid{gap:14px;margin-bottom:14px;}
-    .chart-card{min-height:auto;padding:18px 16px 16px;text-align:left;}
-    .chart-card-head{margin-bottom:14px;}
-    .chart-kicker{
-      color:#7dd3c7;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;
-    }
-    .chart-title{
-      font-size:1.15rem;font-weight:800;line-height:1.1;letter-spacing:-.02em;margin-bottom:6px;
-    }
-    .chart-subtitle{
-      color:var(--muted);font-size:.84rem;line-height:1.35;min-height:34px;
-    }
-    .chart-visual{display:flex;justify-content:center;margin:8px 0 14px;}
-    .donut{width:118px;height:118px;margin:0;}
-    .donut::after{inset:24%;}
-    .donut-center{font-size:.72rem;line-height:1.08;letter-spacing:.06em;padding:0 10px;}
-    .overview-total{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:10px;}
-    .legend-list{display:grid;gap:8px;}
-    .legend-row{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      padding:8px 10px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);
-    }
-    .legend-left{display:flex;align-items:center;gap:8px;min-width:0;}
-    .legend-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto;}
-    .legend-name{
-      font-size:.84rem;color:#dfe8f3;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    }
-    .legend-value{font-size:.82rem;color:var(--muted);font-weight:700;white-space:nowrap;}
-
-    
-    .insight-card{
-      padding:18px;
-      margin-bottom:14px;
-    }
-    .insight-grid{
-      display:grid;
-      gap:10px;
-    }
-    .insight-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      padding:12px 0;
-      border-bottom:1px solid rgba(255,255,255,.05);
-    }
-    .insight-row:last-child{border-bottom:none;}
-    .insight-label{
-      color:#dfe8f3;
-      font-size:.9rem;
-      font-weight:800;
-      margin-bottom:4px;
-    }
-    .insight-sub{
-      color:var(--muted);
-      font-size:.82rem;
-      line-height:1.35;
-    }
-    .insight-value{
-      font-size:.95rem;
-      font-weight:800;
-      text-align:right;
-      white-space:nowrap;
-    }
-    
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -291,71 +211,24 @@
 <div class="header">
 <div class="eyebrow">Overview</div>
 <h1>Financial Command Center</h1>
-<p>A cleaner snapshot of spending, wealth mix, and net worth at a glance.</p>
-<div class="status-pill" style="display:inline-flex;margin-top:12px;">Assets build • stable</div>
-<div class="overview-top-note">
-<span>Overview now uses real categories and tracked values.</span>
-<span class="status-pill" style="margin:0;">Smart insights build • stable</span>
-</div></div>
+<p>Your money dashboard for spending, investing, and cash flow at a glance.</p>
+<div class="status-pill" style="display:inline-flex;margin-top:12px;">Smart insights • stable (rebuilt)</div>
+</div>
 <div class="top-row">
 <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
 </div>
 <div class="overview-grid">
 <div class="card chart-card" onclick="openScreen('budgetScreen', 1)">
-<div class="chart-card-head">
-<div class="chart-kicker">Overview</div>
-<div class="chart-title">Top Spending</div>
-<div class="chart-subtitle" id="spendingInsightText">Your highest budget categories this month.</div>
+<h3>Spending<br/>Breakdown</h3>
+<div class="donut spending"><div class="donut-center">SPENDING</div></div>
+<div class="chart-value" id="overviewSpending">$0</div>
+<div class="chart-note">Tap to open Budget</div>
 </div>
-<div class="chart-visual">
-<div class="donut spending" id="spendingDonut">
-<div class="donut-center" id="spendingDonutCenter">TOP<br/>SPEND</div>
-</div>
-</div>
-<div class="overview-total" id="overviewSpending">$0</div>
-<div class="legend-list" id="spendingLegend"></div>
-</div>
-<div class="card chart-card" onclick="openScreen('assetsScreen', 4)">
-<div class="chart-card-head">
-<div class="chart-kicker">Overview</div>
-<div class="chart-title">Asset Mix</div>
-<div class="chart-subtitle" id="assetMixInsightText">Cash, investments, and tracked assets.</div>
-</div>
-<div class="chart-visual">
-<div class="donut portfolio" id="assetMixDonut">
-<div class="donut-center" id="assetMixDonutCenter">ASSET<br/>MIX</div>
-</div>
-</div>
-<div class="overview-total" id="overviewInvested">$0</div>
-<div class="legend-list" id="assetMixLegend"></div>
-</div>
-</div><div class="card insight-card" id="smartInsightsCard">
-<div class="section-head">
-<div class="section-title label-with-info">Smart Insights <span class="info-dot" onclick="toggleTip('tipSmartInsights')">i</span></div>
-</div>
-<div class="tooltip-card hidden-tip" id="tipSmartInsights">These are your most useful overview signals right now: biggest expense, next bill, and next scheduled income hit.</div>
-<div class="insight-grid">
-<div class="insight-row">
-<div>
-<div class="insight-label">Biggest Expense</div>
-<div class="insight-sub" id="insightBiggestExpenseSub">No expenses yet.</div>
-</div>
-<div class="insight-value" id="insightBiggestExpenseValue">$0</div>
-</div>
-<div class="insight-row">
-<div>
-<div class="insight-label">Next Bill</div>
-<div class="insight-sub" id="insightNextBillSub">No recurring bills scheduled.</div>
-</div>
-<div class="insight-value bad" id="insightNextBillValue">$0</div>
-</div>
-<div class="insight-row">
-<div>
-<div class="insight-label">Next Income Hit</div>
-<div class="insight-sub" id="insightNextIncomeSub">No income schedule set.</div>
-</div>
-<div class="insight-value good" id="insightNextIncomeValue">$0</div>
-</div>
+<div class="card chart-card" onclick="openScreen('investScreen', 3)">
+<h3>Portfolio<br/>Breakdown</h3>
+<div class="donut portfolio"><div class="donut-center">PORTFOLIO</div></div>
+<div class="chart-value" id="overviewInvested">$0</div>
+<div class="chart-note">Tap to open Invest</div>
 </div>
 </div>
 <div class="card networth-card">
@@ -910,102 +783,6 @@
       return { income, expenses, cashFlow, leftToBudget: cashFlow };
     }
 
-    
-    function getTopSpendingData(monthKey=data.currentMonth){
-      const names = getCategoryNames(monthKey);
-      const rows = names.map(cat => ({
-        key: cat,
-        label: titleCase(cat),
-        amount: getCategoryTotal(cat, monthKey)
-      })).filter(r => r.amount > 0).sort((a,b) => b.amount - a.amount);
-      const total = rows.reduce((sum, r) => sum + r.amount, 0);
-      return { rows, total };
-    }
-
-    function getAssetMixData(monthKey=data.currentMonth){
-      const cash = getAllAccountBalance(monthKey);
-      const investments = getInvestmentTotal(monthKey);
-      const assets = getAssetTotal(monthKey);
-      const rows = [
-        { label: 'Cash', amount: cash, color: '#2dd4bf' },
-        { label: 'Investments', amount: investments, color: '#22c55e' },
-        { label: 'Assets', amount: assets, color: '#8b5cf6' }
-      ].filter(r => r.amount > 0);
-      const total = rows.reduce((sum, r) => sum + r.amount, 0);
-      return { rows, total };
-    }
-
-    function renderLegendRows(containerId, rows, palette){
-      const container = document.getElementById(containerId);
-      if(!container) return;
-      if(!rows.length){
-        container.innerHTML = '<div class="empty-state">No data yet.</div>';
-        return;
-      }
-      container.innerHTML = rows.slice(0,3).map((row, idx) => `
-        <div class="legend-row">
-          <div class="legend-left">
-            <span class="legend-dot" style="background:${row.color || palette[idx % palette.length]};"></span>
-            <span class="legend-name">${escapeHtml(row.label)}</span>
-          </div>
-          <div class="legend-value">${money(row.amount)}</div>
-        </div>
-      `).join('');
-    }
-
-    function applyDynamicDonut(elId, rows, fallbackClass, palette){
-      const el = document.getElementById(elId);
-      if(!el) return;
-      if(!rows.length){
-        el.style.background = '';
-        return;
-      }
-      const total = rows.reduce((sum, r) => sum + r.amount, 0) || 1;
-      let start = 0;
-      const segments = rows.slice(0,3).map((row, idx) => {
-        const pct = (row.amount / total) * 100;
-        const end = start + pct;
-        const color = row.color || palette[idx % palette.length];
-        const seg = `${color} ${start}% ${end}%`;
-        start = end;
-        return seg;
-      });
-      if(start < 100){
-        segments.push(`rgba(255,255,255,.06) ${start}% 100%`);
-      }
-      el.style.background = `conic-gradient(${segments.join(', ')})`;
-      el.classList.remove(fallbackClass);
-    }
-
-
-    
-    function getBiggestExpenseItem(monthKey=data.currentMonth){
-      const month = getMonthData(monthKey);
-      const items = [];
-      Object.keys(month.categories || {}).forEach(cat => {
-        (month.categories[cat] || []).forEach(item => {
-          items.push({
-            name: item.name,
-            amount: Number(item.amount || 0),
-            category: titleCase(cat)
-          });
-        });
-      });
-      items.sort((a,b) => b.amount - a.amount);
-      return items[0] || null;
-    }
-
-    function getNextBill(monthKey=data.currentMonth){
-      const bills = getRecurringBillEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date));
-      return bills[0] || null;
-    }
-
-    function getNextIncomeHit(monthKey=data.currentMonth){
-      const hits = getIncomeScheduleEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date));
-      return hits[0] || null;
-    }
-
-
     function renderOverview(){
       const monthKey = data.currentMonth;
       const manualIncome = getManualIncomeTotal(monthKey);
@@ -1014,85 +791,16 @@
       const manualExpenses = getManualExpenseTotal(monthKey);
       const recurringBills = getRecurringBillEvents(monthKey).reduce((s, e) => s + Number(e.amount || 0), 0);
       const totalAccounts = getAllAccountBalance(monthKey);
-      const totalSpending = manualExpenses + recurringBills;
-      const netWorth = totalAccounts + investmentTotal + assetTotal - totalSpending;
-      const cashFlow = manualIncome - totalSpending;
-
-      const spendData = getTopSpendingData(monthKey);
-      const assetMix = getAssetMixData(monthKey);
+      const netWorth = totalAccounts + investmentTotal + assetTotal - (manualExpenses + recurringBills);
+      const cashFlow = manualIncome - (manualExpenses + recurringBills);
 
       document.getElementById('overviewIncome').textContent = money(manualIncome);
-      document.getElementById('overviewInvested').textContent = money(assetMix.total);
+      document.getElementById('overviewInvested').textContent = money(investmentTotal);
       document.getElementById('overviewInvestedMini').textContent = money(investmentTotal);
-      document.getElementById('overviewSpending').textContent = money(totalSpending);
+      document.getElementById('overviewSpending').textContent = money(manualExpenses + recurringBills);
       document.getElementById('overviewCashFlow').textContent = money(cashFlow);
       document.getElementById('netWorthValue').textContent = money(netWorth);
       document.getElementById('statusPill').textContent = cashFlow > 1000 ? 'On Track' : cashFlow > 0 ? 'Watch Spending' : 'Over Budget';
-
-      const spendTop = spendData.rows[0];
-      const spendCenter = document.getElementById('spendingDonutCenter');
-      const spendInsight = document.getElementById('spendingInsightText');
-      if(spendTop){
-        const pct = spendData.total > 0 ? Math.round((spendTop.amount / spendData.total) * 100) : 0;
-        if(spendCenter) spendCenter.innerHTML = pct + '%<br>' + escapeHtml(spendTop.label.toUpperCase());
-        if(spendInsight) spendInsight.textContent = spendTop.label + ' is your largest spending category this month.';
-      } else {
-        if(spendCenter) spendCenter.innerHTML = 'NO<br>SPEND';
-        if(spendInsight) spendInsight.textContent = 'Add budget items to see your top categories.';
-      }
-
-      const assetTop = assetMix.rows.sort((a,b) => b.amount - a.amount)[0];
-      const assetCenter = document.getElementById('assetMixDonutCenter');
-      const assetInsight = document.getElementById('assetMixInsightText');
-      if(assetTop){
-        const pct = assetMix.total > 0 ? Math.round((assetTop.amount / assetMix.total) * 100) : 0;
-        if(assetCenter) assetCenter.innerHTML = pct + '%<br>' + escapeHtml(assetTop.label.toUpperCase());
-        if(assetInsight) assetInsight.textContent = assetTop.label + ' is the largest part of your tracked wealth mix.';
-      } else {
-        if(assetCenter) assetCenter.innerHTML = 'NO<br>DATA';
-        if(assetInsight) assetInsight.textContent = 'Add accounts, investments, or assets to build your mix.';
-      }
-
-      renderLegendRows('spendingLegend', spendData.rows.map((r, i) => ({...r, color: ['#14b8a6','#3b82f6','#f59e0b'][i]})), ['#14b8a6','#3b82f6','#f59e0b']);
-      renderLegendRows('assetMixLegend', assetMix.rows, ['#2dd4bf','#22c55e','#8b5cf6']);
-      applyDynamicDonut('spendingDonut', spendData.rows.map((r, i) => ({...r, color: ['#14b8a6','#3b82f6','#f59e0b'][i]})), 'spending', ['#14b8a6','#3b82f6','#f59e0b']);
-      applyDynamicDonut('assetMixDonut', assetMix.rows, 'portfolio', ['#2dd4bf','#22c55e','#8b5cf6']);
-
-      const biggestExpense = getBiggestExpenseItem(monthKey);
-      const nextBill = getNextBill(monthKey);
-      const nextIncome = getNextIncomeHit(monthKey);
-
-      const biggestSub = document.getElementById('insightBiggestExpenseSub');
-      const biggestVal = document.getElementById('insightBiggestExpenseValue');
-      const billSub = document.getElementById('insightNextBillSub');
-      const billVal = document.getElementById('insightNextBillValue');
-      const incomeSub = document.getElementById('insightNextIncomeSub');
-      const incomeVal = document.getElementById('insightNextIncomeValue');
-
-      if(biggestExpense){
-        biggestSub.textContent = biggestExpense.category;
-        biggestVal.textContent = money(biggestExpense.amount);
-      } else {
-        biggestSub.textContent = 'No expenses yet.';
-        biggestVal.textContent = '$0';
-      }
-
-      if(nextBill){
-        billSub.textContent = nextBill.name + ' • due ' + nextBill.date;
-        billVal.textContent = money(nextBill.amount);
-      } else {
-        billSub.textContent = 'No recurring bills scheduled.';
-        billVal.textContent = '$0';
-      }
-
-      if(nextIncome){
-        incomeSub.textContent = nextIncome.name + ' • ' + nextIncome.date;
-        incomeVal.textContent = money(nextIncome.amount);
-      } else {
-        incomeSub.textContent = 'No income schedule set.';
-        incomeVal.textContent = '$0';
-      }
-
       renderActivity();
     }
 
@@ -1131,10 +839,7 @@
 
     function renderRowList(containerId, items, type){
       const wrap = document.getElementById(containerId);
-      if(!items.length){
-        wrap.innerHTML = `<div class="empty-state">Nothing here yet.</div>`;
-        return;
-      }
+      if(!items.length){ wrap.innerHTML = `<div class="empty-state">Nothing here yet.</div>`; return; }
       wrap.innerHTML = items.map(item => `
         <div class="row-item">
           <div style="flex:1;min-width:0;">
@@ -1145,6 +850,7 @@
             <div class="row-amount" data-edit="${type}-amount" data-id="${item.id}">${money(item.amount)}</div>
             <button class="danger-btn pill" data-delete="${type}" data-id="${item.id}">Delete</button>
           </div>
+          `).join('')}
         </div>
       `).join('');
       wireRowInteractions(containerId, type);
@@ -1235,31 +941,27 @@
         wrap.innerHTML = `<div class="empty-state">No assets yet. Add valuables, collectibles, electronics, tools, or anything else you want counted in net worth.</div>`;
         return;
       }
-
       const grouped = {};
       items.forEach(item => {
         const cat = item.category || 'Other';
         if(!grouped[cat]) grouped[cat] = [];
         grouped[cat].push(item);
       });
-
       wrap.innerHTML = Object.keys(grouped).sort().map(cat => `
         <div style="margin-bottom:14px;">
           <div class="section-title" style="margin-bottom:8px;">${escapeHtml(cat)}</div>
           ${grouped[cat].map(item => `
-            <div class="row-item">
-              <div style="flex:1;min-width:0;">
-                <div class="row-name editable-copy" data-asset-name="${item.id}">${escapeHtml(item.name)}</div>
-                <div class="asset-cat-badge editable-copy" data-asset-category="${item.id}">${escapeHtml(item.category || 'Other')}</div>
-                <div class="row-note editable-copy" data-asset-serial="${item.id}">Serial: ${escapeHtml(item.serial || 'None')}</div>
-                <div class="asset-meta editable-copy" data-asset-receipt="${item.id}">Receipt: ${escapeHtml(item.receiptName || 'None saved')}</div>
-              </div>
-              <div style="display:flex;align-items:center;gap:8px;">
-                <div class="row-amount" data-asset-amount="${item.id}">${money(item.amount)}</div>
-                <button class="danger-btn pill" data-asset-delete="${item.id}">Delete</button>
-              </div>
-            </div>
-          `).join('')}
+        <div class="row-item">
+          <div style="flex:1;min-width:0;">
+            <div class="row-name editable-copy" data-asset-name="${item.id}">${escapeHtml(item.name)}</div>
+            <div class="asset-cat-badge editable-copy" data-asset-category="${item.id}">${escapeHtml(item.category || 'Other')}</div>
+            <div class="row-note editable-copy" data-asset-serial="${item.id}">Serial: ${escapeHtml(item.serial || 'None')}</div>
+            <div class="asset-meta editable-copy" data-asset-receipt="${item.id}">Receipt: ${escapeHtml(item.receiptName || 'None saved')}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="row-amount" data-asset-amount="${item.id}">${money(item.amount)}</div>
+            <button class="danger-btn pill" data-asset-delete="${item.id}">Delete</button>
+          </div>
         </div>
       `).join('');
 
@@ -1273,7 +975,6 @@
           });
         };
       });
-
       wrap.querySelectorAll('[data-asset-category]').forEach(el => {
         const id = el.dataset.assetCategory;
         el.onclick = () => {
@@ -1284,7 +985,6 @@
           });
         };
       });
-
       wrap.querySelectorAll('[data-asset-serial]').forEach(el => {
         const id = el.dataset.assetSerial;
         el.onclick = () => {
@@ -1295,7 +995,6 @@
           });
         };
       });
-
       wrap.querySelectorAll('[data-asset-receipt]').forEach(el => {
         const id = el.dataset.assetReceipt;
         el.onclick = () => {
@@ -1306,7 +1005,6 @@
           });
         };
       });
-
       wrap.querySelectorAll('[data-asset-amount]').forEach(el => {
         const id = el.dataset.assetAmount;
         el.onclick = () => {
@@ -1318,7 +1016,6 @@
           });
         };
       });
-
       wrap.querySelectorAll('[data-asset-delete]').forEach(el => {
         const id = el.dataset.assetDelete;
         el.onclick = () => {
