@@ -188,6 +188,12 @@
     .asset-meta{color:var(--muted);font-size:.8rem;line-height:1.35;margin-top:4px;}
     .receipt-note{color:var(--muted);font-size:.82rem;line-height:1.4;margin-top:8px;}
     .small-stack{display:grid;gap:8px;}
+    .asset-cat-badge{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:4px 8px;border-radius:999px;font-size:.72rem;font-weight:800;
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#dbe7f1;
+      margin-top:6px;
+    }
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -448,7 +454,7 @@
 <div class="header">
 <div class="eyebrow">Assets</div>
 <h2>Assets</h2>
-<p>Track valuables and property that should count toward net worth, including serial numbers and receipt references.</p>
+<p>Track valuables and property by category, including serial numbers and receipt references.</p>
 </div>
 <div class="top-row">
 <select class="month-select" id="assetsMonth" onchange="changeMonth(this.value)"></select>
@@ -472,6 +478,16 @@
 <div class="two-col">
 <input class="small-input" id="assetName" placeholder="Asset name"/>
 <input class="small-input" id="assetAmount" placeholder="Estimated value" step="0.01" type="number"/>
+</div><div class="two-col">
+<select class="form-select" id="assetCategory">
+<option value="collectibles">Collectibles</option>
+<option value="electronics">Electronics</option>
+<option value="tools">Tools</option>
+<option value="jewelry">Jewelry</option>
+<option value="furniture">Furniture</option>
+<option value="other">Other</option>
+</select>
+<input class="small-input" id="assetCustomCategory" placeholder="Custom category if Other"/>
 </div>
 <input class="small-input" id="assetSerial" placeholder="Serial number"/>
 <div class="small-stack">
@@ -834,6 +850,7 @@
             <div class="row-amount" data-edit="${type}-amount" data-id="${item.id}">${money(item.amount)}</div>
             <button class="danger-btn pill" data-delete="${type}" data-id="${item.id}">Delete</button>
           </div>
+          `).join('')}
         </div>
       `).join('');
       wireRowInteractions(containerId, type);
@@ -924,10 +941,20 @@
         wrap.innerHTML = `<div class="empty-state">No assets yet. Add valuables, collectibles, electronics, tools, or anything else you want counted in net worth.</div>`;
         return;
       }
-      wrap.innerHTML = items.map(item => `
+      const grouped = {};
+      items.forEach(item => {
+        const cat = item.category || 'Other';
+        if(!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(item);
+      });
+      wrap.innerHTML = Object.keys(grouped).sort().map(cat => `
+        <div style="margin-bottom:14px;">
+          <div class="section-title" style="margin-bottom:8px;">${escapeHtml(cat)}</div>
+          ${grouped[cat].map(item => `
         <div class="row-item">
           <div style="flex:1;min-width:0;">
             <div class="row-name editable-copy" data-asset-name="${item.id}">${escapeHtml(item.name)}</div>
+            <div class="asset-cat-badge editable-copy" data-asset-category="${item.id}">${escapeHtml(item.category || 'Other')}</div>
             <div class="row-note editable-copy" data-asset-serial="${item.id}">Serial: ${escapeHtml(item.serial || 'None')}</div>
             <div class="asset-meta editable-copy" data-asset-receipt="${item.id}">Receipt: ${escapeHtml(item.receiptName || 'None saved')}</div>
           </div>
@@ -944,6 +971,16 @@
           const item = month.assets.find(a => a.id === id);
           makeTextEditable(el, item.name, val => {
             item.name = val.trim() || item.name;
+            saveData(); render();
+          });
+        };
+      });
+      wrap.querySelectorAll('[data-asset-category]').forEach(el => {
+        const id = el.dataset.assetCategory;
+        el.onclick = () => {
+          const item = month.assets.find(a => a.id === id);
+          makeTextEditable(el, item.category || 'Other', val => {
+            item.category = val.trim() || item.category || 'Other';
             saveData(); render();
           });
         };
@@ -997,13 +1034,18 @@
       const receiptFile = document.getElementById('assetReceipt').files[0];
       const receiptName = receiptFile ? receiptFile.name : (document.getElementById('assetReceiptName').value.trim() || '');
       if(!name) return;
-      getMonthData().assets.push({id: uid('asset'), name, amount, serial, receiptName});
-      addActivity('asset', 'Asset added', name, amount, 'plus');
+      const category = document.getElementById('assetCategory').value;
+      const customCategory = document.getElementById('assetCustomCategory').value.trim();
+      const finalCategory = category === 'other' ? (customCategory || 'Other') : category;
+      getMonthData().assets.push({id: uid('asset'), name, amount, serial, receiptName, category: finalCategory});
+      addActivity('asset', 'Asset added', `${name} • ${finalCategory}`, amount, 'plus');
       document.getElementById('assetName').value = '';
       document.getElementById('assetAmount').value = '';
       document.getElementById('assetSerial').value = '';
       document.getElementById('assetReceipt').value = '';
       document.getElementById('assetReceiptName').value = '';
+      document.getElementById('assetCategory').value = 'collectibles';
+      document.getElementById('assetCustomCategory').value = '';
       togglePanel('assetPanelWrap', false);
       saveData(); render();
     }
