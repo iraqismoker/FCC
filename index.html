@@ -179,6 +179,9 @@
     }
     .pinned-note{color:#7dd3c7;font-size:.74rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;}
 
+    
+    #budgetMovableArea{display:block;}
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -236,7 +239,6 @@
           <button class="secondary-btn pill" onclick="clearActivity()">Clear</button>
         </div>
         <div id="activityList"></div>
-      </div>
     </section>
 
     <section id="budgetScreen" class="screen">
@@ -279,9 +281,9 @@
         </div>
       </div>
 
-      <div class="card budget-card">
+      <div class="card budget-card" id="budgetIncomeCard">
         <div class="section-head">
-          <div class="section-title label-with-info">Monthly Income <span class="info-dot" onclick="toggleTip('tipBudgetIncome')">i</span></div>
+          <div><div class="section-title label-with-info">Monthly Income <span class="info-dot" onclick="toggleTip('tipBudgetIncome')">i</span></div><div class="pinned-note">Pinned to top</div></div>
           <button class="add-btn pill" onclick="togglePanel('incomePanelWrap')">+ Income</button>
         </div>
         <div id="tipBudgetIncome" class="tooltip-card hidden-tip">This is where you enter the actual income sources and amounts for the selected month. Cash Flow uses schedules to decide when they hit.</div>
@@ -306,22 +308,37 @@
         <button onclick="setBudgetMode(event,'spent')">Spent</button>
         <button onclick="setBudgetMode(event,'remaining')">Remaining</button>
       </div>
-
-      <div class="card budget-card">
-        <h4 class="label-with-info">Left to Budget <span class="info-dot" onclick="toggleTip('tipLeftToBudget')">i</span></h4><div id="tipLeftToBudget" class="tooltip-card hidden-tip">This is your income minus the expenses shown in the current budget mode.</div>
+      
+      <div class="card budget-card" id="budgetLeftCard">
+        <h4 class="label-with-info">Left to Budget <span class="info-dot" onclick="toggleTip('tipLeftToBudget')">i</span></h4><div id="tipLeftToBudget" class="tooltip-card hidden-tip">This is your income minus the expenses shown in the current budget mode.</div><div class="pinned-note" style="margin-bottom:10px;">Pinned to top</div>
         <div class="budget-big good" id="leftToBudget">$0</div>
       </div>
-
-      <div class="info-grid">
-        <div class="card info-card"><h4>Income</h4><div class="info-value" id="budgetIncomeTotal">$0</div></div>
-        <div class="card info-card"><h4>Cash Flow</h4><div class="info-value" id="budgetCashFlow">$0</div></div>
+      <div id="budgetMovableArea"><div class="card budget-card" id="budgetSummaryCard">
+        <div class="section-head">
+          <div class="section-title">Summary</div>
+          <div class="section-controls">
+            <button class="mini-move" onclick="moveBudgetCard('budgetSummaryCard', -1)">↑</button>
+            <button class="mini-move" onclick="moveBudgetCard('budgetSummaryCard', 1)">↓</button>
+          </div>
+        </div>
+<div class="card budget-card" id="budgetCategoriesCard">
+          <div class="section-head">
+            <div class="section-title">Categories</div>
+            <div class="section-controls">
+              <button class="mini-move" onclick="moveBudgetCard('budgetCategoriesCard', -1)">↑</button>
+              <button class="mini-move" onclick="moveBudgetCard('budgetCategoriesCard', 1)">↓</button>
+            </div>
+          </div>
+<div class="card budget-card" id="budgetResetCard">
+          <div class="section-head">
+            <div class="section-title">Reset</div>
+            <div class="section-controls">
+              <button class="mini-move" onclick="moveBudgetCard('budgetResetCard', -1)">↑</button>
+              <button class="mini-move" onclick="moveBudgetCard('budgetResetCard', 1)">↓</button>
+            </div>
+          </div>
       </div>
-
-      <div id="categoriesWrap"></div>
-      <div class="actions">
-        <button class="danger-btn pill" onclick="resetMonth()">Reset This Month</button>
-      </div>
-    </section>
+</section>
 
     <section id="cashflowScreen" class="screen">
       <div class="header">
@@ -370,7 +387,6 @@
             </div>
           </div>
         </div>
-      </div>
     </section>
 
     <section id="settingsScreen" class="screen">
@@ -392,7 +408,6 @@
           <input class="hidden-input" id="importFile" type="file" accept=".json,application/json" onchange="importBackup(event)" />
           <button class="danger-btn pill" onclick="resetAllData()">Reset Entire App</button>
         </div>
-      </div>
     </section>
 
     <nav class="bottom-nav">
@@ -569,6 +584,22 @@
 
     function moveCashFlowCard(cardId, direction){
       const area = document.getElementById('cashflowMovableArea');
+      const card = document.getElementById(cardId);
+      if(!area || !card) return;
+      const cards = Array.from(area.children).filter(el => el.classList.contains('card'));
+      const index = cards.indexOf(card);
+      if(index === -1) return;
+      const newIndex = index + direction;
+      if(newIndex < 0 || newIndex >= cards.length) return;
+      if(direction < 0){
+        area.insertBefore(card, cards[newIndex]);
+      } else {
+        area.insertBefore(cards[newIndex], card);
+      }
+    }
+
+    function moveBudgetCard(cardId, direction){
+      const area = document.getElementById('budgetMovableArea');
       const card = document.getElementById(cardId);
       if(!area || !card) return;
       const cards = Array.from(area.children).filter(el => el.classList.contains('card'));
