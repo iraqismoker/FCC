@@ -149,7 +149,7 @@
     <div class="card splash-panel">
       <div class="brand-mark">FCC</div>
       <div class="splash-title">Financial Command Center</div>
-      <div class="splash-subtitle">A full build with months, recurring bills, paychecks, forecasting, and delete actions.</div>
+      <div class="splash-subtitle">A full build with months, recurring bills, income schedule, forecasting, and delete actions.</div>
       <div class="loading-track"><span></span></div>
     </div>
   </div>
@@ -287,7 +287,7 @@
       <div class="header">
         <div class="eyebrow">Cash Flow</div>
         <h2>Cash Flow Forecast</h2>
-        <p>See your real balance after bills and paychecks, plus the lowest point before the month ends.</p>
+        <p>See your real balance after bills and income schedule, plus the lowest point before the month ends.</p>
       </div>
       <div class="top-row">
         <select class="month-select" id="cashflowMonth" onchange="changeMonth(this.value)"></select>
@@ -341,17 +341,17 @@
       </div>
 
       <div class="card forecast-card">
-        <div class="section-head"><div class="section-title">Paychecks</div><button class="add-btn pill" onclick="togglePanel('paycheckPanelWrap')">+ Paycheck</button></div>
-        <div id="paychecksList"></div>
-        <div id="paycheckPanelWrap" style="display:none;">
+        <div class="section-head"><div class="section-title">Income Schedule</div><button class="add-btn pill" onclick="togglePanel('income_schedulePanelWrap')">+ Paycheck</button></div>
+        <div id="income scheduleList"></div>
+        <div id="income_schedulePanelWrap" style="display:none;">
           <div class="stack" style="margin-top:12px;">
             <div class="two-col">
-              <input class="small-input" id="paycheckName" placeholder="Paycheck name" />
-              <input class="small-input" id="paycheckAmount" type="number" step="0.01" placeholder="Amount" />
+              <input class="small-input" id="income_scheduleName" placeholder="Paycheck name" />
+              <input class="small-input" id="income_scheduleAmount" type="number" step="0.01" placeholder="Amount" />
             </div>
             <div class="two-col">
-              <input class="small-input" id="paycheckDay" type="number" min="1" max="31" placeholder="Day of month" />
-              <select class="form-select" id="paycheckFrequency">
+              <input class="small-input" id="income_scheduleDay" type="number" min="1" max="31" placeholder="Day of month" />
+              <select class="form-select" id="income_scheduleFrequency">
                 <option value="monthly">Monthly</option>
                 <option value="quarterly">Quarterly</option>
                 <option value="yearly">Yearly</option>
@@ -359,7 +359,7 @@
             </div>
             <div class="actions">
               <button class="save-btn pill" onclick="addRecurringPaycheck()">Save Paycheck</button>
-              <button class="secondary-btn pill" onclick="togglePanel('paycheckPanelWrap', false)">Cancel</button>
+              <button class="secondary-btn pill" onclick="togglePanel('income_schedulePanelWrap', false)">Cancel</button>
             </div>
           </div>
         </div>
@@ -461,10 +461,7 @@
           {id: uid('bill'), name:'Mortgage', amount:1200, dueDay:1, frequency:'monthly', autoPay:true, reminderDays:3, category:'fixed-bills', note:'Main monthly housing cost'},
           {id: uid('bill'), name:'Utilities', amount:220, dueDay:8, frequency:'monthly', autoPay:true, reminderDays:3, category:'fixed-bills', note:'Household bills'}
         ],
-        recurringPaychecks: [
-          {id: uid('pay'), name:'Primary Paycheck', amount:2000, day:1, frequency:'monthly'},
-          {id: uid('pay'), name:'Primary Paycheck', amount:2000, day:15, frequency:'monthly'}
-        ]
+        incomeSchedules: []
       };
     }
 
@@ -538,7 +535,7 @@
 
     function renderActivity(){
       const wrap = document.getElementById('activityList');
-      if(!data.activity.length){ wrap.innerHTML = `<div class="activity-empty">No recent activity yet. Add income, expenses, paychecks, or bills and they will show here.</div>`; return; }
+      if(!data.activity.length){ wrap.innerHTML = `<div class="activity-empty">No recent activity yet. Add income, expenses, income schedule, or bills and they will show here.</div>`; return; }
       wrap.innerHTML = data.activity.map(item => {
         const when = new Date(item.timestamp);
         const ts = isNaN(when) ? '' : when.toLocaleString();
@@ -571,7 +568,7 @@
     }
     function getRecurringPaycheckEvents(monthKey=data.currentMonth){
       const [year, month] = monthKey.split('-').map(Number);
-      return data.recurringPaychecks.filter(p => occursThisMonth(p, monthKey)).map(p => ({
+      return data.incomeSchedules.filter(p => occursThisMonth(p, monthKey)).map(p => ({
         ...p,
         date: `${year}-${String(month).padStart(2,'0')}-${String(Math.max(1, Math.min(28, Number(p.day || 1)))).padStart(2,'0')}`
       }));
@@ -581,9 +578,9 @@
       const month = getMonthData(monthKey);
       const startingBalance = Number(month.startingBalance || 0);
       const events = [
-        ...getRecurringPaycheckEvents(monthKey).map(e => ({...e, signed:Number(e.amount || 0), type:'paycheck'})),
+        ...getRecurringPaycheckEvents(monthKey).map(e => ({...e, signed:Number(e.amount || 0), type:'income_schedule'})),
         ...getRecurringBillEvents(monthKey).map(e => ({...e, signed:-Number(e.amount || 0), type:'bill'}))
-      ].sort((a,b) => a.date.localeCompare(b.date) || (a.type === 'paycheck' ? -1 : 1));
+      ].sort((a,b) => a.date.localeCompare(b.date) || (a.type === 'income_schedule' ? -1 : 1));
 
       let running = startingBalance;
       let lowest = startingBalance;
@@ -659,7 +656,7 @@
       if(type === 'income') return month.incomes.find(i => i.id === id);
       if(type === 'investment') return month.investments.find(i => i.id === id);
       if(type === 'bill') return data.recurringBills.find(i => i.id === id);
-      if(type === 'paycheck') return data.recurringPaychecks.find(i => i.id === id);
+      if(type === 'income_schedule') { const sched = data.incomeSchedules.find(i => i.id === id); if(!sched) return null; const income = getMonthData().incomes.find(j => j.id === sched.incomeId); return {...sched, name: income ? income.name : 'Missing income', amount: income ? income.amount : 0, note:`${titleCase(sched.frequency)} • day ${sched.day}`}; }
       if(type === 'expense'){
         for(const cat of getCategoryNames()){
           const item = month.categories[cat].find(i => i.id === id);
@@ -725,6 +722,7 @@
       if(type === 'income'){
         const item = month.incomes.find(i => i.id === id);
         month.incomes = month.incomes.filter(i => i.id !== id);
+        data.incomeSchedules = data.incomeSchedules.filter(s => s.incomeId !== id);
         if(item) addActivity('income', 'Income deleted', item.name, item.amount, 'minus');
       } else if(type === 'investment'){
         const item = month.investments.find(i => i.id === id);
@@ -734,10 +732,10 @@
         const item = data.recurringBills.find(i => i.id === id);
         data.recurringBills = data.recurringBills.filter(i => i.id !== id);
         if(item) addActivity('bill', 'Recurring bill deleted', item.name, item.amount, 'minus');
-      } else if(type === 'paycheck'){
-        const item = data.recurringPaychecks.find(i => i.id === id);
-        data.recurringPaychecks = data.recurringPaychecks.filter(i => i.id !== id);
-        if(item) addActivity('paycheck', 'Paycheck deleted', item.name, item.amount, 'minus');
+      } else if(type === 'income_schedule'){
+        const item = data.incomeSchedules.find(i => i.id === id);
+        data.incomeSchedules = data.incomeSchedules.filter(i => i.id !== id);
+        if(item) addActivity('income_schedule', 'Paycheck deleted', item.name, item.amount, 'minus');
       } else if(type === 'expense'){
         let removed = null;
         for(const cat of getCategoryNames()){
@@ -843,18 +841,18 @@
       document.getElementById('cfSafeToSpend').textContent = money(forecast.safeToSpend);
 
       renderRowList('billsList', data.recurringBills.map(b => ({...b, note:`${titleCase(b.frequency)} • due day ${b.dueDay} • ${b.autoPay ? 'Auto-pay' : 'Manual'} • remind ${b.reminderDays}d`})), 'bill');
-      renderRowList('paychecksList', data.recurringPaychecks.map(p => ({...p, note:`${titleCase(p.frequency)} • day ${p.day}`})), 'paycheck');
+      renderRowList('income scheduleList', data.incomeSchedules.map(p => ({...p, note:`${titleCase(p.frequency)} • day ${p.day}`})), 'income_schedule');
 
       const timeline = document.getElementById('timelineList');
-      if(!forecast.timeline.length){ timeline.innerHTML = `<div class="empty-state">Add paychecks and recurring bills to see your timeline and lowest balance forecast.</div>`; }
+      if(!forecast.timeline.length){ timeline.innerHTML = `<div class="empty-state">Add income schedule and recurring bills to see your timeline and lowest balance forecast.</div>`; }
       else {
         timeline.innerHTML = forecast.timeline.map(item => `
           <div class="timeline-item">
             <div>
               <div class="timeline-main">${escapeHtml(item.name)}</div>
-              <div class="timeline-meta">${escapeHtml(item.date)} • ${escapeHtml(item.type === 'paycheck' ? 'Paycheck' : 'Bill')} • Balance ${money(item.runningBalance)}</div>
+              <div class="timeline-meta">${escapeHtml(item.date)} • ${escapeHtml(item.type === 'income_schedule' ? 'Paycheck' : 'Bill')} • Balance ${money(item.runningBalance)}</div>
             </div>
-            <div class="timeline-amount ${item.type === 'paycheck' ? 'good' : 'bad'}">${item.type === 'paycheck' ? '+' : '-'}${money(item.amount)}</div>
+            <div class="timeline-amount ${item.type === 'income_schedule' ? 'good' : 'bad'}">${item.type === 'income_schedule' ? '+' : '-'}${money(item.amount)}</div>
           </div>
         `).join('');
       }
@@ -868,6 +866,13 @@
     function populateBillCategoryOptions(){
       const select = document.getElementById('billCategory');
       if(select) select.innerHTML = getCategoryNames().map(cat => `<option value="${cat}">${titleCase(cat)}</option>`).join('');
+    }
+
+    function populateIncomeScheduleOptions(){
+      const select = document.getElementById('scheduleIncomeId');
+      if(!select) return;
+      const incomes = getMonthData().incomes;
+      select.innerHTML = incomes.map(i => `<option value="${i.id}">${escapeHtml(i.name)} • ${money(i.amount)}</option>`).join('');
     }
 
     function addIncome(){
@@ -922,6 +927,20 @@
       saveData(); render();
     }
 
+    function addIncomeSchedule(){
+      const incomeId = document.getElementById('scheduleIncomeId').value;
+      const day = Number(document.getElementById('scheduleDay').value || 1);
+      const frequency = document.getElementById('scheduleFrequency').value;
+      const income = getMonthData().incomes.find(i => i.id === incomeId);
+      if(!incomeId || !income) return;
+      data.incomeSchedules.push({id: uid('sched'), incomeId, day, frequency});
+      addActivity('income_schedule', 'Income schedule added', `${income.name} • ${titleCase(frequency)}`, income.amount, 'plus');
+      document.getElementById('scheduleDay').value = '';
+      document.getElementById('scheduleFrequency').value = 'monthly';
+      togglePanel('schedulePanelWrap', false);
+      saveData(); render();
+    }
+
     function addRecurringBill(){
       const name = document.getElementById('billName').value.trim();
       const amount = Number(document.getElementById('billAmount').value || 0);
@@ -942,16 +961,16 @@
     }
 
     function addRecurringPaycheck(){
-      const name = document.getElementById('paycheckName').value.trim();
-      const amount = Number(document.getElementById('paycheckAmount').value || 0);
-      const day = Number(document.getElementById('paycheckDay').value || 1);
-      const frequency = document.getElementById('paycheckFrequency').value;
+      const name = document.getElementById('income_scheduleName').value.trim();
+      const amount = Number(document.getElementById('income_scheduleAmount').value || 0);
+      const day = Number(document.getElementById('income_scheduleDay').value || 1);
+      const frequency = document.getElementById('income_scheduleFrequency').value;
       if(!name) return;
-      data.recurringPaychecks.push({id: uid('pay'), name, amount, day, frequency});
-      addActivity('paycheck', 'Recurring paycheck added', `${name} • ${titleCase(frequency)}`, amount, 'plus');
-      ['paycheckName','paycheckAmount','paycheckDay'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('paycheckFrequency').value = 'monthly';
-      togglePanel('paycheckPanelWrap', false);
+      data.incomeSchedules.push({id: uid('pay'), name, amount, day, frequency});
+      addActivity('income_schedule', 'Income Schedule added', `${name} • ${titleCase(frequency)}`, amount, 'plus');
+      ['income_scheduleName','income_scheduleAmount','income_scheduleDay'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('income_scheduleFrequency').value = 'monthly';
+      togglePanel('income_schedulePanelWrap', false);
       saveData(); render();
     }
 
@@ -1013,6 +1032,7 @@
       syncMonthSelectors();
       syncBudgetToggle();
       populateExpenseCategoryOptions();
+      populateIncomeScheduleOptions();
       renderOverview();
       renderIncomeSection();
       renderBudgetSummary();
