@@ -1079,7 +1079,7 @@
         };
       });
       wrap.querySelectorAll(`[data-delete="${type}"]`).forEach(el => {
-        const id = el.dataset.id;
+        const id = el.getAttribute('data-id');
         el.onclick = (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
@@ -1089,7 +1089,6 @@
     }
 
     function deleteItem(type, id){
-      console.log('delete', type, id);
       const month = getMonthData();
       if(type === 'income'){
         const item = month.incomes.find(i => i.id === id);
@@ -1110,11 +1109,12 @@
         if(item) addActivity('income_schedule', 'Paycheck deleted', item.name, item.amount, 'minus');
       } else if(type === 'expense'){
         let removed = null;
-        for(const cat of getCategoryNames()){
-          const found = month.categories[cat].find(i => i.id === id);
+        for(const cat of Object.keys(month.categories || {})){
+          const list = month.categories[cat] || [];
+          const found = list.find(i => String(i.id) === String(id));
           if(found){
             removed = found;
-            month.categories[cat] = month.categories[cat].filter(i => i.id !== id);
+            month.categories[cat] = list.filter(i => String(i.id) !== String(id));
             break;
           }
         }
@@ -1327,7 +1327,7 @@
               <div class="category-progress-label"><span>${escapeHtml(data.budgetMode === 'remaining' ? 'Remaining' : 'Progress')}</span><span>${pct}%</span></div>
               <div class="progress-track"><div class="progress-fill ${tone}" style="width:${pct}%"></div></div>
               <div id="cat-${cat}"></div>
-              <div class="actions" style="margin-top:12px;">
+              <div class="actions" style="margin-top:12px;" onclick="event.stopPropagation();">
                 <button class="add-btn pill" onclick="showExpenseQuick('${cat}'); event.stopPropagation();">+ Item</button>
                 <button class="danger-btn pill" onclick="deleteItem('category','${cat}'); event.stopPropagation();">Delete Category</button>
               </div>
