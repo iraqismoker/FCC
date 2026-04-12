@@ -259,7 +259,7 @@
 <div class="status-pill" style="display:inline-flex;margin-top:12px;">Assets build • stable</div>
 <div class="overview-top-note">
 <span>Overview now uses real categories and tracked values.</span>
-<span class="status-pill" style="margin:0;">Overview data refresh</span>
+<span class="status-pill" style="margin:0;">Overview dynamic build • fixed</span>
 </div></div>
 <div class="top-row">
 <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
@@ -1004,7 +1004,10 @@
 
     function renderRowList(containerId, items, type){
       const wrap = document.getElementById(containerId);
-      if(!items.length){ wrap.innerHTML = `<div class="empty-state">Nothing here yet.</div>`; return; }
+      if(!items.length){
+        wrap.innerHTML = `<div class="empty-state">Nothing here yet.</div>`;
+        return;
+      }
       wrap.innerHTML = items.map(item => `
         <div class="row-item">
           <div style="flex:1;min-width:0;">
@@ -1015,7 +1018,6 @@
             <div class="row-amount" data-edit="${type}-amount" data-id="${item.id}">${money(item.amount)}</div>
             <button class="danger-btn pill" data-delete="${type}" data-id="${item.id}">Delete</button>
           </div>
-          `).join('')}
         </div>
       `).join('');
       wireRowInteractions(containerId, type);
