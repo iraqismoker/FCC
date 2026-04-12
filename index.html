@@ -226,6 +226,84 @@
       margin-top:auto !important;
     }
 
+    
+    .invest-mini-wrap{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-top:10px;
+    }
+    .invest-mini-chart{
+      width:110px;
+      height:110px;
+      border-radius:50%;
+      position:relative;
+      flex:0 0 auto;
+      display:grid;
+      place-items:center;
+    }
+    .invest-mini-chart::after{
+      content:"";
+      position:absolute;
+      inset:24%;
+      border-radius:50%;
+      background:linear-gradient(180deg, rgba(11,18,32,.99), rgba(15,23,42,.99));
+      border:1px solid rgba(255,255,255,.05);
+    }
+    .invest-mini-center{
+      position:relative;
+      z-index:1;
+      text-align:center;
+      font-size:.68rem;
+      line-height:1.05;
+      font-weight:800;
+      letter-spacing:.06em;
+      color:#d9f3ef;
+      padding:0 8px;
+    }
+    .invest-legend{
+      display:grid;
+      gap:8px;
+      flex:1;
+    }
+    .invest-legend-row{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      padding:8px 10px;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.04);
+    }
+    .invest-legend-left{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-width:0;
+    }
+    .invest-dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      flex:0 0 auto;
+    }
+    .invest-legend-name{
+      font-size:.84rem;
+      color:#dfe8f3;
+      font-weight:700;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .invest-legend-value{
+      font-size:.82rem;
+      color:var(--muted);
+      font-weight:700;
+      white-space:nowrap;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -469,7 +547,18 @@
 <div class="top-row">
 <select class="month-select" id="investMonth" onchange="changeMonth(this.value)"></select>
 </div>
-<div class="card invest-card"><h4>Portfolio Total</h4><div class="budget-big good" id="portfolioTotal">$0</div></div>
+<div class="card invest-card"><h4>Portfolio Total</h4><div class="budget-big good" id="portfolioTotal">$0</div></div><div class="card invest-card" id="investMiniChartCard">
+<div class="section-head">
+<div class="section-title label-with-info">Investment Breakdown <span class="info-dot" onclick="toggleTip('tipInvestBreakdown')">i</span></div>
+</div>
+<div class="tooltip-card hidden-tip" id="tipInvestBreakdown">This chart only uses investment accounts from the Invest tab, not cash accounts or physical assets.</div>
+<div class="invest-mini-wrap">
+<div class="invest-mini-chart" id="investMiniChart">
+<div class="invest-mini-center" id="investMiniCenter">NO<br/>DATA</div>
+</div>
+<div class="invest-legend" id="investLegend"></div>
+</div>
+</div>
 <div class="card invest-card">
 <div class="section-head"><div class="section-title">Investment Accounts</div><button class="add-btn pill" onclick="togglePanel('investPanelWrap')">+ Account</button></div>
 <div id="investList"></div>
@@ -991,11 +1080,16 @@
       });
       wrap.querySelectorAll(`[data-delete="${type}"]`).forEach(el => {
         const id = el.dataset.id;
-        el.onclick = () => deleteItem(type, id);
+        el.onclick = (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          deleteItem(type, id);
+        };
       });
     }
 
     function deleteItem(type, id){
+      console.log('delete', type, id);
       const month = getMonthData();
       if(type === 'income'){
         const item = month.incomes.find(i => i.id === id);
@@ -1035,7 +1129,76 @@
     }
 
     function renderIncomeSection(){ renderRowList('incomeList', getMonthData().incomes, 'income'); }
-    function renderInvestSection(){ document.getElementById('portfolioTotal').textContent = money(getInvestmentTotal()); renderRowList('investList', getMonthData().investments, 'investment'); }
+    
+    function getInvestmentRows(monthKey=data.currentMonth){
+      const items = getMonthData(monthKey).investments || [];
+      const rows = items.map(item => ({
+        label: item.name,
+        amount: Number(item.amount || 0)
+      })).filter(r => r.amount > 0).sort((a,b) => b.amount - a.amount);
+      return { rows, total: rows.reduce((sum, r) => sum + r.amount, 0) };
+    }
+
+    function renderInvestLegend(containerId, rows, palette){
+      const container = document.getElementById(containerId);
+      if(!container) return;
+      if(!rows.length){
+        container.innerHTML = '<div class="empty-state">Add investment balances to see the breakdown.</div>';
+        return;
+      }
+      container.innerHTML = rows.slice(0,3).map((row, idx) => `
+        <div class="invest-legend-row">
+          <div class="invest-legend-left">
+            <span class="invest-dot" style="background:${palette[idx % palette.length]};"></span>
+            <span class="invest-legend-name">${escapeHtml(row.label)}</span>
+          </div>
+          <div class="invest-legend-value">${money(row.amount)}</div>
+        </div>
+      `).join('');
+    }
+
+    function applyInvestMiniDonut(elId, rows, palette){
+      const el = document.getElementById(elId);
+      if(!el) return;
+      if(!rows.length){
+        el.style.background = '';
+        return;
+      }
+      const total = rows.reduce((sum, r) => sum + r.amount, 0) || 1;
+      let start = 0;
+      const segments = rows.slice(0,3).map((row, idx) => {
+        const pct = (row.amount / total) * 100;
+        const end = start + pct;
+        const color = palette[idx % palette.length];
+        const seg = `${color} ${start}% ${end}%`;
+        start = end;
+        return seg;
+      });
+      if(start < 100){
+        segments.push(`rgba(255,255,255,.06) ${start}% 100%`);
+      }
+      el.style.background = `conic-gradient(${segments.join(', ')})`;
+    }
+
+
+    function renderInvestSection(){
+      document.getElementById('portfolioTotal').textContent = money(getInvestmentTotal());
+      renderRowList('investList', getMonthData().investments, 'investment');
+
+      const investData = getInvestmentRows();
+      const center = document.getElementById('investMiniCenter');
+      const top = investData.rows[0];
+      if(center){
+        if(top){
+          const pct = investData.total > 0 ? Math.round((top.amount / investData.total) * 100) : 0;
+          center.innerHTML = pct + '%<br>' + escapeHtml(top.label.toUpperCase());
+        } else {
+          center.innerHTML = 'NO<br>DATA';
+        }
+      }
+      renderInvestLegend('investLegend', investData.rows, ['#22c55e','#2dd4bf','#8b5cf6']);
+      applyInvestMiniDonut('investMiniChart', investData.rows, ['#22c55e','#2dd4bf','#8b5cf6']);
+    }
     function renderAssetsSection(){
       const month = getMonthData();
       const wrap = document.getElementById('assetsList');
