@@ -238,6 +238,42 @@
     }
     .legend-value{font-size:.82rem;color:var(--muted);font-weight:700;white-space:nowrap;}
 
+    
+    .insight-card{
+      padding:18px;
+      margin-bottom:14px;
+    }
+    .insight-grid{
+      display:grid;
+      gap:10px;
+    }
+    .insight-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      padding:12px 0;
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+    .insight-row:last-child{border-bottom:none;}
+    .insight-label{
+      color:#dfe8f3;
+      font-size:.9rem;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .insight-sub{
+      color:var(--muted);
+      font-size:.82rem;
+      line-height:1.35;
+    }
+    .insight-value{
+      font-size:.95rem;
+      font-weight:800;
+      text-align:right;
+      white-space:nowrap;
+    }
+    
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -259,7 +295,7 @@
 <div class="status-pill" style="display:inline-flex;margin-top:12px;">Assets build • stable</div>
 <div class="overview-top-note">
 <span>Overview now uses real categories and tracked values.</span>
-<span class="status-pill" style="margin:0;">Overview dynamic build • fixed</span>
+<span class="status-pill" style="margin:0;">Smart insights build • stable</span>
 </div></div>
 <div class="top-row">
 <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
@@ -292,6 +328,34 @@
 </div>
 <div class="overview-total" id="overviewInvested">$0</div>
 <div class="legend-list" id="assetMixLegend"></div>
+</div>
+</div><div class="card insight-card" id="smartInsightsCard">
+<div class="section-head">
+<div class="section-title label-with-info">Smart Insights <span class="info-dot" onclick="toggleTip('tipSmartInsights')">i</span></div>
+</div>
+<div class="tooltip-card hidden-tip" id="tipSmartInsights">These are your most useful overview signals right now: biggest expense, next bill, and next scheduled income hit.</div>
+<div class="insight-grid">
+<div class="insight-row">
+<div>
+<div class="insight-label">Biggest Expense</div>
+<div class="insight-sub" id="insightBiggestExpenseSub">No expenses yet.</div>
+</div>
+<div class="insight-value" id="insightBiggestExpenseValue">$0</div>
+</div>
+<div class="insight-row">
+<div>
+<div class="insight-label">Next Bill</div>
+<div class="insight-sub" id="insightNextBillSub">No recurring bills scheduled.</div>
+</div>
+<div class="insight-value bad" id="insightNextBillValue">$0</div>
+</div>
+<div class="insight-row">
+<div>
+<div class="insight-label">Next Income Hit</div>
+<div class="insight-sub" id="insightNextIncomeSub">No income schedule set.</div>
+</div>
+<div class="insight-value good" id="insightNextIncomeValue">$0</div>
+</div>
 </div>
 </div>
 <div class="card networth-card">
@@ -914,6 +978,34 @@
     }
 
 
+    
+    function getBiggestExpenseItem(monthKey=data.currentMonth){
+      const month = getMonthData(monthKey);
+      const items = [];
+      Object.keys(month.categories || {}).forEach(cat => {
+        (month.categories[cat] || []).forEach(item => {
+          items.push({
+            name: item.name,
+            amount: Number(item.amount || 0),
+            category: titleCase(cat)
+          });
+        });
+      });
+      items.sort((a,b) => b.amount - a.amount);
+      return items[0] || null;
+    }
+
+    function getNextBill(monthKey=data.currentMonth){
+      const bills = getRecurringBillEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date));
+      return bills[0] || null;
+    }
+
+    function getNextIncomeHit(monthKey=data.currentMonth){
+      const hits = getIncomeScheduleEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date));
+      return hits[0] || null;
+    }
+
+
     function renderOverview(){
       const monthKey = data.currentMonth;
       const manualIncome = getManualIncomeTotal(monthKey);
@@ -965,6 +1057,41 @@
       renderLegendRows('assetMixLegend', assetMix.rows, ['#2dd4bf','#22c55e','#8b5cf6']);
       applyDynamicDonut('spendingDonut', spendData.rows.map((r, i) => ({...r, color: ['#14b8a6','#3b82f6','#f59e0b'][i]})), 'spending', ['#14b8a6','#3b82f6','#f59e0b']);
       applyDynamicDonut('assetMixDonut', assetMix.rows, 'portfolio', ['#2dd4bf','#22c55e','#8b5cf6']);
+
+      const biggestExpense = getBiggestExpenseItem(monthKey);
+      const nextBill = getNextBill(monthKey);
+      const nextIncome = getNextIncomeHit(monthKey);
+
+      const biggestSub = document.getElementById('insightBiggestExpenseSub');
+      const biggestVal = document.getElementById('insightBiggestExpenseValue');
+      const billSub = document.getElementById('insightNextBillSub');
+      const billVal = document.getElementById('insightNextBillValue');
+      const incomeSub = document.getElementById('insightNextIncomeSub');
+      const incomeVal = document.getElementById('insightNextIncomeValue');
+
+      if(biggestExpense){
+        biggestSub.textContent = biggestExpense.category;
+        biggestVal.textContent = money(biggestExpense.amount);
+      } else {
+        biggestSub.textContent = 'No expenses yet.';
+        biggestVal.textContent = '$0';
+      }
+
+      if(nextBill){
+        billSub.textContent = nextBill.name + ' • due ' + nextBill.date;
+        billVal.textContent = money(nextBill.amount);
+      } else {
+        billSub.textContent = 'No recurring bills scheduled.';
+        billVal.textContent = '$0';
+      }
+
+      if(nextIncome){
+        incomeSub.textContent = nextIncome.name + ' • ' + nextIncome.date;
+        incomeVal.textContent = money(nextIncome.amount);
+      } else {
+        incomeSub.textContent = 'No income schedule set.';
+        incomeVal.textContent = '$0';
+      }
 
       renderActivity();
     }
@@ -1102,44 +1229,35 @@
       const wrap = document.getElementById('assetsList');
       const totalEl = document.getElementById('assetsTotal');
       if(totalEl) totalEl.textContent = money(getAssetTotal());
-      if(!wrap) return;
       const items = month.assets || [];
+      if(!wrap) return;
       if(!items.length){
         wrap.innerHTML = `<div class="empty-state">No assets yet. Add valuables, collectibles, electronics, tools, or anything else you want counted in net worth.</div>`;
         return;
       }
-
       const grouped = {};
       items.forEach(item => {
         const cat = item.category || 'Other';
         if(!grouped[cat]) grouped[cat] = [];
         grouped[cat].push(item);
       });
-
-      const sections = Object.keys(grouped).sort().map(cat => {
-        const rows = grouped[cat].map(item => `
-          <div class="row-item">
-            <div style="flex:1;min-width:0;">
-              <div class="row-name editable-copy" data-asset-name="${item.id}">${escapeHtml(item.name)}</div>
-              <div class="asset-cat-badge editable-copy" data-asset-category="${item.id}">${escapeHtml(item.category || 'Other')}</div>
-              <div class="row-note editable-copy" data-asset-serial="${item.id}">Serial: ${escapeHtml(item.serial || 'None')}</div>
-              <div class="asset-meta editable-copy" data-asset-receipt="${item.id}">Receipt: ${escapeHtml(item.receiptName || 'None saved')}</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <div class="row-amount" data-asset-amount="${item.id}">${money(item.amount)}</div>
-              <button class="danger-btn pill" data-asset-delete="${item.id}">Delete</button>
-            </div>
+      wrap.innerHTML = Object.keys(grouped).sort().map(cat => `
+        <div style="margin-bottom:14px;">
+          <div class="section-title" style="margin-bottom:8px;">${escapeHtml(cat)}</div>
+          ${grouped[cat].map(item => `
+        <div class="row-item">
+          <div style="flex:1;min-width:0;">
+            <div class="row-name editable-copy" data-asset-name="${item.id}">${escapeHtml(item.name)}</div>
+            <div class="asset-cat-badge editable-copy" data-asset-category="${item.id}">${escapeHtml(item.category || 'Other')}</div>
+            <div class="row-note editable-copy" data-asset-serial="${item.id}">Serial: ${escapeHtml(item.serial || 'None')}</div>
+            <div class="asset-meta editable-copy" data-asset-receipt="${item.id}">Receipt: ${escapeHtml(item.receiptName || 'None saved')}</div>
           </div>
-        `).join('');
-        return `
-          <div style="margin-bottom:14px;">
-            <div class="section-title" style="margin-bottom:8px;">${escapeHtml(cat)}</div>
-            ${rows}
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="row-amount" data-asset-amount="${item.id}">${money(item.amount)}</div>
+            <button class="danger-btn pill" data-asset-delete="${item.id}">Delete</button>
           </div>
-        `;
-      }).join('');
-
-      wrap.innerHTML = sections;
+        </div>
+      `).join('');
 
       wrap.querySelectorAll('[data-asset-name]').forEach(el => {
         const id = el.dataset.assetName;
@@ -1151,7 +1269,6 @@
           });
         };
       });
-
       wrap.querySelectorAll('[data-asset-category]').forEach(el => {
         const id = el.dataset.assetCategory;
         el.onclick = () => {
@@ -1162,7 +1279,6 @@
           });
         };
       });
-
       wrap.querySelectorAll('[data-asset-serial]').forEach(el => {
         const id = el.dataset.assetSerial;
         el.onclick = () => {
@@ -1173,7 +1289,6 @@
           });
         };
       });
-
       wrap.querySelectorAll('[data-asset-receipt]').forEach(el => {
         const id = el.dataset.assetReceipt;
         el.onclick = () => {
@@ -1184,7 +1299,6 @@
           });
         };
       });
-
       wrap.querySelectorAll('[data-asset-amount]').forEach(el => {
         const id = el.dataset.assetAmount;
         el.onclick = () => {
@@ -1196,7 +1310,6 @@
           });
         };
       });
-
       wrap.querySelectorAll('[data-asset-delete]').forEach(el => {
         const id = el.dataset.assetDelete;
         el.onclick = () => {
