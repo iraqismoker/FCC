@@ -1235,27 +1235,31 @@
         wrap.innerHTML = `<div class="empty-state">No assets yet. Add valuables, collectibles, electronics, tools, or anything else you want counted in net worth.</div>`;
         return;
       }
+
       const grouped = {};
       items.forEach(item => {
         const cat = item.category || 'Other';
         if(!grouped[cat]) grouped[cat] = [];
         grouped[cat].push(item);
       });
+
       wrap.innerHTML = Object.keys(grouped).sort().map(cat => `
         <div style="margin-bottom:14px;">
           <div class="section-title" style="margin-bottom:8px;">${escapeHtml(cat)}</div>
           ${grouped[cat].map(item => `
-        <div class="row-item">
-          <div style="flex:1;min-width:0;">
-            <div class="row-name editable-copy" data-asset-name="${item.id}">${escapeHtml(item.name)}</div>
-            <div class="asset-cat-badge editable-copy" data-asset-category="${item.id}">${escapeHtml(item.category || 'Other')}</div>
-            <div class="row-note editable-copy" data-asset-serial="${item.id}">Serial: ${escapeHtml(item.serial || 'None')}</div>
-            <div class="asset-meta editable-copy" data-asset-receipt="${item.id}">Receipt: ${escapeHtml(item.receiptName || 'None saved')}</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <div class="row-amount" data-asset-amount="${item.id}">${money(item.amount)}</div>
-            <button class="danger-btn pill" data-asset-delete="${item.id}">Delete</button>
-          </div>
+            <div class="row-item">
+              <div style="flex:1;min-width:0;">
+                <div class="row-name editable-copy" data-asset-name="${item.id}">${escapeHtml(item.name)}</div>
+                <div class="asset-cat-badge editable-copy" data-asset-category="${item.id}">${escapeHtml(item.category || 'Other')}</div>
+                <div class="row-note editable-copy" data-asset-serial="${item.id}">Serial: ${escapeHtml(item.serial || 'None')}</div>
+                <div class="asset-meta editable-copy" data-asset-receipt="${item.id}">Receipt: ${escapeHtml(item.receiptName || 'None saved')}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div class="row-amount" data-asset-amount="${item.id}">${money(item.amount)}</div>
+                <button class="danger-btn pill" data-asset-delete="${item.id}">Delete</button>
+              </div>
+            </div>
+          `).join('')}
         </div>
       `).join('');
 
@@ -1269,6 +1273,7 @@
           });
         };
       });
+
       wrap.querySelectorAll('[data-asset-category]').forEach(el => {
         const id = el.dataset.assetCategory;
         el.onclick = () => {
@@ -1279,6 +1284,7 @@
           });
         };
       });
+
       wrap.querySelectorAll('[data-asset-serial]').forEach(el => {
         const id = el.dataset.assetSerial;
         el.onclick = () => {
@@ -1289,6 +1295,7 @@
           });
         };
       });
+
       wrap.querySelectorAll('[data-asset-receipt]').forEach(el => {
         const id = el.dataset.assetReceipt;
         el.onclick = () => {
@@ -1299,6 +1306,7 @@
           });
         };
       });
+
       wrap.querySelectorAll('[data-asset-amount]').forEach(el => {
         const id = el.dataset.assetAmount;
         el.onclick = () => {
@@ -1310,6 +1318,7 @@
           });
         };
       });
+
       wrap.querySelectorAll('[data-asset-delete]').forEach(el => {
         const id = el.dataset.assetDelete;
         el.onclick = () => {
