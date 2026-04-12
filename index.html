@@ -141,6 +141,22 @@
     .nav-icon{display:block;font-size:1.02rem;margin-bottom:4px;}
     .nav-label{display:block;font-size:.74rem;font-weight:800;}
 
+    
+    .label-with-info{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .info-dot{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:18px;height:18px;border-radius:50%;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.05);
+      color:#dbe7f1;font-size:.72rem;font-weight:800;cursor:pointer;
+      line-height:1; user-select:none;
+    }
+    .tooltip-card{
+      margin-top:10px;padding:12px 14px;border-radius:16px;
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+      color:var(--muted);font-size:.88rem;line-height:1.4;
+    }
+    .hidden-tip{display:none;}
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -180,9 +196,10 @@
       </div>
       <div class="card networth-card">
         <div class="networth-top">
-          <div class="networth-label">Net Worth</div>
+          <div class="networth-label label-with-info">Net Worth <span class="info-dot" onclick="toggleTip('tipNetWorth')">i</span></div>
           <div class="status-pill" id="statusPill">On Track</div>
         </div>
+        <div id="tipNetWorth" class="tooltip-card hidden-tip">A simple snapshot of income and investments minus expenses and recurring bills for the selected month.</div>
         <div class="networth-value" id="netWorthValue">$0</div>
         <div class="networth-copy">Your top-line financial picture for the selected month.</div>
         <div class="mini-stats">
@@ -242,9 +259,10 @@
 
       <div class="card budget-card">
         <div class="section-head">
-          <div class="section-title">Monthly Income</div>
+          <div class="section-title label-with-info">Monthly Income <span class="info-dot" onclick="toggleTip('tipBudgetIncome')">i</span></div>
           <button class="add-btn pill" onclick="togglePanel('incomePanelWrap')">+ Income</button>
         </div>
+        <div id="tipBudgetIncome" class="tooltip-card hidden-tip">This is where you enter the actual income sources and amounts for the selected month. Cash Flow uses schedules to decide when they hit.</div>
         <div id="incomeList"></div>
         <div id="incomePanelWrap" style="display:none;">
           <div class="stack" style="margin-top:12px;">
@@ -268,7 +286,7 @@
       </div>
 
       <div class="card budget-card">
-        <h4>Left to Budget</h4>
+        <h4 class="label-with-info">Left to Budget <span class="info-dot" onclick="toggleTip('tipLeftToBudget')">i</span></h4><div id="tipLeftToBudget" class="tooltip-card hidden-tip">This is your income minus the expenses shown in the current budget mode.</div>
         <div class="budget-big good" id="leftToBudget">$0</div>
       </div>
 
@@ -293,7 +311,8 @@
         <select class="month-select" id="cashflowMonth" onchange="changeMonth(this.value)"></select>
       </div>
       <div class="card forecast-card">
-        <div class="section-head"><div class="section-title">Forecast Summary</div></div>
+        <div class="section-head"><div class="section-title label-with-info">Forecast Summary <span class="info-dot" onclick="toggleTip('tipForecastSummary')">i</span></div></div>
+        <div id="tipForecastSummary" class="tooltip-card hidden-tip">This uses your starting balance, recurring bills, and income schedule to estimate how your money moves through the month.</div>
         <div class="forecast-grid">
           <div class="forecast-stat"><div class="forecast-label">Current Balance</div><div class="forecast-value" id="cfCurrentBalance">$0</div></div>
           <div class="forecast-stat"><div class="forecast-label">Lowest Balance</div><div class="forecast-value warn" id="cfLowestBalance">$0</div></div>
@@ -302,15 +321,18 @@
       </div>
 
       <div class="card forecast-card">
-        <div class="section-head"><div class="section-title">Starting Balance</div></div>
+        <div class="section-head"><div class="section-title label-with-info">Starting Balance <span class="info-dot" onclick="toggleTip('tipStartingBalance')">i</span></div></div>
+        <div id="tipStartingBalance" class="tooltip-card hidden-tip">This should be the money you have available at the start of the selected month, usually your checking balance. It powers the forecast.</div>
         <div class="stack">
+          <div class="helper-copy" style="margin-bottom:0;">This auto-rolls from the previous month, but you can override it anytime.</div>
           <input class="small-input" id="startingBalanceInput" type="number" step="0.01" placeholder="Starting balance for this month" />
           <div class="actions"><button class="save-btn pill" onclick="saveStartingBalance()">Save Balance</button></div>
         </div>
       </div>
 
       <div class="card forecast-card">
-        <div class="section-head"><div class="section-title">Recurring Bills</div><button class="add-btn pill" onclick="togglePanel('billPanelWrap')">+ Bill</button></div>
+        <div class="section-head"><div class="section-title label-with-info">Recurring Bills <span class="info-dot" onclick="toggleTip('tipBills')">i</span></div><button class="add-btn pill" onclick="togglePanel('billPanelWrap')">+ Bill</button></div>
+        <div id="tipBills" class="tooltip-card hidden-tip">Use this for bills that repeat monthly, quarterly, or yearly. These feed into your cash flow forecast automatically.</div>
         <div id="billsList"></div>
         <div id="billPanelWrap" style="display:none;">
           <div class="stack" style="margin-top:12px;">
@@ -370,7 +392,8 @@
       </div>
 
       <div class="card forecast-card">
-        <div class="section-head"><div class="section-title">Timeline</div></div>
+        <div class="section-head"><div class="section-title label-with-info">Timeline <span class="info-dot" onclick="toggleTip('tipTimeline')">i</span></div></div>
+        <div id="tipTimeline" class="tooltip-card hidden-tip">This shows the order of bills and income hits across the month, plus the running balance after each event.</div>
         <div id="timelineList"></div>
       </div>
     </section>
@@ -487,7 +510,13 @@
       ensureMonth(data.currentMonth);
     }
     function ensureMonth(key){
-      if(!data.months[key]) data.months[key] = createEmptyMonth();
+      if(!data.months[key]){
+        data.months[key] = createEmptyMonth();
+        const prevKey = getPreviousMonthKey(key);
+        if(data.months[prevKey]){
+          data.months[key].startingBalance = getEndOfMonthBalance(prevKey);
+        }
+      }
       DEFAULT_CATEGORIES.forEach(cat => { if(!data.months[key].categories[cat]) data.months[key].categories[cat] = []; });
       return data.months[key];
     }
@@ -577,6 +606,28 @@
         date: `${year}-${String(month).padStart(2,'0')}-${String(Math.max(1, Math.min(28, Number(p.day || 1)))).padStart(2,'0')}`
       }));
     }
+
+    
+    function toggleTip(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function getPreviousMonthKey(monthKey){
+      const [y,m] = monthKey.split('-').map(Number);
+      const d = new Date(y, m-2, 1);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    }
+
+    function getEndOfMonthBalance(monthKey){
+      const forecast = getForecast(monthKey);
+      if(forecast.timeline.length){
+        return forecast.timeline[forecast.timeline.length - 1].runningBalance;
+      }
+      return Number(getMonthData(monthKey).startingBalance || 0);
+    }
+
 
     function getForecast(monthKey=data.currentMonth){
       const month = getMonthData(monthKey);
@@ -1004,7 +1055,7 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'fcc-backup-v2.json';
+      a.download = 'fcc-backup-v2b.json';
       a.click();
       URL.revokeObjectURL(url);
     }
