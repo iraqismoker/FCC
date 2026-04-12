@@ -189,41 +189,25 @@
     .receipt-note{color:var(--muted);font-size:.82rem;line-height:1.4;margin-top:8px;}
     .small-stack{display:grid;gap:8px;}
     
-    .insight-card{
-      padding:18px;
-      margin-bottom:14px;
+    .chart-card{
+      position:relative;
+      cursor:pointer;
     }
-    .insight-grid{
-      display:grid;
-      gap:10px;
-    }
-    .insight-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      padding:12px 0;
-      border-bottom:1px solid rgba(255,255,255,.05);
-    }
-    .insight-row:last-child{border-bottom:none;}
-    .insight-label{
+    .chart-card .tap-link{
+      margin-top:14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      min-height:42px;
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.07);
       color:#dfe8f3;
-      font-size:.9rem;
       font-weight:800;
-      margin-bottom:4px;
+      font-size:.92rem;
     }
-    .insight-sub{
-      color:var(--muted);
-      font-size:.82rem;
-      line-height:1.35;
-    }
-    .insight-value{
-      font-size:.95rem;
-      font-weight:800;
-      text-align:right;
-      white-space:nowrap;
-    }
-    
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -249,16 +233,22 @@
 </div>
 <div class="overview-grid">
 <div class="card chart-card" onclick="openScreen('budgetScreen', 1)">
-<h3>Spending<br/>Breakdown</h3>
-<div class="donut spending"><div class="donut-center">SPENDING</div></div>
+<h3>Spending Breakdown</h3>
+<div class="donut spending" id="overviewSpendingDonut">
+<div class="donut-center" id="overviewSpendingCenter">SPENDING</div>
+</div>
 <div class="chart-value" id="overviewSpending">$0</div>
-<div class="chart-note">Tap to open Budget</div>
+<div class="chart-note" id="overviewSpendingNote">Add budget items to see your top categories</div>
+<div class="tap-link">Open Budget</div>
 </div>
 <div class="card chart-card" onclick="openScreen('investScreen', 3)">
-<h3>Portfolio<br/>Breakdown</h3>
-<div class="donut portfolio"><div class="donut-center">PORTFOLIO</div></div>
+<h3>Portfolio Breakdown</h3>
+<div class="donut portfolio" id="overviewInvestDonut">
+<div class="donut-center" id="overviewInvestCenter">PORTFOLIO</div>
+</div>
 <div class="chart-value" id="overviewInvested">$0</div>
-<div class="chart-note">Tap to open Invest</div>
+<div class="chart-note" id="overviewInvestNote">Track investments and assets to build your mix</div>
+<div class="tap-link">Open Invest</div>
 </div>
 </div>
 <div class="card networth-card">
@@ -273,34 +263,6 @@
 <div class="mini-stat"><div class="mini-stat-label">Income</div><div class="mini-stat-value" id="overviewIncome">$0</div></div>
 <div class="mini-stat"><div class="mini-stat-label">Invested</div><div class="mini-stat-value" id="overviewInvestedMini">$0</div></div>
 <div class="mini-stat"><div class="mini-stat-label">Cash Flow</div><div class="mini-stat-value" id="overviewCashFlow">$0</div></div>
-</div>
-</div><div class="card insight-card" id="smartInsightsCard">
-<div class="section-head">
-<div class="section-title label-with-info">Smart Insights <span class="info-dot" onclick="toggleTip('tipSmartInsights')">i</span></div>
-</div>
-<div class="tooltip-card hidden-tip" id="tipSmartInsights">These highlight the most useful overview signals right now: biggest expense, next bill, and next scheduled income hit.</div>
-<div class="insight-grid">
-<div class="insight-row">
-<div>
-<div class="insight-label">Biggest Expense</div>
-<div class="insight-sub" id="insightBiggestExpenseSub">No expenses yet.</div>
-</div>
-<div class="insight-value" id="insightBiggestExpenseValue">$0</div>
-</div>
-<div class="insight-row">
-<div>
-<div class="insight-label">Next Bill</div>
-<div class="insight-sub" id="insightNextBillSub">No recurring bills scheduled.</div>
-</div>
-<div class="insight-value bad" id="insightNextBillValue">$0</div>
-</div>
-<div class="insight-row">
-<div>
-<div class="insight-label">Next Income Hit</div>
-<div class="insight-sub" id="insightNextIncomeSub">No income schedule set.</div>
-</div>
-<div class="insight-value good" id="insightNextIncomeValue">$0</div>
-</div>
 </div>
 </div>
 <div class="card activity-card">
@@ -832,30 +794,46 @@
     }
 
     
-    function getBiggestExpenseItem(monthKey=data.currentMonth){
-      const month = getMonthData(monthKey);
-      const items = [];
-      Object.keys(month.categories || {}).forEach(cat => {
-        (month.categories[cat] || []).forEach(item => {
-          items.push({
-            name: item.name,
-            amount: Number(item.amount || 0),
-            category: titleCase(cat)
-          });
-        });
+    function getOverviewSpendingRows(monthKey=data.currentMonth){
+      const names = getCategoryNames(monthKey);
+      const rows = names.map(cat => ({
+        label: titleCase(cat),
+        amount: getCategoryTotal(cat, monthKey)
+      })).filter(r => r.amount > 0).sort((a,b) => b.amount - a.amount);
+      return { rows, total: rows.reduce((sum, r) => sum + r.amount, 0) };
+    }
+
+    function getOverviewPortfolioRows(monthKey=data.currentMonth){
+      const rows = [
+        { label: 'Investments', amount: getInvestmentTotal(monthKey), color: '#22c55e' },
+        { label: 'Cash', amount: getAllAccountBalance(monthKey), color: '#2dd4bf' },
+        { label: 'Assets', amount: getAssetTotal(monthKey), color: '#8b5cf6' }
+      ].filter(r => r.amount > 0);
+      return { rows, total: rows.reduce((sum, r) => sum + r.amount, 0) };
+    }
+
+    function applyOverviewDonut(elId, rows, fallbackClass, palette){
+      const el = document.getElementById(elId);
+      if(!el) return;
+      if(!rows.length){
+        el.style.background = '';
+        return;
+      }
+      const total = rows.reduce((sum, r) => sum + r.amount, 0) || 1;
+      let start = 0;
+      const segments = rows.slice(0,3).map((row, idx) => {
+        const pct = (row.amount / total) * 100;
+        const end = start + pct;
+        const color = row.color || palette[idx % palette.length];
+        const seg = `${color} ${start}% ${end}%`;
+        start = end;
+        return seg;
       });
-      items.sort((a,b) => b.amount - a.amount);
-      return items[0] || null;
-    }
-
-    function getNextBill(monthKey=data.currentMonth){
-      const bills = getRecurringBillEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date));
-      return bills[0] || null;
-    }
-
-    function getNextIncomeHit(monthKey=data.currentMonth){
-      const hits = getIncomeScheduleEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date));
-      return hits[0] || null;
+      if(start < 100){
+        segments.push(`rgba(255,255,255,.06) ${start}% 100%`);
+      }
+      el.style.background = `conic-gradient(${segments.join(', ')})`;
+      el.classList.remove(fallbackClass);
     }
 
 
@@ -870,53 +848,47 @@
       const netWorth = totalAccounts + investmentTotal + assetTotal - (manualExpenses + recurringBills);
       const cashFlow = manualIncome - (manualExpenses + recurringBills);
 
+      const spendData = getOverviewSpendingRows(monthKey);
+      const portfolioData = getOverviewPortfolioRows(monthKey);
+
       document.getElementById('overviewIncome').textContent = money(manualIncome);
-      document.getElementById('overviewInvested').textContent = money(investmentTotal);
+      document.getElementById('overviewInvested').textContent = money(portfolioData.total);
       document.getElementById('overviewInvestedMini').textContent = money(investmentTotal);
       document.getElementById('overviewSpending').textContent = money(manualExpenses + recurringBills);
       document.getElementById('overviewCashFlow').textContent = money(cashFlow);
       document.getElementById('netWorthValue').textContent = money(netWorth);
       document.getElementById('statusPill').textContent = cashFlow > 1000 ? 'On Track' : cashFlow > 0 ? 'Watch Spending' : 'Over Budget';
-      const biggestExpense = getBiggestExpenseItem(monthKey);
-      const nextBill = getNextBill(monthKey);
-      const nextIncome = getNextIncomeHit(monthKey);
 
-      const biggestSub = document.getElementById('insightBiggestExpenseSub');
-      const biggestVal = document.getElementById('insightBiggestExpenseValue');
-      const billSub = document.getElementById('insightNextBillSub');
-      const billVal = document.getElementById('insightNextBillValue');
-      const incomeSub = document.getElementById('insightNextIncomeSub');
-      const incomeVal = document.getElementById('insightNextIncomeValue');
-
-      if(biggestSub && biggestVal){
-        if(biggestExpense){
-          biggestSub.textContent = biggestExpense.name + ' • ' + biggestExpense.category;
-          biggestVal.textContent = money(biggestExpense.amount);
+      const spendTop = spendData.rows[0];
+      const spendCenter = document.getElementById('overviewSpendingCenter');
+      const spendNote = document.getElementById('overviewSpendingNote');
+      if(spendCenter && spendNote){
+        if(spendTop){
+          const pct = spendData.total > 0 ? Math.round((spendTop.amount / spendData.total) * 100) : 0;
+          spendCenter.innerHTML = pct + '%<br>' + escapeHtml(spendTop.label.toUpperCase());
+          spendNote.textContent = 'Top category: ' + spendTop.label;
         } else {
-          biggestSub.textContent = 'No expenses yet.';
-          biggestVal.textContent = '$0';
+          spendCenter.innerHTML = 'NO<br>SPEND';
+          spendNote.textContent = 'Add budget items to see your top categories';
         }
       }
 
-      if(billSub && billVal){
-        if(nextBill){
-          billSub.textContent = nextBill.name + ' • due ' + nextBill.date;
-          billVal.textContent = money(nextBill.amount);
+      const investTop = portfolioData.rows.slice().sort((a,b) => b.amount - a.amount)[0];
+      const investCenter = document.getElementById('overviewInvestCenter');
+      const investNote = document.getElementById('overviewInvestNote');
+      if(investCenter && investNote){
+        if(investTop){
+          const pct = portfolioData.total > 0 ? Math.round((investTop.amount / portfolioData.total) * 100) : 0;
+          investCenter.innerHTML = pct + '%<br>' + escapeHtml(investTop.label.toUpperCase());
+          investNote.textContent = 'Largest mix: ' + investTop.label;
         } else {
-          billSub.textContent = 'No recurring bills scheduled.';
-          billVal.textContent = '$0';
+          investCenter.innerHTML = 'NO<br>DATA';
+          investNote.textContent = 'Track investments and assets to build your mix';
         }
       }
 
-      if(incomeSub && incomeVal){
-        if(nextIncome){
-          incomeSub.textContent = nextIncome.name + ' • ' + nextIncome.date;
-          incomeVal.textContent = money(nextIncome.amount);
-        } else {
-          incomeSub.textContent = 'No income schedule set.';
-          incomeVal.textContent = '$0';
-        }
-      }
+      applyOverviewDonut('overviewSpendingDonut', spendData.rows.map((r, i) => ({...r, color: ['#14b8a6','#3b82f6','#f59e0b'][i]})), 'spending', ['#14b8a6','#3b82f6','#f59e0b']);
+      applyOverviewDonut('overviewInvestDonut', portfolioData.rows, 'portfolio', ['#22c55e','#2dd4bf','#8b5cf6']);
 
       renderActivity();
     }
