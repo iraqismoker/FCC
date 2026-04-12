@@ -180,6 +180,11 @@
       text-transform:uppercase;
       margin-top:6px;
     }
+    .section-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+    .mini-move{
+      border:none;border-radius:10px;padding:6px 10px;font-size:.8rem;font-weight:800;cursor:pointer;
+      background:rgba(255,255,255,.05);color:#dbe7f1;border:1px solid rgba(255,255,255,.08);
+    }
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -198,7 +203,7 @@
 <div class="eyebrow">Overview</div>
 <h1>Financial Command Center</h1>
 <p>Your money dashboard for spending, investing, and cash flow at a glance.</p>
-<div class="status-pill" style="display:inline-flex;margin-top:12px;">Pinned-only build • safe</div>
+<div class="status-pill" style="display:inline-flex;margin-top:12px;">Pinned + reorder build</div>
 </div>
 <div class="top-row">
 <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
@@ -271,9 +276,8 @@
 <button class="secondary-btn pill" onclick="togglePanel('categoryPanelWrap', false)">Cancel</button>
 </div>
 </div>
-</div><div class="card budget-card">
+</div><div class="card budget-card" id="budgetIncomeCard">
 <div class="section-head"><div><div class="section-title label-with-info">Monthly Income <span class="info-dot" onclick="toggleTip('tipBudgetIncome')">i</span></div><div class="pinned-note">Pinned</div></div>
-
 <button class="add-btn pill" onclick="togglePanel('incomePanelWrap')">+ Income</button>
 </div>
 <div class="tooltip-card hidden-tip" id="tipBudgetIncome">This is where you enter the actual income sources and amounts for the selected month. Cash Flow uses schedules to decide when they hit.</div>
@@ -295,22 +299,47 @@
 <button class="active" onclick="setBudgetMode(event,'planned')">Planned</button>
 <button onclick="setBudgetMode(event,'spent')">Spent</button>
 <button onclick="setBudgetMode(event,'remaining')">Remaining</button>
-</div><div class="card budget-card">
+</div><div class="card budget-card" id="budgetLeftCard">
 <h4 class="label-with-info">Left to Budget <span class="info-dot" onclick="toggleTip('tipLeftToBudget')">i</span></h4><div class="pinned-note">Pinned</div><div class="tooltip-card hidden-tip" id="tipLeftToBudget">This is your income minus the expenses shown in the current budget mode.</div>
 <div class="budget-big good" id="leftToBudget">$0</div>
-</div><div class="info-grid">
+</div><div class="card budget-card"><div class="section-head"><div class="section-title">Summary</div><div class="section-controls"><button class="mini-move" onclick="moveBudgetCard('budgetSummaryCard', -1)">↑</button><button class="mini-move" onclick="moveBudgetCard('budgetSummaryCard', 1)">↓</button></div></div><div class="info-grid" id="budgetSummaryCard">
 <div class="card info-card"><h4>Income</h4><div class="info-value" id="budgetIncomeTotal">$0</div></div>
 <div class="card info-card"><h4>Cash Flow</h4><div class="info-value" id="budgetCashFlow">$0</div></div>
-</div><div id="categoriesWrap"></div><div class="actions">
+</div></div><div class="card budget-card"><div class="section-head"><div class="section-title">Categories</div><div class="section-controls"><button class="mini-move" onclick="moveBudgetCard('budgetCategoriesCard', -1)">↑</button><button class="mini-move" onclick="moveBudgetCard('budgetCategoriesCard', 1)">↓</button></div></div><div id="budgetCategoriesCard"></div></div><div class="card budget-card"><div class="section-head"><div class="section-title">Reset</div><div class="section-controls"><button class="mini-move" onclick="moveBudgetCard('budgetResetCard', -1)">↑</button><button class="mini-move" onclick="moveBudgetCard('budgetResetCard', 1)">↓</button></div></div><div class="actions" id="budgetResetCard">
 <button class="danger-btn pill" onclick="resetMonth()">Reset This Month</button>
-</div></section>
+</div></div></section>
 <section class="screen" id="cashflowScreen"><div class="header">
 <div class="eyebrow">Cash Flow</div>
 <h2>Cash Flow Forecast</h2>
 <p>See your real balance after bills and scheduled income hits, plus the lowest point before the month ends.</p>
 </div><div class="top-row">
 <select class="month-select" id="cashflowMonth" onchange="changeMonth(this.value)"></select>
-</div><div class="card forecast-card">
+</div><div class="card forecast-card" id="cashflowScheduleCard">
+<div class="section-head"><div><div class="section-title label-with-info">Income Schedule <span class="info-dot" onclick="toggleTip('tipIncomeSchedule')">i</span></div><div class="pinned-note">Pinned</div></div><button class="add-btn pill" onclick="togglePanel('schedulePanelWrap')">+ Schedule</button></div>
+<div class="tooltip-card hidden-tip" id="tipIncomeSchedule">Pick an income source from Budget and tell the app when it lands. This controls timing only, not the amount.</div>
+<div class="helper-copy" style="margin-bottom:10px;">Income amounts are managed in Budget → Monthly Income.</div>
+<div id="scheduleList"></div>
+<div id="schedulePanelWrap" style="display:none;">
+<div class="helper-copy" style="margin-bottom:10px;">Pick an income source from Budget, then set the day and frequency. No need to enter the amount again here.</div>
+<div class="stack" style="margin-top:12px;">
+<select class="form-select" id="scheduleIncomeId"></select>
+<div class="two-col">
+<input class="small-input" id="scheduleDay" max="31" min="1" placeholder="Day of month" type="number"/>
+<select class="form-select" id="scheduleFrequency">
+<option value="weekly">Weekly</option>
+<option value="biweekly">Biweekly</option>
+<option value="monthly">Monthly</option>
+<option value="quarterly">Quarterly</option>
+<option value="yearly">Yearly</option>
+</select>
+</div>
+<div class="actions">
+<button class="save-btn pill" onclick="addIncomeSchedule()">Save Schedule</button>
+<button class="secondary-btn pill" onclick="togglePanel('schedulePanelWrap', false)">Cancel</button>
+</div>
+</div>
+</div>
+</div><div class="card forecast-card" id="cashflowAccountsCard">
 <div class="section-head"><div><div class="section-title label-with-info">Cash Flow Accounts <span class="info-dot" onclick="toggleTip('tipStartingBalance')">i</span></div><div class="pinned-note">Pinned</div></div><button class="add-btn pill" onclick="togglePanel('accountPanelWrap')">+ Account</button></div>
 <div class="tooltip-card hidden-tip" id="tipStartingBalance">Add checking, savings, and high-yield accounts here. Only accounts marked “Include in Cash Flow” are used for your forecast starting balance.</div>
 <div class="helper-copy" style="margin-bottom:12px;">Checking accounts are usually included. Savings and HYSA are usually tracked, but excluded from monthly cash flow unless the user chooses otherwise.</div>
@@ -339,41 +368,16 @@
 </div>
 </div>
 </div>
-</div><div class="card forecast-card">
-<div class="section-head"><div><div class="section-title label-with-info">Income Schedule <span class="info-dot" onclick="toggleTip('tipIncomeSchedule')">i</span></div><div class="pinned-note">Pinned</div></div><button class="add-btn pill" onclick="togglePanel('schedulePanelWrap')">+ Schedule</button></div>
-<div class="tooltip-card hidden-tip" id="tipIncomeSchedule">Pick an income source from Budget and tell the app when it lands. This controls timing only, not the amount.</div>
-<div class="helper-copy" style="margin-bottom:10px;">Income amounts are managed in Budget → Monthly Income.</div>
-<div id="scheduleList"></div>
-<div id="schedulePanelWrap" style="display:none;">
-<div class="helper-copy" style="margin-bottom:10px;">Pick an income source from Budget, then set the day and frequency. No need to enter the amount again here.</div>
-<div class="stack" style="margin-top:12px;">
-<select class="form-select" id="scheduleIncomeId"></select>
-<div class="two-col">
-<input class="small-input" id="scheduleDay" max="31" min="1" placeholder="Day of month" type="number"/>
-<select class="form-select" id="scheduleFrequency">
-<option value="weekly">Weekly</option>
-<option value="biweekly">Biweekly</option>
-<option value="monthly">Monthly</option>
-<option value="quarterly">Quarterly</option>
-<option value="yearly">Yearly</option>
-</select>
-</div>
-<div class="actions">
-<button class="save-btn pill" onclick="addIncomeSchedule()">Save Schedule</button>
-<button class="secondary-btn pill" onclick="togglePanel('schedulePanelWrap', false)">Cancel</button>
-</div>
-</div>
-</div>
-</div><div class="card forecast-card">
-<div class="section-head"><div class="section-title label-with-info">Forecast Summary <span class="info-dot" onclick="toggleTip('tipForecastSummary')">i</span></div></div>
+</div><div class="card forecast-card" id="cashflowSummaryCard">
+<div class="section-head"><div class="section-title label-with-info">Forecast Summary <span class="info-dot" onclick="toggleTip('tipForecastSummary')">i</span></div><div class="section-controls"><button class="mini-move" onclick="moveCashFlowCard('cashflowSummaryCard', -1)">↑</button><button class="mini-move" onclick="moveCashFlowCard('cashflowSummaryCard', 1)">↓</button></div></div>
 <div class="tooltip-card hidden-tip" id="tipForecastSummary">This uses your starting balance, recurring bills, and income schedule to estimate how your money moves through the month.</div>
 <div class="forecast-grid">
 <div class="forecast-stat"><div class="forecast-label">Current Balance</div><div class="forecast-value" id="cfCurrentBalance">$0</div></div>
 <div class="forecast-stat"><div class="forecast-label">Lowest Balance</div><div class="forecast-value warn" id="cfLowestBalance">$0</div></div>
 <div class="forecast-stat"><div class="forecast-label">Safe to Spend</div><div class="forecast-value good" id="cfSafeToSpend">$0</div></div>
 </div>
-</div><div class="card forecast-card">
-<div class="section-head"><div class="section-title label-with-info">Recurring Bills <span class="info-dot" onclick="toggleTip('tipBills')">i</span></div><button class="add-btn pill" onclick="togglePanel('billPanelWrap')">+ Bill</button></div>
+</div><div class="card forecast-card" id="cashflowBillsCard">
+<div class="section-head"><div class="section-title label-with-info">Recurring Bills <span class="info-dot" onclick="toggleTip('tipBills')">i</span></div><button class="add-btn pill" onclick="togglePanel('billPanelWrap')">+ Bill</button><div class="section-controls"><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', -1)">↑</button><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', 1)">↓</button></div></div>
 <div class="tooltip-card hidden-tip" id="tipBills">Use this for bills that repeat monthly, quarterly, or yearly. These feed into your cash flow forecast automatically.</div>
 <div id="billsList"></div>
 <div id="billPanelWrap" style="display:none;">
@@ -404,8 +408,8 @@
 </div>
 </div>
 </div>
-</div><div class="card forecast-card">
-<div class="section-head"><div class="section-title label-with-info">Timeline <span class="info-dot" onclick="toggleTip('tipTimeline')">i</span></div></div>
+</div><div class="card forecast-card" id="cashflowTimelineCard">
+<div class="section-head"><div class="section-title label-with-info">Timeline <span class="info-dot" onclick="toggleTip('tipTimeline')">i</span></div><div class="section-controls"><button class="mini-move" onclick="moveCashFlowCard('cashflowTimelineCard', -1)">↑</button><button class="mini-move" onclick="moveCashFlowCard('cashflowTimelineCard', 1)">↓</button></div></div>
 <div class="tooltip-card hidden-tip" id="tipTimeline">This shows the order of bills and income hits across the month, plus the running balance after each event.</div>
 <div id="timelineList"></div>
 </div></section>
@@ -573,6 +577,31 @@
       const el = document.getElementById(id);
       const show = typeof force === 'boolean' ? force : el.style.display === 'none';
       el.style.display = show ? 'block' : 'none';
+    }
+
+    function moveWithinSection(sectionId, ids, cardId, direction){
+      const section = document.getElementById(sectionId);
+      const card = document.getElementById(cardId);
+      if(!section || !card) return;
+      const nodes = ids.map(id => document.getElementById(id)).filter(Boolean);
+      const index = nodes.indexOf(card);
+      if(index === -1) return;
+      const newIndex = index + direction;
+      if(newIndex < 0 || newIndex >= nodes.length) return;
+      if(direction < 0){
+        section.insertBefore(card, nodes[newIndex]);
+      } else {
+        const target = nodes[newIndex];
+        section.insertBefore(target, card);
+      }
+    }
+
+    function moveCashFlowCard(cardId, direction){
+      moveWithinSection('cashflowScreen', ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'], cardId, direction);
+    }
+
+    function moveBudgetCard(cardId, direction){
+      moveWithinSection('budgetScreen', ['budgetSummaryCard','budgetCategoriesCard','budgetResetCard'], cardId, direction);
     }
 
     function addActivity(type, title, meta, amount, sign){
