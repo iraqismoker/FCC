@@ -188,211 +188,6 @@
     .asset-meta{color:var(--muted);font-size:.8rem;line-height:1.35;margin-top:4px;}
     .receipt-note{color:var(--muted);font-size:.82rem;line-height:1.4;margin-top:8px;}
     .small-stack{display:grid;gap:8px;}
-    
-    .chart-card{
-      position:relative;
-      cursor:pointer;
-    }
-    .chart-card .tap-link{
-      margin-top:14px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:100%;
-      min-height:42px;
-      border-radius:14px;
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.07);
-      color:#dfe8f3;
-      font-weight:800;
-      font-size:.92rem;
-    }
-
-    
-    .chart-card{
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-start;
-      min-height:520px;
-    }
-    .chart-note{
-      min-height:74px;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      text-align:center;
-    }
-    .tap-link{
-      margin-top:auto !important;
-    }
-
-    
-    .invest-mini-wrap{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      margin-top:10px;
-    }
-    .invest-mini-chart{
-      width:110px;
-      height:110px;
-      border-radius:50%;
-      position:relative;
-      flex:0 0 auto;
-      display:grid;
-      place-items:center;
-    }
-    .invest-mini-chart::after{
-      content:"";
-      position:absolute;
-      inset:24%;
-      border-radius:50%;
-      background:linear-gradient(180deg, rgba(11,18,32,.99), rgba(15,23,42,.99));
-      border:1px solid rgba(255,255,255,.05);
-    }
-    .invest-mini-center{
-      position:relative;
-      z-index:1;
-      text-align:center;
-      font-size:.68rem;
-      line-height:1.05;
-      font-weight:800;
-      letter-spacing:.06em;
-      color:#d9f3ef;
-      padding:0 8px;
-    }
-    .invest-legend{
-      display:grid;
-      gap:8px;
-      flex:1;
-    }
-    .invest-legend-row{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-      padding:8px 10px;
-      border-radius:14px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.04);
-    }
-    .invest-legend-left{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      min-width:0;
-    }
-    .invest-dot{
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      flex:0 0 auto;
-    }
-    .invest-legend-name{
-      font-size:.84rem;
-      color:#dfe8f3;
-      font-weight:700;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .invest-legend-value{
-      font-size:.82rem;
-      color:var(--muted);
-      font-weight:700;
-      white-space:nowrap;
-    }
-
-    
-    .signal-card,.summary-card{
-      padding:18px;
-      margin-bottom:14px;
-    }
-    .signal-grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:10px;
-    }
-    .signal-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      padding:12px 0;
-      border-bottom:1px solid rgba(255,255,255,.05);
-    }
-    .signal-row:last-child{border-bottom:none;}
-    .signal-label{
-      color:#dfe8f3;
-      font-size:.9rem;
-      font-weight:800;
-      margin-bottom:4px;
-    }
-    .signal-sub{
-      color:var(--muted);
-      font-size:.82rem;
-      line-height:1.35;
-    }
-    .signal-value{
-      font-size:.95rem;
-      font-weight:800;
-      text-align:right;
-      white-space:nowrap;
-    }
-    .summary-inline{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:14px;
-    }
-    .summary-mini{
-      padding:14px;
-      border-radius:18px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.05);
-    }
-    .summary-mini-label{
-      color:var(--muted);
-      font-size:.75rem;
-      text-transform:uppercase;
-      letter-spacing:.05em;
-      margin-bottom:8px;
-    }
-    .summary-mini-value{
-      font-size:1.25rem;
-      font-weight:800;
-      letter-spacing:-.02em;
-    }
-    .asset-group{
-      margin-bottom:14px;
-      padding:12px 14px;
-      border-radius:18px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(255,255,255,.05);
-    }
-    .asset-group-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:4px;
-    }
-    .asset-group-name{
-      color:#dfe8f3;
-      font-size:.92rem;
-      font-weight:800;
-    }
-    .asset-group-total{
-      color:#dffcf8;
-      font-size:.9rem;
-      font-weight:800;
-    }
-    .asset-group-count{
-      color:var(--muted);
-      font-size:.8rem;
-    }
-
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -418,22 +213,16 @@
 </div>
 <div class="overview-grid">
 <div class="card chart-card" onclick="openScreen('budgetScreen', 1)">
-<h3>Spending Breakdown</h3>
-<div class="donut spending" id="overviewSpendingDonut">
-<div class="donut-center" id="overviewSpendingCenter">SPENDING</div>
-</div>
+<h3>Spending<br/>Breakdown</h3>
+<div class="donut spending"><div class="donut-center">SPENDING</div></div>
 <div class="chart-value" id="overviewSpending">$0</div>
-<div class="chart-note" id="overviewSpendingNote">Add budget items to see your top categories</div>
-<div class="tap-link">Open Budget</div>
+<div class="chart-note">Tap to open Budget</div>
 </div>
-<div class="card chart-card" onclick="openScreen('assetsScreen', 4)">
-<h3>Asset Mix</h3>
-<div class="donut portfolio" id="overviewInvestDonut">
-<div class="donut-center" id="overviewInvestCenter">PORTFOLIO</div>
-</div>
+<div class="card chart-card" onclick="openScreen('investScreen', 3)">
+<h3>Portfolio<br/>Breakdown</h3>
+<div class="donut portfolio"><div class="donut-center">PORTFOLIO</div></div>
 <div class="chart-value" id="overviewInvested">$0</div>
-<div class="chart-note" id="overviewInvestNote">Largest mix: Cash</div>
-<div class="tap-link">Open Assets</div>
+<div class="chart-note">Tap to open Invest</div>
 </div>
 </div>
 <div class="card networth-card">
@@ -448,21 +237,6 @@
 <div class="mini-stat"><div class="mini-stat-label">Income</div><div class="mini-stat-value" id="overviewIncome">$0</div></div>
 <div class="mini-stat"><div class="mini-stat-label">Invested</div><div class="mini-stat-value" id="overviewInvestedMini">$0</div></div>
 <div class="mini-stat"><div class="mini-stat-label">Cash Flow</div><div class="mini-stat-value" id="overviewCashFlow">$0</div></div>
-</div>
-</div><div class="card signal-card" id="overviewSignalsCard">
-<div class="section-head">
-<div class="section-title label-with-info">Quick Signals <span class="info-dot" onclick="toggleTip('tipOverviewSignals')">i</span></div>
-</div>
-<div class="tooltip-card hidden-tip" id="tipOverviewSignals">These give you a faster read on what is spendable and what remains after recurring bills in the selected month.</div>
-<div class="summary-inline">
-<div class="summary-mini">
-<div class="summary-mini-label">Safe to Spend</div>
-<div class="summary-mini-value good" id="overviewSafeToSpend">$0</div>
-</div>
-<div class="summary-mini">
-<div class="summary-mini-label">Left After Bills</div>
-<div class="summary-mini-value" id="overviewLeftAfterBills">$0</div>
-</div>
 </div>
 </div>
 <div class="card activity-card">
@@ -605,35 +379,18 @@
 <div class="forecast-stat"><div class="forecast-label">Lowest Balance</div><div class="forecast-value warn" id="cfLowestBalance">$0</div></div>
 <div class="forecast-stat"><div class="forecast-label">Safe to Spend</div><div class="forecast-value good" id="cfSafeToSpend">$0</div></div>
 </div>
-</div><div class="card forecast-card" id="cashflowSignalsCard">
+</div>
+<div class="card forecast-card" id="cashflowSignalsCard">
 <div class="section-head">
-<div class="section-title label-with-info">Cash Flow Signals <span class="info-dot" onclick="toggleTip('tipCashSignals')">i</span></div>
+<div class="section-title">Cash Flow Signals</div>
 </div>
-<div class="tooltip-card hidden-tip" id="tipCashSignals">This highlights the next bill, next income hit, and the date your running balance gets lowest.</div>
-<div class="signal-grid">
-<div class="signal-row">
-<div>
-<div class="signal-label">Next Bill Due</div>
-<div class="signal-sub" id="cfNextBillSub">No recurring bills scheduled.</div>
-</div>
-<div class="signal-value bad" id="cfNextBillValue">$0</div>
-</div>
-<div class="signal-row">
-<div>
-<div class="signal-label">Next Income Hit</div>
-<div class="signal-sub" id="cfNextIncomeSub">No income schedule set.</div>
-</div>
-<div class="signal-value good" id="cfNextIncomeValue">$0</div>
-</div>
-<div class="signal-row">
-<div>
-<div class="signal-label">Lowest Balance Date</div>
-<div class="signal-sub" id="cfLowestDateSub">No forecast events yet.</div>
-</div>
-<div class="signal-value warn" id="cfLowestDateValue">$0</div>
+<div class="stack">
+<div><strong>Next Bill:</strong> <span id="cfNextBill">—</span></div>
+<div><strong>Next Income:</strong> <span id="cfNextIncome">—</span></div>
+<div><strong>Lowest Balance:</strong> <span id="cfLowestSignal">—</span></div>
 </div>
 </div>
-</div><div class="card forecast-card" id="cashflowBillsCard">
+<div class="card forecast-card" id="cashflowBillsCard">
 <div class="section-head"><div class="section-title label-with-info">Recurring Bills <span class="info-dot" onclick="toggleTip('tipBills')">i</span></div><button class="add-btn pill" onclick="togglePanel('billPanelWrap')">+ Bill</button><div class="section-controls"><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', -1)">↑</button><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', 1)">↓</button></div></div>
 <div class="tooltip-card hidden-tip" id="tipBills">Use this for bills that repeat monthly, quarterly, or yearly. These feed into your cash flow forecast automatically.</div>
 <div id="billsList"></div>
@@ -679,18 +436,7 @@
 <div class="top-row">
 <select class="month-select" id="investMonth" onchange="changeMonth(this.value)"></select>
 </div>
-<div class="card invest-card"><h4>Portfolio Total</h4><div class="budget-big good" id="portfolioTotal">$0</div></div><div class="card invest-card" id="investMiniChartCard">
-<div class="section-head">
-<div class="section-title label-with-info">Investment Breakdown <span class="info-dot" onclick="toggleTip('tipInvestBreakdown')">i</span></div>
-</div>
-<div class="tooltip-card hidden-tip" id="tipInvestBreakdown">This chart only uses investment accounts from the Invest tab, not cash accounts or physical assets.</div>
-<div class="invest-mini-wrap">
-<div class="invest-mini-chart" id="investMiniChart">
-<div class="invest-mini-center" id="investMiniCenter">NO<br/>DATA</div>
-</div>
-<div class="invest-legend" id="investLegend"></div>
-</div>
-</div>
+<div class="card invest-card"><h4>Portfolio Total</h4><div class="budget-big good" id="portfolioTotal">$0</div></div>
 <div class="card invest-card">
 <div class="section-head"><div class="section-title">Investment Accounts</div><button class="add-btn pill" onclick="togglePanel('investPanelWrap')">+ Account</button></div>
 <div id="investList"></div>
@@ -724,12 +470,6 @@
 </div>
 <div class="tooltip-card hidden-tip" id="tipAssetsTotal">Assets here add into net worth. Use this for collectibles, electronics, tools, jewelry, furniture, and other items you want tracked.</div>
 <div class="budget-big good" id="assetsTotal">$0</div>
-</div><div class="card invest-card" id="assetTotalsByCategoryCard">
-<div class="section-head">
-<div class="section-title label-with-info">Asset Categories <span class="info-dot" onclick="toggleTip('tipAssetCategories')">i</span></div>
-</div>
-<div class="tooltip-card hidden-tip" id="tipAssetCategories">This groups your tracked assets by category and totals their current values.</div>
-<div id="assetCategoryTotals"></div>
 </div>
 <div class="card invest-card">
 <div class="section-head">
@@ -763,20 +503,7 @@
 <h2>Settings</h2>
 <p>Reliable browser save, export/import, and user-focused budgeting defaults.</p>
 </div>
-<div class="card settings-card" id="settingsReadinessCard">
-<h4>App Readiness</h4>
-<div class="helper-copy">You now have a stable browser build with local save, export/import, and separated tabs for Budget, Cash Flow, Invest, Assets, and Settings.</div>
-<div class="summary-inline">
-<div class="summary-mini">
-<div class="summary-mini-label">Storage</div>
-<div class="summary-mini-value">Local</div>
-</div>
-<div class="summary-mini">
-<div class="summary-mini-label">Build State</div>
-<div class="summary-mini-value">Stable</div>
-</div>
-</div>
-</div><div class="card settings-card">
+<div class="card settings-card">
 <h4>Budget Style</h4>
 <div class="helper-copy">Default category structure: Fixed Bills, Variable Spending, Investing, Lifestyle.</div>
 </div>
@@ -801,7 +528,7 @@
     function createEmptyMonth(){
       const categories = {};
       DEFAULT_CATEGORIES.forEach(key => categories[key] = []);
-      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories, deletedDefaultCategories: [] };
+      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories };
     }
     function getCurrentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
     function defaultData(){
@@ -856,16 +583,11 @@
             ...a,
             balance: a.includeInCashFlow ? getEndOfMonthBalance(prevKey) / Math.max(1, (prevMonth.accounts || []).filter(x => x.includeInCashFlow).length) : Number(a.balance || 0)
           }));
-          data.months[key].deletedDefaultCategories = [...(prevMonth.deletedDefaultCategories || [])];
         }
       }
       if(!data.months[key].accounts) data.months[key].accounts = [];
       if(!data.months[key].assets) data.months[key].assets = [];
-      if(!data.months[key].deletedDefaultCategories) data.months[key].deletedDefaultCategories = [];
-      DEFAULT_CATEGORIES.forEach(cat => {
-        if((data.months[key].deletedDefaultCategories || []).includes(cat)) return;
-        if(!data.months[key].categories[cat]) data.months[key].categories[cat] = [];
-      });
+      DEFAULT_CATEGORIES.forEach(cat => { if(!data.months[key].categories[cat]) data.months[key].categories[cat] = []; });
       return data.months[key];
     }
     function getMonthData(key=data.currentMonth){ return ensureMonth(key); }
@@ -1056,84 +778,6 @@
       return { income, expenses, cashFlow, leftToBudget: cashFlow };
     }
 
-    
-    function getOverviewSpendingRows(monthKey=data.currentMonth){
-      const names = getCategoryNames(monthKey);
-      const rows = names.map(cat => ({
-        label: titleCase(cat),
-        amount: getCategoryTotal(cat, monthKey)
-      })).filter(r => r.amount > 0).sort((a,b) => b.amount - a.amount);
-      return { rows, total: rows.reduce((sum, r) => sum + r.amount, 0) };
-    }
-
-    function getOverviewPortfolioRows(monthKey=data.currentMonth){
-      const rows = [
-        { label: 'Investments', amount: getInvestmentTotal(monthKey), color: '#22c55e' },
-        { label: 'Cash', amount: getAllAccountBalance(monthKey), color: '#2dd4bf' },
-        { label: 'Assets', amount: getAssetTotal(monthKey), color: '#8b5cf6' }
-      ].filter(r => r.amount > 0);
-      return { rows, total: rows.reduce((sum, r) => sum + r.amount, 0) };
-    }
-
-    function applyOverviewDonut(elId, rows, fallbackClass, palette){
-      const el = document.getElementById(elId);
-      if(!el) return;
-      if(!rows.length){
-        el.style.background = '';
-        return;
-      }
-      const total = rows.reduce((sum, r) => sum + r.amount, 0) || 1;
-      let start = 0;
-      const segments = rows.slice(0,3).map((row, idx) => {
-        const pct = (row.amount / total) * 100;
-        const end = start + pct;
-        const color = row.color || palette[idx % palette.length];
-        const seg = `${color} ${start}% ${end}%`;
-        start = end;
-        return seg;
-      });
-      if(start < 100){
-        segments.push(`rgba(255,255,255,.06) ${start}% 100%`);
-      }
-      el.style.background = `conic-gradient(${segments.join(', ')})`;
-      el.classList.remove(fallbackClass);
-    }
-
-
-    
-    function getCashFlowSignals(monthKey=data.currentMonth){
-      const forecast = getForecast(monthKey);
-      const nextBill = getRecurringBillEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date))[0] || null;
-      const nextIncome = getIncomeScheduleEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date))[0] || null;
-      let lowestEvent = null;
-      if(forecast.timeline && forecast.timeline.length){
-        lowestEvent = forecast.timeline.reduce((lowest, item) => {
-          if(!lowest) return item;
-          return item.runningBalance < lowest.runningBalance ? item : lowest;
-        }, null);
-      }
-      return { forecast, nextBill, nextIncome, lowestEvent };
-    }
-
-    function getLeftAfterBills(monthKey=data.currentMonth){
-      const income = getManualIncomeTotal(monthKey);
-      const bills = getRecurringBillEvents(monthKey).reduce((s, e) => s + Number(e.amount || 0), 0);
-      return income - bills;
-    }
-
-    function getAssetCategoryRows(monthKey=data.currentMonth){
-      const items = getMonthData(monthKey).assets || [];
-      const grouped = {};
-      items.forEach(item => {
-        const cat = item.category || 'Other';
-        if(!grouped[cat]) grouped[cat] = { label: cat, amount: 0, count: 0 };
-        grouped[cat].amount += Number(item.amount || 0);
-        grouped[cat].count += 1;
-      });
-      return Object.values(grouped).sort((a,b) => b.amount - a.amount);
-    }
-
-
     function renderOverview(){
       const monthKey = data.currentMonth;
       const manualIncome = getManualIncomeTotal(monthKey);
@@ -1145,48 +789,13 @@
       const netWorth = totalAccounts + investmentTotal + assetTotal - (manualExpenses + recurringBills);
       const cashFlow = manualIncome - (manualExpenses + recurringBills);
 
-      const spendData = getOverviewSpendingRows(monthKey);
-      const portfolioData = getOverviewPortfolioRows(monthKey);
-
       document.getElementById('overviewIncome').textContent = money(manualIncome);
-      document.getElementById('overviewInvested').textContent = money(portfolioData.total);
+      document.getElementById('overviewInvested').textContent = money(investmentTotal);
       document.getElementById('overviewInvestedMini').textContent = money(investmentTotal);
       document.getElementById('overviewSpending').textContent = money(manualExpenses + recurringBills);
       document.getElementById('overviewCashFlow').textContent = money(cashFlow);
       document.getElementById('netWorthValue').textContent = money(netWorth);
       document.getElementById('statusPill').textContent = cashFlow > 1000 ? 'On Track' : cashFlow > 0 ? 'Watch Spending' : 'Over Budget';
-
-      const spendTop = spendData.rows[0];
-      const spendCenter = document.getElementById('overviewSpendingCenter');
-      const spendNote = document.getElementById('overviewSpendingNote');
-      if(spendCenter && spendNote){
-        if(spendTop){
-          const pct = spendData.total > 0 ? Math.round((spendTop.amount / spendData.total) * 100) : 0;
-          spendCenter.innerHTML = pct + '%<br>' + escapeHtml(spendTop.label.toUpperCase());
-          spendNote.textContent = 'Top category: ' + spendTop.label;
-        } else {
-          spendCenter.innerHTML = 'NO<br>SPEND';
-          spendNote.textContent = 'Add budget items to see your top categories';
-        }
-      }
-
-      const investTop = portfolioData.rows.slice().sort((a,b) => b.amount - a.amount)[0];
-      const investCenter = document.getElementById('overviewInvestCenter');
-      const investNote = document.getElementById('overviewInvestNote');
-      if(investCenter && investNote){
-        if(investTop){
-          const pct = portfolioData.total > 0 ? Math.round((investTop.amount / portfolioData.total) * 100) : 0;
-          investCenter.innerHTML = pct + '%<br>' + escapeHtml(investTop.label.toUpperCase());
-          investNote.textContent = 'Largest mix: ' + investTop.label;
-        } else {
-          investCenter.innerHTML = 'NO<br>DATA';
-          investNote.textContent = 'Track investments and assets to build your mix';
-        }
-      }
-
-      applyOverviewDonut('overviewSpendingDonut', spendData.rows.map((r, i) => ({...r, color: ['#14b8a6','#3b82f6','#f59e0b'][i]})), 'spending', ['#14b8a6','#3b82f6','#f59e0b']);
-      applyOverviewDonut('overviewInvestDonut', portfolioData.rows, 'portfolio', ['#22c55e','#2dd4bf','#8b5cf6']);
-
       renderActivity();
     }
 
@@ -1270,16 +879,11 @@
       });
       wrap.querySelectorAll(`[data-delete="${type}"]`).forEach(el => {
         const id = el.dataset.id;
-        el.onclick = (ev) => {
-          ev.preventDefault();
-          ev.stopPropagation();
-          deleteItem(type, id);
-        };
+        el.onclick = () => deleteItem(type, id);
       });
     }
 
     function deleteItem(type, id){
-      console.log('delete', type, id);
       const month = getMonthData();
       if(type === 'income'){
         const item = month.incomes.find(i => i.id === id);
@@ -1313,111 +917,19 @@
         const total = getCategoryTotal(id);
         delete month.categories[id];
         delete data.collapsedGroups[id];
-        if(DEFAULT_CATEGORIES.includes(id)){
-          if(!month.deletedDefaultCategories) month.deletedDefaultCategories = [];
-          if(!month.deletedDefaultCategories.includes(id)){
-            month.deletedDefaultCategories.push(id);
-          }
-        }
         addActivity('category', 'Category deleted', titleCase(id), total, 'minus');
       }
       saveData(); render();
     }
 
     function renderIncomeSection(){ renderRowList('incomeList', getMonthData().incomes, 'income'); }
-    
-    function getInvestmentRows(monthKey=data.currentMonth){
-      const items = getMonthData(monthKey).investments || [];
-      const rows = items.map(item => ({
-        label: item.name,
-        amount: Number(item.amount || 0)
-      })).filter(r => r.amount > 0).sort((a,b) => b.amount - a.amount);
-      return { rows, total: rows.reduce((sum, r) => sum + r.amount, 0) };
-    }
-
-    function renderInvestLegend(containerId, rows, palette){
-      const container = document.getElementById(containerId);
-      if(!container) return;
-      if(!rows.length){
-        container.innerHTML = '<div class="empty-state">Add investment balances to see the breakdown.</div>';
-        return;
-      }
-      container.innerHTML = rows.slice(0,3).map((row, idx) => `
-        <div class="invest-legend-row">
-          <div class="invest-legend-left">
-            <span class="invest-dot" style="background:${palette[idx % palette.length]};"></span>
-            <span class="invest-legend-name">${escapeHtml(row.label)}</span>
-          </div>
-          <div class="invest-legend-value">${money(row.amount)}</div>
-        </div>
-      `).join('');
-    }
-
-    function applyInvestMiniDonut(elId, rows, palette){
-      const el = document.getElementById(elId);
-      if(!el) return;
-      if(!rows.length){
-        el.style.background = '';
-        return;
-      }
-      const total = rows.reduce((sum, r) => sum + r.amount, 0) || 1;
-      let start = 0;
-      const segments = rows.slice(0,3).map((row, idx) => {
-        const pct = (row.amount / total) * 100;
-        const end = start + pct;
-        const color = palette[idx % palette.length];
-        const seg = `${color} ${start}% ${end}%`;
-        start = end;
-        return seg;
-      });
-      if(start < 100){
-        segments.push(`rgba(255,255,255,.06) ${start}% 100%`);
-      }
-      el.style.background = `conic-gradient(${segments.join(', ')})`;
-    }
-
-
-    function renderInvestSection(){
-      document.getElementById('portfolioTotal').textContent = money(getInvestmentTotal());
-      renderRowList('investList', getMonthData().investments, 'investment');
-
-      const investData = getInvestmentRows();
-      const center = document.getElementById('investMiniCenter');
-      const top = investData.rows[0];
-      if(center){
-        if(top){
-          const pct = investData.total > 0 ? Math.round((top.amount / investData.total) * 100) : 0;
-          center.innerHTML = pct + '%<br>' + escapeHtml(top.label.toUpperCase());
-        } else {
-          center.innerHTML = 'NO<br>DATA';
-        }
-      }
-      renderInvestLegend('investLegend', investData.rows, ['#22c55e','#2dd4bf','#8b5cf6']);
-      applyInvestMiniDonut('investMiniChart', investData.rows, ['#22c55e','#2dd4bf','#8b5cf6']);
-    }
+    function renderInvestSection(){ document.getElementById('portfolioTotal').textContent = money(getInvestmentTotal()); renderRowList('investList', getMonthData().investments, 'investment'); }
     function renderAssetsSection(){
       const month = getMonthData();
       const wrap = document.getElementById('assetsList');
       const totalEl = document.getElementById('assetsTotal');
-      const catWrap = document.getElementById('assetCategoryTotals');
       if(totalEl) totalEl.textContent = money(getAssetTotal());
-      const items = (month.assets || []).slice().sort((a,b) => Number(b.amount || 0) - Number(a.amount || 0));
-      if(catWrap){
-        const rows = getAssetCategoryRows();
-        if(!rows.length){
-          catWrap.innerHTML = `<div class="empty-state">No asset categories yet.</div>`;
-        } else {
-          catWrap.innerHTML = rows.map(row => `
-            <div class="asset-group">
-              <div class="asset-group-head">
-                <div class="asset-group-name">${escapeHtml(row.label)}</div>
-                <div class="asset-group-total">${money(row.amount)}</div>
-              </div>
-              <div class="asset-group-count">${row.count} item${row.count === 1 ? '' : 's'}</div>
-            </div>
-          `).join('');
-        }
-      }
+      const items = month.assets || [];
       if(!wrap) return;
       if(!items.length){
         wrap.innerHTML = `<div class="empty-state">No assets yet. Add valuables, collectibles, electronics, tools, or anything else you want counted in net worth.</div>`;
@@ -1427,7 +939,6 @@
         <div class="row-item">
           <div style="flex:1;min-width:0;">
             <div class="row-name editable-copy" data-asset-name="${item.id}">${escapeHtml(item.name)}</div>
-            <div class="row-note">${escapeHtml(item.category || 'Other')}</div>
             <div class="row-note editable-copy" data-asset-serial="${item.id}">Serial: ${escapeHtml(item.serial || 'None')}</div>
             <div class="asset-meta editable-copy" data-asset-receipt="${item.id}">Receipt: ${escapeHtml(item.receiptName || 'None saved')}</div>
           </div>
@@ -1480,10 +991,8 @@
         };
       });
       wrap.querySelectorAll('[data-asset-delete]').forEach(el => {
-        const id = el.getAttribute('data-asset-delete');
-        el.onclick = (ev) => {
-          ev.preventDefault();
-          ev.stopPropagation();
+        const id = el.dataset.assetDelete;
+        el.onclick = () => {
           const item = month.assets.find(a => a.id === id);
           month.assets = month.assets.filter(a => a.id !== id);
           if(item) addActivity('asset', 'Asset deleted', item.name, item.amount, 'minus');
@@ -1583,54 +1092,31 @@
       renderBudgetCategories();
     }
 
-    function renderCashFlow(){
+    
+function getCashFlowSignalsSimple(monthKey=data.currentMonth){
+  const forecast = getForecast(monthKey);
+  const bills = getRecurringBillEvents(monthKey).sort((a,b)=>a.date.localeCompare(b.date));
+  const income = getRecurringPaycheckEvents(monthKey).sort((a,b)=>a.date.localeCompare(b.date));
+  const nextBill = bills[0] || null;
+  const nextIncome = income[0] || null;
+  let lowest = null;
+  if(forecast.timeline.length){
+    lowest = forecast.timeline.reduce((min, item) => (!min || item.runningBalance < min.runningBalance) ? item : min, null);
+  }
+  return { nextBill, nextIncome, lowest };
+}
+
+
+function renderCashFlow(){
       const month = getMonthData();
       renderAccounts();
-      const signals = getCashFlowSignals();
-      const forecast = signals.forecast;
+      const forecast = getForecast();
       document.getElementById('cfCurrentBalance').textContent = money(forecast.startingBalance);
       document.getElementById('cfLowestBalance').textContent = money(forecast.lowestBalance);
       document.getElementById('cfSafeToSpend').textContent = money(forecast.safeToSpend);
 
       renderRowList('billsList', data.recurringBills.map(b => ({...b, note:`${titleCase(b.frequency)} • due day ${b.dueDay} • ${b.autoPay ? 'Auto-pay' : 'Manual'} • remind ${b.reminderDays}d`})), 'bill');
       renderRowList('scheduleList', data.incomeSchedules.map(s => { const income = getMonthData().incomes.find(i => i.id === s.incomeId); return {...s, name: income ? income.name : 'Missing income', amount: income ? income.amount : 0, note:`${titleCase(s.frequency)} • day ${s.day} • from Budget income`}; }), 'income_schedule');
-
-      const nextBillSub = document.getElementById('cfNextBillSub');
-      const nextBillValue = document.getElementById('cfNextBillValue');
-      const nextIncomeSub = document.getElementById('cfNextIncomeSub');
-      const nextIncomeValue = document.getElementById('cfNextIncomeValue');
-      const lowestDateSub = document.getElementById('cfLowestDateSub');
-      const lowestDateValue = document.getElementById('cfLowestDateValue');
-
-      if(nextBillSub && nextBillValue){
-        if(signals.nextBill){
-          nextBillSub.textContent = signals.nextBill.name + ' • due ' + signals.nextBill.date;
-          nextBillValue.textContent = money(signals.nextBill.amount);
-        } else {
-          nextBillSub.textContent = 'No recurring bills scheduled.';
-          nextBillValue.textContent = '$0';
-        }
-      }
-
-      if(nextIncomeSub && nextIncomeValue){
-        if(signals.nextIncome){
-          nextIncomeSub.textContent = signals.nextIncome.name + ' • ' + signals.nextIncome.date;
-          nextIncomeValue.textContent = money(signals.nextIncome.amount);
-        } else {
-          nextIncomeSub.textContent = 'No income schedule set.';
-          nextIncomeValue.textContent = '$0';
-        }
-      }
-
-      if(lowestDateSub && lowestDateValue){
-        if(signals.lowestEvent){
-          lowestDateSub.textContent = signals.lowestEvent.name + ' • ' + signals.lowestEvent.date;
-          lowestDateValue.textContent = money(signals.lowestEvent.runningBalance);
-        } else {
-          lowestDateSub.textContent = 'No forecast events yet.';
-          lowestDateValue.textContent = '$0';
-        }
-      }
 
       const timeline = document.getElementById('timelineList');
       if(!forecast.timeline.length){ timeline.innerHTML = `<div class="empty-state">Add income schedule and recurring bills to see your timeline and lowest balance forecast.</div>`; }
@@ -1646,7 +1132,18 @@
         `).join('');
       }
 
-      populateBillCategoryOptions();
+      
+const sig = getCashFlowSignalsSimple();
+const nb = document.getElementById('cfNextBill');
+const ni = document.getElementById('cfNextIncome');
+const low = document.getElementById('cfLowestSignal');
+
+if(nb){ nb.textContent = sig.nextBill ? sig.nextBill.name + ' (' + sig.nextBill.date + ')' : 'None'; }
+if(ni){ ni.textContent = sig.nextIncome ? sig.nextIncome.name + ' (' + sig.nextIncome.date + ')' : 'None'; }
+if(low){ low.textContent = sig.lowest ? money(sig.lowest.runningBalance) + ' (' + sig.lowest.date + ')' : '—'; }
+
+populateBillCategoryOptions();
+
     }
 
     function populateExpenseCategoryOptions(){
@@ -1698,7 +1195,6 @@
       if(!key) return;
       const month = getMonthData();
       if(!month.categories[key]) month.categories[key] = [];
-      month.deletedDefaultCategories = (month.deletedDefaultCategories || []).filter(c => c !== key);
       addActivity('category', 'Category added', titleCase(key), 0, 'neutral');
       document.getElementById('newCategoryName').value = '';
       togglePanel('categoryPanelWrap', false);
