@@ -304,6 +304,32 @@
       white-space:nowrap;
     }
 
+    
+    .overview-signal-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:14px;
+    }
+    .overview-signal{
+      padding:14px;
+      border-radius:18px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.05);
+    }
+    .overview-signal-label{
+      color:var(--muted);
+      font-size:.75rem;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:8px;
+    }
+    .overview-signal-value{
+      font-size:1.25rem;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -359,6 +385,21 @@
 <div class="mini-stat"><div class="mini-stat-label">Income</div><div class="mini-stat-value" id="overviewIncome">$0</div></div>
 <div class="mini-stat"><div class="mini-stat-label">Invested</div><div class="mini-stat-value" id="overviewInvestedMini">$0</div></div>
 <div class="mini-stat"><div class="mini-stat-label">Cash Flow</div><div class="mini-stat-value" id="overviewCashFlow">$0</div></div>
+</div>
+</div><div class="card networth-card" id="overviewSignalsCard">
+<div class="section-head">
+<div class="section-title label-with-info">Overview Signals <span class="info-dot" onclick="toggleTip('tipOverviewSignals')">i</span></div>
+</div>
+<div class="tooltip-card hidden-tip" id="tipOverviewSignals">A quick read on what you can safely spend and what remains after recurring bills in the selected month.</div>
+<div class="overview-signal-grid">
+<div class="overview-signal">
+<div class="overview-signal-label">Safe to Spend</div>
+<div class="overview-signal-value good" id="overviewSafeToSpend">$0</div>
+</div>
+<div class="overview-signal">
+<div class="overview-signal-label">Left After Bills</div>
+<div class="overview-signal-value" id="overviewLeftAfterBills">$0</div>
+</div>
 </div>
 </div>
 <div class="card activity-card">
@@ -979,6 +1020,14 @@
     }
 
 
+    
+    function getLeftAfterBills(monthKey=data.currentMonth){
+      const income = getManualIncomeTotal(monthKey);
+      const bills = getRecurringBillEvents(monthKey).reduce((s, e) => s + Number(e.amount || 0), 0);
+      return income - bills;
+    }
+
+
     function renderOverview(){
       const monthKey = data.currentMonth;
       const manualIncome = getManualIncomeTotal(monthKey);
@@ -1031,6 +1080,20 @@
 
       applyOverviewDonut('overviewSpendingDonut', spendData.rows.map((r, i) => ({...r, color: ['#14b8a6','#3b82f6','#f59e0b'][i]})), 'spending', ['#14b8a6','#3b82f6','#f59e0b']);
       applyOverviewDonut('overviewInvestDonut', portfolioData.rows, 'portfolio', ['#22c55e','#2dd4bf','#8b5cf6']);
+
+      const safeSpendEl = document.getElementById('overviewSafeToSpend');
+      const leftBillsEl = document.getElementById('overviewLeftAfterBills');
+      const forecast = getForecast(monthKey);
+      const leftAfterBills = getLeftAfterBills(monthKey);
+
+      if(safeSpendEl){
+        safeSpendEl.textContent = money(forecast.safeToSpend);
+        safeSpendEl.className = 'overview-signal-value ' + (forecast.safeToSpend <= 0 ? 'bad' : forecast.safeToSpend < 300 ? 'warn' : 'good');
+      }
+      if(leftBillsEl){
+        leftBillsEl.textContent = money(leftAfterBills);
+        leftBillsEl.className = 'overview-signal-value ' + (leftAfterBills < 0 ? 'bad' : leftAfterBills < 300 ? 'warn' : 'good');
+      }
 
       renderActivity();
     }
