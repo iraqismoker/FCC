@@ -501,7 +501,37 @@
 <div class="forecast-stat"><div class="forecast-label">Lowest Balance</div><div class="forecast-value warn" id="cfLowestBalance">$0</div></div>
 <div class="forecast-stat"><div class="forecast-label">Safe to Spend</div><div class="forecast-value good" id="cfSafeToSpend">$0</div></div>
 </div>
-</div><div class="card forecast-card" id="cashflowBillsCard">
+</div>
+<div class="card forecast-card" id="cashflowSignalsCard">
+<div class="section-head">
+<div class="section-title label-with-info">Cash Flow Signals <span class="info-dot" onclick="toggleTip('tipCashFlowSignals')">i</span></div>
+</div>
+<div class="tooltip-card hidden-tip" id="tipCashFlowSignals">A quick read on your next bill, next income hit, and the date your forecast balance gets lowest.</div>
+<div class="stack">
+<div class="row-item">
+<div style="flex:1;min-width:0;">
+<div class="row-name">Next Bill</div>
+<div class="row-note" id="cfNextBillSub">No recurring bills scheduled.</div>
+</div>
+<div class="row-amount bad" id="cfNextBillValue">$0</div>
+</div>
+<div class="row-item">
+<div style="flex:1;min-width:0;">
+<div class="row-name">Next Income</div>
+<div class="row-note" id="cfNextIncomeSub">No income schedule set.</div>
+</div>
+<div class="row-amount good" id="cfNextIncomeValue">$0</div>
+</div>
+<div class="row-item">
+<div style="flex:1;min-width:0;">
+<div class="row-name">Lowest Balance Date</div>
+<div class="row-note" id="cfLowestDateSub">No forecast events yet.</div>
+</div>
+<div class="row-amount warn" id="cfLowestDateValue">$0</div>
+</div>
+</div>
+</div>
+<div class="card forecast-card" id="cashflowBillsCard">
 <div class="section-head"><div class="section-title label-with-info">Recurring Bills <span class="info-dot" onclick="toggleTip('tipBills')">i</span></div><button class="add-btn pill" onclick="togglePanel('billPanelWrap')">+ Bill</button><div class="section-controls"><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', -1)">↑</button><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', 1)">↓</button></div></div>
 <div class="tooltip-card hidden-tip" id="tipBills">Use this for bills that repeat monthly, quarterly, or yearly. These feed into your cash flow forecast automatically.</div>
 <div id="billsList"></div>
@@ -1378,6 +1408,22 @@
       renderBudgetCategories();
     }
 
+    
+    function getCashFlowSignalsSimple(monthKey=data.currentMonth){
+      const forecast = getForecast(monthKey);
+      const nextBill = getRecurringBillEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date))[0] || null;
+      const nextIncome = getRecurringPaycheckEvents(monthKey).slice().sort((a,b) => a.date.localeCompare(b.date))[0] || null;
+      let lowestEvent = null;
+      if(forecast.timeline && forecast.timeline.length){
+        lowestEvent = forecast.timeline.reduce((lowest, item) => {
+          if(!lowest) return item;
+          return item.runningBalance < lowest.runningBalance ? item : lowest;
+        }, null);
+      }
+      return { nextBill, nextIncome, lowestEvent };
+    }
+
+
     function renderCashFlow(){
       const month = getMonthData();
       renderAccounts();
@@ -1401,6 +1447,44 @@
             <div class="timeline-amount ${item.type === 'income_schedule' ? 'good' : 'bad'}">${item.type === 'income_schedule' ? '+' : '-'}${money(item.amount)}</div>
           </div>
         `).join('');
+      }
+
+      const signals = getCashFlowSignalsSimple();
+      const nbSub = document.getElementById('cfNextBillSub');
+      const nbVal = document.getElementById('cfNextBillValue');
+      const niSub = document.getElementById('cfNextIncomeSub');
+      const niVal = document.getElementById('cfNextIncomeValue');
+      const lowSub = document.getElementById('cfLowestDateSub');
+      const lowVal = document.getElementById('cfLowestDateValue');
+
+      if(nbSub && nbVal){
+        if(signals.nextBill){
+          nbSub.textContent = signals.nextBill.name + ' • due ' + signals.nextBill.date;
+          nbVal.textContent = money(signals.nextBill.amount);
+        } else {
+          nbSub.textContent = 'No recurring bills scheduled.';
+          nbVal.textContent = '$0';
+        }
+      }
+
+      if(niSub && niVal){
+        if(signals.nextIncome){
+          niSub.textContent = signals.nextIncome.name + ' • ' + signals.nextIncome.date;
+          niVal.textContent = money(signals.nextIncome.amount);
+        } else {
+          niSub.textContent = 'No income schedule set.';
+          niVal.textContent = '$0';
+        }
+      }
+
+      if(lowSub && lowVal){
+        if(signals.lowestEvent){
+          lowSub.textContent = signals.lowestEvent.name + ' • ' + signals.lowestEvent.date;
+          lowVal.textContent = money(signals.lowestEvent.runningBalance);
+        } else {
+          lowSub.textContent = 'No forecast events yet.';
+          lowVal.textContent = '$0';
+        }
       }
 
       populateBillCategoryOptions();
