@@ -683,7 +683,7 @@
 <div class="header">
 <div class="eyebrow">Assets</div>
 <h2>Assets</h2>
-<p>Track valuables and property that should count toward net worth, including serial numbers and receipt references.</p>
+<p>Track valuables and property by category, including serial numbers and receipt references.</p>
 </div>
 <div class="top-row">
 <select class="month-select" id="assetsMonth" onchange="changeMonth(this.value)"></select>
@@ -713,6 +713,17 @@
 <div class="two-col">
 <input class="small-input" id="assetName" placeholder="Asset name"/>
 <input class="small-input" id="assetAmount" placeholder="Estimated value" step="0.01" type="number"/>
+</div><div class="two-col">
+<select class="form-select" id="assetCategory">
+<option value="Vehicle">Vehicle</option>
+<option value="Electronics">Electronics</option>
+<option value="Tools">Tools</option>
+<option value="Collectibles">Collectibles</option>
+<option value="Jewelry">Jewelry</option>
+<option value="Furniture">Furniture</option>
+<option selected="" value="Other">Other</option>
+</select>
+<input class="small-input" id="assetCustomCategory" placeholder="Custom category (optional)"/>
 </div>
 <input class="small-input" id="assetSerial" placeholder="Serial number"/>
 <div class="small-stack">
@@ -1388,6 +1399,7 @@
         <div class="row-item">
           <div style="flex:1;min-width:0;">
             <div class="row-name editable-copy" data-asset-name="${item.id}">${escapeHtml(item.name)}</div>
+            <div class="row-note">${escapeHtml(item.category || 'Other')}</div>
             <div class="row-note editable-copy" data-asset-serial="${item.id}">Serial: ${escapeHtml(item.serial || 'None')}</div>
             <div class="asset-meta editable-copy" data-asset-receipt="${item.id}">Receipt: ${escapeHtml(item.receiptName || 'None saved')}</div>
           </div>
@@ -1456,14 +1468,19 @@
       const serial = document.getElementById('assetSerial').value.trim();
       const receiptFile = document.getElementById('assetReceipt').files[0];
       const receiptName = receiptFile ? receiptFile.name : (document.getElementById('assetReceiptName').value.trim() || '');
+      const selectedCategory = document.getElementById('assetCategory') ? document.getElementById('assetCategory').value : 'Other';
+      const customCategory = document.getElementById('assetCustomCategory') ? document.getElementById('assetCustomCategory').value.trim() : '';
+      const category = customCategory || selectedCategory || 'Other';
       if(!name) return;
-      getMonthData().assets.push({id: uid('asset'), name, amount, serial, receiptName});
-      addActivity('asset', 'Asset added', name, amount, 'plus');
+      getMonthData().assets.push({id: uid('asset'), name, amount, serial, receiptName, category});
+      addActivity('asset', 'Asset added', name + ' • ' + category, amount, 'plus');
       document.getElementById('assetName').value = '';
       document.getElementById('assetAmount').value = '';
       document.getElementById('assetSerial').value = '';
       document.getElementById('assetReceipt').value = '';
       document.getElementById('assetReceiptName').value = '';
+      if(document.getElementById('assetCategory')) document.getElementById('assetCategory').value = 'Other';
+      if(document.getElementById('assetCustomCategory')) document.getElementById('assetCustomCategory').value = '';
       togglePanel('assetPanelWrap', false);
       saveData(); render();
     }
