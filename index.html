@@ -361,6 +361,100 @@
       line-height:1.3;
     }
 
+    
+    .screen{
+      padding:18px 16px 126px;
+    }
+    .header{
+      padding-top:6px;
+      margin-bottom:16px;
+    }
+    .header h1,.header h2{
+      font-size:1.76rem;
+      margin-bottom:7px;
+    }
+    .header p{
+      font-size:.93rem;
+      max-width:360px;
+    }
+    .top-row{
+      margin-bottom:12px;
+    }
+    .card{
+      border-radius:22px;
+    }
+    .networth-card,.activity-card,.forecast-card,.invest-card,.settings-card,.budget-card{
+      padding:16px;
+      margin-bottom:10px;
+    }
+    .section-head,.networth-top,.activity-head{
+      margin-bottom:10px;
+    }
+    .row-item{
+      padding:9px 0 11px;
+    }
+    .row-name{
+      font-size:.95rem;
+    }
+    .row-note{
+      font-size:.8rem;
+    }
+    .chart-card{
+      padding:14px 12px;
+      min-height:500px;
+    }
+    .chart-card h3{
+      font-size:.95rem;
+      margin-bottom:10px;
+    }
+    .chart-value{
+      font-size:1.55rem;
+      margin-bottom:5px;
+    }
+    .chart-note{
+      font-size:.83rem;
+      min-height:68px;
+    }
+    .tap-link{
+      min-height:40px;
+      font-size:.88rem;
+    }
+    .budget-big{
+      font-size:1.86rem;
+    }
+    .networth-value{
+      font-size:2.7rem;
+    }
+    .mini-stat,.forecast-stat{
+      padding:11px 8px;
+      border-radius:16px;
+    }
+    .mini-stat-value,.forecast-value{
+      font-size:1.08rem;
+    }
+    .actions{
+      align-items:center;
+    }
+    .add-btn.pill,.secondary-btn.pill,.save-btn.pill,.danger-btn.pill{
+      min-height:42px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 14px;
+    }
+    .category-card{
+      padding:14px;
+    }
+    .collapse-indicator{
+      font-size:.74rem;
+    }
+    .asset-category-group{
+      margin-bottom:8px;
+    }
+    .invest-mini-wrap{
+      gap:12px;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -379,7 +473,7 @@
 <div class="eyebrow">Overview</div>
 <h1>Financial Command Center</h1>
 <p>Your money dashboard for spending, investing, and cash flow at a glance.</p>
-<div class="status-pill" style="display:inline-flex;margin-top:12px;">Assets build • stable</div>
+<div class="status-pill" style="display:inline-flex;margin-top:12px;">UI polish pass 1</div>
 </div>
 <div class="top-row">
 <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
@@ -742,7 +836,7 @@
 <div class="header">
 <div class="eyebrow">Settings</div>
 <h2>Settings</h2>
-<p>Reliable browser save, export/import, and user-focused budgeting defaults.</p>
+<p>Reliable browser save, backup controls, and user-focused budgeting defaults.</p>
 </div>
 <div class="card settings-card">
 <h4>Budget Style</h4>
