@@ -528,6 +528,99 @@
       height:48px;
     }
 
+    
+    .overview-grid{
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .chart-card{
+      padding:16px 14px 14px;
+      min-height:470px;
+      border-radius:22px;
+    }
+    .chart-card h3{
+      font-size:.98rem;
+      margin-bottom:12px;
+      letter-spacing:.01em;
+    }
+    .donut{
+      width:118px;
+      height:118px;
+      margin:0 auto 10px;
+    }
+    .donut-center{
+      font-size:.74rem;
+      letter-spacing:.07em;
+    }
+    .chart-value{
+      font-size:1.48rem;
+      line-height:1.05;
+      margin-bottom:6px;
+    }
+    .chart-note{
+      min-height:62px;
+      font-size:.82rem;
+      line-height:1.32;
+      margin-bottom:10px;
+    }
+    .tap-link{
+      min-height:38px;
+      border-radius:12px;
+      font-size:.86rem;
+    }
+    .forecast-card{
+      padding:16px 15px;
+      border-radius:22px;
+    }
+    .forecast-grid{
+      gap:8px;
+    }
+    .forecast-stat{
+      padding:12px 8px;
+      border-radius:16px;
+    }
+    .forecast-label{
+      font-size:.7rem;
+      line-height:1.15;
+      min-height:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+    .forecast-value{
+      font-size:1.05rem;
+      line-height:1.05;
+    }
+    #cashflowSignalsCard .row-item,
+    #cashflowTimelineCard .timeline-item,
+    #cashflowBillsCard .row-item,
+    #cashflowScheduleCard .row-item{
+      align-items:center;
+    }
+    #cashflowSignalsCard .row-name{
+      font-size:.93rem;
+    }
+    #cashflowSignalsCard .row-note{
+      font-size:.79rem;
+    }
+    #cashflowSignalsCard .row-amount{
+      min-width:98px;
+    }
+    .timeline-main{
+      font-size:.9rem;
+    }
+    .timeline-meta{
+      font-size:.78rem;
+    }
+    .timeline-amount{
+      font-size:.92rem;
+    }
+    .helper-copy{
+      font-size:.89rem;
+      line-height:1.4;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -546,7 +639,7 @@
 <div class="eyebrow">Overview</div>
 <h1>Financial Command Center</h1>
 <p>Your money dashboard for spending, investing, and cash flow at a glance.</p>
-<div class="status-pill" style="display:inline-flex;margin-top:12px;">UI polish pass 2</div>
+<div class="status-pill" style="display:inline-flex;margin-top:12px;">UI polish pass 3</div>
 </div>
 <div class="top-row">
 <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
