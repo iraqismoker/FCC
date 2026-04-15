@@ -621,6 +621,96 @@
       line-height:1.4;
     }
 
+    
+    #investScreen .invest-card,
+    #assetsScreen .invest-card,
+    #settingsScreen .settings-card{
+      padding:16px 15px;
+      border-radius:22px;
+    }
+    #investScreen .section-head,
+    #assetsScreen .section-head{
+      margin-bottom:10px;
+    }
+    #investScreen h4,
+    #assetsScreen h4,
+    #settingsScreen h4{
+      font-size:.94rem;
+      margin-bottom:10px;
+    }
+    #investScreen .budget-big,
+    #assetsScreen .budget-big{
+      font-size:1.84rem;
+    }
+    #investScreen .row-item,
+    #assetsScreen .row-item{
+      align-items:center;
+    }
+    #investScreen .row-name,
+    #assetsScreen .row-name{
+      font-size:.95rem;
+    }
+    #investScreen .row-note,
+    #assetsScreen .row-note,
+    #assetsScreen .asset-meta{
+      font-size:.8rem;
+      line-height:1.32;
+    }
+    #investScreen .row-amount,
+    #assetsScreen .row-amount{
+      min-width:104px;
+    }
+    .invest-mini-wrap{
+      gap:14px;
+      margin-top:6px;
+      align-items:flex-start;
+    }
+    .invest-mini-chart{
+      width:104px;
+      height:104px;
+    }
+    .invest-mini-center{
+      font-size:.66rem;
+      letter-spacing:.05em;
+    }
+    .invest-legend{
+      gap:7px;
+    }
+    .invest-legend-row{
+      padding:7px 9px;
+      border-radius:12px;
+    }
+    .invest-legend-name{
+      font-size:.82rem;
+    }
+    .invest-legend-value{
+      font-size:.8rem;
+    }
+    #assetsScreen .small-stack{
+      gap:7px;
+    }
+    #assetsScreen .receipt-note{
+      font-size:.8rem;
+      line-height:1.35;
+    }
+    #settingsScreen .settings-note,
+    #settingsScreen .helper-copy{
+      font-size:.88rem;
+      line-height:1.42;
+    }
+    #settingsScreen .stack{
+      gap:9px;
+    }
+    #settingsScreen .save-btn.pill,
+    #settingsScreen .secondary-btn.pill,
+    #settingsScreen .danger-btn.pill{
+      width:100%;
+      justify-content:center;
+    }
+    #settingsScreen .status-pill{
+      font-size:.78rem;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -639,7 +729,7 @@
 <div class="eyebrow">Overview</div>
 <h1>Financial Command Center</h1>
 <p>Your money dashboard for spending, investing, and cash flow at a glance.</p>
-<div class="status-pill" style="display:inline-flex;margin-top:12px;">UI polish pass 3</div>
+<div class="status-pill" style="display:inline-flex;margin-top:12px;">UI polish pass 4</div>
 </div>
 <div class="top-row">
 <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
@@ -904,7 +994,7 @@
 <div class="header">
 <div class="eyebrow">Invest</div>
 <h2>Investments</h2>
-<p>Track the balances feeding your portfolio and overview totals.</p>
+<p>Track the balances feeding your portfolio and overall wealth view.</p>
 </div>
 <div class="top-row">
 <select class="month-select" id="investMonth" onchange="changeMonth(this.value)"></select>
@@ -943,7 +1033,7 @@
 <div class="header">
 <div class="eyebrow">Assets</div>
 <h2>Assets</h2>
-<p>Track valuables and property by category, including serial numbers and receipt references.</p>
+<p>Track valuables and property by category, with values, serial numbers, and receipt references.</p>
 </div>
 <div class="top-row">
 <select class="month-select" id="assetsMonth" onchange="changeMonth(this.value)"></select>
@@ -1002,7 +1092,7 @@
 <div class="header">
 <div class="eyebrow">Settings</div>
 <h2>Settings</h2>
-<p>Reliable browser save, backup controls, and user-focused budgeting defaults.</p>
+<p>Backups, restore controls, and the core preferences for your browser-based build.</p>
 </div>
 <div class="card settings-card">
 <h4>Budget Style</h4>
