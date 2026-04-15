@@ -455,6 +455,79 @@
       gap:12px;
     }
 
+    
+    .bottom-nav{
+      padding:10px 8px 14px;
+      gap:6px;
+    }
+    .nav-btn{
+      min-height:54px;
+      padding:9px 3px 11px;
+      border-radius:16px;
+    }
+    .nav-icon{
+      font-size:.98rem;
+      margin-bottom:3px;
+    }
+    .nav-label{
+      font-size:.72rem;
+      line-height:1.05;
+    }
+    .category-card{
+      padding:16px 14px;
+      border-radius:22px;
+    }
+    .category-head{
+      margin-bottom:10px;
+      align-items:flex-start;
+    }
+    .category-title-wrap h4{
+      margin:0;
+      font-size:1rem;
+      line-height:1.15;
+    }
+    .category-total{
+      font-size:.9rem;
+    }
+    .category-tag{
+      font-size:.72rem;
+      margin-bottom:4px;
+    }
+    .category-progress-label{
+      margin:8px 0 8px;
+    }
+    .progress-track{
+      margin-bottom:10px;
+    }
+    .actions{
+      gap:10px;
+    }
+    .actions .add-btn.pill,
+    .actions .secondary-btn.pill,
+    .actions .save-btn.pill,
+    .actions .danger-btn.pill{
+      min-width:132px;
+      flex:0 0 auto;
+    }
+    #budgetScreen .actions .add-btn.pill,
+    #budgetScreen .actions .danger-btn.pill{
+      min-width:150px;
+    }
+    #categoriesWrap .row-item{
+      align-items:center;
+    }
+    #categoriesWrap .row-amount{
+      min-width:110px;
+    }
+    .top-row .add-btn.icon{
+      width:48px;
+      height:48px;
+      border-radius:14px;
+    }
+    .month-select{
+      height:48px;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -473,7 +546,7 @@
 <div class="eyebrow">Overview</div>
 <h1>Financial Command Center</h1>
 <p>Your money dashboard for spending, investing, and cash flow at a glance.</p>
-<div class="status-pill" style="display:inline-flex;margin-top:12px;">UI polish pass 1</div>
+<div class="status-pill" style="display:inline-flex;margin-top:12px;">UI polish pass 2</div>
 </div>
 <div class="top-row">
 <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
