@@ -799,6 +799,233 @@
       transform: translateY(-10px);
     }
 
+    
+    #loadingScreen{
+      padding:20px;
+      background:
+        radial-gradient(circle at top, rgba(20,184,166,.08), transparent 20%),
+        linear-gradient(180deg,#0b1220 0%,#050816 100%);
+    }
+    .splash-panel{
+      width:min(334px,100%);
+      padding:24px 22px 22px;
+      border-radius:24px;
+      transform:none;
+      box-shadow:0 14px 34px rgba(0,0,0,.22);
+    }
+    .brand-mark{
+      width:72px;
+      height:72px;
+      margin:0 auto 14px;
+      border-radius:22px;
+      font-size:1.28rem;
+      letter-spacing:.14em;
+      box-shadow:
+        0 12px 28px rgba(20,184,166,.12),
+        inset 0 1px 0 rgba(255,255,255,.07);
+    }
+    .splash-title{
+      font-size:1.92rem;
+      margin-bottom:8px;
+      letter-spacing:-.04em;
+    }
+    .splash-subtitle{
+      font-size:.92rem;
+      line-height:1.42;
+      max-width:240px;
+      margin:0 auto 16px;
+      opacity:.82;
+    }
+    .loading-track{
+      height:8px;
+      border-radius:999px;
+    }
+
+    
+    /* Overview v2 light redesign */
+    #overviewScreen{
+      background:#F8FAFC;
+      color:#0F172A;
+      padding:18px 18px 132px;
+    }
+    #overviewScreen .header{
+      padding-top:2px;
+      margin-bottom:14px;
+    }
+    #overviewScreen .eyebrow{
+      display:none;
+    }
+    #overviewScreen .header h1{
+      display:none;
+    }
+    #overviewScreen .header p{
+      display:none;
+    }
+    #overviewScreen .overview-v2-top{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    #overviewScreen .month-select{
+      height:56px;
+      border-radius:18px;
+      background:#FFFFFF;
+      color:#0F172A;
+      border:1px solid #E5E7EB;
+      box-shadow:0 6px 18px rgba(15,23,42,.05);
+      font-size:1rem;
+      font-weight:700;
+    }
+    #overviewScreen .overview-add-btn{
+      width:56px;
+      height:56px;
+      border:none;
+      border-radius:18px;
+      background:#FFFFFF;
+      color:#2563EB;
+      font-size:2rem;
+      line-height:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 6px 18px rgba(15,23,42,.05);
+      border:1px solid #E5E7EB;
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+    #overviewScreen .overview-segment{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:6px;
+      padding:6px;
+      border-radius:18px;
+      background:#FFFFFF;
+      border:1px solid #E5E7EB;
+      box-shadow:0 6px 18px rgba(15,23,42,.05);
+      margin-bottom:16px;
+    }
+    #overviewScreen .overview-segment button{
+      height:44px;
+      border:none;
+      border-radius:14px;
+      background:transparent;
+      color:#64748B;
+      font-size:1rem;
+      font-weight:700;
+      cursor:pointer;
+    }
+    #overviewScreen .overview-segment button.active{
+      background:#DBEAFE;
+      color:#1D4ED8;
+    }
+    #overviewScreen .overview-hero{
+      background:#FFFFFF;
+      border:1px solid #E5E7EB;
+      border-radius:24px;
+      box-shadow:0 10px 28px rgba(15,23,42,.07);
+      padding:24px 18px 20px;
+      text-align:center;
+      margin-bottom:16px;
+    }
+    #overviewScreen .overview-hero-value{
+      font-size:2.3rem;
+      line-height:1.02;
+      font-weight:800;
+      letter-spacing:-.045em;
+      color:#0F172A;
+      margin-bottom:6px;
+    }
+    #overviewScreen .overview-hero-label{
+      color:#64748B;
+      font-size:1rem;
+      line-height:1.35;
+    }
+    #overviewScreen .overview-v2-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-bottom:14px;
+    }
+    #overviewScreen .overview-v2-card{
+      background:#FFFFFF;
+      border:1px solid #E5E7EB;
+      border-radius:22px;
+      box-shadow:0 10px 28px rgba(15,23,42,.07);
+      padding:16px 16px 14px;
+      min-height:188px;
+      display:flex;
+      flex-direction:column;
+      cursor:pointer;
+    }
+    #overviewScreen .overview-v2-icon{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.15rem;
+      background:#EFF6FF;
+      color:#2563EB;
+      margin-bottom:14px;
+    }
+    #overviewScreen .overview-v2-card-title{
+      color:#64748B;
+      font-size:.88rem;
+      font-weight:700;
+      line-height:1.25;
+      margin-bottom:10px;
+    }
+    #overviewScreen .overview-v2-card-value{
+      color:#0F172A;
+      font-size:1.6rem;
+      line-height:1.06;
+      font-weight:800;
+      letter-spacing:-.035em;
+      margin-bottom:10px;
+    }
+    #overviewScreen .overview-v2-card-note{
+      color:#64748B;
+      font-size:.84rem;
+      line-height:1.32;
+      margin-bottom:14px;
+      min-height:34px;
+    }
+    #overviewScreen .overview-v2-card-btn{
+      margin-top:auto;
+      height:42px;
+      border-radius:14px;
+      border:1px solid #BFDBFE;
+      background:#FFFFFF;
+      color:#1E3A8A;
+      font-size:.95rem;
+      font-weight:800;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    #overviewScreen .activity-card{
+      background:#FFFFFF;
+      border:1px solid #E5E7EB;
+      box-shadow:0 10px 28px rgba(15,23,42,.07);
+      border-radius:22px;
+      color:#0F172A;
+    }
+    #overviewScreen .activity-title,
+    #overviewScreen .activity-main{
+      color:#0F172A;
+    }
+    #overviewScreen .activity-meta,
+    #overviewScreen .activity-empty{
+      color:#64748B;
+    }
+    #overviewScreen .secondary-btn.pill{
+      background:#FFFFFF;
+      color:#334155;
+      border:1px solid #E5E7EB;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -807,78 +1034,68 @@
 <div class="card splash-panel">
 <div class="brand-mark">CC</div>
 <div class="splash-title">Cash Command</div>
-<div class="splash-subtitle">Budgeting, cash flow, investing, and assets in one place.</div>
+<div class="splash-subtitle">Budgeting, cash flow, investing, and assets.</div>
 <div class="loading-track"><span></span></div>
 </div>
 </div>
 <div class="app-shell" id="appShell">
 <section class="screen active" id="overviewScreen">
 <div class="header">
-<div class="eyebrow">Overview</div>
-<h1>Financial Command Center</h1>
-<p>Your money dashboard for spending, investing, and cash flow at a glance.</p>
-<div class="status-pill" style="display:inline-flex;margin-top:12px;">Splash refresh</div>
-</div>
-<div class="top-row">
+<div class="overview-v2-top">
 <select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
+<button class="overview-add-btn" onclick="openScreen('budgetScreen', 1)">+</button>
 </div>
-<div class="overview-grid">
-<div class="card chart-card" onclick="openScreen('budgetScreen', 1)">
-<h3>Spending Breakdown</h3>
-<div class="donut spending" id="overviewSpendingDonut">
-<div class="donut-center" id="overviewSpendingCenter">SPENDING</div>
+<div class="overview-segment">
+<button class="active" id="overviewModePlanned" onclick="setOverviewMode(event,'planned')">Planned</button>
+<button id="overviewModeSpent" onclick="setOverviewMode(event,'spent')">Spent</button>
+<button id="overviewModeRemaining" onclick="setOverviewMode(event,'remaining')">Remaining</button>
 </div>
-<div class="chart-value" id="overviewSpending">$0</div>
-<div class="chart-note" id="overviewSpendingNote">Add budget items to see your top categories</div>
-<div class="tap-link">Open Budget</div>
+<div class="overview-hero">
+<div class="overview-hero-value" id="overviewHeroValue">$0</div>
+<div class="overview-hero-label">left to budget</div>
 </div>
-<div class="card chart-card" onclick="openScreen('assetsScreen', 4)">
-<h3>Asset Mix</h3>
-<div class="donut portfolio" id="overviewInvestDonut">
-<div class="donut-center" id="overviewInvestCenter">PORTFOLIO</div>
+<div class="overview-v2-grid">
+<div class="overview-v2-card" onclick="openScreen('budgetScreen', 1)">
+<div class="overview-v2-icon">💰</div>
+<div class="overview-v2-card-title">Planned Income</div>
+<div class="overview-v2-card-value" id="overviewIncomeCard">$0</div>
+<div class="overview-v2-card-note">Income entered for the selected month.</div>
+<div class="overview-v2-card-btn">Open Budget</div>
 </div>
-<div class="chart-value" id="overviewInvested">$0</div>
-<div class="chart-note" id="overviewInvestNote">Largest mix: Cash</div>
-<div class="tap-link">Open Assets</div>
+<div class="overview-v2-card" onclick="openScreen('cashflowScreen', 2)">
+<div class="overview-v2-icon">🔁</div>
+<div class="overview-v2-card-title">Monthly Cash Flow</div>
+<div class="overview-v2-card-value" id="overviewCashFlowCard">$0</div>
+<div class="overview-v2-card-note" id="overviewCashFlowCardNote">Forecast after income and bills.</div>
+<div class="overview-v2-card-btn">Open Cash Flow</div>
 </div>
+<div class="overview-v2-card" onclick="openScreen('investScreen', 3)">
+<div class="overview-v2-icon">📈</div>
+<div class="overview-v2-card-title">Portfolio Total</div>
+<div class="overview-v2-card-value" id="overviewPortfolioCard">$0</div>
+<div class="overview-v2-card-note">Investment accounts tracked in Invest.</div>
+<div class="overview-v2-card-btn">Open Invest</div>
 </div>
-<div class="card networth-card">
-<div class="networth-top">
-<div class="networth-label label-with-info">Net Worth <span class="info-dot" onclick="toggleTip('tipNetWorth')">i</span></div>
-<div class="status-pill" id="statusPill">On Track</div>
-</div>
-<div class="tooltip-card hidden-tip" id="tipNetWorth">A simple snapshot of income and investments minus expenses and recurring bills for the selected month.</div>
-<div class="networth-value" id="netWorthValue">$0</div>
-<div class="networth-copy">Your top-line financial picture for the selected month.</div>
-<div class="mini-stats">
-<div class="mini-stat"><div class="mini-stat-label">Income</div><div class="mini-stat-value" id="overviewIncome">$0</div></div>
-<div class="mini-stat"><div class="mini-stat-label">Invested</div><div class="mini-stat-value" id="overviewInvestedMini">$0</div></div>
-<div class="mini-stat"><div class="mini-stat-label">Cash Flow</div><div class="mini-stat-value" id="overviewCashFlow">$0</div></div>
-</div>
-</div><div class="card networth-card" id="overviewSignalsCard">
-<div class="section-head">
-<div class="section-title label-with-info">Overview Signals <span class="info-dot" onclick="toggleTip('tipOverviewSignals')">i</span></div>
-</div>
-<div class="tooltip-card hidden-tip" id="tipOverviewSignals">A quick read on what you can safely spend and what remains after recurring bills in the selected month.</div>
-<div class="overview-signal-grid">
-<div class="overview-signal">
-<div class="overview-signal-label">Safe to Spend</div>
-<div class="overview-signal-value good" id="overviewSafeToSpend">$0</div>
-</div>
-<div class="overview-signal">
-<div class="overview-signal-label">Left After Bills</div>
-<div class="overview-signal-value" id="overviewLeftAfterBills">$0</div>
+<div class="overview-v2-card" onclick="openScreen('assetsScreen', 4)">
+<div class="overview-v2-icon">📦</div>
+<div class="overview-v2-card-title">Assets + Net Worth</div>
+<div class="overview-v2-card-value" id="overviewAssetsCard">$0</div>
+<div class="overview-v2-card-note" id="overviewAssetsCardNote">Physical assets and total net worth.</div>
+<div class="overview-v2-card-btn">Open Assets</div>
 </div>
 </div>
 </div>
+
+
+
+
 <div class="card activity-card">
 <div class="activity-head">
 <div class="activity-title">Recent Activity</div>
 <button class="secondary-btn pill" onclick="clearActivity()">Clear</button>
 </div>
 <div id="activityList"></div>
-</div>
-</section>
+</div></section>
 <section class="screen" id="budgetScreen"><div class="header">
 <div class="eyebrow">Budget</div>
 <h2>Monthly Budget</h2>
@@ -1514,6 +1731,32 @@
     }
 
 
+    
+    function syncOverviewModeToggle(){
+      const map = {
+        planned: 'overviewModePlanned',
+        spent: 'overviewModeSpent',
+        remaining: 'overviewModeRemaining'
+      };
+      Object.values(map).forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.classList.remove('active');
+      });
+      const active = document.getElementById(map[data.budgetMode]);
+      if(active) active.classList.add('active');
+    }
+
+    function setOverviewMode(event, mode){
+      data.budgetMode = mode;
+      saveData();
+      syncBudgetToggle();
+      syncOverviewModeToggle();
+      renderOverview();
+      renderBudgetSummary();
+      renderBudgetCategories();
+    }
+
+
     function renderOverview(){
       const monthKey = data.currentMonth;
       const manualIncome = getManualIncomeTotal(monthKey);
@@ -1523,64 +1766,30 @@
       const recurringBills = getRecurringBillEvents(monthKey).reduce((s, e) => s + Number(e.amount || 0), 0);
       const totalAccounts = getAllAccountBalance(monthKey);
       const netWorth = totalAccounts + investmentTotal + assetTotal - (manualExpenses + recurringBills);
-      const cashFlow = manualIncome - (manualExpenses + recurringBills);
-
-      const spendData = getOverviewSpendingRows(monthKey);
-      const portfolioData = getOverviewPortfolioRows(monthKey);
-
-      document.getElementById('overviewIncome').textContent = money(manualIncome);
-      document.getElementById('overviewInvested').textContent = money(portfolioData.total);
-      document.getElementById('overviewInvestedMini').textContent = money(investmentTotal);
-      document.getElementById('overviewSpending').textContent = money(manualExpenses + recurringBills);
-      document.getElementById('overviewCashFlow').textContent = money(cashFlow);
-      document.getElementById('netWorthValue').textContent = money(netWorth);
-      document.getElementById('statusPill').textContent = cashFlow > 1000 ? 'On Track' : cashFlow > 0 ? 'Watch Spending' : 'Over Budget';
-
-      const spendTop = spendData.rows[0];
-      const spendCenter = document.getElementById('overviewSpendingCenter');
-      const spendNote = document.getElementById('overviewSpendingNote');
-      if(spendCenter && spendNote){
-        if(spendTop){
-          const pct = spendData.total > 0 ? Math.round((spendTop.amount / spendData.total) * 100) : 0;
-          spendCenter.innerHTML = pct + '%<br>' + escapeHtml(spendTop.label.toUpperCase());
-          spendNote.textContent = 'Top category: ' + spendTop.label;
-        } else {
-          spendCenter.innerHTML = 'NO<br>SPEND';
-          spendNote.textContent = 'Add budget items to see your top categories';
-        }
-      }
-
-      const investTop = portfolioData.rows.slice().sort((a,b) => b.amount - a.amount)[0];
-      const investCenter = document.getElementById('overviewInvestCenter');
-      const investNote = document.getElementById('overviewInvestNote');
-      if(investCenter && investNote){
-        if(investTop){
-          const pct = portfolioData.total > 0 ? Math.round((investTop.amount / portfolioData.total) * 100) : 0;
-          investCenter.innerHTML = pct + '%<br>' + escapeHtml(investTop.label.toUpperCase());
-          investNote.textContent = 'Largest mix: ' + investTop.label;
-        } else {
-          investCenter.innerHTML = 'NO<br>DATA';
-          investNote.textContent = 'Track investments and assets to build your mix';
-        }
-      }
-
-      applyOverviewDonut('overviewSpendingDonut', spendData.rows.map((r, i) => ({...r, color: ['#14b8a6','#3b82f6','#f59e0b'][i]})), 'spending', ['#14b8a6','#3b82f6','#f59e0b']);
-      applyOverviewDonut('overviewInvestDonut', portfolioData.rows, 'portfolio', ['#22c55e','#2dd4bf','#8b5cf6']);
-
-      const safeSpendEl = document.getElementById('overviewSafeToSpend');
-      const leftBillsEl = document.getElementById('overviewLeftAfterBills');
+      const values = getBudgetDisplayValues();
       const forecast = getForecast(monthKey);
-      const leftAfterBills = getLeftAfterBills(monthKey);
 
-      if(safeSpendEl){
-        safeSpendEl.textContent = money(forecast.safeToSpend);
-        safeSpendEl.className = 'overview-signal-value ' + (forecast.safeToSpend <= 0 ? 'bad' : forecast.safeToSpend < 300 ? 'warn' : 'good');
-      }
-      if(leftBillsEl){
-        leftBillsEl.textContent = money(leftAfterBills);
-        leftBillsEl.className = 'overview-signal-value ' + (leftAfterBills < 0 ? 'bad' : leftAfterBills < 300 ? 'warn' : 'good');
-      }
+      const hero = document.getElementById('overviewHeroValue');
+      const incomeCard = document.getElementById('overviewIncomeCard');
+      const cashCard = document.getElementById('overviewCashFlowCard');
+      const cashNote = document.getElementById('overviewCashFlowCardNote');
+      const portfolioCard = document.getElementById('overviewPortfolioCard');
+      const assetsCard = document.getElementById('overviewAssetsCard');
+      const assetsNote = document.getElementById('overviewAssetsCardNote');
 
+      if(hero) hero.textContent = money(values.leftToBudget);
+      if(incomeCard) incomeCard.textContent = money(manualIncome);
+      if(cashCard) cashCard.textContent = money(values.cashFlow);
+      if(cashNote){
+        cashNote.textContent = forecast.safeToSpend > 0
+          ? 'Safe to spend ' + money(forecast.safeToSpend)
+          : 'Set schedules and bills to improve forecast.';
+      }
+      if(portfolioCard) portfolioCard.textContent = money(investmentTotal);
+      if(assetsCard) assetsCard.textContent = money(assetTotal);
+      if(assetsNote) assetsNote.textContent = 'Net worth ' + money(netWorth);
+
+      syncOverviewModeToggle();
       renderActivity();
     }
 
