@@ -1531,6 +1531,31 @@
       font-size:.9rem;
     }
 
+    
+    #cashflowScreen .section-head > div:first-child{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    #cashflowScreen .section-controls{
+      gap:8px;
+    }
+    #cashflowScreen .mini-move{
+      width:34px;
+      height:34px;
+      padding:0;
+      border-radius:10px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.9rem;
+      font-weight:800;
+      background:#FFFFFF;
+      color:#475569;
+      border:1px solid #E5E7EB;
+      box-shadow:0 4px 10px rgba(15,23,42,.04);
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -1717,7 +1742,7 @@
 </div>
 </div>
 </div><div class="card forecast-card" id="cashflowSummaryCard">
-<div class="section-head"><div class="section-title label-with-info">Forecast Summary <span class="info-dot" onclick="toggleTip('tipForecastSummary')">i</span></div><div class="section-controls"><button class="mini-move" onclick="moveCashFlowCard('cashflowSummaryCard', -1)">↑</button><button class="mini-move" onclick="moveCashFlowCard('cashflowSummaryCard', 1)">↓</button></div></div>
+<div class="section-head"><div class="section-title label-with-info">Forecast Summary <span class="info-dot" onclick="toggleTip('tipForecastSummary')">i</span><div class="pinned-note">Pinned</div></div></div>
 <div class="tooltip-card hidden-tip" id="tipForecastSummary">This uses your starting balance, recurring bills, and income schedule to estimate how your money moves through the month.</div>
 <div class="forecast-grid">
 <div class="forecast-stat"><div class="forecast-label">Current Balance</div><div class="forecast-value" id="cfCurrentBalance">$0</div></div>
@@ -1787,7 +1812,7 @@
 </div>
 </div>
 </div><div class="card forecast-card" id="cashflowTimelineCard">
-<div class="section-head"><div class="section-title label-with-info">Timeline <span class="info-dot" onclick="toggleTip('tipTimeline')">i</span></div><div class="section-controls"><button class="mini-move" onclick="moveCashFlowCard('cashflowTimelineCard', -1)">↑</button><button class="mini-move" onclick="moveCashFlowCard('cashflowTimelineCard', 1)">↓</button></div></div>
+<div class="section-head"><div class="section-title label-with-info">Timeline <span class="info-dot" onclick="toggleTip('tipTimeline')">i</span><div class="pinned-note">Pinned</div></div></div>
 <div class="tooltip-card hidden-tip" id="tipTimeline">This shows the order of bills and income hits across the month, plus the running balance after each event.</div>
 <div id="timelineList"></div>
 </div></section>
@@ -2063,20 +2088,9 @@
       if(!month.cashflowOrder){
         month.cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'];
       }
-      const idx = month.cashflowOrder.indexOf(cardId);
-      if(idx === -1) return;
-      const next = idx + direction;
-      if(next < 0 || next >= month.cashflowOrder.length) return;
-      const swap = month.cashflowOrder[next];
-      month.cashflowOrder[next] = cardId;
-      month.cashflowOrder[idx] = swap;
-
-      const section = document.getElementById('cashflowScreen');
-      const current = document.getElementById(cardId);
-      const cards = month.cashflowOrder.map(id => document.getElementById(id)).filter(Boolean);
-      if(section && cards.length){
-        cards.forEach(card => section.appendChild(card));
-      }
+      const movable = ['cashflowBillsCard'];
+      if(!movable.includes(cardId)) return;
+      // only one movable card right now, so no reorder needed beyond keeping pinned layout
       saveData();
     }
 
@@ -2778,10 +2792,9 @@
 
 
     function renderCashFlow(){
-      const monthOrder = getMonthData().cashflowOrder || ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'];
       const cashflowSection = document.getElementById('cashflowScreen');
       if(cashflowSection){
-        monthOrder.forEach(id => {
+        ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'].forEach(id => {
           const card = document.getElementById(id);
           if(card) cashflowSection.appendChild(card);
         });
