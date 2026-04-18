@@ -2626,12 +2626,12 @@
         incomeSchedules: [],
         profile: { name:'', age: 0, state:'CO', monthlyIncome: 0, monthlySavingsTarget: 0, retirementAge: 65, emergencyMonthsTarget: 3 },
         notificationSettings: { criticalInsights: true, goalProgress: false, budgetWarnings: true, weeklySummary: false, growthUpdates: false, frequency: 'important_only', quietMode: 'off' },
+        insightHistory: [],
         profile: { ageGroup: '30-34', state: 'CO' }
       };
     }
 
     let previousInsightsState = {};
-let insightHistory = [];
 let data = defaultData();
 
     function saveData(){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {} }
@@ -3591,9 +3591,13 @@ let data = defaultData();
 
 
     function addInsightHistoryEntry(title, copy, tone, gap=''){
+      if(!data.insightHistory) data.insightHistory = [];
       const stamp = new Date().toISOString();
-      insightHistory.unshift({ title, copy, tone, gap, stamp });
-      insightHistory = insightHistory.slice(0, 20);
+      const latest = data.insightHistory[0];
+      if(latest && latest.title === title && latest.copy === copy && latest.gap === gap) return;
+      data.insightHistory.unshift({ title, copy, tone, gap, stamp });
+      data.insightHistory = data.insightHistory.slice(0, 20);
+      saveData();
     }
 
     function formatHistoryTime(iso){
@@ -3604,11 +3608,12 @@ let data = defaultData();
     function renderInsightHistory(){
       const wrap = document.getElementById('insightHistoryList');
       if(!wrap) return;
-      if(!insightHistory.length){
+      const history = data.insightHistory || [];
+      if(!history.length){
         wrap.innerHTML = `<div class="empty-state">No recent insight changes yet.</div>`;
         return;
       }
-      wrap.innerHTML = insightHistory.map(item => `
+      wrap.innerHTML = history.map(item => `
         <div class="history-row">
           <div style="flex:1;min-width:0;">
             <div class="history-title">${escapeHtml(item.title)}</div>
@@ -3620,7 +3625,8 @@ let data = defaultData();
     }
 
     function clearInsightHistory(){
-      insightHistory = [];
+      data.insightHistory = [];
+      saveData();
       renderInsightHistory();
     }
 
@@ -3924,11 +3930,14 @@ let data = defaultData();
       resetDismissedAlertsForChangedInsights(currentInsightAlerts);
       renderNotificationBanner();
 
+      const changedInsights = [];
       const rendered = insights.map(item => {
         const key = item.title;
         const prev = previousInsightsState[key];
         const isNew = !prev || prev.copy !== item.copy || (prev.gap || '') !== (item.gap || '');
-        if(isNew){ addInsightHistoryEntry(item.title, item.copy, item.tone, item.gap || ''); }
+        if(isNew){
+          changedInsights.push(item);
+        }
 
         previousInsightsState[key] = { copy: item.copy, gap: item.gap || '' };
 
@@ -3952,6 +3961,10 @@ let data = defaultData();
       }).join('');
 
       wrap.innerHTML = rendered;
+
+      changedInsights.forEach(item => {
+        addInsightHistoryEntry(item.title, item.copy, item.tone, item.gap || '');
+      });
     }
 
 
