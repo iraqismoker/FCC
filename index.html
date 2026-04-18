@@ -2038,6 +2038,29 @@
   </div>
 </div>
 
+
+<div class="budget-calendar-modal hidden-tip" id="scheduleCalendarModal">
+  <div class="budget-calendar-card">
+    <div class="budget-calendar-head">
+      <div class="section-title">Choose a paycheck date</div>
+      <button class="secondary-btn pill" type="button" onclick="closeScheduleCalendar()">Close</button>
+    </div>
+    <div class="budget-calendar-controls">
+      <button class="secondary-btn pill" type="button" onclick="shiftScheduleCalendarMonth(-1)">←</button>
+      <div class="budget-calendar-month" id="scheduleCalendarMonthLabel">Month Year</div>
+      <button class="secondary-btn pill" type="button" onclick="shiftScheduleCalendarMonth(1)">→</button>
+    </div>
+    <div class="budget-calendar-weekdays">
+      <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+    </div>
+    <div class="budget-calendar-grid" id="scheduleCalendarGrid"></div>
+    <div class="budget-calendar-actions">
+      <button class="secondary-btn pill" type="button" onclick="setScheduleCalendarToday()">Today</button>
+      <button class="save-btn pill" type="button" onclick="applyScheduleCalendar()">Apply</button>
+    </div>
+  </div>
+</div>
+
 <div class="card budget-card" id="expensePanelWrap" style="display:none;">
 <h4>New Expense</h4>
 <div class="stack">
@@ -2121,7 +2144,7 @@
 <div class="stack" style="margin-top:12px;">
 <select class="form-select" id="scheduleIncomeId"></select>
 <div class="two-col">
-<input class="small-input" id="scheduleDate" type="date"/>
+<button class="form-select budget-apply-launcher" id="scheduleDateLauncher" type="button" onclick="openScheduleCalendar()"></button><input id="scheduleDate" type="hidden" />
 <select class="form-select" id="scheduleFrequency">
 <option value="weekly">Weekly</option>
 <option value="biweekly">Biweekly</option>
@@ -2131,7 +2154,7 @@
 </select>
 </div>
 <div class="actions">
-<div class="helper-copy" style="margin-top:4px;">Choose a date to set the paycheck day automatically.</div>
+<div class="helper-copy" style="margin-top:4px;">Choose a paycheck date from the calendar to set the day automatically.</div>
 <button class="save-btn pill" onclick="addIncomeSchedule()">Save Schedule</button>
 <button class="secondary-btn pill" onclick="togglePanel('schedulePanelWrap', false)">Cancel</button>
 </div>
@@ -2524,6 +2547,7 @@
       });
       syncOverviewCalendarLauncher();
       syncBudgetCalendarLauncher();
+      syncScheduleCalendarLauncher();
     }
     function changeMonth(key){ data.currentMonth = key; ensureMonth(key); saveData(); render(); }
 
@@ -3267,6 +3291,72 @@
       if(hidden) hidden.value = fullDate;
       syncBudgetCalendarLauncher();
       closeExpenseBudgetCalendar();
+    }
+
+
+    
+    let scheduleCalendarState = { year:null, month:null, day:null };
+
+    function getScheduleSelectedDate(){
+      const hidden = document.getElementById('scheduleDate');
+      return (hidden && hidden.value) ? hidden.value : getBudgetSelectedDate();
+    }
+
+    function syncScheduleCalendarLauncher(){
+      const btn = document.getElementById('scheduleDateLauncher');
+      const val = getScheduleSelectedDate();
+      if(btn && val){
+        btn.textContent = formatBudgetDate(val);
+      }
+    }
+
+    function openScheduleCalendar(){
+      const modal = document.getElementById('scheduleCalendarModal');
+      const d = new Date(getScheduleSelectedDate() + 'T00:00:00');
+      scheduleCalendarState.year = d.getFullYear();
+      scheduleCalendarState.month = d.getMonth();
+      scheduleCalendarState.day = d.getDate();
+      if(modal) modal.classList.remove('hidden-tip');
+      renderScheduleCalendar();
+    }
+
+    function closeScheduleCalendar(){
+      const modal = document.getElementById('scheduleCalendarModal');
+      if(modal) modal.classList.add('hidden-tip');
+    }
+
+    function shiftScheduleCalendarMonth(delta){
+      const d = new Date(scheduleCalendarState.year, scheduleCalendarState.month + delta, 1);
+      scheduleCalendarState.year = d.getFullYear();
+      scheduleCalendarState.month = d.getMonth();
+      renderScheduleCalendar();
+    }
+
+    function setScheduleCalendarToday(){
+      const t = new Date();
+      scheduleCalendarState.year = t.getFullYear();
+      scheduleCalendarState.month = t.getMonth();
+      scheduleCalendarState.day = t.getDate();
+      renderScheduleCalendar();
+    }
+
+    function selectScheduleCalendarDay(year, month, day){
+      scheduleCalendarState.year = year;
+      scheduleCalendarState.month = month;
+      scheduleCalendarState.day = day;
+      renderScheduleCalendar();
+    }
+
+    function renderScheduleCalendar(){
+      renderGenericBudgetCalendar(scheduleCalendarState, 'scheduleCalendarMonthLabel', 'scheduleCalendarGrid', 'selectScheduleCalendarDay', 'budget-day');
+    }
+
+    function applyScheduleCalendar(){
+      const fullDate = `${scheduleCalendarState.year}-${String(scheduleCalendarState.month + 1).padStart(2,'0')}-${String(scheduleCalendarState.day || 1).padStart(2,'0')}`;
+      const hidden = document.getElementById('scheduleDate');
+      if(hidden) hidden.value = fullDate;
+      syncScheduleCalendarLauncher();
+      closeScheduleCalendar();
     }
 
 
