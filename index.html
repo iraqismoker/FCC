@@ -1764,6 +1764,46 @@
       margin-top:6px;
     }
 
+    
+    #goalPanelWrap{
+      margin-top:12px;
+      padding:14px;
+      border-radius:18px;
+      background:#F8FAFC;
+      border:1px solid #E5E7EB;
+    }
+    #goalPanelWrap .stack{
+      gap:10px;
+    }
+    #goalPanelWrap .actions{
+      margin-top:4px !important;
+    }
+    #savingsGoalsCard.goal-editing #savingsGoalsList{
+      display:none;
+    }
+    #goalAccountHelp{
+      margin-top:-2px;
+      margin-bottom:2px;
+    }
+    .goal-linked{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:5px 9px;
+      border-radius:999px;
+      background:#EFF6FF;
+      border:1px solid #BFDBFE;
+      color:#1D4ED8;
+      font-size:.74rem;
+      font-weight:800;
+      margin-top:6px;
+    }
+    .goal-actions .secondary-btn.pill,
+    .goal-actions .danger-btn.pill{
+      min-width:110px;
+      justify-content:center;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -2129,6 +2169,7 @@
         <input class="small-input" id="goalCurrent" type="number" step="0.01" placeholder="Current amount"/>
       </div>
       <select class="form-select" id="goalAccountId"></select>
+      <div class="helper-copy" id="goalAccountHelp">Link a goal to an account to use that account balance automatically.</div>
       <input class="small-input" id="goalNote" placeholder="Notes (optional)"/>
       <div class="actions">
         <button class="save-btn pill" onclick="addSavingsGoal()">Save Goal</button>
@@ -2398,7 +2439,8 @@
       const el = document.getElementById(id);
       const show = typeof force === 'boolean' ? force : el.style.display === 'none';
       el.style.display = show ? 'block' : 'none';
-      syncBudgetPanelState();
+      if(typeof syncBudgetPanelState === 'function') syncBudgetPanelState();
+      if(typeof syncGoalPanelState === 'function') syncGoalPanelState();
     }
     function moveWithinSection(sectionId, ids, cardId, direction){
       const section = document.getElementById(sectionId);
@@ -2904,7 +2946,7 @@
       const el = document.getElementById('goalAccountId');
       if(!el) return;
       const accounts = getMonthData().accounts || [];
-      el.innerHTML = `<option value="">No linked account</option>` + accounts.map(a => `<option value="${a.id}">${escapeHtml(a.name)} • ${money(Number(a.balance||0))}</option>`).join('');
+      el.innerHTML = `<option value="">Link to account (optional)</option>` + accounts.map(a => `<option value="${a.id}">${escapeHtml(a.name)} • ${money(Number(a.balance||0))}</option>`).join('');
     }
 
     function getAccountById(id, monthKey=data.currentMonth){
@@ -2924,6 +2966,16 @@
       if(!goal || !goal.accountId) return '';
       const account = getAccountById(goal.accountId);
       return account ? account.name : '';
+    }
+
+
+    
+    function syncGoalPanelState(){
+      const card = document.getElementById('savingsGoalsCard');
+      const panel = document.getElementById('goalPanelWrap');
+      if(!card || !panel) return;
+      const open = panel.style.display !== 'none';
+      card.classList.toggle('goal-editing', open);
     }
 
 
@@ -2966,7 +3018,7 @@
       const accounts = getMonthData().accounts || [];
       const growing = accounts.filter(a => a.autoGrow && Number(a.interestRate || 0) > 0);
       if(!growing.length){
-        wrap.innerHTML = `<div class="empty-state">No auto-growth accounts yet. Turn on auto-grow for a savings or cash account to see simple projections.</div>`;
+        wrap.innerHTML = `<div class="empty-state">No auto-growth accounts yet. Add an account with APR and turn on auto-grow to preview simple 12-month projections.</div>`;
         return;
       }
       wrap.innerHTML = growing.map(a => {
@@ -3007,7 +3059,7 @@
               <div style="flex:1;min-width:0;">
                 <div class="goal-name">${escapeHtml(goal.name)}</div>
                 <div class="goal-note">${escapeHtml(goal.note || '')}</div>
-                ${linked ? `<div class="goal-linked">Linked to ${escapeHtml(linked.name)}</div>` : ``}
+                ${linked ? `<div class="goal-linked">Using balance from ${escapeHtml(linked.name)}</div>` : ``}${linked && linked.autoGrow && Number(linked.interestRate || 0) > 0 ? `<div class="goal-note">Projected in 12 months: ${money(getProjectedAccountBalance(linked, 12))}</div>` : ``}
               </div>
               <div class="goal-amount">${money(effectiveCurrent)} / ${money(goal.target)}</div>
             </div>
@@ -3017,6 +3069,7 @@
               <span>${money(Math.max(0, Number(goal.target || 0) - effectiveCurrent))} left</span>
             </div>
             <div class="goal-actions">
+              <button class="save-btn pill" type="button" onclick="fundSavingsGoal('${goal.id}')">+ Add money</button>
               <button class="secondary-btn pill small-edit-btn" type="button" onclick="editSavingsGoal('${goal.id}')">Edit</button>
               <button class="danger-btn pill" type="button" onclick="deleteSavingsGoal('${goal.id}')">Delete</button>
             </div>
@@ -3024,6 +3077,24 @@
         `;
       }).join('');
     }
+
+    
+    function fundSavingsGoal(id){
+      const month = getMonthData();
+      const goal = (month.savingsGoals || []).find(g => g.id === id);
+      if(!goal) return;
+      if(goal.accountId){
+        alert('This goal is linked to an account. Update the linked account balance to change this goal.');
+        return;
+      }
+      const addInput = prompt('Add how much to this goal?', '0');
+      if(addInput === null) return;
+      const add = Number(addInput || 0);
+      goal.current = Number(goal.current || 0) + add;
+      addActivity('goal', 'Goal funded', goal.name, add, 'plus');
+      saveData(); render();
+    }
+
 
     function editSavingsGoal(id){
       const month = getMonthData();
@@ -3473,6 +3544,7 @@
       if(totalEl) totalEl.textContent = money(getAssetTotal());
       renderSavingsGoals();
       renderAccountGrowth();
+      syncGoalPanelState();
 
       const categoryWrap = document.getElementById('assetCategorySummaryList');
       if(categoryWrap){
