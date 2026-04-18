@@ -593,7 +593,7 @@
       line-height:1.05;
     }
     #cashflowSignalsCard .row-item,
-    #cashflowTimelineCard .timeline-item,
+    #cashflowCash Flow TimelineCard .timeline-item,
     #cashflowBillsCard .row-item,
     #cashflowScheduleCard .row-item{
       align-items:center;
@@ -1695,7 +1695,7 @@
 </div><div class="card budget-card" id="budgetSummaryCard"><div class="section-head"><div class="section-title">Summary</div><div class="pinned-note">Pinned</div></div><div class="info-grid" id="budgetSummaryCard">
 <div class="card info-card"><h4>Income</h4><div class="info-value" id="budgetIncomeTotal">$0</div></div>
 <div class="card info-card"><h4>Cash Flow</h4><div class="info-value" id="budgetCashFlow">$0</div></div>
-</div></div><div class="card budget-card" id="budgetCategoriesCard"><div class="section-head"><div class="section-title">Categories</div></div><div id="categoriesWrap"></div></div><div class="card budget-card" id="budgetResetCard"><div class="section-head"><div class="section-title">Reset</div></div><div class="actions" id="budgetResetActions">
+</div></div><div class="card budget-card" id="budgetCategoriesCard"><div class="section-head"><div class="section-title">Categories</div></div><div id="categoriesWrap"></div><div class="helper-copy" style="margin-top:10px;">Start by adding income, then create categories and expenses.</div></div><div class="card budget-card" id="budgetResetCard"><div class="section-head"><div class="section-title">Reset</div></div><div class="actions" id="budgetResetActions">
 <button class="danger-btn pill" onclick="resetMonth()">Reset This Month</button>
 </div></div></section>
 <section class="screen" id="cashflowScreen"><div class="header">
@@ -1797,7 +1797,7 @@
 </div>
 </div>
 <div class="card forecast-card" id="cashflowBillsCard">
-<div class="section-head"><div class="section-title label-with-info">Recurring Bills <span class="info-dot" onclick="toggleTip('tipBills')">i</span></div><button class="add-btn pill" onclick="togglePanel('billPanelWrap')">+ Bill</button><div class="section-controls"><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', -1)">↑</button><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', 1)">↓</button></div></div>
+<div class="section-head"><div class="section-title label-with-info">Monthly Bills <span class="info-dot" onclick="toggleTip('tipBills')">i</span></div><button class="add-btn pill" onclick="togglePanel('billPanelWrap')">+ Bill</button><div class="section-controls"><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', -1)">↑</button><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', 1)">↓</button></div></div>
 <div class="tooltip-card hidden-tip" id="tipBills">Use this for bills that repeat monthly, quarterly, or yearly. These feed into your cash flow forecast automatically.</div>
 <div id="billsList"></div>
 <div id="billPanelWrap" style="display:none;">
@@ -1828,9 +1828,9 @@
 </div>
 </div>
 </div>
-</div><div class="card forecast-card" id="cashflowTimelineCard">
-<div class="section-head"><div class="section-title label-with-info">Timeline <span class="info-dot" onclick="toggleTip('tipTimeline')">i</span><div class="pinned-note">Pinned</div></div></div>
-<div class="tooltip-card hidden-tip" id="tipTimeline">This shows the order of bills and income hits across the month, plus the running balance after each event.</div>
+</div><div class="card forecast-card" id="cashflowCash Flow TimelineCard">
+<div class="section-head"><div class="section-title label-with-info">Cash Flow Timeline <span class="info-dot" onclick="toggleTip('tipCash Flow Timeline')">i</span><div class="pinned-note">Pinned</div></div></div>
+<div class="tooltip-card hidden-tip" id="tipCash Flow Timeline">This shows the order of bills and income hits across the month, plus the running balance after each event.</div>
 <div id="timelineList"></div>
 </div></section>
 <section class="screen" id="investScreen">
@@ -1962,7 +1962,7 @@
     function createEmptyMonth(){
       const categories = {};
       DEFAULT_CATEGORIES.forEach(key => categories[key] = []);
-      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories, deletedDefaultCategories: [], categoryOrder: [...DEFAULT_CATEGORIES], cashflowOrder: ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'] };
+      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories, deletedDefaultCategories: [], categoryOrder: [...DEFAULT_CATEGORIES], cashflowOrder: ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'] };
     }
     function getCurrentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
     function defaultData(){
@@ -2019,14 +2019,14 @@
           }));
           data.months[key].deletedDefaultCategories = [...(prevMonth.deletedDefaultCategories || [])];
           data.months[key].categoryOrder = [...(prevMonth.categoryOrder || DEFAULT_CATEGORIES)];
-          data.months[key].cashflowOrder = [...(prevMonth.cashflowOrder || ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'])];
+          data.months[key].cashflowOrder = [...(prevMonth.cashflowOrder || ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'])];
         }
       }
       if(!data.months[key].accounts) data.months[key].accounts = [];
       if(!data.months[key].assets) data.months[key].assets = [];
       if(!data.months[key].deletedDefaultCategories) data.months[key].deletedDefaultCategories = [];
       if(!data.months[key].categoryOrder) data.months[key].categoryOrder = [...DEFAULT_CATEGORIES];
-      if(!data.months[key].cashflowOrder) data.months[key].cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'];
+      if(!data.months[key].cashflowOrder) data.months[key].cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'];
 
       DEFAULT_CATEGORIES.forEach(cat => {
         if((data.months[key].deletedDefaultCategories || []).includes(cat)) return;
@@ -2039,8 +2039,8 @@
       });
 
       data.months[key].categoryOrder = data.months[key].categoryOrder.filter(cat => (data.months[key].categories || {}).hasOwnProperty(cat));
-      data.months[key].cashflowOrder = data.months[key].cashflowOrder.filter(id => ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'].includes(id));
-      ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'].forEach(id => {
+      data.months[key].cashflowOrder = data.months[key].cashflowOrder.filter(id => ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'].includes(id));
+      ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'].forEach(id => {
         if(!data.months[key].cashflowOrder.includes(id)) data.months[key].cashflowOrder.push(id);
       });
       return data.months[key];
@@ -2103,7 +2103,7 @@
     function moveCashFlowCard(cardId, direction){
       const month = getMonthData();
       if(!month.cashflowOrder){
-        month.cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'];
+        month.cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'];
       }
       const movable = ['cashflowBillsCard'];
       if(!movable.includes(cardId)) return;
@@ -2811,7 +2811,7 @@
     function renderCashFlow(){
       const cashflowSection = document.getElementById('cashflowScreen');
       if(cashflowSection){
-        ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'].forEach(id => {
+        ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'].forEach(id => {
           const card = document.getElementById(id);
           if(card) cashflowSection.appendChild(card);
         });
@@ -3103,7 +3103,7 @@
     }
 
     function resetAllData(){
-      const ok = confirm('Reset the entire app? This clears all saved data on this device unless you exported a backup first.');
+      const ok = confirm('This will delete all your data on this device. Make sure you exported a backup first. This clears all saved data on this device unless you exported a backup first.');
       if(!ok) return;
       data = defaultData();
       saveData();
@@ -3132,7 +3132,7 @@
         if(!Array.isArray(month.assets)) month.assets = [];
         if(!Array.isArray(month.deletedDefaultCategories)) month.deletedDefaultCategories = [];
         if(!Array.isArray(month.categoryOrder)) month.categoryOrder = [...DEFAULT_CATEGORIES];
-        if(!Array.isArray(month.cashflowOrder)) month.cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'];
+        if(!Array.isArray(month.cashflowOrder)) month.cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'];
         DEFAULT_CATEGORIES.forEach(cat => {
           if(!month.deletedDefaultCategories.includes(cat) && !month.categories[cat]) month.categories[cat] = [];
         });
