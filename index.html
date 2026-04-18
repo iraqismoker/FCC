@@ -1804,6 +1804,20 @@
       justify-content:center;
     }
 
+    
+    .growth-chip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#ECFDF5;
+      border:1px solid #BBF7D0;
+      color:#15803D;
+      font-size:.74rem;
+      font-weight:800;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -1992,7 +2006,7 @@
 </div>
 <div class="two-col">
 <input class="small-input" id="accountInterestRate" placeholder="Interest % APR" step="0.01" type="number"/>
-<select class="form-select" id="accountAutoGrow">
+<div class="helper-copy">APR belongs to the account, not the goal. Turn on auto-grow to show simple 12-month projections.</div><select class="form-select" id="accountAutoGrow">
   <option value="false">Manual balance</option>
   <option value="true">Auto-grow monthly</option>
 </select>
@@ -2942,6 +2956,24 @@
 
     
     
+    
+    function toggleAccountGrowth(accountId){
+      const month = getMonthData();
+      const account = (month.accounts || []).find(a => a.id === accountId);
+      if(!account) return;
+      account.autoGrow = !account.autoGrow;
+      addActivity('account', account.autoGrow ? 'Auto-grow enabled' : 'Auto-grow disabled', account.name, Number(account.balance || 0), 'neutral');
+      saveData(); render();
+    }
+
+    function getAccountGrowthLabel(account){
+      const rate = Number(account && account.interestRate || 0);
+      if(account && account.autoGrow && rate > 0) return `${rate.toFixed(2)}% APR • Auto-grow ON`;
+      if(rate > 0) return `${rate.toFixed(2)}% APR • Auto-grow OFF`;
+      return `0.00% APR • Manual`;
+    }
+
+
     function populateGoalAccountOptions(){
       const el = document.getElementById('goalAccountId');
       if(!el) return;
@@ -3016,9 +3048,9 @@
       const wrap = document.getElementById('accountGrowthList');
       if(!wrap) return;
       const accounts = getMonthData().accounts || [];
-      const growing = accounts.filter(a => a.autoGrow && Number(a.interestRate || 0) > 0);
+      const growing = accounts.filter(a => Number(a.interestRate || 0) > 0);
       if(!growing.length){
-        wrap.innerHTML = `<div class="empty-state">No auto-growth accounts yet. Add an account with APR and turn on auto-grow to preview simple 12-month projections.</div>`;
+        wrap.innerHTML = `<div class="empty-state">No auto-growth accounts yet. Add an account with APR and turn on auto-grow to preview simple 12-month projections.<div class="goal-actions" style="margin-top:12px;"><button class="save-btn pill" type="button" onclick="openScreen('cashflowScreen', 2); togglePanel('accountPanelWrap', true)">+ Add growth account</button></div></div>`;
         return;
       }
       wrap.innerHTML = growing.map(a => {
@@ -3028,11 +3060,14 @@
           <div class="row-item">
             <div style="flex:1;min-width:0;">
               <div class="row-name">${escapeHtml(a.name)}</div>
-              <div class="row-note">${Number(a.interestRate || 0).toFixed(2)}% APR • projected 12 months</div>
+              <div class="row-note">${escapeHtml(getAccountGrowthLabel(a))}</div>
+              <div class="goal-actions" style="margin-top:8px;">
+                <button class="secondary-btn pill small-edit-btn" type="button" onclick="toggleAccountGrowth('${a.id}')">${a.autoGrow ? 'Auto-grow ON' : 'Auto-grow OFF'}</button>
+              </div>
             </div>
             <div style="text-align:right;">
-              <div class="row-amount">${money(projected12)}</div>
-              <div class="row-note ${gain >= 0 ? 'good' : ''}">${gain >= 0 ? '+' : ''}${money(gain)}</div>
+              <div class="row-amount">${money(Number(a.balance || 0))} → ${money(projected12)}</div>
+              <div class="row-note ${gain >= 0 ? 'good' : ''}">${gain >= 0 ? '+' : ''}${money(gain)} in 12 months</div>
             </div>
           </div>
         `;
@@ -3059,7 +3094,7 @@
               <div style="flex:1;min-width:0;">
                 <div class="goal-name">${escapeHtml(goal.name)}</div>
                 <div class="goal-note">${escapeHtml(goal.note || '')}</div>
-                ${linked ? `<div class="goal-linked">Using balance from ${escapeHtml(linked.name)}</div>` : ``}${linked && linked.autoGrow && Number(linked.interestRate || 0) > 0 ? `<div class="goal-note">Projected in 12 months: ${money(getProjectedAccountBalance(linked, 12))}</div>` : ``}
+                ${linked ? `<div class="goal-linked">Powered by ${escapeHtml(linked.name)}</div>` : ``}${linked ? `<div class="goal-note">${escapeHtml(getAccountGrowthLabel(linked))}</div>` : ``}${linked && linked.autoGrow && Number(linked.interestRate || 0) > 0 ? `<div class="goal-note">Projected in 12 months: ${money(getProjectedAccountBalance(linked, 12))}</div>` : ``}
               </div>
               <div class="goal-amount">${money(effectiveCurrent)} / ${money(goal.target)}</div>
             </div>
