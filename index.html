@@ -1731,8 +1731,8 @@
 
     
     /* Month picker styling */
-    input[type="date"].month-select,
-    #expenseBudgetMonth[type="date"]{
+    input[type="month"].month-select,
+    #expenseBudgetMonth[type="month"]{
       min-height:54px;
       border-radius:18px;
       background:#FFFFFF;
@@ -1741,25 +1741,6 @@
       box-shadow:0 6px 18px rgba(15,23,42,.05);
       font-size:1rem;
       font-weight:700;
-      padding:0 16px;
-    }
-
-    
-    /* Full date picker styling */
-    input[type="date"].month-select,
-    input[type="date"].small-input,
-    #expenseDate,
-    #expenseBudgetMonth,
-    #billDueDate,
-    #scheduleDate{
-      min-height:54px;
-      border-radius:18px;
-      background:#FFFFFF;
-      color:#0F172A;
-      border:1px solid #E5E7EB;
-      box-shadow:0 6px 18px rgba(15,23,42,.05);
-      font-size:1rem;
-      font-weight:600;
       padding:0 16px;
     }
 
@@ -1779,7 +1760,7 @@
 <section class="screen active" id="overviewScreen">
 <div class="header">
 <div class="overview-v2-top">
-<input class="month-select" id="overviewMonth" type="date" onchange="changeMonth(this.value)" />
+<input class="month-select" id="overviewMonth" type="month" onchange="changeMonth(this.value)" />
 <button class="overview-add-btn" onclick="openScreen('budgetScreen', 1)">+</button>
 </div>
 <div class="overview-hero">
@@ -1836,7 +1817,7 @@
 <h2>Monthly Budget</h2>
 <p>Organize income, categories, and spending for the selected month.</p>
 </div><div class="top-row">
-<input class="month-select" id="budgetMonth" type="date" onchange="changeMonth(this.value)" />
+<input class="month-select" id="budgetMonth" type="month" onchange="changeMonth(this.value)" />
 <button class="add-btn icon" onclick="togglePanel('expensePanelWrap')">+</button>
 <button class="add-btn pill" onclick="togglePanel('categoryPanelWrap')">+ Category</button>
 </div><div class="card budget-card" id="expensePanelWrap" style="display:none;">
@@ -1850,7 +1831,7 @@
 <input class="small-input" id="expenseNote" placeholder="Notes"/>
 <div class="two-col">
 <input class="small-input" id="expenseDate" type="date"/>
-<input class="form-select" id="expenseBudgetMonth" type="date" /><div class="helper-copy" style="margin-top:6px;">Apply this expense to the month you want it to count in your budget.</div>
+<input class="form-select" id="expenseBudgetMonth" type="month" /><div class="helper-copy" style="margin-top:6px;">Apply this expense to the month you want it to count in your budget.</div>
 </div>
 <div class="two-col" id="expenseSpreadControls">
 <select class="form-select" id="expenseSpreadToggle">
@@ -1911,7 +1892,7 @@
 <h2>Cash Flow Forecast</h2>
 <p>See your real balance after bills and income hits, plus the lowest point before month end.</p>
 </div><div class="top-row">
-<input class="month-select" id="cashflowMonth" type="date" onchange="changeMonth(this.value)" />
+<input class="month-select" id="cashflowMonth" type="month" onchange="changeMonth(this.value)" />
 </div><div class="card forecast-card" id="cashflowScheduleCard">
 <div class="section-head"><div><div class="section-title label-with-info">Income Schedule <span class="info-dot" onclick="toggleTip('tipIncomeSchedule')">i</span></div><div class="pinned-note">Pinned</div></div><button class="add-btn pill" onclick="togglePanel('schedulePanelWrap')">+ Schedule</button></div>
 <div class="tooltip-card hidden-tip" id="tipIncomeSchedule">Pick an income source from Budget and tell the app when it lands. This controls timing only, not the amount.</div>
@@ -2050,7 +2031,7 @@
 <p>Track investment balances feeding your portfolio and overall wealth view.</p>
 </div>
 <div class="top-row">
-<input class="month-select" id="investMonth" type="date" onchange="changeMonth(this.value)" />
+<input class="month-select" id="investMonth" type="month" onchange="changeMonth(this.value)" />
 </div>
 <div class="card invest-card"><h4>Portfolio Total</h4><div class="budget-big good" id="portfolioTotal">$0</div></div><div class="card invest-card" id="investMiniChartCard">
 <div class="section-head">
@@ -2089,7 +2070,7 @@
 <p>Track valuables and property by category, with values, serial numbers, and receipt references.</p>
 </div>
 <div class="top-row">
-<input class="month-select" id="assetsMonth" type="date" onchange="changeMonth(this.value)" />
+<input class="month-select" id="assetsMonth" type="month" onchange="changeMonth(this.value)" />
 </div>
 <div class="card invest-card">
 <div class="section-head">
@@ -2303,18 +2284,6 @@
       const [y,m] = key.split('-').map(Number);
       return new Date(y,m-1,1).toLocaleString(undefined, { month:'long', year:'numeric' });
     }
-    
-    function monthKeyFromDate(value){
-      if(!value) return getCurrentMonthKey();
-      const m = String(value).match(/^(\d{4})-(\d{2})/);
-      return m ? `${m[1]}-${m[2]}` : getCurrentMonthKey();
-    }
-
-    function firstDateOfMonth(monthKey){
-      return `${monthKey}-01`;
-    }
-
-
     function monthOptions(centerKey){
       const [y,m] = centerKey.split('-').map(Number);
       const keys = [];
@@ -2327,7 +2296,7 @@
     function syncMonthSelectors(){
       document.querySelectorAll('.month-select').forEach(el => {
         if(el.tagName === 'INPUT'){
-          el.value = firstDateOfMonth(data.currentMonth);
+          el.value = data.currentMonth;
         } else {
           const opts = monthOptions(data.currentMonth).map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
           el.innerHTML = opts;
@@ -2335,12 +2304,16 @@
         }
       });
     }
-    function changeMonth(key){
-      const monthKey = monthKeyFromDate(key);
-      data.currentMonth = monthKey;
-      ensureMonth(monthKey);
-      saveData();
-      render();
+    function changeMonth(key){ data.currentMonth = key; ensureMonth(key); saveData(); render(); }
+
+    function money(v){ return '$' + Number(v || 0).toLocaleString(); }
+    function escapeHtml(str){ return String(str ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;'); }
+    function titleCase(str){ return String(str || '').split('-').map(s => s ? s[0].toUpperCase()+s.slice(1) : '').join(' '); }
+
+    function openScreen(id, navIndex){
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.nav-btn').forEach((btn, idx) => btn.classList.toggle('active', idx === navIndex));
     }
     
     function syncBudgetPanelState(){
@@ -2645,7 +2618,7 @@
     function populateExpenseBudgetMonthOptions(){
       const el = document.getElementById('expenseBudgetMonth');
       if(!el) return;
-      el.value = firstDateOfMonth(data.currentMonth);
+      el.value = data.currentMonth;
     }
 
     function getExpensesForMonth(cat, key=data.currentMonth){
@@ -3586,7 +3559,7 @@
       const amount = Number(document.getElementById('expenseAmount').value || 0);
       const note = document.getElementById('expenseNote').value.trim();
       const date = document.getElementById('expenseDate').value || '';
-      const budgetMonth = document.getElementById('expenseBudgetMonth') ? monthKeyFromDate(document.getElementById('expenseBudgetMonth').value) : data.currentMonth;
+      const budgetMonth = document.getElementById('expenseBudgetMonth') ? document.getElementById('expenseBudgetMonth').value : data.currentMonth;
       const spread = document.getElementById('expenseSpreadToggle') && document.getElementById('expenseSpreadToggle').value === 'true';
       const spreadMonths = Math.max(1, Number(document.getElementById('expenseSpreadMonths') ? document.getElementById('expenseSpreadMonths').value || 1 : 1));
       if(!name) return;
@@ -3628,7 +3601,7 @@
       document.getElementById('expenseAmount').value = '';
       document.getElementById('expenseNote').value = '';
       document.getElementById('expenseDate').value = '';
-      if(document.getElementById('expenseBudgetMonth')) document.getElementById('expenseBudgetMonth').value = firstDateOfMonth(data.currentMonth);
+      if(document.getElementById('expenseBudgetMonth')) document.getElementById('expenseBudgetMonth').value = data.currentMonth;
       if(document.getElementById('expenseSpreadToggle')) document.getElementById('expenseSpreadToggle').value = 'false';
       if(document.getElementById('expenseSpreadMonths')) document.getElementById('expenseSpreadMonths').value = '';
       togglePanel('expensePanelWrap', false);
