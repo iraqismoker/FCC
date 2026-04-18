@@ -1481,10 +1481,15 @@
 
     
     #budgetResetCard{
-      position:sticky;
-      bottom:88px;
-      z-index:20;
-      box-shadow:0 10px 28px rgba(15,23,42,.10);
+      position:static;
+      bottom:auto;
+      left:auto;
+      transform:none;
+      width:auto;
+      max-width:none;
+      z-index:auto;
+      margin-top:12px;
+      box-shadow:0 10px 28px rgba(15,23,42,.07);
     }
     #budgetResetCard .section-head{
       margin-bottom:10px;
@@ -1666,9 +1671,7 @@
     #budgetScreen.panel-open{
       padding-bottom:132px !important;
     }
-    #budgetScreen.panel-open #budgetResetCard{
-      display:none !important;
-    }
+
 
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
@@ -1829,7 +1832,7 @@
 <div class="stack" style="margin-top:12px;">
 <select class="form-select" id="scheduleIncomeId"></select>
 <div class="two-col">
-<input class="small-input" id="scheduleDay" max="31" min="1" placeholder="Day of month" type="number"/>
+<input class="small-input" id="scheduleDate" type="date"/>
 <select class="form-select" id="scheduleFrequency">
 <option value="weekly">Weekly</option>
 <option value="biweekly">Biweekly</option>
@@ -1922,7 +1925,7 @@
 <input class="small-input" id="billAmount" placeholder="Amount" step="0.01" type="number"/>
 </div>
 <div class="three-col">
-<input class="small-input" id="billDueDay" max="31" min="1" placeholder="Day" type="number"/>
+<input class="small-input" id="billDueDate" type="date"/>
 <select class="form-select" id="billFrequency">
 <option value="weekly">Weekly</option>
 <option value="biweekly">Biweekly</option>
@@ -2855,6 +2858,79 @@
     }
 
 
+    
+    function getDayFromDateInput(value){
+      if(!value) return 1;
+      const d = new Date(value);
+      const day = d.getDate();
+      return Number.isFinite(day) ? day : 1;
+    }
+
+    function editItemPrompt(type, id){
+      const item = findItem(type, id);
+      if(!item) return;
+
+      if(type === 'expense'){
+        const baseName = (item.name || '').replace(/ \(\d+\/\d+\)$/, '');
+        const name = prompt('Edit expense name', baseName);
+        if(name === null) return;
+        const amountInput = prompt('Edit expense amount', String(item.spreadTotal ? (item.originalAmount || item.amount) : item.amount ?? ''));
+        if(amountInput === null) return;
+        const note = prompt('Edit expense note', item.note || '');
+        if(note === null) return;
+        const amount = Number(amountInput || 0);
+
+        if(item.spreadGroupId && item.spreadTotal){
+          const parts = allocateExpenseAcrossMonths(amount, item.spreadTotal);
+          updateSpreadGroup(id, (copy) => {
+            copy.name = `${(name || '').trim() || baseName} (${copy.spreadIndex}/${copy.spreadTotal})`;
+            copy.note = (note || '').trim();
+            copy.amount = Number(parts[(copy.spreadIndex || 1) - 1] || 0);
+            copy.originalAmount = amount;
+            return copy;
+          });
+          addActivity('expense', 'Expense spread updated', (name || '').trim() || baseName, amount, 'minus');
+        } else {
+          item.name = (name || '').trim() || item.name;
+          item.note = (note || '').trim();
+          item.amount = amount;
+          addActivity('expense', 'Expense updated', item.name, item.amount, 'minus');
+        }
+        saveData(); render();
+        return;
+      }
+
+      if(type === 'income' || type === 'investment' || type === 'bill'){
+        const label = type === 'bill' ? 'bill' : type;
+        const name = prompt(`Edit ${label} name`, item.name || '');
+        if(name === null) return;
+        const amountInput = prompt(`Edit ${label} amount`, String(item.amount ?? ''));
+        if(amountInput === null) return;
+        const note = prompt(`Edit ${label} note`, item.note || '');
+        if(note === null) return;
+        item.name = (name || '').trim() || item.name;
+        item.amount = Number(amountInput || 0);
+        item.note = (note || '').trim();
+        addActivity(type, `${label.charAt(0).toUpperCase()+label.slice(1)} updated`, item.name, item.amount, type === 'bill' ? 'minus' : 'plus');
+        saveData(); render();
+        return;
+      }
+
+      if(type === 'income_schedule'){
+        const dayInput = prompt('Edit schedule day of month', String(item.day ?? 1));
+        if(dayInput === null) return;
+        const freqInput = prompt('Edit frequency (weekly, biweekly, monthly, quarterly, yearly)', item.frequency || 'monthly');
+        if(freqInput === null) return;
+        const sched = data.incomeSchedules.find(s => s.id === id);
+        if(!sched) return;
+        sched.day = Number(dayInput || 1);
+        sched.frequency = (freqInput || sched.frequency || 'monthly').trim().toLowerCase();
+        addActivity('income_schedule', 'Income schedule updated', item.name, item.amount, 'plus');
+        saveData(); render();
+      }
+    }
+
+
     function findItem(type, id){
       const month = getMonthData();
       if(type === 'income') return month.incomes.find(i => i.id === id);
@@ -2884,11 +2960,12 @@
       wrap.innerHTML = items.map(item => `
         <div class="row-item">
           <div style="flex:1;min-width:0;">
-            <div class="row-name editable-copy" data-edit="${type}-name" data-id="${item.id}">${escapeHtml(item.name)}</div>
-            <div class="row-note editable-copy" data-edit="${type}-note" data-id="${item.id}">${escapeHtml(item.note || '')}${type === 'expense' ? ` • ${escapeHtml(monthLabel(item.budgetMonth || data.currentMonth))}${item.spreadTotal ? ` • ${escapeHtml(item.spreadIndex + '/' + item.spreadTotal)}` : ''}` : ''}</div>
+            <div class="row-name">${escapeHtml(item.name)}</div>
+            <div class="row-note">${escapeHtml(item.note || '')}${type === 'expense' ? ` • ${escapeHtml(monthLabel(item.budgetMonth || data.currentMonth))}${item.spreadTotal ? ` • ${escapeHtml(item.spreadIndex + '/' + item.spreadTotal)}` : ''}` : ''}</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;">
-            <div class="row-amount" data-edit="${type}-amount" data-id="${item.id}">${money(item.amount)}</div>
+            <div class="row-amount">${money(item.amount)}</div>
+            <button class="secondary-btn pill small-edit-btn" data-edit-btn="${type}" data-id="${item.id}">Edit</button>
             <button class="danger-btn pill" data-delete="${type}" data-id="${item.id}">Delete</button>
           </div>
         </div>
@@ -2898,72 +2975,16 @@
 
     function wireRowInteractions(containerId, type){
       const wrap = document.getElementById(containerId);
-      wrap.querySelectorAll(`[data-edit="${type}-name"]`).forEach(el => {
+
+      wrap.querySelectorAll(`[data-edit-btn="${type}"]`).forEach(el => {
         const id = el.dataset.id;
-        el.onclick = () => {
-          const item = findItem(type, id);
-          makeTextEditable(el, item.name, val => {
-            const clean = (val || '').trim();
-            if(!clean) return render();
-            if(type === 'expense'){
-              updateSpreadGroup(id, (copy) => {
-                if(copy.spreadTotal){
-                  copy.name = `${clean} (${copy.spreadIndex}/${copy.spreadTotal})`;
-                } else {
-                  copy.name = clean;
-                }
-                return copy;
-              });
-              addActivity('expense', 'Expense updated', clean, item.amount, 'minus');
-            } else {
-              item.name = clean || item.name;
-              addActivity(type, `${type.charAt(0).toUpperCase()+type.slice(1)} updated`, item.name, item.amount, type === 'expense' || type === 'bill' ? 'minus' : 'plus');
-            }
-            saveData(); render();
-          });
+        el.onclick = (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          editItemPrompt(type, id);
         };
       });
-      wrap.querySelectorAll(`[data-edit="${type}-note"]`).forEach(el => {
-        const id = el.dataset.id;
-        el.onclick = () => {
-          const item = findItem(type, id);
-          makeTextEditable(el, item.note || '', val => {
-            if(type === 'expense'){
-              updateSpreadGroup(id, (copy) => {
-                copy.note = (val || '').trim();
-                return copy;
-              });
-              addActivity('expense', 'Expense updated', item.name, item.amount, 'minus');
-            } else {
-              item.note = (val || '').trim();
-            }
-            saveData(); render();
-          });
-        };
-      });
-      wrap.querySelectorAll(`[data-edit="${type}-amount"]`).forEach(el => {
-        const id = el.dataset.id;
-        el.onclick = () => {
-          const item = findItem(type, id);
-          makeAmountEditable(el, item.amount, val => {
-            if(type === 'expense' && item.spreadGroupId && item.spreadTotal){
-              const total = Number(val || 0) * Number(item.spreadTotal || 1);
-              const parts = allocateExpenseAcrossMonths(total, item.spreadTotal);
-              updateSpreadGroup(id, (copy) => {
-                const part = parts[(copy.spreadIndex || 1) - 1] ?? Number(val || 0);
-                copy.amount = Number(part || 0);
-                copy.originalAmount = total;
-                return copy;
-              });
-              addActivity('expense', 'Expense spread updated', item.name, total, 'minus');
-            } else {
-              item.amount = Number(val || 0);
-              addActivity(type, `${type.charAt(0).toUpperCase()+type.slice(1)} updated`, item.name, item.amount, type === 'expense' || type === 'bill' ? 'minus' : 'plus');
-            }
-            saveData(); render();
-          });
-        };
-      });
+
       wrap.querySelectorAll(`[data-delete="${type}"]`).forEach(el => {
         const id = el.dataset.id;
         el.onclick = (ev) => {
@@ -2974,15 +2995,18 @@
       });
 
       if(type === 'expense'){
-        const firstRow = wrap.querySelector('.row-note');
-        if(firstRow && !getHintFlag('move_expense')){
+        const firstEditBtn = wrap.querySelector('.small-edit-btn');
+        if(firstEditBtn && !getHintFlag('move_expense')){
           setTimeout(()=>{
-            showTooltip(firstRow, 'Tip: double-tap an expense to move it to another month');
+            showTooltip(firstEditBtn, 'Use Edit for changes. Double-tap the note line to move an expense to another month.');
             setHintFlag('move_expense');
           }, 600);
         }
-        wrap.querySelectorAll(`[data-edit="expense-note"]`).forEach(el => {
-          const id = el.dataset.id;
+        wrap.querySelectorAll('.row-note').forEach(el => {
+          const row = el.closest('.row-item');
+          const editBtn = row ? row.querySelector(`[data-edit-btn="${type}"]`) : null;
+          const id = editBtn ? editBtn.dataset.id : null;
+          if(!id) return;
           el.ondblclick = (ev) => {
             ev.preventDefault();
             ev.stopPropagation();
@@ -3543,13 +3567,15 @@
 
     function addIncomeSchedule(){
       const incomeId = document.getElementById('scheduleIncomeId').value;
-      const day = Number(document.getElementById('scheduleDay').value || 1);
+      const scheduleDate = document.getElementById('scheduleDate') ? document.getElementById('scheduleDate').value : '';
+      const day = getDayFromDateInput(scheduleDate);
       const frequency = document.getElementById('scheduleFrequency').value;
       const income = getMonthData().incomes.find(i => i.id === incomeId);
       if(!incomeId || !income) return;
-      data.incomeSchedules.push({id: uid('sched'), incomeId, day, frequency});
+      data.incomeSchedules.push({id: uid('sched'), incomeId, day, startDate: scheduleDate, frequency});
       addActivity('income_schedule', 'Income schedule added', `${income.name} • ${titleCase(frequency)}`, income.amount, 'plus');
-      document.getElementById('scheduleDay').value = '';
+      const sdate = document.getElementById('scheduleDate');
+      if(sdate) sdate.value = '';
       document.getElementById('scheduleFrequency').value = 'monthly';
       togglePanel('schedulePanelWrap', false);
       saveData(); render();
@@ -3558,16 +3584,22 @@
     function addRecurringBill(){
       const name = document.getElementById('billName').value.trim();
       const amount = Number(document.getElementById('billAmount').value || 0);
-      const dueDay = Number(document.getElementById('billDueDay').value || 1);
+      const dueDate = document.getElementById('billDueDate') ? document.getElementById('billDueDate').value : '';
+      const dueDay = getDayFromDateInput(dueDate);
       const frequency = document.getElementById('billFrequency').value;
       const autoPay = document.getElementById('billAutoPay').value === 'true';
       const reminderDays = Number(document.getElementById('billReminderDays').value || 0);
       const category = document.getElementById('billCategory').value;
       const note = document.getElementById('billNote').value.trim();
       if(!name) return;
-      data.recurringBills.push({id: uid('bill'), name, amount, dueDay, frequency, autoPay, reminderDays, category, note});
+      data.recurringBills.push({id: uid('bill'), name, amount, dueDay, dueDate, frequency, autoPay, reminderDays, category, note});
       addActivity('bill', 'Recurring bill added', `${name} • ${titleCase(frequency)}`, amount, 'minus');
-      ['billName','billAmount','billDueDay','billReminderDays','billNote'].forEach(id => document.getElementById(id).value = '');
+      ['billName','billAmount','billReminderDays','billNote'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = '';
+      });
+      const dueEl = document.getElementById('billDueDate');
+      if(dueEl) dueEl.value = '';
       document.getElementById('billFrequency').value = 'monthly';
       document.getElementById('billAutoPay').value = 'true';
       togglePanel('billPanelWrap', false);
