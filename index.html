@@ -1653,6 +1653,23 @@
       min-width:0;
     }
 
+    
+    .expense-form-help{
+      margin-top:2px;
+      color:#64748B;
+      font-size:.82rem;
+      line-height:1.4;
+    }
+    #expensePanelWrap .two-col{
+      gap:12px;
+    }
+    #budgetScreen.panel-open{
+      padding-bottom:132px !important;
+    }
+    #budgetScreen.panel-open #budgetResetCard{
+      display:none !important;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -1740,7 +1757,7 @@
 <input class="small-input" id="expenseNote" placeholder="Notes"/>
 <div class="two-col">
 <input class="small-input" id="expenseDate" type="date"/>
-<select class="form-select" id="expenseBudgetMonth"></select><div class="hint-text">Assign this expense to a future month (great for travel or prepayments).</div><div class="helper-copy" style="margin-top:6px;">Apply this expense to the month you want it to count in your budget.</div>
+<select class="form-select" id="expenseBudgetMonth"></select><div class="helper-copy" style="margin-top:6px;">Apply this expense to the month you want it to count in your budget.</div>
 </div>
 <div class="two-col" id="expenseSpreadControls">
 <select class="form-select" id="expenseSpreadToggle">
@@ -2194,7 +2211,7 @@
     function monthOptions(centerKey){
       const [y,m] = centerKey.split('-').map(Number);
       const keys = [];
-      for(let offset=-4; offset<=7; offset++){
+      for(let offset=-12; offset<=36; offset++){
         const d = new Date(y, m-1 + offset, 1);
         keys.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
       }
@@ -2219,10 +2236,23 @@
       document.getElementById(id).classList.add('active');
       document.querySelectorAll('.nav-btn').forEach((btn, idx) => btn.classList.toggle('active', idx === navIndex));
     }
+    
+    function syncBudgetPanelState(){
+      const budget = document.getElementById('budgetScreen');
+      if(!budget) return;
+      const openPanels = ['expensePanelWrap','categoryPanelWrap','incomePanelWrap'].some(id => {
+        const el = document.getElementById(id);
+        return el && el.style.display !== 'none';
+      });
+      budget.classList.toggle('panel-open', openPanels);
+    }
+
+
     function togglePanel(id, force){
       const el = document.getElementById(id);
       const show = typeof force === 'boolean' ? force : el.style.display === 'none';
       el.style.display = show ? 'block' : 'none';
+      syncBudgetPanelState();
     }
     function moveWithinSection(sectionId, ids, cardId, direction){
       const section = document.getElementById(sectionId);
@@ -3434,7 +3464,6 @@
       const budgetMonth = document.getElementById('expenseBudgetMonth') ? document.getElementById('expenseBudgetMonth').value : data.currentMonth;
       const spread = document.getElementById('expenseSpreadToggle') && document.getElementById('expenseSpreadToggle').value === 'true';
       const spreadMonths = Math.max(1, Number(document.getElementById('expenseSpreadMonths') ? document.getElementById('expenseSpreadMonths').value || 1 : 1));
-
       if(!name) return;
 
       if(spread && spreadMonths > 1){
@@ -3448,7 +3477,7 @@
           if(!targetMonth.categoryOrder.includes(cat)) targetMonth.categoryOrder.push(cat);
           targetMonth.categories[cat].push({
             id: uid('exp'),
-            name: `${name}${spreadMonths > 1 ? ` (${idx+1}/${spreadMonths})` : ''}`,
+            name: `${name} (${idx+1}/${spreadMonths})`,
             amount: Number(partAmount),
             note,
             date,
@@ -3478,7 +3507,10 @@
       if(document.getElementById('expenseSpreadToggle')) document.getElementById('expenseSpreadToggle').value = 'false';
       if(document.getElementById('expenseSpreadMonths')) document.getElementById('expenseSpreadMonths').value = '';
       togglePanel('expensePanelWrap', false);
-      saveData(); render();
+
+      data.currentMonth = budgetMonth;
+      saveData();
+      render();
     }
 
     function addCategory(){
@@ -3702,6 +3734,7 @@
     function render(){
       ensureMonth(data.currentMonth);
       syncMonthSelectors();
+      syncBudgetPanelState();
       syncProfileSettings();
       populateExpenseBudgetMonthOptions();
       syncBudgetToggle();
