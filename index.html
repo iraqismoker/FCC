@@ -1749,6 +1749,21 @@
       margin-top:10px;
     }
 
+    
+    .goal-linked{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:5px 9px;
+      border-radius:999px;
+      background:#EFF6FF;
+      border:1px solid #BFDBFE;
+      color:#1D4ED8;
+      font-size:.74rem;
+      font-weight:800;
+      margin-top:6px;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -1936,6 +1951,13 @@
 <input class="small-input" id="accountBalance" placeholder="Balance" step="0.01" type="number"/>
 </div>
 <div class="two-col">
+<input class="small-input" id="accountInterestRate" placeholder="Interest % APR" step="0.01" type="number"/>
+<select class="form-select" id="accountAutoGrow">
+  <option value="false">Manual balance</option>
+  <option value="true">Auto-grow monthly</option>
+</select>
+</div>
+<div class="two-col">
 <select class="form-select" id="accountType">
 <option value="checking">Checking</option>
 <option value="savings">Savings</option>
@@ -2084,6 +2106,15 @@
 <div class="tooltip-card hidden-tip" id="tipAssetsTotal">Assets here add into net worth. Use this for collectibles, electronics, tools, jewelry, furniture, and other items you want tracked.</div>
 <div class="budget-big good" id="assetsTotal">$0</div>
 </div>
+
+<div class="card invest-card" id="accountGrowthCard">
+  <div class="section-head">
+    <div class="section-title label-with-info">Projected Growth <span class="info-dot" onclick="toggleTip('tipProjectedGrowth')">i</span></div>
+  </div>
+  <div id="tipProjectedGrowth" class="tooltip-card hidden-tip">Accounts with auto-grow turned on use a simple monthly interest estimate based on APR. This is a planning tool, not a bank sync.</div>
+  <div id="accountGrowthList"></div>
+</div>
+
 <div class="card invest-card" id="savingsGoalsCard">
   <div class="section-head">
     <div class="section-title label-with-info">Savings Goals <span class="info-dot" onclick="toggleTip('tipSavingsGoals')">i</span></div>
@@ -2097,6 +2128,7 @@
         <input class="small-input" id="goalTarget" type="number" step="0.01" placeholder="Target amount"/>
         <input class="small-input" id="goalCurrent" type="number" step="0.01" placeholder="Current amount"/>
       </div>
+      <select class="form-select" id="goalAccountId"></select>
       <input class="small-input" id="goalNote" placeholder="Notes (optional)"/>
       <div class="actions">
         <button class="save-btn pill" onclick="addSavingsGoal()">Save Goal</button>
@@ -2285,6 +2317,11 @@
         }
       }
       if(!data.months[key].accounts) data.months[key].accounts = [];
+      data.months[key].accounts = (data.months[key].accounts || []).map(a => ({
+        interestRate: 0,
+        autoGrow: false,
+        ...a
+      }));
       if(!data.months[key].assets) data.months[key].assets = [];
       if(!data.months[key].savingsGoals) data.months[key].savingsGoals = [];
       if(!data.months[key].deletedDefaultCategories) data.months[key].deletedDefaultCategories = [];
@@ -2862,6 +2899,34 @@
 
 
     
+    
+    function populateGoalAccountOptions(){
+      const el = document.getElementById('goalAccountId');
+      if(!el) return;
+      const accounts = getMonthData().accounts || [];
+      el.innerHTML = `<option value="">No linked account</option>` + accounts.map(a => `<option value="${a.id}">${escapeHtml(a.name)} • ${money(Number(a.balance||0))}</option>`).join('');
+    }
+
+    function getAccountById(id, monthKey=data.currentMonth){
+      return (getMonthData(monthKey).accounts || []).find(a => a.id === id) || null;
+    }
+
+    function getProjectedAccountBalance(account, monthsAhead=1){
+      const base = Number(account && account.balance || 0);
+      const rate = Number(account && account.interestRate || 0);
+      const autoGrow = !!(account && account.autoGrow);
+      if(!autoGrow || !rate || monthsAhead <= 0) return base;
+      const monthly = rate / 100 / 12;
+      return base * Math.pow(1 + monthly, monthsAhead);
+    }
+
+    function getGoalLinkedAccountText(goal){
+      if(!goal || !goal.accountId) return '';
+      const account = getAccountById(goal.accountId);
+      return account ? account.name : '';
+    }
+
+
     function getSavingsGoals(monthKey=data.currentMonth){
       return getMonthData(monthKey).savingsGoals || [];
     }
@@ -2870,6 +2935,7 @@
       const name = (document.getElementById('goalName')?.value || '').trim();
       const target = Number(document.getElementById('goalTarget')?.value || 0);
       const current = Number(document.getElementById('goalCurrent')?.value || 0);
+      const accountId = (document.getElementById('goalAccountId')?.value || '').trim();
       const note = (document.getElementById('goalNote')?.value || '').trim();
       if(!name) return;
       const month = getMonthData();
@@ -2879,6 +2945,7 @@
         name,
         target,
         current,
+        accountId,
         note
       });
       addActivity('goal', 'Savings goal added', name, current, 'plus');
@@ -2886,33 +2953,68 @@
         const el = document.getElementById(id);
         if(el) el.value = '';
       });
+      const acct = document.getElementById('goalAccountId');
+      if(acct) acct.value = '';
       togglePanel('goalPanelWrap', false);
       saveData(); render();
     }
 
+    
+    function renderAccountGrowth(){
+      const wrap = document.getElementById('accountGrowthList');
+      if(!wrap) return;
+      const accounts = getMonthData().accounts || [];
+      const growing = accounts.filter(a => a.autoGrow && Number(a.interestRate || 0) > 0);
+      if(!growing.length){
+        wrap.innerHTML = `<div class="empty-state">No auto-growth accounts yet. Turn on auto-grow for a savings or cash account to see simple projections.</div>`;
+        return;
+      }
+      wrap.innerHTML = growing.map(a => {
+        const projected12 = getProjectedAccountBalance(a, 12);
+        const gain = projected12 - Number(a.balance || 0);
+        return `
+          <div class="row-item">
+            <div style="flex:1;min-width:0;">
+              <div class="row-name">${escapeHtml(a.name)}</div>
+              <div class="row-note">${Number(a.interestRate || 0).toFixed(2)}% APR • projected 12 months</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="row-amount">${money(projected12)}</div>
+              <div class="row-note ${gain >= 0 ? 'good' : ''}">${gain >= 0 ? '+' : ''}${money(gain)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+
     function renderSavingsGoals(){
       const wrap = document.getElementById('savingsGoalsList');
       if(!wrap) return;
+      populateGoalAccountOptions();
       const goals = getSavingsGoals();
       if(!goals.length){
         wrap.innerHTML = `<div class="empty-state">No savings goals yet. Add goals like emergency fund, travel, or down payment.</div>`;
         return;
       }
       wrap.innerHTML = goals.map(goal => {
-        const pct = goal.target > 0 ? Math.max(0, Math.min(100, (Number(goal.current || 0) / Number(goal.target || 1)) * 100)) : 0;
+        const linked = goal.accountId ? getAccountById(goal.accountId) : null;
+        const effectiveCurrent = linked ? Number(linked.balance || 0) : Number(goal.current || 0);
+        const pct = goal.target > 0 ? Math.max(0, Math.min(100, (effectiveCurrent / Number(goal.target || 1)) * 100)) : 0;
         return `
           <div class="goal-card">
             <div class="goal-head">
               <div style="flex:1;min-width:0;">
                 <div class="goal-name">${escapeHtml(goal.name)}</div>
                 <div class="goal-note">${escapeHtml(goal.note || '')}</div>
+                ${linked ? `<div class="goal-linked">Linked to ${escapeHtml(linked.name)}</div>` : ``}
               </div>
-              <div class="goal-amount">${money(goal.current)} / ${money(goal.target)}</div>
+              <div class="goal-amount">${money(effectiveCurrent)} / ${money(goal.target)}</div>
             </div>
             <div class="progress-track"><div class="progress-fill ${pct >= 100 ? 'good' : ''}" style="width:${pct}%;"></div></div>
             <div class="goal-meta">
               <span>${pct.toFixed(0)}% funded</span>
-              <span>${money(Math.max(0, Number(goal.target || 0) - Number(goal.current || 0)))} left</span>
+              <span>${money(Math.max(0, Number(goal.target || 0) - effectiveCurrent))} left</span>
             </div>
             <div class="goal-actions">
               <button class="secondary-btn pill small-edit-btn" type="button" onclick="editSavingsGoal('${goal.id}')">Edit</button>
@@ -2931,13 +3033,16 @@
       if(name === null) return;
       const targetInput = prompt('Edit target amount', String(goal.target ?? ''));
       if(targetInput === null) return;
-      const currentInput = prompt('Edit current amount', String(goal.current ?? ''));
+      const currentInput = prompt('Edit current amount (used when no linked account is selected)', String(goal.current ?? ''));
       if(currentInput === null) return;
+      const accountInput = prompt('Link to account ID (leave blank for none)', goal.accountId || '');
+      if(accountInput === null) return;
       const note = prompt('Edit note', goal.note || '');
       if(note === null) return;
       goal.name = (name || '').trim() || goal.name;
       goal.target = Number(targetInput || 0);
       goal.current = Number(currentInput || 0);
+      goal.accountId = (accountInput || '').trim();
       goal.note = (note || '').trim();
       addActivity('goal', 'Savings goal updated', goal.name, goal.current, 'plus');
       saveData(); render();
@@ -3367,6 +3472,7 @@
       const totalEl = document.getElementById('assetsTotal');
       if(totalEl) totalEl.textContent = money(getAssetTotal());
       renderSavingsGoals();
+      renderAccountGrowth();
 
       const categoryWrap = document.getElementById('assetCategorySummaryList');
       if(categoryWrap){
@@ -3900,15 +4006,20 @@
     function addAccount(){
       const name = document.getElementById('accountName').value.trim();
       const balance = Number(document.getElementById('accountBalance').value || 0);
+      const interestRate = Number(document.getElementById('accountInterestRate') ? document.getElementById('accountInterestRate').value || 0 : 0);
+      const autoGrow = document.getElementById('accountAutoGrow') ? document.getElementById('accountAutoGrow').value === 'true' : false;
       const type = document.getElementById('accountType').value;
-      const includeInCashFlow = document.getElementById('accountInclude').value === 'true';
+      const includeInCashFlow = document.getElementById('accountIncludeCashFlow').checked;
       if(!name) return;
-      getMonthData().accounts.push({id: uid('acct'), name, balance, type, includeInCashFlow});
-      addActivity('account', 'Account added', `${name} • ${titleCase(type)}`, balance, includeInCashFlow ? 'plus' : 'neutral');
-      document.getElementById('accountName').value = '';
-      document.getElementById('accountBalance').value = '';
+      getMonthData().accounts.push({id: uid('acct'), name, balance, type, includeInCashFlow, interestRate, autoGrow});
+      addActivity('account', 'Account added', name, balance, 'plus');
+      ['accountName','accountBalance','accountInterestRate'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = '';
+      });
+      if(document.getElementById('accountAutoGrow')) document.getElementById('accountAutoGrow').value = 'false';
       document.getElementById('accountType').value = 'checking';
-      document.getElementById('accountInclude').value = 'true';
+      document.getElementById('accountIncludeCashFlow').checked = true;
       togglePanel('accountPanelWrap', false);
       saveData(); render();
     }
