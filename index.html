@@ -1745,16 +1745,82 @@
     }
 
     
-    #expenseBudgetMonth[type="date"]{
-      min-height:54px;
-      border-radius:18px;
+    /* Overview expanded calendar */
+    .overview-calendar-launcher{
+      text-align:left;
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      padding:0 16px;
+    }
+    .overview-calendar-modal{
+      margin-bottom:14px;
+    }
+    .overview-calendar-card{
+      background:#FFFFFF;
+      border:1px solid #E5E7EB;
+      border-radius:22px;
+      box-shadow:0 10px 28px rgba(15,23,42,.07);
+      padding:16px;
+    }
+    .overview-calendar-head,
+    .overview-calendar-controls,
+    .overview-calendar-actions{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .overview-calendar-head{
+      margin-bottom:12px;
+    }
+    .overview-calendar-controls{
+      margin-bottom:12px;
+    }
+    .overview-calendar-month{
+      font-size:1rem;
+      font-weight:800;
+      color:#0F172A;
+      text-align:center;
+      flex:1;
+    }
+    .overview-calendar-weekdays{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+      margin-bottom:8px;
+      color:#64748B;
+      font-size:.78rem;
+      font-weight:800;
+      text-align:center;
+    }
+    .overview-calendar-grid{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+      margin-bottom:14px;
+    }
+    .overview-day{
+      min-height:40px;
+      border:none;
+      border-radius:14px;
       background:#FFFFFF;
       color:#0F172A;
       border:1px solid #E5E7EB;
-      box-shadow:0 6px 18px rgba(15,23,42,.05);
-      font-size:1rem;
-      font-weight:600;
-      padding:0 16px;
+      font-size:.92rem;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .overview-day.muted{
+      opacity:.35;
+    }
+    .overview-day.active{
+      background:#DBEAFE;
+      color:#1D4ED8;
+      border-color:#BFDBFE;
+    }
+    .overview-day.today{
+      box-shadow:inset 0 0 0 2px #93C5FD;
     }
 
     @keyframes loadBar{from{width:0;}to{width:100%;}}
@@ -1773,9 +1839,32 @@
 <section class="screen active" id="overviewScreen">
 <div class="header">
 <div class="overview-v2-top">
-<input class="month-select" id="overviewMonth" type="month" onchange="changeMonth(this.value)" />
+<button class="month-select overview-calendar-launcher" id="overviewCalendarLauncher" type="button" onclick="openOverviewCalendar()"></button>
 <button class="overview-add-btn" onclick="openScreen('budgetScreen', 1)">+</button>
 </div>
+
+<div class="overview-calendar-modal hidden-tip" id="overviewCalendarModal">
+  <div class="overview-calendar-card">
+    <div class="overview-calendar-head">
+      <div class="section-title">Choose a date</div>
+      <button class="secondary-btn pill" type="button" onclick="closeOverviewCalendar()">Close</button>
+    </div>
+    <div class="overview-calendar-controls">
+      <button class="secondary-btn pill" type="button" onclick="shiftOverviewCalendarMonth(-1)">←</button>
+      <div class="overview-calendar-month" id="overviewCalendarMonthLabel">Month Year</div>
+      <button class="secondary-btn pill" type="button" onclick="shiftOverviewCalendarMonth(1)">→</button>
+    </div>
+    <div class="overview-calendar-weekdays">
+      <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+    </div>
+    <div class="overview-calendar-grid" id="overviewCalendarGrid"></div>
+    <div class="overview-calendar-actions">
+      <button class="secondary-btn pill" type="button" onclick="setOverviewCalendarToday()">Today</button>
+      <button class="save-btn pill" type="button" onclick="applyOverviewCalendar()">Apply</button>
+    </div>
+  </div>
+</div>
+
 <div class="overview-hero">
 <div class="overview-hero-value" id="overviewHeroValue">$0</div>
 <div class="overview-hero-label">left to budget</div>
@@ -2297,18 +2386,6 @@
       const [y,m] = key.split('-').map(Number);
       return new Date(y,m-1,1).toLocaleString(undefined, { month:'long', year:'numeric' });
     }
-    
-    function monthKeyFromDate(value){
-      if(!value) return getCurrentMonthKey();
-      const m = String(value).match(/^(\d{4})-(\d{2})/);
-      return m ? `${m[1]}-${m[2]}` : getCurrentMonthKey();
-    }
-
-    function firstDateOfMonth(monthKey){
-      return `${monthKey}-01`;
-    }
-
-
     function monthOptions(centerKey){
       const [y,m] = centerKey.split('-').map(Number);
       const keys = [];
@@ -2320,14 +2397,16 @@
     }
     function syncMonthSelectors(){
       document.querySelectorAll('.month-select').forEach(el => {
-        if(el.tagName === 'INPUT'){
+        if(el.id === 'overviewCalendarLauncher') return;
+        const opts = monthOptions(data.currentMonth).map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
+        if(el.tagName === 'SELECT'){
+          el.innerHTML = opts;
           el.value = data.currentMonth;
         } else {
-          const opts = monthOptions(data.currentMonth).map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
-          el.innerHTML = opts;
           el.value = data.currentMonth;
         }
       });
+      syncOverviewCalendarLauncher();
     }
     function changeMonth(key){ data.currentMonth = key; ensureMonth(key); saveData(); render(); }
 
@@ -2643,13 +2722,7 @@
     function populateExpenseBudgetMonthOptions(){
       const el = document.getElementById('expenseBudgetMonth');
       if(!el) return;
-      if(el.tagName === 'INPUT'){
-        el.value = firstDateOfMonth(data.currentMonth);
-      } else {
-        const opts = monthOptions(data.currentMonth).map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
-        el.innerHTML = opts;
-        el.value = data.currentMonth;
-      }
+      el.value = data.currentMonth;
     }
 
     function getExpensesForMonth(cat, key=data.currentMonth){
@@ -2859,6 +2932,108 @@
           <div class="compare-badge ${metrics.netWorth.result.tone}">${metrics.netWorth.result.label}</div>
         </div>
       `;
+    }
+
+
+    
+    let overviewCalendarState = { year: null, month: null, day: null };
+
+    function getOverviewSelectedDate(){
+      const monthKey = data.currentMonth || getCurrentMonthKey();
+      const day = data.overviewSelectedDay || 1;
+      return `${monthKey}-${String(day).padStart(2,'0')}`;
+    }
+
+    function formatOverviewDate(dateStr){
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString(undefined, { month:'long', day:'numeric', year:'numeric' });
+    }
+
+    function syncOverviewCalendarLauncher(){
+      const btn = document.getElementById('overviewCalendarLauncher');
+      if(!btn) return;
+      btn.textContent = formatOverviewDate(getOverviewSelectedDate());
+    }
+
+    function openOverviewCalendar(){
+      const modal = document.getElementById('overviewCalendarModal');
+      const current = getOverviewSelectedDate();
+      const d = new Date(current + 'T00:00:00');
+      overviewCalendarState.year = d.getFullYear();
+      overviewCalendarState.month = d.getMonth();
+      overviewCalendarState.day = d.getDate();
+      if(modal) modal.classList.remove('hidden-tip');
+      renderOverviewCalendar();
+    }
+
+    function closeOverviewCalendar(){
+      const modal = document.getElementById('overviewCalendarModal');
+      if(modal) modal.classList.add('hidden-tip');
+    }
+
+    function shiftOverviewCalendarMonth(delta){
+      const d = new Date(overviewCalendarState.year, overviewCalendarState.month + delta, 1);
+      overviewCalendarState.year = d.getFullYear();
+      overviewCalendarState.month = d.getMonth();
+      renderOverviewCalendar();
+    }
+
+    function setOverviewCalendarToday(){
+      const t = new Date();
+      overviewCalendarState.year = t.getFullYear();
+      overviewCalendarState.month = t.getMonth();
+      overviewCalendarState.day = t.getDate();
+      renderOverviewCalendar();
+    }
+
+    function selectOverviewCalendarDay(year, month, day){
+      overviewCalendarState.year = year;
+      overviewCalendarState.month = month;
+      overviewCalendarState.day = day;
+      renderOverviewCalendar();
+    }
+
+    function renderOverviewCalendar(){
+      const label = document.getElementById('overviewCalendarMonthLabel');
+      const grid = document.getElementById('overviewCalendarGrid');
+      if(!label || !grid) return;
+
+      const first = new Date(overviewCalendarState.year, overviewCalendarState.month, 1);
+      const startWeekday = first.getDay();
+      const daysInMonth = new Date(overviewCalendarState.year, overviewCalendarState.month + 1, 0).getDate();
+      const prevMonthDays = new Date(overviewCalendarState.year, overviewCalendarState.month, 0).getDate();
+      const today = new Date();
+
+      label.textContent = first.toLocaleDateString(undefined, { month:'long', year:'numeric' });
+
+      let cells = '';
+      for(let i=0; i<startWeekday; i++){
+        const day = prevMonthDays - startWeekday + i + 1;
+        const prev = new Date(overviewCalendarState.year, overviewCalendarState.month - 1, day);
+        cells += `<button type="button" class="overview-day muted" onclick="selectOverviewCalendarDay(${prev.getFullYear()}, ${prev.getMonth()}, ${day})">${day}</button>`;
+      }
+      for(let day=1; day<=daysInMonth; day++){
+        const isActive = overviewCalendarState.day === day;
+        const isToday = today.getFullYear() === overviewCalendarState.year && today.getMonth() === overviewCalendarState.month && today.getDate() === day;
+        cells += `<button type="button" class="overview-day ${isActive ? 'active' : ''} ${isToday ? 'today' : ''}" onclick="selectOverviewCalendarDay(${overviewCalendarState.year}, ${overviewCalendarState.month}, ${day})">${day}</button>`;
+      }
+      const used = startWeekday + daysInMonth;
+      const extra = (7 - (used % 7)) % 7;
+      for(let i=1; i<=extra; i++){
+        const next = new Date(overviewCalendarState.year, overviewCalendarState.month + 1, i);
+        cells += `<button type="button" class="overview-day muted" onclick="selectOverviewCalendarDay(${next.getFullYear()}, ${next.getMonth()}, ${i})">${i}</button>`;
+      }
+      grid.innerHTML = cells;
+    }
+
+    function applyOverviewCalendar(){
+      const monthKey = `${overviewCalendarState.year}-${String(overviewCalendarState.month + 1).padStart(2,'0')}`;
+      data.currentMonth = monthKey;
+      data.overviewSelectedDay = overviewCalendarState.day || 1;
+      ensureMonth(monthKey);
+      saveData();
+      closeOverviewCalendar();
+      render();
     }
 
 
@@ -3590,7 +3765,7 @@
       const amount = Number(document.getElementById('expenseAmount').value || 0);
       const note = document.getElementById('expenseNote').value.trim();
       const date = document.getElementById('expenseDate').value || '';
-      const budgetMonth = document.getElementById('expenseBudgetMonth') ? monthKeyFromDate(document.getElementById('expenseBudgetMonth').value) : data.currentMonth;
+      const budgetMonth = document.getElementById('expenseBudgetMonth') ? document.getElementById('expenseBudgetMonth').value : data.currentMonth;
       const spread = document.getElementById('expenseSpreadToggle') && document.getElementById('expenseSpreadToggle').value === 'true';
       const spreadMonths = Math.max(1, Number(document.getElementById('expenseSpreadMonths') ? document.getElementById('expenseSpreadMonths').value || 1 : 1));
       if(!name) return;
@@ -3632,7 +3807,7 @@
       document.getElementById('expenseAmount').value = '';
       document.getElementById('expenseNote').value = '';
       document.getElementById('expenseDate').value = '';
-      if(document.getElementById('expenseBudgetMonth')) document.getElementById('expenseBudgetMonth').value = firstDateOfMonth(data.currentMonth);
+      if(document.getElementById('expenseBudgetMonth')) document.getElementById('expenseBudgetMonth').value = data.currentMonth;
       if(document.getElementById('expenseSpreadToggle')) document.getElementById('expenseSpreadToggle').value = 'false';
       if(document.getElementById('expenseSpreadMonths')) document.getElementById('expenseSpreadMonths').value = '';
       togglePanel('expensePanelWrap', false);
