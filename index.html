@@ -1479,6 +1479,17 @@
       gap:4px;
     }
 
+    
+    #budgetResetCard{
+      position:sticky;
+      bottom:88px;
+      z-index:20;
+      box-shadow:0 10px 28px rgba(15,23,42,.10);
+    }
+    #budgetResetCard .section-head{
+      margin-bottom:10px;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -1601,7 +1612,7 @@
 </div><div class="card budget-card" id="budgetSummaryCard"><div class="section-head"><div class="section-title">Summary</div><div class="pinned-note">Pinned</div></div><div class="info-grid" id="budgetSummaryCard">
 <div class="card info-card"><h4>Income</h4><div class="info-value" id="budgetIncomeTotal">$0</div></div>
 <div class="card info-card"><h4>Cash Flow</h4><div class="info-value" id="budgetCashFlow">$0</div></div>
-</div></div><div class="card budget-card" id="budgetCategoriesCard"><div class="section-head"><div class="section-title">Categories</div><div class="section-controls"><button class="mini-move" onclick="moveBudgetCard('budgetCategoriesCard', -1)">↑</button><button class="mini-move" onclick="moveBudgetCard('budgetCategoriesCard', 1)">↓</button></div></div><div id="categoriesWrap"></div></div><div class="card budget-card" id="budgetResetCard"><div class="section-head"><div class="section-title">Reset</div></div><div class="actions" id="budgetResetActions">
+</div></div><div class="card budget-card" id="budgetCategoriesCard"><div class="section-head"><div class="section-title">Categories</div></div><div id="categoriesWrap"></div></div><div class="card budget-card" id="budgetResetCard"><div class="section-head"><div class="section-title">Reset</div></div><div class="actions" id="budgetResetActions">
 <button class="danger-btn pill" onclick="resetMonth()">Reset This Month</button>
 </div></div></section>
 <section class="screen" id="cashflowScreen"><div class="header">
@@ -1868,7 +1879,7 @@
     function createEmptyMonth(){
       const categories = {};
       DEFAULT_CATEGORIES.forEach(key => categories[key] = []);
-      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories, deletedDefaultCategories: [] };
+      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories, deletedDefaultCategories: [], categoryOrder: [...DEFAULT_CATEGORIES] };
     }
     function getCurrentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
     function defaultData(){
@@ -1924,15 +1935,25 @@
             balance: a.includeInCashFlow ? getEndOfMonthBalance(prevKey) / Math.max(1, (prevMonth.accounts || []).filter(x => x.includeInCashFlow).length) : Number(a.balance || 0)
           }));
           data.months[key].deletedDefaultCategories = [...(prevMonth.deletedDefaultCategories || [])];
+          data.months[key].categoryOrder = [...(prevMonth.categoryOrder || DEFAULT_CATEGORIES)];
         }
       }
       if(!data.months[key].accounts) data.months[key].accounts = [];
       if(!data.months[key].assets) data.months[key].assets = [];
       if(!data.months[key].deletedDefaultCategories) data.months[key].deletedDefaultCategories = [];
+      if(!data.months[key].categoryOrder) data.months[key].categoryOrder = [...DEFAULT_CATEGORIES];
+
       DEFAULT_CATEGORIES.forEach(cat => {
         if((data.months[key].deletedDefaultCategories || []).includes(cat)) return;
         if(!data.months[key].categories[cat]) data.months[key].categories[cat] = [];
+        if(!data.months[key].categoryOrder.includes(cat)) data.months[key].categoryOrder.push(cat);
       });
+
+      Object.keys(data.months[key].categories || {}).forEach(cat => {
+        if(!data.months[key].categoryOrder.includes(cat)) data.months[key].categoryOrder.push(cat);
+      });
+
+      data.months[key].categoryOrder = data.months[key].categoryOrder.filter(cat => (data.months[key].categories || {}).hasOwnProperty(cat));
       return data.months[key];
     }
     function getMonthData(key=data.currentMonth){ return ensureMonth(key); }
@@ -1998,6 +2019,20 @@
       moveWithinSection('budgetScreen', ['budgetCategoriesCard','budgetResetCard'], cardId, direction);
     }
 
+    function moveCategory(cat, direction){
+      const month = getMonthData();
+      if(!month.categoryOrder) month.categoryOrder = getCategoryNames();
+      const idx = month.categoryOrder.indexOf(cat);
+      if(idx === -1) return;
+      const next = idx + direction;
+      if(next < 0 || next >= month.categoryOrder.length) return;
+      const swap = month.categoryOrder[next];
+      month.categoryOrder[next] = cat;
+      month.categoryOrder[idx] = swap;
+      saveData();
+      renderBudgetCategories();
+    }
+
     function addActivity(type, title, meta, amount, sign){
       data.activity.unshift({ id: uid('act'), type, title, meta, amount:Number(amount||0), sign, timestamp:new Date().toISOString() });
       data.activity = data.activity.slice(0,40);
@@ -2016,7 +2051,14 @@
       }).join('');
     }
 
-    function getCategoryNames(key=data.currentMonth){ return Object.keys(getMonthData(key).categories); }
+    function getCategoryNames(key=data.currentMonth){
+      const month = getMonthData(key);
+      const order = month.categoryOrder || [];
+      const keys = Object.keys(month.categories || {});
+      const ordered = order.filter(cat => keys.includes(cat));
+      const missing = keys.filter(cat => !ordered.includes(cat));
+      return [...ordered, ...missing];
+    }
     function getManualIncomeTotal(key=data.currentMonth){ return getMonthData(key).incomes.reduce((s, i) => s + Number(i.amount || 0), 0); }
     function getInvestmentTotal(key=data.currentMonth){ return getMonthData(key).investments.reduce((s, i) => s + Number(i.amount || 0), 0); }
     function getAssetTotal(key=data.currentMonth){ return (getMonthData(key).assets || []).reduce((s, i) => s + Number(i.amount || 0), 0); }
@@ -2360,6 +2402,7 @@
         const total = getCategoryTotal(id);
         delete month.categories[id];
         delete data.collapsedGroups[id];
+        month.categoryOrder = (month.categoryOrder || []).filter(cat => cat !== id);
         if(DEFAULT_CATEGORIES.includes(id)){
           if(!month.deletedDefaultCategories) month.deletedDefaultCategories = [];
           if(!month.deletedDefaultCategories.includes(id)){
@@ -2600,7 +2643,11 @@
                 <h4>${escapeHtml(titleCase(cat))}</h4>
                 <div class="category-total">Total ${money(displayTotal)}</div>
               </div>
-              <div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;" onclick="event.stopPropagation();">
+                <div class="section-controls" style="gap:8px;">
+                  <button class="mini-move" onclick="moveCategory('${cat}', -1); event.stopPropagation();">↑</button>
+                  <button class="mini-move" onclick="moveCategory('${cat}', 1); event.stopPropagation();">↓</button>
+                </div>
                 <div class="category-tag">${escapeHtml(data.budgetMode.toUpperCase())}</div>
                 <div class="collapse-indicator">${collapsed ? 'Expand' : 'Collapse'}</div>
               </div>
@@ -2780,6 +2827,8 @@
       if(!key) return;
       const month = getMonthData();
       if(!month.categories[key]) month.categories[key] = [];
+      if(!month.categoryOrder) month.categoryOrder = [];
+      if(!month.categoryOrder.includes(key)) month.categoryOrder.push(key);
       month.deletedDefaultCategories = (month.deletedDefaultCategories || []).filter(c => c !== key);
       addActivity('category', 'Category added', titleCase(key), 0, 'neutral');
       document.getElementById('newCategoryName').value = '';
