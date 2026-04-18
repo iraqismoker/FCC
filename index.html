@@ -1556,6 +1556,23 @@
       box-shadow:0 4px 10px rgba(15,23,42,.04);
     }
 
+    
+    .save-btn.pill,.secondary-btn.pill,.danger-btn.pill,.add-btn.pill{
+      min-height:42px;
+      border-radius:14px;
+      font-size:.9rem;
+      font-weight:800;
+    }
+    .section-title{
+      letter-spacing:.01em;
+    }
+    .helper-copy,.settings-note{
+      line-height:1.42;
+    }
+    .stack{
+      gap:9px;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -1925,7 +1942,7 @@
 <div class="helper-copy">Default category structure: Fixed Bills, Variable Spending, Investing, Lifestyle.</div>
 </div>
 <div class="card settings-card">
-<h4>Data</h4>
+<h4>Backup &amp; Restore</h4>
 <div class="settings-note">Everything auto-saves in this browser. Export a backup anytime so you are not relying on one device.</div>
 <div class="stack">
 <button class="save-btn pill" onclick="exportBackup()">Export Backup</button>
@@ -3086,40 +3103,84 @@
     }
 
     function resetAllData(){
+      const ok = confirm('Reset the entire app? This clears all saved data on this device unless you exported a backup first.');
+      if(!ok) return;
       data = defaultData();
       saveData();
       render();
-      openScreen('overviewScreen', 0);
+      alert('App data has been reset.');
     }
 
+    
+    function normalizeImportedData(parsed){
+      if(!parsed || typeof parsed !== 'object') throw new Error('Invalid backup file.');
+      if(!parsed.months || typeof parsed.months !== 'object') throw new Error('Backup is missing month data.');
+
+      if(!parsed.activity) parsed.activity = [];
+      if(!parsed.collapsedGroups) parsed.collapsedGroups = {};
+      if(!parsed.currentMonth) parsed.currentMonth = getCurrentMonthKey();
+      if(!parsed.budgetMode) parsed.budgetMode = 'planned';
+      if(!Array.isArray(parsed.recurringBills)) parsed.recurringBills = [];
+      if(!Array.isArray(parsed.incomeSchedules)) parsed.incomeSchedules = [];
+
+      Object.keys(parsed.months).forEach(key => {
+        const month = parsed.months[key] || {};
+        if(!month.categories || typeof month.categories !== 'object') month.categories = {};
+        if(!Array.isArray(month.accounts)) month.accounts = [];
+        if(!Array.isArray(month.incomes)) month.incomes = [];
+        if(!Array.isArray(month.investments)) month.investments = [];
+        if(!Array.isArray(month.assets)) month.assets = [];
+        if(!Array.isArray(month.deletedDefaultCategories)) month.deletedDefaultCategories = [];
+        if(!Array.isArray(month.categoryOrder)) month.categoryOrder = [...DEFAULT_CATEGORIES];
+        if(!Array.isArray(month.cashflowOrder)) month.cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'];
+        DEFAULT_CATEGORIES.forEach(cat => {
+          if(!month.deletedDefaultCategories.includes(cat) && !month.categories[cat]) month.categories[cat] = [];
+        });
+      });
+
+      return parsed;
+    }
+
+
     function exportBackup(){
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const payload = JSON.stringify(data, null, 2);
+      const blob = new Blob([payload], {type:'application/json'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
+      const stamp = new Date().toISOString().slice(0,10);
       a.href = url;
-      a.download = 'fcc-backup-v2b.json';
+      a.download = `cash-command-backup-${stamp}.json`;
+      document.body.appendChild(a);
       a.click();
+      a.remove();
       URL.revokeObjectURL(url);
+      addActivity('backup', 'Backup exported', 'Local backup saved', 0, 'neutral');
+      saveData();
+      renderActivity();
     }
 
     function importBackup(event){
-      const file = event.target.files[0];
+      const file = event && event.target && event.target.files ? event.target.files[0] : null;
       if(!file) return;
       const reader = new FileReader();
       reader.onload = () => {
-        try {
-          const parsed = JSON.parse(reader.result);
-          if(parsed && parsed.months){
-            data = parsed;
-            if(!data.activity) data.activity = [];
-            if(!data.collapsedGroups) data.collapsedGroups = {};
-            if(!data.currentMonth) data.currentMonth = getCurrentMonthKey();
-            ensureMonth(data.currentMonth);
-            saveData();
-            render();
-          }
-        } catch(e) {}
-        event.target.value = '';
+        try{
+          const parsed = JSON.parse(String(reader.result || '{}'));
+          data = normalizeImportedData(parsed);
+          ensureMonth(data.currentMonth);
+          saveData();
+          addActivity('backup', 'Backup imported', file.name, 0, 'neutral');
+          render();
+          alert('Backup imported successfully.');
+        } catch(err){
+          alert(err && err.message ? err.message : 'Could not import that backup file.');
+        } finally {
+          if(event.target) event.target.value = '';
+        }
+      };
+      reader.onerror = () => {
+        alert('Could not read that backup file.');
+        if(event.target) event.target.value = '';
       };
       reader.readAsText(file);
     }
