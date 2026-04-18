@@ -1898,6 +1898,25 @@
       margin-top:10px;
     }
 
+    
+    .insight-new {
+      background:#3B82F6;
+      color:#fff;
+      font-size:.65rem;
+      padding:3px 6px;
+      border-radius:6px;
+      margin-left:6px;
+      font-weight:700;
+    }
+    .insight-highlight {
+      animation: pulseHighlight 1.2s ease-in-out 2;
+    }
+    @keyframes pulseHighlight {
+      0% { background:#FEF2F2; }
+      50% { background:#FEE2E2; }
+      100% { background:transparent; }
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -2422,7 +2441,8 @@
       };
     }
 
-    let data = defaultData();
+    let previousInsightsState = {};
+let data = defaultData();
 
     function saveData(){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {} }
     function loadData(){
@@ -3444,11 +3464,21 @@
 
       insights.sort((a,b) => insightPriorityClass(a.tone) - insightPriorityClass(b.tone));
 
-      wrap.innerHTML = insights.map(item => `
-        <div class="insight-row">
+      const rendered = insights.map(item => {
+        const key = item.title;
+        const prev = previousInsightsState[key];
+        const isNew = !prev || prev.copy !== item.copy;
+
+        previousInsightsState[key] = { copy: item.copy };
+
+        return `
+        <div class="insight-row ${isNew && item.tone === 'bad' ? 'insight-highlight' : ''}">
           <div class="insight-head">
             <div>
-              <div class="insight-title">${escapeHtml(item.title)}</div>
+              <div class="insight-title">
+                ${escapeHtml(item.title)}
+                ${isNew ? '<span class="insight-new">NEW</span>' : ''}
+              </div>
               <div class="insight-copy">${escapeHtml(item.copy)}</div>
             </div>
             <div class="insight-badge ${item.tone}">${escapeHtml(item.label)}</div>
@@ -3456,8 +3486,10 @@
           <div class="insight-actions">
             ${(item.actions || []).slice(0,2).map(action => `<button class="secondary-btn pill" type="button" onclick="${action.fn}">${escapeHtml(action.label)}</button>`).join('')}
           </div>
-        </div>
-      `).join('');
+        </div>`;
+      }).join('');
+
+      wrap.innerHTML = rendered;
     }
 
 
