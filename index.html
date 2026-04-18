@@ -1944,6 +1944,53 @@
       white-space:nowrap;
     }
 
+    
+    .alert-row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 0;
+      border-bottom:1px solid rgba(229,231,235,.9);
+    }
+    .alert-row:last-child{ border-bottom:none; }
+    .alert-title{
+      color:#0F172A;
+      font-size:.9rem;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .alert-copy{
+      color:#64748B;
+      font-size:.82rem;
+      line-height:1.35;
+    }
+    .alert-badge{
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:.74rem;
+      font-weight:800;
+      white-space:nowrap;
+      border:1px solid #E5E7EB;
+      background:#FFFFFF;
+      color:#334155;
+      height:max-content;
+    }
+    .alert-badge.bad{
+      background:#FEF2F2;
+      border-color:#FECACA;
+      color:#B91C1C;
+    }
+    .alert-badge.warn{
+      background:#FFFBEB;
+      border-color:#FDE68A;
+      color:#B45309;
+    }
+    .alert-badge.good{
+      background:#ECFDF5;
+      border-color:#BBF7D0;
+      color:#15803D;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -2006,6 +2053,16 @@
 <div class="helper-copy" id="compareCardSub">Set your age group and state in Settings.</div>
 <div id="compareRows"></div>
 </div>
+
+<div class="card activity-card" id="notificationBannerCard" style="display:none;">
+  <div class="activity-head" style="margin-bottom:8px;">
+    <div class="activity-title label-with-info">Alerts <span class="info-dot" onclick="toggleTip('tipNotificationBanner')">i</span></div>
+    <button class="secondary-btn pill" type="button" onclick="dismissNotificationBanner()">Dismiss</button>
+  </div>
+  <div id="tipNotificationBanner" class="tooltip-card hidden-tip">These alerts are driven by your notification settings and your latest actionable insights.</div>
+  <div id="notificationBannerList"></div>
+</div>
+
 <div class="card activity-card" id="smartInsightsCard">
   <div class="activity-head">
     <div class="activity-title label-with-info">Actionable Insights <span class="info-dot" onclick="toggleTip('tipSmartInsights')">i</span></div>
@@ -3409,6 +3466,64 @@ let data = defaultData();
     
     
     
+    
+    let currentInsightAlerts = [];
+    let dismissedInsightAlertKeys = [];
+
+    function getInsightNotificationPreference(tone, title=''){
+      const n = data.notificationSettings || {};
+      const lower = String(title || '').toLowerCase();
+
+      if(tone === 'bad') return !!n.criticalInsights;
+      if(lower.includes('goal')) return !!n.goalProgress;
+      if(lower.includes('budget') || lower.includes('savings target')) return !!n.budgetWarnings;
+      if(lower.includes('growth') || lower.includes('projection')) return !!n.growthUpdates;
+      if(tone === 'warn') return !!n.budgetWarnings;
+      return false;
+    }
+
+    function shouldSurfaceInsightAlert(item){
+      const n = data.notificationSettings || {};
+      const freq = n.frequency || 'important_only';
+      if(freq === 'important_only' && item.tone !== 'bad') return false;
+      return getInsightNotificationPreference(item.tone, item.title);
+    }
+
+    function renderNotificationBanner(){
+      const card = document.getElementById('notificationBannerCard');
+      const wrap = document.getElementById('notificationBannerList');
+      if(!card || !wrap) return;
+
+      const visibleAlerts = (currentInsightAlerts || []).filter(item => !dismissedInsightAlertKeys.includes(item.title));
+      if(!visibleAlerts.length){
+        card.style.display = 'none';
+        wrap.innerHTML = '';
+        return;
+      }
+
+      card.style.display = 'block';
+      wrap.innerHTML = visibleAlerts.map(item => `
+        <div class="alert-row">
+          <div style="flex:1;min-width:0;">
+            <div class="alert-title">${escapeHtml(item.title)}</div>
+            <div class="alert-copy">${escapeHtml(item.copy)}</div>
+          </div>
+          <div class="alert-badge ${item.tone}">${escapeHtml(item.label)}</div>
+        </div>
+      `).join('');
+    }
+
+    function dismissNotificationBanner(){
+      dismissedInsightAlertKeys = (currentInsightAlerts || []).map(item => item.title);
+      renderNotificationBanner();
+    }
+
+    function resetDismissedAlertsForChangedInsights(insights){
+      const keys = (insights || []).map(i => i.title);
+      dismissedInsightAlertKeys = dismissedInsightAlertKeys.filter(k => keys.includes(k));
+    }
+
+
     function addInsightHistoryEntry(title, copy, tone){
       const stamp = new Date().toISOString();
       insightHistory.unshift({ title, copy, tone, stamp });
