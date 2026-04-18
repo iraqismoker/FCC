@@ -1673,6 +1673,62 @@
     }
 
 
+    
+    /* Unified date field styling */
+    input[type="date"].small-input,
+    #expenseDate,
+    #billDueDate,
+    #scheduleDate{
+      min-height:54px;
+      border-radius:18px;
+      background:#FFFFFF;
+      color:#0F172A;
+      border:1px solid #E5E7EB;
+      box-shadow:0 6px 18px rgba(15,23,42,.05);
+      font-size:1rem;
+      font-weight:600;
+      padding:0 16px;
+    }
+
+    #expensePanelWrap .two-col,
+    #billPanelWrap .three-col,
+    #schedulePanelWrap .two-col{
+      gap:12px;
+      align-items:start;
+    }
+
+    #expensePanelWrap .hint-text,
+    #billPanelWrap .helper-copy,
+    #schedulePanelWrap .helper-copy,
+    #expensePanelWrap .expense-form-help{
+      color:#64748B;
+      font-size:.8rem;
+      line-height:1.4;
+      margin-top:4px;
+    }
+
+    #expensePanelWrap .form-select,
+    #billPanelWrap .form-select,
+    #schedulePanelWrap .form-select{
+      min-height:54px;
+      border-radius:18px;
+      font-size:1rem;
+      font-weight:600;
+    }
+
+    #expensePanelWrap .small-input,
+    #billPanelWrap .small-input,
+    #schedulePanelWrap .small-input{
+      min-height:54px;
+      border-radius:18px;
+    }
+
+    #expensePanelWrap .actions,
+    #billPanelWrap .actions,
+    #schedulePanelWrap .actions{
+      margin-top:14px !important;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -1842,6 +1898,7 @@
 </select>
 </div>
 <div class="actions">
+<div class="helper-copy" style="margin-top:4px;">Choose a date to set the paycheck day automatically.</div>
 <button class="save-btn pill" onclick="addIncomeSchedule()">Save Schedule</button>
 <button class="secondary-btn pill" onclick="togglePanel('schedulePanelWrap', false)">Cancel</button>
 </div>
@@ -1941,6 +1998,7 @@
 <input class="small-input" id="billNote" placeholder="Notes"/>
 </div>
 <div class="actions">
+<div class="helper-copy" style="margin-top:4px;">Choose a date to set the bill day automatically.</div>
 <button class="save-btn pill" onclick="addRecurringBill()">Save Bill</button>
 <button class="secondary-btn pill" onclick="togglePanel('billPanelWrap', false)">Cancel</button>
 </div>
