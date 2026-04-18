@@ -593,7 +593,7 @@
       line-height:1.05;
     }
     #cashflowSignalsCard .row-item,
-    #cashflowCash Flow TimelineCard .timeline-item,
+    #cashflowTimelineCard .timeline-item,
     #cashflowBillsCard .row-item,
     #cashflowScheduleCard .row-item{
       align-items:center;
@@ -1556,23 +1556,6 @@
       box-shadow:0 4px 10px rgba(15,23,42,.04);
     }
 
-    
-    .save-btn.pill,.secondary-btn.pill,.danger-btn.pill,.add-btn.pill{
-      min-height:42px;
-      border-radius:14px;
-      font-size:.9rem;
-      font-weight:800;
-    }
-    .section-title{
-      letter-spacing:.01em;
-    }
-    .helper-copy,.settings-note{
-      line-height:1.42;
-    }
-    .stack{
-      gap:9px;
-    }
-
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -1651,7 +1634,10 @@
 <input class="small-input" id="expenseAmount" placeholder="Amount" step="0.01" type="number"/>
 </div>
 <input class="small-input" id="expenseNote" placeholder="Notes"/>
+<div class="two-col">
 <input class="small-input" id="expenseDate" type="date"/>
+<select class="form-select" id="expenseBudgetMonth"></select><div class="helper-copy" style="margin-top:6px;">Apply this expense to the month you want it to count in your budget.</div>
+</div>
 <div class="actions">
 <button class="save-btn pill" onclick="addExpense()">Save Expense</button>
 <button class="secondary-btn pill" onclick="togglePanel('expensePanelWrap', false)">Cancel</button>
@@ -1695,7 +1681,7 @@
 </div><div class="card budget-card" id="budgetSummaryCard"><div class="section-head"><div class="section-title">Summary</div><div class="pinned-note">Pinned</div></div><div class="info-grid" id="budgetSummaryCard">
 <div class="card info-card"><h4>Income</h4><div class="info-value" id="budgetIncomeTotal">$0</div></div>
 <div class="card info-card"><h4>Cash Flow</h4><div class="info-value" id="budgetCashFlow">$0</div></div>
-</div></div><div class="card budget-card" id="budgetCategoriesCard"><div class="section-head"><div class="section-title">Categories</div></div><div id="categoriesWrap"></div><div class="helper-copy" style="margin-top:10px;">Start by adding income, then create categories and expenses.</div></div><div class="card budget-card" id="budgetResetCard"><div class="section-head"><div class="section-title">Reset</div></div><div class="actions" id="budgetResetActions">
+</div></div><div class="card budget-card" id="budgetCategoriesCard"><div class="section-head"><div class="section-title">Categories</div></div><div id="categoriesWrap"></div></div><div class="card budget-card" id="budgetResetCard"><div class="section-head"><div class="section-title">Reset</div></div><div class="actions" id="budgetResetActions">
 <button class="danger-btn pill" onclick="resetMonth()">Reset This Month</button>
 </div></div></section>
 <section class="screen" id="cashflowScreen"><div class="header">
@@ -1797,7 +1783,7 @@
 </div>
 </div>
 <div class="card forecast-card" id="cashflowBillsCard">
-<div class="section-head"><div class="section-title label-with-info">Monthly Bills <span class="info-dot" onclick="toggleTip('tipBills')">i</span></div><button class="add-btn pill" onclick="togglePanel('billPanelWrap')">+ Bill</button><div class="section-controls"><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', -1)">↑</button><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', 1)">↓</button></div></div>
+<div class="section-head"><div class="section-title label-with-info">Recurring Bills <span class="info-dot" onclick="toggleTip('tipBills')">i</span></div><button class="add-btn pill" onclick="togglePanel('billPanelWrap')">+ Bill</button><div class="section-controls"><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', -1)">↑</button><button class="mini-move" onclick="moveCashFlowCard('cashflowBillsCard', 1)">↓</button></div></div>
 <div class="tooltip-card hidden-tip" id="tipBills">Use this for bills that repeat monthly, quarterly, or yearly. These feed into your cash flow forecast automatically.</div>
 <div id="billsList"></div>
 <div id="billPanelWrap" style="display:none;">
@@ -1828,9 +1814,9 @@
 </div>
 </div>
 </div>
-</div><div class="card forecast-card" id="cashflowCash Flow TimelineCard">
-<div class="section-head"><div class="section-title label-with-info">Cash Flow Timeline <span class="info-dot" onclick="toggleTip('tipCash Flow Timeline')">i</span><div class="pinned-note">Pinned</div></div></div>
-<div class="tooltip-card hidden-tip" id="tipCash Flow Timeline">This shows the order of bills and income hits across the month, plus the running balance after each event.</div>
+</div><div class="card forecast-card" id="cashflowTimelineCard">
+<div class="section-head"><div class="section-title label-with-info">Timeline <span class="info-dot" onclick="toggleTip('tipTimeline')">i</span><div class="pinned-note">Pinned</div></div></div>
+<div class="tooltip-card hidden-tip" id="tipTimeline">This shows the order of bills and income hits across the month, plus the running balance after each event.</div>
 <div id="timelineList"></div>
 </div></section>
 <section class="screen" id="investScreen">
@@ -1942,7 +1928,7 @@
 <div class="helper-copy">Default category structure: Fixed Bills, Variable Spending, Investing, Lifestyle.</div>
 </div>
 <div class="card settings-card">
-<h4>Backup &amp; Restore</h4>
+<h4>Data</h4>
 <div class="settings-note">Everything auto-saves in this browser. Export a backup anytime so you are not relying on one device.</div>
 <div class="stack">
 <button class="save-btn pill" onclick="exportBackup()">Export Backup</button>
@@ -1962,7 +1948,7 @@
     function createEmptyMonth(){
       const categories = {};
       DEFAULT_CATEGORIES.forEach(key => categories[key] = []);
-      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories, deletedDefaultCategories: [], categoryOrder: [...DEFAULT_CATEGORIES], cashflowOrder: ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'] };
+      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories, deletedDefaultCategories: [], categoryOrder: [...DEFAULT_CATEGORIES], cashflowOrder: ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'] };
     }
     function getCurrentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
     function defaultData(){
@@ -2006,6 +1992,16 @@
       if(!data.currentMonth) data.currentMonth = getCurrentMonthKey();
       if(!data.budgetMode) data.budgetMode = 'planned';
       ensureMonth(data.currentMonth);
+      Object.keys(data.months || {}).forEach(key => {
+        const month = data.months[key];
+        Object.keys(month.categories || {}).forEach(cat => {
+          month.categories[cat] = (month.categories[cat] || []).map(item => ({
+            ...item,
+            budgetMonth: item.budgetMonth || key,
+            createdAt: item.createdAt || key
+          }));
+        });
+      });
     }
     function ensureMonth(key){
       if(!data.months[key]){
@@ -2019,14 +2015,14 @@
           }));
           data.months[key].deletedDefaultCategories = [...(prevMonth.deletedDefaultCategories || [])];
           data.months[key].categoryOrder = [...(prevMonth.categoryOrder || DEFAULT_CATEGORIES)];
-          data.months[key].cashflowOrder = [...(prevMonth.cashflowOrder || ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'])];
+          data.months[key].cashflowOrder = [...(prevMonth.cashflowOrder || ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'])];
         }
       }
       if(!data.months[key].accounts) data.months[key].accounts = [];
       if(!data.months[key].assets) data.months[key].assets = [];
       if(!data.months[key].deletedDefaultCategories) data.months[key].deletedDefaultCategories = [];
       if(!data.months[key].categoryOrder) data.months[key].categoryOrder = [...DEFAULT_CATEGORIES];
-      if(!data.months[key].cashflowOrder) data.months[key].cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'];
+      if(!data.months[key].cashflowOrder) data.months[key].cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'];
 
       DEFAULT_CATEGORIES.forEach(cat => {
         if((data.months[key].deletedDefaultCategories || []).includes(cat)) return;
@@ -2039,8 +2035,8 @@
       });
 
       data.months[key].categoryOrder = data.months[key].categoryOrder.filter(cat => (data.months[key].categories || {}).hasOwnProperty(cat));
-      data.months[key].cashflowOrder = data.months[key].cashflowOrder.filter(id => ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'].includes(id));
-      ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'].forEach(id => {
+      data.months[key].cashflowOrder = data.months[key].cashflowOrder.filter(id => ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'].includes(id));
+      ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'].forEach(id => {
         if(!data.months[key].cashflowOrder.includes(id)) data.months[key].cashflowOrder.push(id);
       });
       return data.months[key];
@@ -2103,7 +2099,7 @@
     function moveCashFlowCard(cardId, direction){
       const month = getMonthData();
       if(!month.cashflowOrder){
-        month.cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'];
+        month.cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'];
       }
       const movable = ['cashflowBillsCard'];
       if(!movable.includes(cardId)) return;
@@ -2158,7 +2154,7 @@
     function getManualIncomeTotal(key=data.currentMonth){ return getMonthData(key).incomes.reduce((s, i) => s + Number(i.amount || 0), 0); }
     function getInvestmentTotal(key=data.currentMonth){ return getMonthData(key).investments.reduce((s, i) => s + Number(i.amount || 0), 0); }
     function getAssetTotal(key=data.currentMonth){ return (getMonthData(key).assets || []).reduce((s, i) => s + Number(i.amount || 0), 0); }
-    function getCategoryTotal(cat, key=data.currentMonth){ return (getMonthData(key).categories[cat] || []).reduce((s, i) => s + Number(i.amount || 0), 0); }
+    function getCategoryTotal(cat, key=data.currentMonth){ return getExpensesForMonth(cat, key).reduce((s, i) => s + Number(i.amount || 0), 0); }
     function getManualExpenseTotal(key=data.currentMonth){ return getCategoryNames(key).reduce((sum, cat) => sum + getCategoryTotal(cat, key), 0); }
 
     function occursThisMonth(item, monthKey){
@@ -2339,6 +2335,50 @@
     }
 
 
+    
+    function populateExpenseBudgetMonthOptions(){
+      const el = document.getElementById('expenseBudgetMonth');
+      if(!el) return;
+      const opts = monthOptions(data.currentMonth).map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
+      el.innerHTML = opts;
+      el.value = data.currentMonth;
+    }
+
+    function getExpensesForMonth(cat, key=data.currentMonth){
+      const month = getMonthData(key);
+      return (month.categories[cat] || []).filter(item => !item.budgetMonth || item.budgetMonth === key);
+    }
+
+    function moveExpenseToBudgetMonth(expenseId, targetMonth){
+      const sourceMonth = getMonthData();
+      let moved = null;
+      let sourceCat = null;
+
+      for(const cat of Object.keys(sourceMonth.categories || {})){
+        const idx = (sourceMonth.categories[cat] || []).findIndex(item => item.id === expenseId);
+        if(idx !== -1){
+          moved = sourceMonth.categories[cat][idx];
+          sourceCat = cat;
+          sourceMonth.categories[cat].splice(idx, 1);
+          break;
+        }
+      }
+
+      if(!moved || !sourceCat) return;
+
+      const target = getMonthData(targetMonth);
+      if(!target.categories[sourceCat]) target.categories[sourceCat] = [];
+      if(!target.categoryOrder) target.categoryOrder = [];
+      if(!target.categoryOrder.includes(sourceCat)) target.categoryOrder.push(sourceCat);
+
+      moved.budgetMonth = targetMonth;
+      target.categories[sourceCat].push(moved);
+      addActivity('expense', 'Expense moved', `${moved.name} • ${monthLabel(targetMonth)}`, moved.amount, 'neutral');
+      saveData();
+      render();
+    }
+
+
     function renderOverview(){
       const monthKey = data.currentMonth;
       const manualIncome = getManualIncomeTotal(monthKey);
@@ -2415,7 +2455,7 @@
         <div class="row-item">
           <div style="flex:1;min-width:0;">
             <div class="row-name editable-copy" data-edit="${type}-name" data-id="${item.id}">${escapeHtml(item.name)}</div>
-            <div class="row-note editable-copy" data-edit="${type}-note" data-id="${item.id}">${escapeHtml(item.note || '')}</div>
+            <div class="row-note editable-copy" data-edit="${type}-note" data-id="${item.id}">${escapeHtml(item.note || '')}${type === 'expense' ? ` • ${escapeHtml(monthLabel(item.budgetMonth || data.currentMonth))}` : ''}</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;">
             <div class="row-amount" data-edit="${type}-amount" data-id="${item.id}">${money(item.amount)}</div>
@@ -2461,6 +2501,20 @@
           deleteItem(type, id);
         };
       });
+
+      if(type === 'expense'){
+        wrap.querySelectorAll(`[data-edit="expense-note"]`).forEach(el => {
+          const id = el.dataset.id;
+          el.ondblclick = (ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            const targetMonth = prompt('Move this expense to which month? Use YYYY-MM format, for example 2026-08');
+            if(targetMonth && /^\d{4}-\d{2}$/.test(targetMonth)){
+              moveExpenseToBudgetMonth(id, targetMonth);
+            }
+          };
+        });
+      }
     }
 
     function deleteItem(type, id){
@@ -2761,7 +2815,7 @@
         `;
       }).join('');
 
-      names.forEach(cat => renderRowList(`cat-${cat}`, month.categories[cat] || [], 'expense'));
+      names.forEach(cat => renderRowList(`cat-${cat}`, getExpensesForMonth(cat, monthKey), 'expense'));
     }
 
     function showExpenseQuick(cat){
@@ -2811,7 +2865,7 @@
     function renderCashFlow(){
       const cashflowSection = document.getElementById('cashflowScreen');
       if(cashflowSection){
-        ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'].forEach(id => {
+        ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'].forEach(id => {
           const card = document.getElementById(id);
           if(card) cashflowSection.appendChild(card);
         });
@@ -2909,16 +2963,24 @@
     }
 
     function addExpense(){
-      const category = document.getElementById('expenseCategory').value;
+      const cat = document.getElementById('expenseCategory').value;
       const name = document.getElementById('expenseName').value.trim();
       const amount = Number(document.getElementById('expenseAmount').value || 0);
       const note = document.getElementById('expenseNote').value.trim();
-      const date = document.getElementById('expenseDate').value;
-      if(!category || !name) return;
-      const merged = [note, date ? `Due ${date}` : ''].filter(Boolean).join(' • ');
-      getMonthData().categories[category].push({id: uid('exp'), name, amount, note: merged});
-      addActivity('expense', 'Expense added', `${name} • ${titleCase(category)}`, amount, 'minus');
-      ['expenseName','expenseAmount','expenseNote','expenseDate'].forEach(id => document.getElementById(id).value = '');
+      const date = document.getElementById('expenseDate').value || '';
+      const budgetMonth = document.getElementById('expenseBudgetMonth') ? document.getElementById('expenseBudgetMonth').value : data.currentMonth;
+      if(!name) return;
+      const targetMonth = getMonthData(budgetMonth);
+      if(!targetMonth.categories[cat]) targetMonth.categories[cat] = [];
+      if(!targetMonth.categoryOrder) targetMonth.categoryOrder = [];
+      if(!targetMonth.categoryOrder.includes(cat)) targetMonth.categoryOrder.push(cat);
+      targetMonth.categories[cat].push({id: uid('exp'), name, amount, note, date, budgetMonth, createdAt: data.currentMonth});
+      addActivity('expense', 'Expense added', `${name} • ${monthLabel(budgetMonth)}`, amount, 'minus');
+      document.getElementById('expenseName').value = '';
+      document.getElementById('expenseAmount').value = '';
+      document.getElementById('expenseNote').value = '';
+      document.getElementById('expenseDate').value = '';
+      if(document.getElementById('expenseBudgetMonth')) document.getElementById('expenseBudgetMonth').value = data.currentMonth;
       togglePanel('expensePanelWrap', false);
       saveData(); render();
     }
@@ -3103,84 +3165,40 @@
     }
 
     function resetAllData(){
-      const ok = confirm('This will delete all your data on this device. Make sure you exported a backup first. This clears all saved data on this device unless you exported a backup first.');
-      if(!ok) return;
       data = defaultData();
       saveData();
       render();
-      alert('App data has been reset.');
+      openScreen('overviewScreen', 0);
     }
-
-    
-    function normalizeImportedData(parsed){
-      if(!parsed || typeof parsed !== 'object') throw new Error('Invalid backup file.');
-      if(!parsed.months || typeof parsed.months !== 'object') throw new Error('Backup is missing month data.');
-
-      if(!parsed.activity) parsed.activity = [];
-      if(!parsed.collapsedGroups) parsed.collapsedGroups = {};
-      if(!parsed.currentMonth) parsed.currentMonth = getCurrentMonthKey();
-      if(!parsed.budgetMode) parsed.budgetMode = 'planned';
-      if(!Array.isArray(parsed.recurringBills)) parsed.recurringBills = [];
-      if(!Array.isArray(parsed.incomeSchedules)) parsed.incomeSchedules = [];
-
-      Object.keys(parsed.months).forEach(key => {
-        const month = parsed.months[key] || {};
-        if(!month.categories || typeof month.categories !== 'object') month.categories = {};
-        if(!Array.isArray(month.accounts)) month.accounts = [];
-        if(!Array.isArray(month.incomes)) month.incomes = [];
-        if(!Array.isArray(month.investments)) month.investments = [];
-        if(!Array.isArray(month.assets)) month.assets = [];
-        if(!Array.isArray(month.deletedDefaultCategories)) month.deletedDefaultCategories = [];
-        if(!Array.isArray(month.categoryOrder)) month.categoryOrder = [...DEFAULT_CATEGORIES];
-        if(!Array.isArray(month.cashflowOrder)) month.cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowCash Flow TimelineCard'];
-        DEFAULT_CATEGORIES.forEach(cat => {
-          if(!month.deletedDefaultCategories.includes(cat) && !month.categories[cat]) month.categories[cat] = [];
-        });
-      });
-
-      return parsed;
-    }
-
 
     function exportBackup(){
-      const payload = JSON.stringify(data, null, 2);
-      const blob = new Blob([payload], {type:'application/json'});
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      const stamp = new Date().toISOString().slice(0,10);
       a.href = url;
-      a.download = `cash-command-backup-${stamp}.json`;
-      document.body.appendChild(a);
+      a.download = 'fcc-backup-v2b.json';
       a.click();
-      a.remove();
       URL.revokeObjectURL(url);
-      addActivity('backup', 'Backup exported', 'Local backup saved', 0, 'neutral');
-      saveData();
-      renderActivity();
     }
 
     function importBackup(event){
-      const file = event && event.target && event.target.files ? event.target.files[0] : null;
+      const file = event.target.files[0];
       if(!file) return;
       const reader = new FileReader();
       reader.onload = () => {
-        try{
-          const parsed = JSON.parse(String(reader.result || '{}'));
-          data = normalizeImportedData(parsed);
-          ensureMonth(data.currentMonth);
-          saveData();
-          addActivity('backup', 'Backup imported', file.name, 0, 'neutral');
-          render();
-          alert('Backup imported successfully.');
-        } catch(err){
-          alert(err && err.message ? err.message : 'Could not import that backup file.');
-        } finally {
-          if(event.target) event.target.value = '';
-        }
-      };
-      reader.onerror = () => {
-        alert('Could not read that backup file.');
-        if(event.target) event.target.value = '';
+        try {
+          const parsed = JSON.parse(reader.result);
+          if(parsed && parsed.months){
+            data = parsed;
+            if(!data.activity) data.activity = [];
+            if(!data.collapsedGroups) data.collapsedGroups = {};
+            if(!data.currentMonth) data.currentMonth = getCurrentMonthKey();
+            ensureMonth(data.currentMonth);
+            saveData();
+            render();
+          }
+        } catch(e) {}
+        event.target.value = '';
       };
       reader.readAsText(file);
     }
@@ -3188,6 +3206,7 @@
     function render(){
       ensureMonth(data.currentMonth);
       syncMonthSelectors();
+      populateExpenseBudgetMonthOptions();
       syncBudgetToggle();
       populateExpenseCategoryOptions();
       populateIncomeScheduleOptions();
