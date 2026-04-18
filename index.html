@@ -1824,6 +1824,24 @@
       border-radius:22px;
     }
 
+    
+    .insight-row{
+      padding:12px 0;
+      border-bottom:1px solid rgba(229,231,235,.9);
+    }
+    .insight-row:last-child{ border-bottom:none; }
+    .insight-title{
+      color:#0F172A;
+      font-size:.92rem;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .insight-copy{
+      color:#64748B;
+      font-size:.84rem;
+      line-height:1.4;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -2297,6 +2315,15 @@
   <div id="tipPlanningSnapshot" class="tooltip-card hidden-tip">This compares your stated monthly savings target against what the current month suggests you are left to budget after planned expenses.</div>
   <div id="planningSnapshot"></div>
 </div>
+
+<div class="card settings-card" id="smartInsightsCard">
+  <div class="section-head">
+    <div class="section-title label-with-info">Smart Insights <span class="info-dot" onclick="toggleTip('tipSmartInsights')">i</span></div>
+  </div>
+  <div id="tipSmartInsights" class="tooltip-card hidden-tip">This uses your profile, budget, accounts, and goals to give simple planning feedback. It is general guidance, not financial advice.</div>
+  <div id="smartInsightsList"></div>
+</div>
+
 
 <div class="header">
 <div class="eyebrow">Settings</div>
@@ -3255,6 +3282,114 @@
       render();
     }
 
+    
+    function getCurrentGoalFundingTotal(monthKey=data.currentMonth){
+      const goals = getSavingsGoals ? getSavingsGoals(monthKey) : [];
+      return goals.reduce((sum, g) => {
+        if(g && g.accountId) return sum;
+        return sum + Number(g.current || 0);
+      }, 0);
+    }
+
+    function renderSmartInsights(monthKey=data.currentMonth){
+      const wrap = document.getElementById('smartInsightsList');
+      if(!wrap) return;
+
+      const p = data.profile || {};
+      const monthlyIncome = Number(p.monthlyIncome || 0);
+      const savingsTarget = Number(p.monthlySavingsTarget || 0);
+      const retirementAge = Number(p.retirementAge || 65);
+      const age = Number(p.age || 0);
+
+      const monthValues = getBudgetDisplayValues ? getBudgetDisplayValues() : { leftToBudget: 0 };
+      const available = Number(monthValues.leftToBudget || 0);
+
+      const manualGoalFunding = getCurrentGoalFundingTotal(monthKey);
+      const goals = getSavingsGoals ? getSavingsGoals(monthKey) : [];
+      const fundedGoals = goals.filter(g => {
+        const linked = g.accountId ? getAccountById(g.accountId, monthKey) : null;
+        const current = linked ? Number(linked.balance || 0) : Number(g.current || 0);
+        return Number(g.target || 0) > 0 && current >= Number(g.target || 0);
+      }).length;
+
+      const savingsRate = monthlyIncome > 0 ? (Math.max(0, available) / monthlyIncome) * 100 : 0;
+      const recommendedRate = 20;
+      const monthlyOutflow = Math.max(1, getManualExpenseTotal(monthKey) + getRecurringBillEvents(monthKey).reduce((s,e)=>s+Number(e.amount||0),0));
+      const liquidCash = getAllAccountBalance(monthKey);
+      const emergencyMonths = liquidCash / monthlyOutflow;
+      const emergencyTarget = Number(p.emergencyMonthsTarget || 3);
+
+      const retirementYearsLeft = age > 0 ? Math.max(0, retirementAge - age) : null;
+
+      const insights = [];
+
+      if(savingsTarget > 0){
+        if(available >= savingsTarget){
+          insights.push({
+            title: 'You are on track for your monthly savings target',
+            copy: `You have ${money(available)} left this month versus a target of ${money(savingsTarget)}.`
+          });
+        } else {
+          insights.push({
+            title: 'You are below your monthly savings target',
+            copy: `You are ${money(savingsTarget - available)} short of your target this month.`
+          });
+        }
+      } else {
+        insights.push({
+          title: 'Add a monthly savings target',
+          copy: 'A savings target helps the app tell you whether your current budget is on track.'
+        });
+      }
+
+      if(monthlyIncome > 0){
+        insights.push({
+          title: `Estimated savings rate: ${savingsRate.toFixed(0)}%`,
+          copy: savingsRate >= recommendedRate
+            ? `That is at or above a simple ${recommendedRate}% planning target.`
+            : `A simple long-term target is around ${recommendedRate}%. You may want to raise savings or lower expenses.`
+        });
+      }
+
+      insights.push({
+        title: `Emergency fund coverage: ${emergencyMonths.toFixed(1)} months`,
+        copy: emergencyMonths >= emergencyTarget
+          ? `You are at or above your target of ${emergencyTarget.toFixed(1)} months.`
+          : `Your target is ${emergencyTarget.toFixed(1)} months, so you may want to build cash reserves further.`
+      });
+
+      if(goals.length){
+        insights.push({
+          title: `Savings goals: ${fundedGoals}/${goals.length} funded`,
+          copy: manualGoalFunding > 0
+            ? `${money(manualGoalFunding)} is currently assigned to non-linked goals this month.`
+            : 'You have active goals. Linked goals follow their account balances automatically.'
+        });
+      } else {
+        insights.push({
+          title: 'No savings goals yet',
+          copy: 'Add goals like emergency fund, travel, or down payment to track progress more clearly.'
+        });
+      }
+
+      if(retirementYearsLeft !== null){
+        insights.push({
+          title: `Retirement horizon: ${retirementYearsLeft} years`,
+          copy: retirementYearsLeft > 0
+            ? `Your current retirement target age is ${retirementAge}. This will help power future investing guidance.`
+            : `Your retirement target age is here or in the past. Update it if you want future planning guidance to stay useful.`
+        });
+      }
+
+      wrap.innerHTML = insights.map(item => `
+        <div class="insight-row">
+          <div class="insight-title">${escapeHtml(item.title)}</div>
+          <div class="insight-copy">${escapeHtml(item.copy)}</div>
+        </div>
+      `).join('');
+    }
+
+
     function renderPlanningSnapshot(monthKey=data.currentMonth){
       const wrap = document.getElementById('planningSnapshot');
       if(!wrap) return;
@@ -3328,6 +3463,7 @@
       syncOverviewModeToggle();
       renderCompareCard(monthKey);
       renderPlanningSnapshot(monthKey);
+      renderSmartInsights(monthKey);
       renderActivity();
     }
 
