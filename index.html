@@ -1556,7 +1556,42 @@
       box-shadow:0 4px 10px rgba(15,23,42,.04);
     }
 
-    @keyframes loadBar{from{width:0;}to{width:100%;}}
+    
+/* ---- Feature hints ---- */
+.hint-text{
+  margin-top:6px;
+  font-size:.78rem;
+  color:#6B7280;
+}
+.hint-highlight{
+  outline:2px dashed #60A5FA;
+  outline-offset:4px;
+  border-radius:10px;
+}
+.tooltip{
+  position:fixed;
+  z-index:9999;
+  background:#111827;
+  color:#fff;
+  padding:10px 12px;
+  border-radius:10px;
+  font-size:.82rem;
+  line-height:1.3;
+  box-shadow:0 8px 24px rgba(0,0,0,.2);
+  max-width:260px;
+}
+.tooltip::after{
+  content:"";
+  position:absolute;
+  width:0;height:0;
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-top:6px solid #111827;
+  left:12px;
+  bottom:-6px;
+}
+
+@keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
 <body>
@@ -1636,7 +1671,7 @@
 <input class="small-input" id="expenseNote" placeholder="Notes"/>
 <div class="two-col">
 <input class="small-input" id="expenseDate" type="date"/>
-<select class="form-select" id="expenseBudgetMonth"></select><div class="helper-copy" style="margin-top:6px;">Apply this expense to the month you want it to count in your budget.</div>
+<select class="form-select" id="expenseBudgetMonth"></select><div class="hint-text">Assign this expense to a future month (great for travel or prepayments).</div><div class="helper-copy" style="margin-top:6px;">Apply this expense to the month you want it to count in your budget.</div>
 </div>
 <div class="actions">
 <button class="save-btn pill" onclick="addExpense()">Save Expense</button>
@@ -2330,6 +2365,10 @@
       syncBudgetToggle();
       syncOverviewModeToggle();
       renderOverview();
+      const expMonth = document.getElementById('expenseBudgetMonth');
+      if(expMonth && expMonth.offsetParent !== null){
+        highlightOnce(expMonth, 'apply_month', 'New: assign expenses to future months');
+      }
       renderBudgetSummary();
       renderBudgetCategories();
     }
@@ -2376,6 +2415,36 @@
       addActivity('expense', 'Expense moved', `${moved.name} • ${monthLabel(targetMonth)}`, moved.amount, 'neutral');
       saveData();
       render();
+    }
+
+
+    
+    function getHintFlag(key){
+      try { return localStorage.getItem('hint_'+key) === '1'; } catch(e){ return false; }
+    }
+    function setHintFlag(key){
+      try { localStorage.setItem('hint_'+key, '1'); } catch(e){}
+    }
+    function showTooltip(targetEl, text, opts={}){
+      if(!targetEl) return;
+      const rect = targetEl.getBoundingClientRect();
+      const tip = document.createElement('div');
+      tip.className = 'tooltip';
+      tip.textContent = text;
+      document.body.appendChild(tip);
+      const top = rect.bottom + 10 + window.scrollY;
+      const left = rect.left + window.scrollX;
+      tip.style.top = top + 'px';
+      tip.style.left = left + 'px';
+      const duration = opts.duration || 3500;
+      setTimeout(()=>{ tip.remove(); }, duration);
+    }
+    function highlightOnce(el, key, text){
+      if(!el || getHintFlag(key)) return;
+      el.classList.add('hint-highlight');
+      showTooltip(el, text);
+      setHintFlag(key);
+      setTimeout(()=>{ el.classList.remove('hint-highlight'); }, 3500);
     }
 
 
@@ -2440,6 +2509,13 @@
       if(type === 'bill') return data.recurringBills.find(i => i.id === id);
       if(type === 'income_schedule') { const sched = data.incomeSchedules.find(i => i.id === id); if(!sched) return null; const income = getMonthData().incomes.find(j => j.id === sched.incomeId); return {...sched, name: income ? income.name : 'Missing income', amount: income ? income.amount : 0, note:`${titleCase(sched.frequency)} • day ${sched.day}`}; }
       if(type === 'expense'){
+        const firstRow = wrap.querySelector('.row-note');
+        if(firstRow && !getHintFlag('move_expense')){
+          setTimeout(()=>{
+            showTooltip(firstRow, 'Tip: double-tap an expense to move it to another month');
+            setHintFlag('move_expense');
+          }, 600);
+        }
         for(const cat of getCategoryNames()){
           const item = month.categories[cat].find(i => i.id === id);
           if(item) return item;
@@ -2503,6 +2579,13 @@
       });
 
       if(type === 'expense'){
+        const firstRow = wrap.querySelector('.row-note');
+        if(firstRow && !getHintFlag('move_expense')){
+          setTimeout(()=>{
+            showTooltip(firstRow, 'Tip: double-tap an expense to move it to another month');
+            setHintFlag('move_expense');
+          }, 600);
+        }
         wrap.querySelectorAll(`[data-edit="expense-note"]`).forEach(el => {
           const id = el.dataset.id;
           el.ondblclick = (ev) => {
@@ -2538,6 +2621,13 @@
         data.incomeSchedules = data.incomeSchedules.filter(i => i.id !== id);
         if(item) addActivity('income_schedule', 'Paycheck deleted', item.name, item.amount, 'minus');
       } else if(type === 'expense'){
+        const firstRow = wrap.querySelector('.row-note');
+        if(firstRow && !getHintFlag('move_expense')){
+          setTimeout(()=>{
+            showTooltip(firstRow, 'Tip: double-tap an expense to move it to another month');
+            setHintFlag('move_expense');
+          }, 600);
+        }
         let removed = null;
         for(const cat of getCategoryNames()){
           const found = month.categories[cat].find(i => i.id === id);
@@ -3211,6 +3301,10 @@
       populateExpenseCategoryOptions();
       populateIncomeScheduleOptions();
       renderOverview();
+      const expMonth = document.getElementById('expenseBudgetMonth');
+      if(expMonth && expMonth.offsetParent !== null){
+        highlightOnce(expMonth, 'apply_month', 'New: assign expenses to future months');
+      }
       renderIncomeSection();
       renderBudgetSummary();
       renderBudgetCategories();
