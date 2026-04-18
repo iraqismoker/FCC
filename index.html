@@ -1729,6 +1729,21 @@
       margin-top:14px !important;
     }
 
+    
+    /* Month picker styling */
+    input[type="month"].month-select,
+    #expenseBudgetMonth[type="month"]{
+      min-height:54px;
+      border-radius:18px;
+      background:#FFFFFF;
+      color:#0F172A;
+      border:1px solid #E5E7EB;
+      box-shadow:0 6px 18px rgba(15,23,42,.05);
+      font-size:1rem;
+      font-weight:700;
+      padding:0 16px;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -1745,7 +1760,7 @@
 <section class="screen active" id="overviewScreen">
 <div class="header">
 <div class="overview-v2-top">
-<select class="month-select" id="overviewMonth" onchange="changeMonth(this.value)"></select>
+<input class="month-select" id="overviewMonth" type="month" onchange="changeMonth(this.value)" />
 <button class="overview-add-btn" onclick="openScreen('budgetScreen', 1)">+</button>
 </div>
 <div class="overview-hero">
@@ -1802,7 +1817,7 @@
 <h2>Monthly Budget</h2>
 <p>Organize income, categories, and spending for the selected month.</p>
 </div><div class="top-row">
-<select class="month-select" id="budgetMonth" onchange="changeMonth(this.value)"></select>
+<input class="month-select" id="budgetMonth" type="month" onchange="changeMonth(this.value)" />
 <button class="add-btn icon" onclick="togglePanel('expensePanelWrap')">+</button>
 <button class="add-btn pill" onclick="togglePanel('categoryPanelWrap')">+ Category</button>
 </div><div class="card budget-card" id="expensePanelWrap" style="display:none;">
@@ -1816,7 +1831,7 @@
 <input class="small-input" id="expenseNote" placeholder="Notes"/>
 <div class="two-col">
 <input class="small-input" id="expenseDate" type="date"/>
-<select class="form-select" id="expenseBudgetMonth"></select><div class="helper-copy" style="margin-top:6px;">Apply this expense to the month you want it to count in your budget.</div>
+<input class="form-select" id="expenseBudgetMonth" type="month" /><div class="helper-copy" style="margin-top:6px;">Apply this expense to the month you want it to count in your budget.</div>
 </div>
 <div class="two-col" id="expenseSpreadControls">
 <select class="form-select" id="expenseSpreadToggle">
@@ -1877,7 +1892,7 @@
 <h2>Cash Flow Forecast</h2>
 <p>See your real balance after bills and income hits, plus the lowest point before month end.</p>
 </div><div class="top-row">
-<select class="month-select" id="cashflowMonth" onchange="changeMonth(this.value)"></select>
+<input class="month-select" id="cashflowMonth" type="month" onchange="changeMonth(this.value)" />
 </div><div class="card forecast-card" id="cashflowScheduleCard">
 <div class="section-head"><div><div class="section-title label-with-info">Income Schedule <span class="info-dot" onclick="toggleTip('tipIncomeSchedule')">i</span></div><div class="pinned-note">Pinned</div></div><button class="add-btn pill" onclick="togglePanel('schedulePanelWrap')">+ Schedule</button></div>
 <div class="tooltip-card hidden-tip" id="tipIncomeSchedule">Pick an income source from Budget and tell the app when it lands. This controls timing only, not the amount.</div>
@@ -2016,7 +2031,7 @@
 <p>Track investment balances feeding your portfolio and overall wealth view.</p>
 </div>
 <div class="top-row">
-<select class="month-select" id="investMonth" onchange="changeMonth(this.value)"></select>
+<input class="month-select" id="investMonth" type="month" onchange="changeMonth(this.value)" />
 </div>
 <div class="card invest-card"><h4>Portfolio Total</h4><div class="budget-big good" id="portfolioTotal">$0</div></div><div class="card invest-card" id="investMiniChartCard">
 <div class="section-head">
@@ -2055,7 +2070,7 @@
 <p>Track valuables and property by category, with values, serial numbers, and receipt references.</p>
 </div>
 <div class="top-row">
-<select class="month-select" id="assetsMonth" onchange="changeMonth(this.value)"></select>
+<input class="month-select" id="assetsMonth" type="month" onchange="changeMonth(this.value)" />
 </div>
 <div class="card invest-card">
 <div class="section-head">
@@ -2279,11 +2294,14 @@
       return [...new Set(keys)];
     }
     function syncMonthSelectors(){
-      const ids = ['overviewMonth','budgetMonth','cashflowMonth','investMonth','assetsMonth'];
-      const opts = monthOptions(data.currentMonth).map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if(el){ el.innerHTML = opts; el.value = data.currentMonth; }
+      document.querySelectorAll('.month-select').forEach(el => {
+        if(el.tagName === 'INPUT'){
+          el.value = data.currentMonth;
+        } else {
+          const opts = monthOptions(data.currentMonth).map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
+          el.innerHTML = opts;
+          el.value = data.currentMonth;
+        }
       });
     }
     function changeMonth(key){ data.currentMonth = key; ensureMonth(key); saveData(); render(); }
@@ -2600,8 +2618,6 @@
     function populateExpenseBudgetMonthOptions(){
       const el = document.getElementById('expenseBudgetMonth');
       if(!el) return;
-      const opts = monthOptions(data.currentMonth).map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
-      el.innerHTML = opts;
       el.value = data.currentMonth;
     }
 
