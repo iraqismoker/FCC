@@ -1504,19 +1504,31 @@
       justify-content:flex-end;
     }
     #budgetScreen .category-reorder .mini-move{
-      width:46px;
-      height:46px;
+      width:34px;
+      height:34px;
       padding:0;
-      border-radius:14px;
+      border-radius:10px;
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      font-size:1.05rem;
+      font-size:.9rem;
       font-weight:800;
       background:#FFFFFF;
       color:#475569;
       border:1px solid #E5E7EB;
       box-shadow:0 4px 10px rgba(15,23,42,.04);
+    }
+
+    
+    #cashflowScreen .mini-move{
+      width:34px;
+      height:34px;
+      padding:0;
+      border-radius:10px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.9rem;
     }
 
     @keyframes loadBar{from{width:0;}to{width:100%;}}
@@ -1908,7 +1920,7 @@
     function createEmptyMonth(){
       const categories = {};
       DEFAULT_CATEGORIES.forEach(key => categories[key] = []);
-      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories, deletedDefaultCategories: [], categoryOrder: [...DEFAULT_CATEGORIES] };
+      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories, deletedDefaultCategories: [], categoryOrder: [...DEFAULT_CATEGORIES], cashflowOrder: ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'] };
     }
     function getCurrentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
     function defaultData(){
@@ -1965,12 +1977,14 @@
           }));
           data.months[key].deletedDefaultCategories = [...(prevMonth.deletedDefaultCategories || [])];
           data.months[key].categoryOrder = [...(prevMonth.categoryOrder || DEFAULT_CATEGORIES)];
+          data.months[key].cashflowOrder = [...(prevMonth.cashflowOrder || ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'])];
         }
       }
       if(!data.months[key].accounts) data.months[key].accounts = [];
       if(!data.months[key].assets) data.months[key].assets = [];
       if(!data.months[key].deletedDefaultCategories) data.months[key].deletedDefaultCategories = [];
       if(!data.months[key].categoryOrder) data.months[key].categoryOrder = [...DEFAULT_CATEGORIES];
+      if(!data.months[key].cashflowOrder) data.months[key].cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'];
 
       DEFAULT_CATEGORIES.forEach(cat => {
         if((data.months[key].deletedDefaultCategories || []).includes(cat)) return;
@@ -1983,6 +1997,10 @@
       });
 
       data.months[key].categoryOrder = data.months[key].categoryOrder.filter(cat => (data.months[key].categories || {}).hasOwnProperty(cat));
+      data.months[key].cashflowOrder = data.months[key].cashflowOrder.filter(id => ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'].includes(id));
+      ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'].forEach(id => {
+        if(!data.months[key].cashflowOrder.includes(id)) data.months[key].cashflowOrder.push(id);
+      });
       return data.months[key];
     }
     function getMonthData(key=data.currentMonth){ return ensureMonth(key); }
@@ -2041,7 +2059,25 @@
     }
 
     function moveCashFlowCard(cardId, direction){
-      moveWithinSection('cashflowScreen', ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'], cardId, direction);
+      const month = getMonthData();
+      if(!month.cashflowOrder){
+        month.cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'];
+      }
+      const idx = month.cashflowOrder.indexOf(cardId);
+      if(idx === -1) return;
+      const next = idx + direction;
+      if(next < 0 || next >= month.cashflowOrder.length) return;
+      const swap = month.cashflowOrder[next];
+      month.cashflowOrder[next] = cardId;
+      month.cashflowOrder[idx] = swap;
+
+      const section = document.getElementById('cashflowScreen');
+      const current = document.getElementById(cardId);
+      const cards = month.cashflowOrder.map(id => document.getElementById(id)).filter(Boolean);
+      if(section && cards.length){
+        cards.forEach(card => section.appendChild(card));
+      }
+      saveData();
     }
 
     function moveBudgetCard(cardId, direction){
@@ -2742,6 +2778,14 @@
 
 
     function renderCashFlow(){
+      const monthOrder = getMonthData().cashflowOrder || ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'];
+      const cashflowSection = document.getElementById('cashflowScreen');
+      if(cashflowSection){
+        monthOrder.forEach(id => {
+          const card = document.getElementById(id);
+          if(card) cashflowSection.appendChild(card);
+        });
+      }
       const month = getMonthData();
       renderAccounts();
       const forecast = getForecast();
