@@ -1645,6 +1645,14 @@
       min-width:0;
     }
 
+    
+    #expenseSpreadControls{
+      margin-top:4px;
+    }
+    #expenseSpreadMonths{
+      min-width:0;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -1734,6 +1742,15 @@
 <input class="small-input" id="expenseDate" type="date"/>
 <select class="form-select" id="expenseBudgetMonth"></select><div class="hint-text">Assign this expense to a future month (great for travel or prepayments).</div><div class="helper-copy" style="margin-top:6px;">Apply this expense to the month you want it to count in your budget.</div>
 </div>
+
+<div class="two-col" id="expenseSpreadControls">
+<select class="form-select" id="expenseSpreadToggle">
+<option value="false">One-time expense</option>
+<option value="true">Spread across months</option>
+</select>
+<input class="small-input" id="expenseSpreadMonths" max="36" min="2" placeholder="Months" type="number"/>
+</div>
+<div class="hint-text">Use spreading for annual insurance, travel, or other big purchases you want divided across future months.</div>
 <div class="actions">
 <button class="save-btn pill" onclick="addExpense()">Save Expense</button>
 <button class="secondary-btn pill" onclick="togglePanel('expensePanelWrap', false)">Cancel</button>
