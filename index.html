@@ -2038,6 +2038,15 @@
       color:#B91C1C;
     }
 
+    
+    .insight-gap{
+      color:#475569;
+      font-size:.8rem;
+      line-height:1.35;
+      margin-top:6px;
+      font-weight:700;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -3581,9 +3590,9 @@ let data = defaultData();
     }
 
 
-    function addInsightHistoryEntry(title, copy, tone){
+    function addInsightHistoryEntry(title, copy, tone, gap=''){
       const stamp = new Date().toISOString();
-      insightHistory.unshift({ title, copy, tone, stamp });
+      insightHistory.unshift({ title, copy, tone, gap, stamp });
       insightHistory = insightHistory.slice(0, 20);
     }
 
@@ -3603,7 +3612,7 @@ let data = defaultData();
         <div class="history-row">
           <div style="flex:1;min-width:0;">
             <div class="history-title">${escapeHtml(item.title)}</div>
-            <div class="history-copy">${escapeHtml(item.copy)}</div>
+            <div class="history-copy">${escapeHtml(item.copy)}${item.gap ? `<br>${escapeHtml(item.gap)}` : ``}</div>
           </div>
           <div class="history-time">${escapeHtml(formatHistoryTime(item.stamp))}</div>
         </div>
@@ -3778,21 +3787,25 @@ let data = defaultData();
       const emergencyMonths = liquidCash / monthlyOutflow;
       const emergencyTarget = Number(p.emergencyMonthsTarget || 3);
       const retirementYearsLeft = age > 0 ? Math.max(0, retirementAge - age) : null;
+
       const comparisonBench = getComparisonBenchmarks();
-      const comparisonNetWorth = getComparisonLabel(
-        getAllAccountBalance(monthKey) + getInvestmentTotal(monthKey) + getAssetTotal(monthKey) - getManualExpenseTotal(monthKey) - getRecurringBillEvents(monthKey).reduce((s,e)=>s+Number(e.amount||0),0),
-        comparisonBench.netWorth
-      );
+      const netWorthValue = getAllAccountBalance(monthKey) + getInvestmentTotal(monthKey) + getAssetTotal(monthKey) - getManualExpenseTotal(monthKey) - getRecurringBillEvents(monthKey).reduce((s,e)=>s+Number(e.amount||0),0);
+      const comparisonNetWorth = getComparisonLabel(netWorthValue, comparisonBench.netWorth);
 
       const insights = [];
 
       if(savingsTarget > 0){
+        const savingsShort = Math.max(0, savingsTarget - available);
+        const benchSavingsAmount = monthlyIncome > 0 ? monthlyIncome * (comparisonBench.savingsRate / 100) : 0;
+        const benchGap = monthlyIncome > 0 ? Math.max(0, benchSavingsAmount - Math.max(0, available)) : 0;
+
         if(available >= savingsTarget){
           insights.push({
             tone:'good',
             label:'On track',
             title:'Monthly savings target met',
             copy:`You have ${money(available)} left this month versus a target of ${money(savingsTarget)}.`,
+            gap: monthlyIncome > 0 ? `Benchmark savings rate for your profile is ${comparisonBench.savingsRate.toFixed(0)}% (${money(benchSavingsAmount)}/month).` : '',
             actions:[{label:'Adjust target', fn:"openSettingsAndScroll('settingsPlanningCard')"}]
           });
         } else {
@@ -3800,7 +3813,8 @@ let data = defaultData();
             tone: available > 0 ? 'warn' : 'bad',
             label: available > 0 ? 'Needs attention' : 'Critical',
             title:'Monthly savings target is behind',
-            copy:`You are ${money(savingsTarget - available)} short of your target this month.`,
+            copy:`You are ${money(savingsShort)} short of your target this month.`,
+            gap: monthlyIncome > 0 ? `To match your benchmark savings pace, improve by about ${money(benchGap)} per month.` : '',
             actions:[
               {label:'Review budget', fn:"openScreen('budgetScreen',1)"},
               {label:'Adjust target', fn:"openSettingsAndScroll('settingsPlanningCard')"}
@@ -3813,29 +3827,39 @@ let data = defaultData();
           label:'Needs setup',
           title:'Add a monthly savings target',
           copy:'A savings target helps the app tell you whether your current budget is on track.',
+          gap: monthlyIncome > 0 ? `A simple benchmark for your profile is about ${comparisonBench.savingsRate.toFixed(0)}% of income.` : '',
           actions:[{label:'Set target', fn:"openSettingsAndScroll('settingsPlanningCard')"}]
         });
       }
 
       if(monthlyIncome > 0){
+        const benchmarkGapPct = Math.max(0, comparisonBench.savingsRate - savingsRate);
+        const benchmarkGapDollar = monthlyIncome * (benchmarkGapPct / 100);
         insights.push({
-          tone: savingsRate >= recommendedRate ? 'good' : 'warn',
-          label: savingsRate >= recommendedRate ? 'On track' : 'Needs attention',
+          tone: savingsRate >= comparisonBench.savingsRate ? 'good' : 'warn',
+          label: savingsRate >= comparisonBench.savingsRate ? 'Above benchmark' : 'Below benchmark',
           title:`Estimated savings rate: ${savingsRate.toFixed(0)}%`,
-          copy: savingsRate >= recommendedRate
-            ? `That is at or above a simple ${recommendedRate}% planning target.`
-            : `A simple long-term target is around ${recommendedRate}%. Raise savings or lower expenses to improve it.`,
+          copy: savingsRate >= comparisonBench.savingsRate
+            ? `You are at or above your profile benchmark of ${comparisonBench.savingsRate.toFixed(0)}%.`
+            : `Your profile benchmark is ${comparisonBench.savingsRate.toFixed(0)}%.`,
+          gap: savingsRate >= comparisonBench.savingsRate
+            ? ''
+            : `Increase savings by about ${money(benchmarkGapDollar)}/month to match your current benchmark.`,
           actions:[{label:'Update income', fn:"openSettingsAndScroll('settingsPlanningCard')"}]
         });
       }
 
+      const emergencyGap = Math.max(0, comparisonBench.emergencyMonths - emergencyMonths);
       insights.push({
-        tone: emergencyMonths >= emergencyTarget ? 'good' : (emergencyMonths >= emergencyTarget * 0.7 ? 'warn' : 'bad'),
-        label: emergencyMonths >= emergencyTarget ? 'On track' : (emergencyMonths >= emergencyTarget * 0.7 ? 'Needs attention' : 'Critical'),
+        tone: emergencyMonths >= comparisonBench.emergencyMonths ? 'good' : (emergencyMonths >= comparisonBench.emergencyMonths * 0.7 ? 'warn' : 'bad'),
+        label: emergencyMonths >= comparisonBench.emergencyMonths ? 'Above benchmark' : (emergencyMonths >= comparisonBench.emergencyMonths * 0.7 ? 'Needs attention' : 'Critical'),
         title:`Emergency fund: ${emergencyMonths.toFixed(1)} months`,
-        copy: emergencyMonths >= emergencyTarget
-          ? `You are at or above your target of ${emergencyTarget.toFixed(1)} months.`
-          : `Your target is ${emergencyTarget.toFixed(1)} months, so you may want to build cash reserves further.`,
+        copy: emergencyMonths >= comparisonBench.emergencyMonths
+          ? `You are at or above the benchmark of ${comparisonBench.emergencyMonths.toFixed(1)} months.`
+          : `Your benchmark is ${comparisonBench.emergencyMonths.toFixed(1)} months.`,
+        gap: emergencyMonths >= comparisonBench.emergencyMonths
+          ? ''
+          : `You need about ${emergencyGap.toFixed(1)} more months of reserves to match your benchmark.`,
         actions:[
           {label:'View goals', fn:"openAssetsAndScroll('savingsGoalsCard')"},
           {label:'Edit target', fn:"openSettingsAndScroll('settingsPlanningCard')"}
@@ -3850,6 +3874,7 @@ let data = defaultData();
           copy: manualGoalFunding > 0
             ? `${money(manualGoalFunding)} is currently assigned to non-linked goals this month.`
             : 'Linked goals follow their account balances automatically.',
+          gap: fundedGoals === goals.length ? '' : `You still have ${goals.length - fundedGoals} goal(s) below target.`,
           actions:[
             {label:'Open goals', fn:"openAssetsAndScroll('savingsGoalsCard')"},
             {label:'Add money', fn:"openAssetsAndScroll('savingsGoalsCard')"}
@@ -3861,6 +3886,7 @@ let data = defaultData();
           label:'Needs setup',
           title:'No savings goals yet',
           copy:'Add goals like emergency fund, travel, or down payment to track progress more clearly.',
+          gap:'Goals make it easier to close the gap between current balances and future needs.',
           actions:[{label:'Create goal', fn:"openAssetsAndScroll('savingsGoalsCard')"}]
         });
       }
@@ -3869,7 +3895,10 @@ let data = defaultData();
         tone: comparisonNetWorth.tone,
         label: comparisonNetWorth.tone === 'good' ? 'Above average' : (comparisonNetWorth.tone === 'bad' ? 'Below benchmark' : 'Near average'),
         title:'Benchmark comparison',
-        copy:`Your current profile-based benchmark view is ${comparisonNetWorth.tone === 'good' ? 'above average' : (comparisonNetWorth.tone === 'bad' ? 'below benchmark' : 'near average')} for your age and state.`,
+        copy:`Your current net worth view is ${comparisonNetWorth.tone === 'good' ? 'above average' : (comparisonNetWorth.tone === 'bad' ? 'below benchmark' : 'near average')} for your age and state.`,
+        gap: comparisonNetWorth.tone === 'bad'
+          ? `You are about ${money(Math.max(0, comparisonBench.netWorth - netWorthValue))} below the benchmark used for your profile.`
+          : '',
         actions:[
           {label:'View comparison', fn:"document.getElementById('comparisonEngineCard')?.scrollIntoView({behavior:'smooth', block:'start'})"},
           {label:'Edit profile', fn:"openSettingsAndScroll('settingsProfileCard')"}
@@ -3884,19 +3913,24 @@ let data = defaultData();
           copy: retirementYearsLeft > 0
             ? `Your retirement target age is ${retirementAge}. This can power future investing guidance.`
             : `Your retirement target age is here or in the past. Update it if you want future planning guidance to stay useful.`,
+          gap: retirementYearsLeft > 0 ? '' : 'Update your retirement target age to keep future guidance relevant.',
           actions:[{label:'Edit profile', fn:"openSettingsAndScroll('settingsProfileCard')"}]
         });
       }
 
       insights.sort((a,b) => insightPriorityClass(a.tone) - insightPriorityClass(b.tone));
 
+      currentInsightAlerts = insights.filter(item => shouldSurfaceInsightAlert(item));
+      resetDismissedAlertsForChangedInsights(currentInsightAlerts);
+      renderNotificationBanner();
+
       const rendered = insights.map(item => {
         const key = item.title;
         const prev = previousInsightsState[key];
-        const isNew = !prev || prev.copy !== item.copy;
-        if(isNew){ addInsightHistoryEntry(item.title, item.copy, item.tone); }
+        const isNew = !prev || prev.copy !== item.copy || (prev.gap || '') !== (item.gap || '');
+        if(isNew){ addInsightHistoryEntry(item.title, item.copy, item.tone, item.gap || ''); }
 
-        previousInsightsState[key] = { copy: item.copy };
+        previousInsightsState[key] = { copy: item.copy, gap: item.gap || '' };
 
         return `
         <div class="insight-row ${isNew && item.tone === 'bad' ? 'insight-highlight' : ''}">
@@ -3907,6 +3941,7 @@ let data = defaultData();
                 ${isNew ? '<span class="insight-new">NEW</span>' : ''}
               </div>
               <div class="insight-copy">${escapeHtml(item.copy)}</div>
+              ${item.gap ? `<div class="insight-gap">${escapeHtml(item.gap)}</div>` : ``}
             </div>
             <div class="insight-badge ${item.tone}">${escapeHtml(item.label)}</div>
           </div>
