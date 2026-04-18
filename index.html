@@ -1640,6 +1640,11 @@
       color:#B91C1C !important;
     }
 
+    
+    #expenseSpreadMonths{
+      min-width:0;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -2463,6 +2468,28 @@
 
 
     
+    
+    function addMonthsToKey(monthKey, offset){
+      const [y, m] = monthKey.split('-').map(Number);
+      const d = new Date(y, m - 1 + offset, 1);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    }
+
+    function allocateExpenseAcrossMonths(totalAmount, months){
+      const totalCents = Math.round(Number(totalAmount || 0) * 100);
+      const count = Math.max(1, Number(months || 1));
+      const base = Math.floor(totalCents / count);
+      let remainder = totalCents - (base * count);
+      const parts = [];
+      for(let i=0;i<count;i++){
+        const cents = base + (remainder > 0 ? 1 : 0);
+        if(remainder > 0) remainder--;
+        parts.push(cents / 100);
+      }
+      return parts;
+    }
+
+
     function populateExpenseBudgetMonthOptions(){
       const el = document.getElementById('expenseBudgetMonth');
       if(!el) return;
@@ -2717,7 +2744,7 @@
         <div class="row-item">
           <div style="flex:1;min-width:0;">
             <div class="row-name editable-copy" data-edit="${type}-name" data-id="${item.id}">${escapeHtml(item.name)}</div>
-            <div class="row-note editable-copy" data-edit="${type}-note" data-id="${item.id}">${escapeHtml(item.note || '')}${type === 'expense' ? ` • ${escapeHtml(monthLabel(item.budgetMonth || data.currentMonth))}` : ''}</div>
+            <div class="row-note editable-copy" data-edit="${type}-note" data-id="${item.id}">${escapeHtml(item.note || '')}${type === 'expense' ? ` • ${escapeHtml(monthLabel(item.budgetMonth || data.currentMonth))}${item.spreadTotal ? ` • ${escapeHtml(item.spreadIndex + '/' + item.spreadTotal)}` : ''}` : ''}</div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;">
             <div class="row-amount" data-edit="${type}-amount" data-id="${item.id}">${money(item.amount)}</div>
@@ -3245,18 +3272,51 @@
       const note = document.getElementById('expenseNote').value.trim();
       const date = document.getElementById('expenseDate').value || '';
       const budgetMonth = document.getElementById('expenseBudgetMonth') ? document.getElementById('expenseBudgetMonth').value : data.currentMonth;
+      const spread = document.getElementById('expenseSpreadToggle') && document.getElementById('expenseSpreadToggle').value === 'true';
+      const spreadMonths = Math.max(1, Number(document.getElementById('expenseSpreadMonths') ? document.getElementById('expenseSpreadMonths').value || 1 : 1));
+
       if(!name) return;
-      const targetMonth = getMonthData(budgetMonth);
-      if(!targetMonth.categories[cat]) targetMonth.categories[cat] = [];
-      if(!targetMonth.categoryOrder) targetMonth.categoryOrder = [];
-      if(!targetMonth.categoryOrder.includes(cat)) targetMonth.categoryOrder.push(cat);
-      targetMonth.categories[cat].push({id: uid('exp'), name, amount, note, date, budgetMonth, createdAt: data.currentMonth});
-      addActivity('expense', 'Expense added', `${name} • ${monthLabel(budgetMonth)}`, amount, 'minus');
+
+      if(spread && spreadMonths > 1){
+        const parts = allocateExpenseAcrossMonths(amount, spreadMonths);
+        const spreadGroupId = uid('spreadgrp');
+        parts.forEach((partAmount, idx) => {
+          const targetKey = addMonthsToKey(budgetMonth, idx);
+          const targetMonth = getMonthData(targetKey);
+          if(!targetMonth.categories[cat]) targetMonth.categories[cat] = [];
+          if(!targetMonth.categoryOrder) targetMonth.categoryOrder = [];
+          if(!targetMonth.categoryOrder.includes(cat)) targetMonth.categoryOrder.push(cat);
+          targetMonth.categories[cat].push({
+            id: uid('exp'),
+            name: `${name}${spreadMonths > 1 ? ` (${idx+1}/${spreadMonths})` : ''}`,
+            amount: Number(partAmount),
+            note,
+            date,
+            budgetMonth: targetKey,
+            createdAt: data.currentMonth,
+            spreadGroupId,
+            spreadIndex: idx + 1,
+            spreadTotal: spreadMonths,
+            originalAmount: amount
+          });
+        });
+        addActivity('expense', 'Expense spread', `${name} • ${spreadMonths} months from ${monthLabel(budgetMonth)}`, amount, 'minus');
+      } else {
+        const targetMonth = getMonthData(budgetMonth);
+        if(!targetMonth.categories[cat]) targetMonth.categories[cat] = [];
+        if(!targetMonth.categoryOrder) targetMonth.categoryOrder = [];
+        if(!targetMonth.categoryOrder.includes(cat)) targetMonth.categoryOrder.push(cat);
+        targetMonth.categories[cat].push({id: uid('exp'), name, amount, note, date, budgetMonth, createdAt: data.currentMonth});
+        addActivity('expense', 'Expense added', `${name} • ${monthLabel(budgetMonth)}`, amount, 'minus');
+      }
+
       document.getElementById('expenseName').value = '';
       document.getElementById('expenseAmount').value = '';
       document.getElementById('expenseNote').value = '';
       document.getElementById('expenseDate').value = '';
       if(document.getElementById('expenseBudgetMonth')) document.getElementById('expenseBudgetMonth').value = data.currentMonth;
+      if(document.getElementById('expenseSpreadToggle')) document.getElementById('expenseSpreadToggle').value = 'false';
+      if(document.getElementById('expenseSpreadMonths')) document.getElementById('expenseSpreadMonths').value = '';
       togglePanel('expensePanelWrap', false);
       saveData(); render();
     }
