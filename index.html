@@ -1704,6 +1704,51 @@
       margin-top:14px !important;
     }
 
+    
+    .goal-card{
+      padding:14px 0;
+      border-bottom:1px solid rgba(229,231,235,.9);
+    }
+    .goal-card:last-child{ border-bottom:none; }
+    .goal-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .goal-name{
+      color:#0F172A;
+      font-size:.96rem;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .goal-note{
+      color:#64748B;
+      font-size:.8rem;
+      line-height:1.35;
+    }
+    .goal-amount{
+      color:#0F172A;
+      font-size:.9rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .goal-meta{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color:#64748B;
+      font-size:.8rem;
+      margin:8px 0;
+    }
+    .goal-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -2038,7 +2083,31 @@
 </div>
 <div class="tooltip-card hidden-tip" id="tipAssetsTotal">Assets here add into net worth. Use this for collectibles, electronics, tools, jewelry, furniture, and other items you want tracked.</div>
 <div class="budget-big good" id="assetsTotal">$0</div>
-</div><div class="card invest-card" id="assetCategorySummaryCard">
+</div>
+<div class="card invest-card" id="savingsGoalsCard">
+  <div class="section-head">
+    <div class="section-title label-with-info">Savings Goals <span class="info-dot" onclick="toggleTip('tipSavingsGoals')">i</span></div>
+    <button class="add-btn pill" onclick="togglePanel('goalPanelWrap')">+ Goal</button>
+  </div>
+  <div id="tipSavingsGoals" class="tooltip-card hidden-tip">Track goals like emergency fund, travel, or down payment using target and current amounts.</div>
+  <div id="goalPanelWrap" style="display:none;">
+    <div class="stack" style="margin-top:12px;">
+      <input class="small-input" id="goalName" placeholder="Goal name"/>
+      <div class="two-col">
+        <input class="small-input" id="goalTarget" type="number" step="0.01" placeholder="Target amount"/>
+        <input class="small-input" id="goalCurrent" type="number" step="0.01" placeholder="Current amount"/>
+      </div>
+      <input class="small-input" id="goalNote" placeholder="Notes (optional)"/>
+      <div class="actions">
+        <button class="save-btn pill" onclick="addSavingsGoal()">Save Goal</button>
+        <button class="secondary-btn pill" onclick="togglePanel('goalPanelWrap', false)">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div id="savingsGoalsList"></div>
+</div>
+
+<div class="card invest-card" id="assetCategorySummaryCard">
 <div class="section-head">
 <div class="section-title label-with-info">Asset Categories <span class="info-dot" onclick="toggleTip('tipAssetCategories')">i</span></div>
 </div>
@@ -2143,7 +2212,7 @@
     function createEmptyMonth(){
       const categories = {};
       DEFAULT_CATEGORIES.forEach(key => categories[key] = []);
-      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], categories, deletedDefaultCategories: [], categoryOrder: [...DEFAULT_CATEGORIES], cashflowOrder: ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'] };
+      return { startingBalance: 0, accounts: [], incomes: [], investments: [], assets: [], savingsGoals: [], categories, deletedDefaultCategories: [], categoryOrder: [...DEFAULT_CATEGORIES], cashflowOrder: ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'] };
     }
     function getCurrentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
     function defaultData(){
@@ -2217,6 +2286,7 @@
       }
       if(!data.months[key].accounts) data.months[key].accounts = [];
       if(!data.months[key].assets) data.months[key].assets = [];
+      if(!data.months[key].savingsGoals) data.months[key].savingsGoals = [];
       if(!data.months[key].deletedDefaultCategories) data.months[key].deletedDefaultCategories = [];
       if(!data.months[key].categoryOrder) data.months[key].categoryOrder = [...DEFAULT_CATEGORIES];
       if(!data.months[key].cashflowOrder) data.months[key].cashflowOrder = ['cashflowSummaryCard','cashflowBillsCard','cashflowTimelineCard'];
@@ -2791,6 +2861,97 @@
     }
 
 
+    
+    function getSavingsGoals(monthKey=data.currentMonth){
+      return getMonthData(monthKey).savingsGoals || [];
+    }
+
+    function addSavingsGoal(){
+      const name = (document.getElementById('goalName')?.value || '').trim();
+      const target = Number(document.getElementById('goalTarget')?.value || 0);
+      const current = Number(document.getElementById('goalCurrent')?.value || 0);
+      const note = (document.getElementById('goalNote')?.value || '').trim();
+      if(!name) return;
+      const month = getMonthData();
+      if(!month.savingsGoals) month.savingsGoals = [];
+      month.savingsGoals.push({
+        id: uid('goal'),
+        name,
+        target,
+        current,
+        note
+      });
+      addActivity('goal', 'Savings goal added', name, current, 'plus');
+      ['goalName','goalTarget','goalCurrent','goalNote'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = '';
+      });
+      togglePanel('goalPanelWrap', false);
+      saveData(); render();
+    }
+
+    function renderSavingsGoals(){
+      const wrap = document.getElementById('savingsGoalsList');
+      if(!wrap) return;
+      const goals = getSavingsGoals();
+      if(!goals.length){
+        wrap.innerHTML = `<div class="empty-state">No savings goals yet. Add goals like emergency fund, travel, or down payment.</div>`;
+        return;
+      }
+      wrap.innerHTML = goals.map(goal => {
+        const pct = goal.target > 0 ? Math.max(0, Math.min(100, (Number(goal.current || 0) / Number(goal.target || 1)) * 100)) : 0;
+        return `
+          <div class="goal-card">
+            <div class="goal-head">
+              <div style="flex:1;min-width:0;">
+                <div class="goal-name">${escapeHtml(goal.name)}</div>
+                <div class="goal-note">${escapeHtml(goal.note || '')}</div>
+              </div>
+              <div class="goal-amount">${money(goal.current)} / ${money(goal.target)}</div>
+            </div>
+            <div class="progress-track"><div class="progress-fill ${pct >= 100 ? 'good' : ''}" style="width:${pct}%;"></div></div>
+            <div class="goal-meta">
+              <span>${pct.toFixed(0)}% funded</span>
+              <span>${money(Math.max(0, Number(goal.target || 0) - Number(goal.current || 0)))} left</span>
+            </div>
+            <div class="goal-actions">
+              <button class="secondary-btn pill small-edit-btn" type="button" onclick="editSavingsGoal('${goal.id}')">Edit</button>
+              <button class="danger-btn pill" type="button" onclick="deleteSavingsGoal('${goal.id}')">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function editSavingsGoal(id){
+      const month = getMonthData();
+      const goal = (month.savingsGoals || []).find(g => g.id === id);
+      if(!goal) return;
+      const name = prompt('Edit goal name', goal.name || '');
+      if(name === null) return;
+      const targetInput = prompt('Edit target amount', String(goal.target ?? ''));
+      if(targetInput === null) return;
+      const currentInput = prompt('Edit current amount', String(goal.current ?? ''));
+      if(currentInput === null) return;
+      const note = prompt('Edit note', goal.note || '');
+      if(note === null) return;
+      goal.name = (name || '').trim() || goal.name;
+      goal.target = Number(targetInput || 0);
+      goal.current = Number(currentInput || 0);
+      goal.note = (note || '').trim();
+      addActivity('goal', 'Savings goal updated', goal.name, goal.current, 'plus');
+      saveData(); render();
+    }
+
+    function deleteSavingsGoal(id){
+      const month = getMonthData();
+      const goal = (month.savingsGoals || []).find(g => g.id === id);
+      month.savingsGoals = (month.savingsGoals || []).filter(g => g.id !== id);
+      if(goal) addActivity('goal', 'Savings goal deleted', goal.name, goal.current, 'minus');
+      saveData(); render();
+    }
+
+
     function renderOverview(){
       const monthKey = data.currentMonth;
       const manualIncome = getManualIncomeTotal(monthKey);
@@ -3205,6 +3366,7 @@
       const wrap = document.getElementById('assetsList');
       const totalEl = document.getElementById('assetsTotal');
       if(totalEl) totalEl.textContent = money(getAssetTotal());
+      renderSavingsGoals();
 
       const categoryWrap = document.getElementById('assetCategorySummaryList');
       if(categoryWrap){
