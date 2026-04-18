@@ -1742,7 +1742,6 @@
 <input class="small-input" id="expenseDate" type="date"/>
 <select class="form-select" id="expenseBudgetMonth"></select><div class="hint-text">Assign this expense to a future month (great for travel or prepayments).</div><div class="helper-copy" style="margin-top:6px;">Apply this expense to the month you want it to count in your budget.</div>
 </div>
-
 <div class="two-col" id="expenseSpreadControls">
 <select class="form-select" id="expenseSpreadToggle">
 <option value="false">One-time expense</option>
@@ -2521,30 +2520,78 @@
     }
 
     function moveExpenseToBudgetMonth(expenseId, targetMonth){
-      const sourceMonth = getMonthData();
       let moved = null;
       let sourceCat = null;
+      let sourceMonthKey = null;
 
-      for(const cat of Object.keys(sourceMonth.categories || {})){
-        const idx = (sourceMonth.categories[cat] || []).findIndex(item => item.id === expenseId);
-        if(idx !== -1){
-          moved = sourceMonth.categories[cat][idx];
-          sourceCat = cat;
-          sourceMonth.categories[cat].splice(idx, 1);
-          break;
-        }
-      }
+      Object.keys(data.months || {}).forEach(monthKey => {
+        const sourceMonth = data.months[monthKey];
+        Object.keys(sourceMonth.categories || {}).forEach(cat => {
+          const idx = (sourceMonth.categories[cat] || []).findIndex(item => item.id === expenseId);
+          if(idx !== -1){
+            moved = sourceMonth.categories[cat][idx];
+            sourceCat = cat;
+            sourceMonthKey = monthKey;
+          }
+        });
+      });
 
       if(!moved || !sourceCat) return;
 
-      const target = getMonthData(targetMonth);
-      if(!target.categories[sourceCat]) target.categories[sourceCat] = [];
-      if(!target.categoryOrder) target.categoryOrder = [];
-      if(!target.categoryOrder.includes(sourceCat)) target.categoryOrder.push(sourceCat);
+      if(moved.spreadGroupId && moved.spreadTotal){
+        Object.keys(data.months || {}).forEach(monthKey => {
+          const month = data.months[monthKey];
+          Object.keys(month.categories || {}).forEach(cat => {
+            const matched = (month.categories[cat] || []).filter(item => item.spreadGroupId === moved.spreadGroupId);
+            if(matched.length){
+              month.categories[cat] = (month.categories[cat] || []).filter(item => item.spreadGroupId !== moved.spreadGroupId);
+            }
+          });
+        });
 
-      moved.budgetMonth = targetMonth;
-      target.categories[sourceCat].push(moved);
-      addActivity('expense', 'Expense moved', `${moved.name} • ${monthLabel(targetMonth)}`, moved.amount, 'neutral');
+        const sorted = [];
+        Object.keys(data.months || {}).forEach(monthKey => {
+          const month = data.months[monthKey];
+          Object.keys(month.categories || {}).forEach(cat => {
+            (month.categories[cat] || []).forEach(item => {
+              if(item.spreadGroupId === moved.spreadGroupId) sorted.push(item);
+            });
+          });
+        });
+
+        // if removed above, rebuild from moved seed
+        const total = moved.originalAmount || ((moved.amount || 0) * (moved.spreadTotal || 1));
+        const parts = allocateExpenseAcrossMonths(total, moved.spreadTotal);
+        for(let i=0;i<moved.spreadTotal;i++){
+          const key = addMonthsToKey(targetMonth, i);
+          const target = getMonthData(key);
+          if(!target.categories[sourceCat]) target.categories[sourceCat] = [];
+          if(!target.categoryOrder) target.categoryOrder = [];
+          if(!target.categoryOrder.includes(sourceCat)) target.categoryOrder.push(sourceCat);
+          target.categories[sourceCat].push({
+            ...moved,
+            id: i === (moved.spreadIndex - 1) ? moved.id : uid('exp'),
+            name: `${(moved.name || '').replace(/ \(\d+\/\d+\)$/,'')} (${i+1}/${moved.spreadTotal})`,
+            amount: Number(parts[i] || 0),
+            budgetMonth: key,
+            spreadIndex: i + 1,
+            spreadTotal: moved.spreadTotal,
+            originalAmount: total
+          });
+        }
+        addActivity('expense', 'Expense spread moved', `${(moved.name || '').replace(/ \(\d+\/\d+\)$/,'')} • ${monthLabel(targetMonth)}`, total, 'neutral');
+      } else {
+        const sourceMonth = data.months[sourceMonthKey];
+        sourceMonth.categories[sourceCat] = (sourceMonth.categories[sourceCat] || []).filter(item => item.id !== expenseId);
+        const target = getMonthData(targetMonth);
+        if(!target.categories[sourceCat]) target.categories[sourceCat] = [];
+        if(!target.categoryOrder) target.categoryOrder = [];
+        if(!target.categoryOrder.includes(sourceCat)) target.categoryOrder.push(sourceCat);
+
+        moved.budgetMonth = targetMonth;
+        target.categories[sourceCat].push(moved);
+        addActivity('expense', 'Expense moved', `${moved.name} • ${monthLabel(targetMonth)}`, moved.amount, 'neutral');
+      }
       saveData();
       render();
     }
@@ -2732,23 +2779,70 @@
       el.innerHTML = ''; el.appendChild(input); input.focus(); input.select();
     }
 
+    
+    function updateSpreadGroup(expenseId, updater){
+      let target = null;
+      let targetMonthKey = null;
+      let targetCat = null;
+
+      Object.keys(data.months || {}).forEach(monthKey => {
+        const month = data.months[monthKey];
+        Object.keys(month.categories || {}).forEach(cat => {
+          (month.categories[cat] || []).forEach(item => {
+            if(item.id === expenseId){
+              target = item;
+              targetMonthKey = monthKey;
+              targetCat = cat;
+            }
+          });
+        });
+      });
+
+      if(!target) return false;
+
+      if(target.spreadGroupId){
+        Object.keys(data.months || {}).forEach(monthKey => {
+          const month = data.months[monthKey];
+          Object.keys(month.categories || {}).forEach(cat => {
+            month.categories[cat] = (month.categories[cat] || []).map(item => {
+              if(item.spreadGroupId === target.spreadGroupId){
+                return updater({...item}, target, monthKey, cat);
+              }
+              return item;
+            });
+          });
+        });
+      } else {
+        const month = data.months[targetMonthKey];
+        month.categories[targetCat] = (month.categories[targetCat] || []).map(item => {
+          if(item.id === expenseId){
+            return updater({...item}, target, targetMonthKey, targetCat);
+          }
+          return item;
+        });
+      }
+      return true;
+    }
+
+
     function findItem(type, id){
       const month = getMonthData();
       if(type === 'income') return month.incomes.find(i => i.id === id);
       if(type === 'investment') return month.investments.find(i => i.id === id);
       if(type === 'bill') return data.recurringBills.find(i => i.id === id);
-      if(type === 'income_schedule') { const sched = data.incomeSchedules.find(i => i.id === id); if(!sched) return null; const income = getMonthData().incomes.find(j => j.id === sched.incomeId); return {...sched, name: income ? income.name : 'Missing income', amount: income ? income.amount : 0, note:`${titleCase(sched.frequency)} • day ${sched.day}`}; }
+      if(type === 'income_schedule') {
+        const sched = data.incomeSchedules.find(i => i.id === id);
+        if(!sched) return null;
+        const income = getMonthData().incomes.find(j => j.id === sched.incomeId);
+        return {...sched, name: income ? income.name : 'Missing income', amount: income ? income.amount : 0, note:`${titleCase(sched.frequency)} • day ${sched.day}`};
+      }
       if(type === 'expense'){
-        const firstRow = wrap.querySelector('.row-note');
-        if(firstRow && !getHintFlag('move_expense')){
-          setTimeout(()=>{
-            showTooltip(firstRow, 'Tip: double-tap an expense to move it to another month');
-            setHintFlag('move_expense');
-          }, 600);
-        }
-        for(const cat of getCategoryNames()){
-          const item = month.categories[cat].find(i => i.id === id);
-          if(item) return item;
+        for(const monthKey of Object.keys(data.months || {})){
+          const monthData = data.months[monthKey];
+          for(const cat of Object.keys(monthData.categories || {})){
+            const item = (monthData.categories[cat] || []).find(i => i.id === id);
+            if(item) return item;
+          }
         }
       }
       return null;
@@ -2778,14 +2872,43 @@
         const id = el.dataset.id;
         el.onclick = () => {
           const item = findItem(type, id);
-          makeTextEditable(el, item.name, val => { item.name = val.trim() || item.name; saveData(); render(); });
+          makeTextEditable(el, item.name, val => {
+            const clean = (val || '').trim();
+            if(!clean) return render();
+            if(type === 'expense'){
+              updateSpreadGroup(id, (copy) => {
+                if(copy.spreadTotal){
+                  copy.name = `${clean} (${copy.spreadIndex}/${copy.spreadTotal})`;
+                } else {
+                  copy.name = clean;
+                }
+                return copy;
+              });
+              addActivity('expense', 'Expense updated', clean, item.amount, 'minus');
+            } else {
+              item.name = clean || item.name;
+              addActivity(type, `${type.charAt(0).toUpperCase()+type.slice(1)} updated`, item.name, item.amount, type === 'expense' || type === 'bill' ? 'minus' : 'plus');
+            }
+            saveData(); render();
+          });
         };
       });
       wrap.querySelectorAll(`[data-edit="${type}-note"]`).forEach(el => {
         const id = el.dataset.id;
         el.onclick = () => {
           const item = findItem(type, id);
-          makeTextEditable(el, item.note || '', val => { item.note = val.trim(); saveData(); render(); });
+          makeTextEditable(el, item.note || '', val => {
+            if(type === 'expense'){
+              updateSpreadGroup(id, (copy) => {
+                copy.note = (val || '').trim();
+                return copy;
+              });
+              addActivity('expense', 'Expense updated', item.name, item.amount, 'minus');
+            } else {
+              item.note = (val || '').trim();
+            }
+            saveData(); render();
+          });
         };
       });
       wrap.querySelectorAll(`[data-edit="${type}-amount"]`).forEach(el => {
@@ -2793,8 +2916,20 @@
         el.onclick = () => {
           const item = findItem(type, id);
           makeAmountEditable(el, item.amount, val => {
-            item.amount = Number(val || 0);
-            addActivity(type, `${type.charAt(0).toUpperCase()+type.slice(1)} updated`, item.name, item.amount, type === 'expense' || type === 'bill' ? 'minus' : 'plus');
+            if(type === 'expense' && item.spreadGroupId && item.spreadTotal){
+              const total = Number(val || 0) * Number(item.spreadTotal || 1);
+              const parts = allocateExpenseAcrossMonths(total, item.spreadTotal);
+              updateSpreadGroup(id, (copy) => {
+                const part = parts[(copy.spreadIndex || 1) - 1] ?? Number(val || 0);
+                copy.amount = Number(part || 0);
+                copy.originalAmount = total;
+                return copy;
+              });
+              addActivity('expense', 'Expense spread updated', item.name, total, 'minus');
+            } else {
+              item.amount = Number(val || 0);
+              addActivity(type, `${type.charAt(0).toUpperCase()+type.slice(1)} updated`, item.name, item.amount, type === 'expense' || type === 'bill' ? 'minus' : 'plus');
+            }
             saveData(); render();
           });
         };
@@ -2851,23 +2986,31 @@
         data.incomeSchedules = data.incomeSchedules.filter(i => i.id !== id);
         if(item) addActivity('income_schedule', 'Paycheck deleted', item.name, item.amount, 'minus');
       } else if(type === 'expense'){
-        const firstRow = wrap.querySelector('.row-note');
-        if(firstRow && !getHintFlag('move_expense')){
-          setTimeout(()=>{
-            showTooltip(firstRow, 'Tip: double-tap an expense to move it to another month');
-            setHintFlag('move_expense');
-          }, 600);
-        }
         let removed = null;
-        for(const cat of getCategoryNames()){
-          const found = month.categories[cat].find(i => i.id === id);
-          if(found){
-            removed = found;
-            month.categories[cat] = month.categories[cat].filter(i => i.id !== id);
-            break;
+        for(const monthKey of Object.keys(data.months || {})){
+          const monthData = data.months[monthKey];
+          for(const cat of Object.keys(monthData.categories || {})){
+            const list = monthData.categories[cat] || [];
+            const found = list.find(i => String(i.id) === String(id));
+            if(found){
+              removed = found;
+              if(found.spreadGroupId){
+                Object.keys(data.months || {}).forEach(mk => {
+                  const m = data.months[mk];
+                  Object.keys(m.categories || {}).forEach(c => {
+                    m.categories[c] = (m.categories[c] || []).filter(i => i.spreadGroupId !== found.spreadGroupId);
+                  });
+                });
+                addActivity('expense', 'Expense spread deleted', (found.name || '').replace(/ \(\d+\/\d+\)$/,''), found.originalAmount || (found.amount * (found.spreadTotal || 1)), 'plus');
+              } else {
+                monthData.categories[cat] = list.filter(i => String(i.id) !== String(id));
+                addActivity('expense', 'Expense deleted', found.name, found.amount, 'plus');
+              }
+              break;
+            }
           }
+          if(removed) break;
         }
-        if(removed) addActivity('expense', 'Expense deleted', removed.name, removed.amount, 'plus');
       } else if(type === 'category'){
         const total = getCategoryTotal(id);
         delete month.categories[id];
