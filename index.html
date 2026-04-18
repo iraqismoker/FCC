@@ -1823,6 +1823,78 @@
       box-shadow:inset 0 0 0 2px #93C5FD;
     }
 
+    
+    /* Budget expanded calendars */
+    .budget-calendar-launcher,
+    .budget-apply-launcher{
+      text-align:left;
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      padding:0 16px;
+    }
+    .budget-calendar-modal{
+      margin-bottom:14px;
+    }
+    .budget-calendar-card{
+      background:#FFFFFF;
+      border:1px solid #E5E7EB;
+      border-radius:22px;
+      box-shadow:0 10px 28px rgba(15,23,42,.07);
+      padding:16px;
+    }
+    .budget-calendar-head,
+    .budget-calendar-controls,
+    .budget-calendar-actions{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .budget-calendar-head{ margin-bottom:12px; }
+    .budget-calendar-controls{ margin-bottom:12px; }
+    .budget-calendar-month{
+      font-size:1rem;
+      font-weight:800;
+      color:#0F172A;
+      text-align:center;
+      flex:1;
+    }
+    .budget-calendar-weekdays{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+      margin-bottom:8px;
+      color:#64748B;
+      font-size:.78rem;
+      font-weight:800;
+      text-align:center;
+    }
+    .budget-calendar-grid{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+      margin-bottom:14px;
+    }
+    .budget-day{
+      min-height:40px;
+      border:none;
+      border-radius:14px;
+      background:#FFFFFF;
+      color:#0F172A;
+      border:1px solid #E5E7EB;
+      font-size:.92rem;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .budget-day.muted{ opacity:.35; }
+    .budget-day.active{
+      background:#DBEAFE;
+      color:#1D4ED8;
+      border-color:#BFDBFE;
+    }
+    .budget-day.today{ box-shadow:inset 0 0 0 2px #93C5FD; }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -1919,10 +1991,54 @@
 <h2>Monthly Budget</h2>
 <p>Organize income, categories, and spending for the selected month.</p>
 </div><div class="top-row">
-<input class="month-select" id="budgetMonth" type="month" onchange="changeMonth(this.value)" />
+<button class="month-select budget-calendar-launcher" id="budgetCalendarLauncher" type="button" onclick="openBudgetCalendar()"></button>
 <button class="add-btn icon" onclick="togglePanel('expensePanelWrap')">+</button>
 <button class="add-btn pill" onclick="togglePanel('categoryPanelWrap')">+ Category</button>
-</div><div class="card budget-card" id="expensePanelWrap" style="display:none;">
+</div>
+<div class="budget-calendar-modal hidden-tip" id="budgetCalendarModal">
+  <div class="budget-calendar-card">
+    <div class="budget-calendar-head">
+      <div class="section-title">Choose a budget date</div>
+      <button class="secondary-btn pill" type="button" onclick="closeBudgetCalendar()">Close</button>
+    </div>
+    <div class="budget-calendar-controls">
+      <button class="secondary-btn pill" type="button" onclick="shiftBudgetCalendarMonth(-1)">←</button>
+      <div class="budget-calendar-month" id="budgetCalendarMonthLabel">Month Year</div>
+      <button class="secondary-btn pill" type="button" onclick="shiftBudgetCalendarMonth(1)">→</button>
+    </div>
+    <div class="budget-calendar-weekdays">
+      <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+    </div>
+    <div class="budget-calendar-grid" id="budgetCalendarGrid"></div>
+    <div class="budget-calendar-actions">
+      <button class="secondary-btn pill" type="button" onclick="setBudgetCalendarToday()">Today</button>
+      <button class="save-btn pill" type="button" onclick="applyBudgetCalendar()">Apply</button>
+    </div>
+  </div>
+</div>
+<div class="budget-calendar-modal hidden-tip" id="expenseBudgetCalendarModal">
+  <div class="budget-calendar-card">
+    <div class="budget-calendar-head">
+      <div class="section-title">Apply expense to date</div>
+      <button class="secondary-btn pill" type="button" onclick="closeExpenseBudgetCalendar()">Close</button>
+    </div>
+    <div class="budget-calendar-controls">
+      <button class="secondary-btn pill" type="button" onclick="shiftExpenseBudgetCalendarMonth(-1)">←</button>
+      <div class="budget-calendar-month" id="expenseBudgetCalendarMonthLabel">Month Year</div>
+      <button class="secondary-btn pill" type="button" onclick="shiftExpenseBudgetCalendarMonth(1)">→</button>
+    </div>
+    <div class="budget-calendar-weekdays">
+      <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+    </div>
+    <div class="budget-calendar-grid" id="expenseBudgetCalendarGrid"></div>
+    <div class="budget-calendar-actions">
+      <button class="secondary-btn pill" type="button" onclick="setExpenseBudgetCalendarToday()">Today</button>
+      <button class="save-btn pill" type="button" onclick="applyExpenseBudgetCalendar()">Apply</button>
+    </div>
+  </div>
+</div>
+
+<div class="card budget-card" id="expensePanelWrap" style="display:none;">
 <h4>New Expense</h4>
 <div class="stack">
 <select class="form-select" id="expenseCategory"></select>
@@ -2397,16 +2513,17 @@
     }
     function syncMonthSelectors(){
       document.querySelectorAll('.month-select').forEach(el => {
-        if(el.id === 'overviewCalendarLauncher') return;
+        if(el.id === 'overviewCalendarLauncher' || el.id === 'budgetCalendarLauncher') return;
         const opts = monthOptions(data.currentMonth).map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
         if(el.tagName === 'SELECT'){
           el.innerHTML = opts;
           el.value = data.currentMonth;
-        } else {
+        } else if(el.type === 'month'){
           el.value = data.currentMonth;
         }
       });
       syncOverviewCalendarLauncher();
+      syncBudgetCalendarLauncher();
     }
     function changeMonth(key){ data.currentMonth = key; ensureMonth(key); saveData(); render(); }
 
@@ -2722,7 +2839,8 @@
     function populateExpenseBudgetMonthOptions(){
       const el = document.getElementById('expenseBudgetMonth');
       if(!el) return;
-      el.value = data.currentMonth;
+      el.value = getBudgetSelectedDate();
+      syncBudgetCalendarLauncher();
     }
 
     function getExpensesForMonth(cat, key=data.currentMonth){
@@ -3034,6 +3152,121 @@
       saveData();
       closeOverviewCalendar();
       render();
+    }
+
+
+    
+    let budgetCalendarState = { year:null, month:null, day:null };
+    let expenseBudgetCalendarState = { year:null, month:null, day:null };
+
+    function formatBudgetDate(dateStr){
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString(undefined, { month:'long', day:'numeric', year:'numeric' });
+    }
+
+    function getBudgetSelectedDate(){
+      const monthKey = data.currentMonth || getCurrentMonthKey();
+      const day = data.budgetSelectedDay || 1;
+      return `${monthKey}-${String(day).padStart(2,'0')}`;
+    }
+
+    function syncBudgetCalendarLauncher(){
+      const btn = document.getElementById('budgetCalendarLauncher');
+      if(btn) btn.textContent = formatBudgetDate(getBudgetSelectedDate());
+      const applyBtn = document.getElementById('expenseBudgetMonthLauncher');
+      const hidden = document.getElementById('expenseBudgetMonth');
+      if(applyBtn && hidden){
+        const val = hidden.value || getBudgetSelectedDate();
+        applyBtn.textContent = formatBudgetDate(val);
+      }
+    }
+
+    function renderGenericBudgetCalendar(state, labelId, gridId, applyFnName, dayClass){
+      const label = document.getElementById(labelId);
+      const grid = document.getElementById(gridId);
+      if(!label || !grid) return;
+      const first = new Date(state.year, state.month, 1);
+      const startWeekday = first.getDay();
+      const daysInMonth = new Date(state.year, state.month + 1, 0).getDate();
+      const prevMonthDays = new Date(state.year, state.month, 0).getDate();
+      const today = new Date();
+      label.textContent = first.toLocaleDateString(undefined, { month:'long', year:'numeric' });
+
+      let cells = '';
+      for(let i=0; i<startWeekday; i++){
+        const day = prevMonthDays - startWeekday + i + 1;
+        const prev = new Date(state.year, state.month - 1, day);
+        cells += `<button type="button" class="${dayClass} muted" onclick="${applyFnName}(${prev.getFullYear()}, ${prev.getMonth()}, ${day})">${day}</button>`;
+      }
+      for(let day=1; day<=daysInMonth; day++){
+        const isActive = state.day === day;
+        const isToday = today.getFullYear() === state.year && today.getMonth() === state.month && today.getDate() === day;
+        cells += `<button type="button" class="${dayClass} ${isActive ? 'active' : ''} ${isToday ? 'today' : ''}" onclick="${applyFnName}(${state.year}, ${state.month}, ${day})">${day}</button>`;
+      }
+      const used = startWeekday + daysInMonth;
+      const extra = (7 - (used % 7)) % 7;
+      for(let i=1; i<=extra; i++){
+        const next = new Date(state.year, state.month + 1, i);
+        cells += `<button type="button" class="${dayClass} muted" onclick="${applyFnName}(${next.getFullYear()}, ${next.getMonth()}, ${i})">${i}</button>`;
+      }
+      grid.innerHTML = cells;
+    }
+
+    function openBudgetCalendar(){
+      const modal = document.getElementById('budgetCalendarModal');
+      const d = new Date(getBudgetSelectedDate() + 'T00:00:00');
+      budgetCalendarState.year = d.getFullYear();
+      budgetCalendarState.month = d.getMonth();
+      budgetCalendarState.day = d.getDate();
+      if(modal) modal.classList.remove('hidden-tip');
+      renderBudgetCalendar();
+    }
+    function closeBudgetCalendar(){ const modal = document.getElementById('budgetCalendarModal'); if(modal) modal.classList.add('hidden-tip'); }
+    function shiftBudgetCalendarMonth(delta){
+      const d = new Date(budgetCalendarState.year, budgetCalendarState.month + delta, 1);
+      budgetCalendarState.year = d.getFullYear(); budgetCalendarState.month = d.getMonth(); renderBudgetCalendar();
+    }
+    function setBudgetCalendarToday(){
+      const t = new Date(); budgetCalendarState.year=t.getFullYear(); budgetCalendarState.month=t.getMonth(); budgetCalendarState.day=t.getDate(); renderBudgetCalendar();
+    }
+    function selectBudgetCalendarDay(year, month, day){ budgetCalendarState.year=year; budgetCalendarState.month=month; budgetCalendarState.day=day; renderBudgetCalendar(); }
+    function renderBudgetCalendar(){ renderGenericBudgetCalendar(budgetCalendarState, 'budgetCalendarMonthLabel', 'budgetCalendarGrid', 'selectBudgetCalendarDay', 'budget-day'); }
+    function applyBudgetCalendar(){
+      const monthKey = `${budgetCalendarState.year}-${String(budgetCalendarState.month + 1).padStart(2,'0')}`;
+      data.currentMonth = monthKey;
+      data.budgetSelectedDay = budgetCalendarState.day || 1;
+      ensureMonth(monthKey); saveData(); closeBudgetCalendar(); render();
+    }
+
+    function getExpenseBudgetSelectedDate(){
+      const hidden = document.getElementById('expenseBudgetMonth');
+      return (hidden && hidden.value) ? hidden.value : getBudgetSelectedDate();
+    }
+    function openExpenseBudgetCalendar(){
+      const modal = document.getElementById('expenseBudgetCalendarModal');
+      const d = new Date(getExpenseBudgetSelectedDate() + 'T00:00:00');
+      expenseBudgetCalendarState.year = d.getFullYear();
+      expenseBudgetCalendarState.month = d.getMonth();
+      expenseBudgetCalendarState.day = d.getDate();
+      if(modal) modal.classList.remove('hidden-tip');
+      renderExpenseBudgetCalendar();
+    }
+    function closeExpenseBudgetCalendar(){ const modal = document.getElementById('expenseBudgetCalendarModal'); if(modal) modal.classList.add('hidden-tip'); }
+    function shiftExpenseBudgetCalendarMonth(delta){
+      const d = new Date(expenseBudgetCalendarState.year, expenseBudgetCalendarState.month + delta, 1);
+      expenseBudgetCalendarState.year = d.getFullYear(); expenseBudgetCalendarState.month = d.getMonth(); renderExpenseBudgetCalendar();
+    }
+    function setExpenseBudgetCalendarToday(){
+      const t = new Date(); expenseBudgetCalendarState.year=t.getFullYear(); expenseBudgetCalendarState.month=t.getMonth(); expenseBudgetCalendarState.day=t.getDate(); renderExpenseBudgetCalendar();
+    }
+    function selectExpenseBudgetCalendarDay(year, month, day){ expenseBudgetCalendarState.year=year; expenseBudgetCalendarState.month=month; expenseBudgetCalendarState.day=day; renderExpenseBudgetCalendar(); }
+    function renderExpenseBudgetCalendar(){ renderGenericBudgetCalendar(expenseBudgetCalendarState, 'expenseBudgetCalendarMonthLabel', 'expenseBudgetCalendarGrid', 'selectExpenseBudgetCalendarDay', 'budget-day'); }
+    function applyExpenseBudgetCalendar(){
+      const fullDate = `${expenseBudgetCalendarState.year}-${String(expenseBudgetCalendarState.month + 1).padStart(2,'0')}-${String(expenseBudgetCalendarState.day || 1).padStart(2,'0')}`;
+      const hidden = document.getElementById('expenseBudgetMonth');
+      if(hidden) hidden.value = fullDate;
+      syncBudgetCalendarLauncher();
+      closeExpenseBudgetCalendar();
     }
 
 
