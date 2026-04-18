@@ -1917,6 +1917,33 @@
       100% { background:transparent; }
     }
 
+    
+    .history-row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 0;
+      border-bottom:1px solid rgba(229,231,235,.9);
+    }
+    .history-row:last-child{ border-bottom:none; }
+    .history-title{
+      color:#0F172A;
+      font-size:.9rem;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .history-copy{
+      color:#64748B;
+      font-size:.82rem;
+      line-height:1.35;
+    }
+    .history-time{
+      color:#64748B;
+      font-size:.76rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -1985,6 +2012,16 @@
   </div>
   <div id="tipSmartInsights" class="tooltip-card hidden-tip">This uses your profile, budget, accounts, and goals to show what needs attention first and what action to take next.</div>
   <div id="smartInsightsList"></div>
+</div>
+
+
+<div class="card activity-card" id="insightHistoryCard">
+  <div class="activity-head">
+    <div class="activity-title label-with-info">Insight History <span class="info-dot" onclick="toggleTip('tipInsightHistory')">i</span></div>
+    <button class="secondary-btn pill" type="button" onclick="clearInsightHistory()">Clear</button>
+  </div>
+  <div id="tipInsightHistory" class="tooltip-card hidden-tip">Tracks when actionable insights changed, so users can see what triggered attention recently.</div>
+  <div id="insightHistoryList"></div>
 </div>
 
 <div class="card activity-card">
@@ -2349,6 +2386,34 @@
 </section>
 <section class="screen" id="settingsScreen">
 
+<div class="card settings-card" id="notificationSettingsCard">
+  <h4>Notification Settings</h4>
+  <div class="helper-copy">Choose which alerts matter to you. This is a settings layer for future in-app and app notifications, so you can stay informed without spam.</div>
+  <div class="stack">
+    <label class="account-include"><input class="account-toggle" id="notifyCriticalInsights" type="checkbox"/> Critical insights</label>
+    <label class="account-include"><input class="account-toggle" id="notifyGoalProgress" type="checkbox"/> Goal progress updates</label>
+    <label class="account-include"><input class="account-toggle" id="notifyBudgetWarnings" type="checkbox"/> Budget warnings</label>
+    <label class="account-include"><input class="account-toggle" id="notifyWeeklySummary" type="checkbox"/> Weekly summary</label>
+    <label class="account-include"><input class="account-toggle" id="notifyGrowthUpdates" type="checkbox"/> Growth / projection updates</label>
+    <div class="two-col">
+      <select class="form-select" id="notificationFrequency">
+        <option value="important_only">Important only</option>
+        <option value="daily">Daily digest</option>
+        <option value="weekly">Weekly digest</option>
+      </select>
+      <select class="form-select" id="notificationQuietMode">
+        <option value="off">Quiet mode off</option>
+        <option value="evening">Quiet evenings</option>
+        <option value="overnight">Quiet overnight</option>
+      </select>
+    </div>
+    <div class="actions">
+      <button class="save-btn pill" type="button" onclick="saveNotificationSettings()">Save Notification Settings</button>
+    </div>
+  </div>
+</div>
+
+
 <div class="card settings-card" id="settingsProfileCard">
   <h4>Profile</h4>
   <div class="helper-copy">Set a few basics so the app can personalize savings and planning guidance.</div>
@@ -2437,11 +2502,13 @@
         ],
         incomeSchedules: [],
         profile: { name:'', age: 0, state:'CO', monthlyIncome: 0, monthlySavingsTarget: 0, retirementAge: 65, emergencyMonthsTarget: 3 },
+        notificationSettings: { criticalInsights: true, goalProgress: false, budgetWarnings: true, weeklySummary: false, growthUpdates: false, frequency: 'important_only', quietMode: 'off' },
         profile: { ageGroup: '30-34', state: 'CO' }
       };
     }
 
     let previousInsightsState = {};
+let insightHistory = [];
 let data = defaultData();
 
     function saveData(){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {} }
@@ -3283,6 +3350,36 @@ let data = defaultData();
       return Number((data.profile && data.profile.emergencyMonthsTarget) || 3);
     }
 
+    
+    function syncNotificationSettingsForm(){
+      const n = data.notificationSettings || {};
+      const setChecked = (id, val) => { const el = document.getElementById(id); if(el) el.checked = !!val; };
+      const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val ?? ''; };
+      setChecked('notifyCriticalInsights', n.criticalInsights);
+      setChecked('notifyGoalProgress', n.goalProgress);
+      setChecked('notifyBudgetWarnings', n.budgetWarnings);
+      setChecked('notifyWeeklySummary', n.weeklySummary);
+      setChecked('notifyGrowthUpdates', n.growthUpdates);
+      setVal('notificationFrequency', n.frequency || 'important_only');
+      setVal('notificationQuietMode', n.quietMode || 'off');
+    }
+
+    function saveNotificationSettings(){
+      if(!data.notificationSettings) data.notificationSettings = {};
+      const getChecked = id => !!document.getElementById(id)?.checked;
+      const getVal = id => document.getElementById(id)?.value ?? '';
+      data.notificationSettings.criticalInsights = getChecked('notifyCriticalInsights');
+      data.notificationSettings.goalProgress = getChecked('notifyGoalProgress');
+      data.notificationSettings.budgetWarnings = getChecked('notifyBudgetWarnings');
+      data.notificationSettings.weeklySummary = getChecked('notifyWeeklySummary');
+      data.notificationSettings.growthUpdates = getChecked('notifyGrowthUpdates');
+      data.notificationSettings.frequency = getVal('notificationFrequency') || 'important_only';
+      data.notificationSettings.quietMode = getVal('notificationQuietMode') || 'off';
+      saveData();
+      render();
+    }
+
+
     function syncProfileForm(){
       const p = data.profile || {};
       const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val ?? ''; };
@@ -3311,6 +3408,42 @@ let data = defaultData();
 
     
     
+    
+    function addInsightHistoryEntry(title, copy, tone){
+      const stamp = new Date().toISOString();
+      insightHistory.unshift({ title, copy, tone, stamp });
+      insightHistory = insightHistory.slice(0, 20);
+    }
+
+    function formatHistoryTime(iso){
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+    }
+
+    function renderInsightHistory(){
+      const wrap = document.getElementById('insightHistoryList');
+      if(!wrap) return;
+      if(!insightHistory.length){
+        wrap.innerHTML = `<div class="empty-state">No recent insight changes yet.</div>`;
+        return;
+      }
+      wrap.innerHTML = insightHistory.map(item => `
+        <div class="history-row">
+          <div style="flex:1;min-width:0;">
+            <div class="history-title">${escapeHtml(item.title)}</div>
+            <div class="history-copy">${escapeHtml(item.copy)}</div>
+          </div>
+          <div class="history-time">${escapeHtml(formatHistoryTime(item.stamp))}</div>
+        </div>
+      `).join('');
+    }
+
+    function clearInsightHistory(){
+      insightHistory = [];
+      renderInsightHistory();
+    }
+
+
     function openSettingsAndScroll(cardId){
       openScreen('settingsScreen', 5);
       setTimeout(() => {
@@ -3468,6 +3601,7 @@ let data = defaultData();
         const key = item.title;
         const prev = previousInsightsState[key];
         const isNew = !prev || prev.copy !== item.copy;
+        if(isNew){ addInsightHistoryEntry(item.title, item.copy, item.tone); }
 
         previousInsightsState[key] = { copy: item.copy };
 
@@ -4551,6 +4685,7 @@ let data = defaultData();
       ensureMonth(data.currentMonth);
       syncMonthSelectors();
       syncProfileForm();
+      syncNotificationSettingsForm();
       syncBudgetPanelState();
       syncProfileSettings();
       populateExpenseBudgetMonthOptions();
