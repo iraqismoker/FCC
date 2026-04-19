@@ -2672,6 +2672,274 @@
       }
     }
 
+    
+    /* Overview exact layout refinement */
+    .overview-redesign-shell{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+    .overview-redesign-card{
+      background:#FFFFFF;
+      border:1px solid #E5E7EB;
+      border-radius:28px;
+      box-shadow:0 8px 30px rgba(15,23,42,.06);
+      overflow:hidden;
+    }
+    .overview-score-card{
+      padding:18px 18px 16px;
+    }
+    .overview-card-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:18px 18px 8px;
+    }
+    .overview-card-footer{
+      padding:0 18px 18px;
+    }
+    .overview-benchmarks-panel{
+      border-top:1px solid #E5E7EB;
+      padding:14px 18px 18px;
+      background:#FBFCFE;
+    }
+    .overview-section-title{
+      color:#0F172A;
+      font-size:1.12rem;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .overview-score-layout{
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:18px;
+      align-items:center;
+    }
+    .overview-score-status{
+      color:#111827;
+      font-size:.96rem;
+      font-weight:500;
+      margin:12px 0 14px;
+    }
+    .overview-score-bar{
+      height:11px;
+      border-radius:999px;
+      background:linear-gradient(90deg, #35C9D6 0%, #F2B245 55%, #FF6A59 100%);
+      margin-bottom:9px;
+    }
+    .overview-score-labels{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color:#64748B;
+      font-size:.8rem;
+      font-weight:500;
+    }
+    .overview-score-right{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+    }
+    .overview-gauge-wrap{
+      width:100%;
+      display:flex;
+      justify-content:center;
+    }
+    .overview-gauge{
+      width:240px;
+      height:125px;
+      position:relative;
+      border-radius:240px 240px 0 0;
+      background:conic-gradient(from 180deg, #35C9D6 0deg, #2AA7E8 120deg, #F2B245 220deg, #FF6A59 310deg, #FF6A59 360deg);
+      -webkit-mask: radial-gradient(circle at 50% 100%, transparent 0 66px, #000 67px);
+              mask: radial-gradient(circle at 50% 100%, transparent 0 66px, #000 67px);
+      overflow:hidden;
+    }
+    .overview-gauge::after{
+      content:"";
+      position:absolute;
+      inset:12px 12px 0 12px;
+      background:#FFFFFF;
+      border-radius:220px 220px 0 0;
+      -webkit-mask: radial-gradient(circle at 50% 100%, transparent 0 56px, #000 57px);
+              mask: radial-gradient(circle at 50% 100%, transparent 0 56px, #000 57px);
+    }
+    .overview-gauge-inner{
+      position:absolute;
+      left:50%;
+      top:58%;
+      transform:translate(-50%,-50%);
+      z-index:2;
+      color:#0F172A;
+      font-size:4rem;
+      font-weight:800;
+      letter-spacing:-.05em;
+    }
+    .overview-link-btn{
+      border:none;
+      background:transparent;
+      color:#0F5DAA;
+      font-size:.94rem;
+      font-weight:500;
+      cursor:pointer;
+      padding:0;
+    }
+    .overview-link-btn.subtle{
+      font-size:.88rem;
+    }
+    #redesignInsightsList{
+      padding:0 18px 0;
+    }
+    .redesign-insight-item{
+      padding:15px 0;
+      border-top:1px solid #E5E7EB;
+    }
+    .redesign-insight-item:first-child{
+      border-top:none;
+      padding-top:6px;
+    }
+    .redesign-insight-headline{
+      color:#0F172A;
+      font-size:1rem;
+      line-height:1.35;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+    .redesign-insight-sub{
+      color:#475569;
+      font-size:.88rem;
+      line-height:1.45;
+      margin-bottom:6px;
+    }
+    .redesign-insight-gap{
+      color:#475569;
+      font-size:.88rem;
+      line-height:1.45;
+    }
+    #redesignRecentActivityList{
+      padding:0 18px 18px;
+    }
+    .redesign-activity-row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:14px;
+      padding:14px 0;
+      border-top:1px solid #E5E7EB;
+    }
+    .redesign-activity-row:first-child{
+      border-top:none;
+      padding-top:6px;
+    }
+    .redesign-activity-title{
+      color:#0F172A;
+      font-size:1rem;
+      line-height:1.35;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+    .redesign-activity-copy{
+      color:#475569;
+      font-size:.88rem;
+      line-height:1.45;
+    }
+    .redesign-activity-time{
+      color:#64748B;
+      font-size:.88rem;
+      white-space:nowrap;
+      align-self:start;
+    }
+    .overview-snapshot-grid-redesign{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr 1fr;
+      gap:12px;
+      padding:0 18px 18px;
+    }
+    .overview-snapshot-box{
+      border:1px solid #E5E7EB;
+      background:#FBFCFE;
+      border-radius:18px;
+      padding:14px 14px 12px;
+    }
+    .overview-snapshot-box-label{
+      color:#64748B;
+      font-size:.84rem;
+      font-weight:500;
+      margin-bottom:8px;
+    }
+    .overview-snapshot-box-value{
+      color:#0F172A;
+      font-size:1.15rem;
+      font-weight:800;
+      line-height:1.2;
+    }
+    .compare-engine-row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+      padding:12px 0;
+      border-top:1px solid #E5E7EB;
+    }
+    .compare-engine-row:first-child{
+      border-top:none;
+      padding-top:0;
+    }
+    .compare-engine-title{
+      color:#0F172A;
+      font-size:.95rem;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .compare-engine-copy{
+      color:#64748B;
+      font-size:.84rem;
+      line-height:1.4;
+    }
+    .compare-engine-badge{
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:.74rem;
+      font-weight:800;
+      white-space:nowrap;
+      border:1px solid #E5E7EB;
+      background:#FFFFFF;
+      color:#334155;
+      height:max-content;
+    }
+    .compare-engine-badge.good{ background:#ECFDF5; border-color:#BBF7D0; color:#15803D; }
+    .compare-engine-badge.warn{ background:#FFFBEB; border-color:#FDE68A; color:#B45309; }
+    .compare-engine-badge.bad{ background:#FEF2F2; border-color:#FECACA; color:#B91C1C; }
+
+    @media (max-width: 900px){
+      .overview-snapshot-grid-redesign{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+    @media (max-width: 720px){
+      .overview-score-layout{
+        grid-template-columns:1fr;
+      }
+      .overview-score-right{
+        align-items:flex-start;
+      }
+      .overview-gauge-wrap{
+        justify-content:flex-start;
+      }
+      .overview-gauge{
+        width:220px;
+        height:115px;
+      }
+      .overview-gauge-inner{
+        font-size:3.4rem;
+      }
+      .redesign-activity-row,
+      .compare-engine-row{
+        grid-template-columns:1fr;
+      }
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -2686,6 +2954,7 @@
 </div>
 <div class="app-shell" id="appShell">
 <section class="screen active" id="overviewScreen">
+
 
 <div class="overview-redesign-shell" id="overviewRedesignShell">
   <div class="overview-redesign-card overview-score-card">
@@ -2716,15 +2985,25 @@
   <div class="overview-redesign-card" id="redesignInsightsCard">
     <div class="overview-card-header">
       <div class="overview-section-title">Actionable Insights</div>
-      <button class="overview-link-btn subtle" type="button" onclick="document.getElementById('comparisonEngineCard')?.scrollIntoView({behavior:'smooth', block:'start'})">View Benchmarks ›</button>
     </div>
     <div id="redesignInsightsList"></div>
+    <div class="overview-card-footer">
+      <button class="overview-link-btn subtle" type="button" onclick="toggleBenchmarksPanel()">
+        <span id="benchmarksToggleLabel">View Benchmarks ›</span>
+      </button>
+    </div>
+    <div class="overview-benchmarks-panel" id="overviewBenchmarksPanel" style="display:none;">
+      <div id="comparisonEngineSub" class="helper-copy" style="margin-bottom:12px;"></div>
+      <div id="comparisonEngineList"></div>
+    </div>
   </div>
 
   <div class="overview-redesign-card" id="redesignRecentActivityCard">
     <div class="overview-card-header">
       <div class="overview-section-title">Recent Activity</div>
-      <button class="overview-link-btn subtle" type="button" onclick="openScreen('settingsScreen',5)">View History ›</button>
+      <button class="overview-link-btn subtle" type="button" onclick="toggleRecentHistory()">
+        <span id="recentHistoryToggleLabel">View History ›</span>
+      </button>
     </div>
     <div id="redesignRecentActivityList"></div>
   </div>
@@ -2752,92 +3031,6 @@
       </div>
     </div>
   </div>
-</div>
-
-<div class="header">
-<div class="overview-v2-top">
-<input class="month-select" id="overviewMonth" type="month" onchange="changeMonth(this.value)" />
-<button class="overview-add-btn" onclick="openScreen('budgetScreen', 1)">+</button>
-</div>
-<div class="overview-hero">
-<div class="overview-hero-value" id="overviewHeroValue">$0</div>
-<div class="overview-hero-label">left to budget</div>
-</div>
-<div class="overview-v2-grid">
-<div class="overview-v2-card" onclick="openScreen('budgetScreen', 1)">
-<div class="overview-v2-icon">💰</div>
-<div class="overview-v2-card-title">Planned Income</div>
-<div class="overview-v2-card-value" id="overviewIncomeCard">$0</div>
-<div class="overview-v2-card-note">Income entered for the selected month.</div>
-<div class="overview-v2-card-btn">Open Budget</div>
-</div>
-<div class="overview-v2-card" onclick="openScreen('cashflowScreen', 2)">
-<div class="overview-v2-icon">🔁</div>
-<div class="overview-v2-card-title">Monthly Cash Flow</div>
-<div class="overview-v2-card-value" id="overviewCashFlowCard">$0</div>
-<div class="overview-v2-card-note" id="overviewCashFlowCardNote">Forecast after income and bills.</div>
-<div class="overview-v2-card-btn">Open Cash Flow</div>
-</div>
-<div class="overview-v2-card" onclick="openScreen('investScreen', 3)">
-<div class="overview-v2-icon">📈</div>
-<div class="overview-v2-card-title">Portfolio Total</div>
-<div class="overview-v2-card-value" id="overviewPortfolioCard">$0</div>
-<div class="overview-v2-card-note">Investment accounts tracked in Invest.</div>
-<div class="overview-v2-card-btn">Open Invest</div>
-</div>
-<div class="overview-v2-card" onclick="openScreen('assetsScreen', 4)">
-<div class="overview-v2-icon">📦</div>
-<div class="overview-v2-card-title">Assets + Net Worth</div>
-<div class="overview-v2-card-value" id="overviewAssetsCard">$0</div>
-<div class="overview-v2-card-note" id="overviewAssetsCardNote">Physical assets and total net worth.</div>
-<div class="overview-v2-card-btn">Open Assets</div>
-</div>
-</div>
-</div>
-<div class="card activity-card" id="compareCard">
-<div class="activity-head">
-<div class="activity-title label-with-info">How You Compare <span class="info-dot" onclick="toggleTip('tipCompareCard')">i</span></div>
-</div>
-<div class="tooltip-card hidden-tip" id="tipCompareCard">Based on simple general benchmarks for your selected age group. This is directional only, not personalized financial advice.</div>
-<div class="helper-copy" id="compareCardSub">Set your age group and state in Settings.</div>
-<div id="compareRows"></div>
-</div>
-
-<div class="card activity-card" id="notificationBannerCard" style="display:none;">
-  <div class="activity-head" style="margin-bottom:8px;">
-    <div class="activity-title label-with-info">Alerts <span class="info-dot" onclick="toggleTip('tipNotificationBanner')">i</span></div>
-    <button class="secondary-btn pill" type="button" onclick="dismissNotificationBanner()">Dismiss</button>
-  </div>
-  <div id="tipNotificationBanner" class="tooltip-card hidden-tip">These alerts are driven by your notification settings and your latest actionable insights.</div>
-  <div id="notificationBannerList"></div>
-</div>
-
-
-<div class="card activity-card" id="comparisonEngineCard">
-  <div class="activity-head">
-    <div class="activity-title label-with-info">How You Compare <span class="info-dot" onclick="toggleTip('tipComparisonEngine')">i</span></div>
-  </div>
-  <div id="tipComparisonEngine" class="tooltip-card hidden-tip">Uses simple built-in benchmarks based on age and state to give directional comparisons. This is guidance, not personalized financial advice.</div>
-  <div id="comparisonEngineSub" class="helper-copy"></div>
-  <div id="comparisonEngineList"></div>
-</div>
-
-<div class="card activity-card" id="smartInsightsCard">
-  <div class="activity-head">
-    <div class="activity-title label-with-info">Actionable Insights <span class="info-dot" onclick="toggleTip('tipSmartInsights')">i</span></div>
-  </div>
-  <div id="tipSmartInsights" class="tooltip-card hidden-tip">This uses your profile, budget, accounts, and goals to show what needs attention first and what action to take next.</div>
-  <div id="smartInsightsList"></div>
-</div>
-
-
-<div class="card activity-card" id="insightHistoryCard">
-  <div class="activity-head">
-    <div class="activity-title label-with-info">Insight History <span class="info-dot" onclick="toggleTip('tipInsightHistory')">i</span></div>
-    <button class="secondary-btn pill" type="button" onclick="clearInsightHistory()">Clear</button>
-  </div>
-  <div id="tipInsightHistory" class="tooltip-card hidden-tip">Tracks when actionable insights changed, so users can see what triggered attention recently.</div>
-  <div id="insightHistoryList"></div>
 </div>
 
 <div class="card activity-card">
