@@ -2764,6 +2764,86 @@
 #investScreen > .budget-card,#investScreen > .invest-card,#investScreen > .forecast-card,#investScreen > .activity-card,#investScreen > .networth-card{display:none !important;}
 @media (max-width:720px){#investScreen .wealth-v1-grid{grid-template-columns:1fr;}}
 
+    
+    /* Wealth v3 upgrades */
+    #investScreen .wealth-v3-goal,
+    #investScreen .wealth-v3-topmove{
+      padding:18px;
+    }
+    #investScreen .wealth-v3-goal-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    #investScreen .wealth-v3-goal-target{
+      color:#64748B;
+      font-size:.9rem;
+      line-height:1.4;
+      margin-top:4px;
+    }
+    #investScreen .wealth-v3-goal-status{
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:.8rem;
+      font-weight:800;
+      border:1px solid #E5E7EB;
+      background:#FFFFFF;
+      color:#334155;
+      white-space:nowrap;
+    }
+    #investScreen .wealth-v3-goal-status.good{
+      background:#ECFDF5;
+      border-color:#BBF7D0;
+      color:#15803D;
+    }
+    #investScreen .wealth-v3-goal-status.warn{
+      background:#FFFBEB;
+      border-color:#FDE68A;
+      color:#B45309;
+    }
+    #investScreen .wealth-v3-goal-status.bad{
+      background:#FEF2F2;
+      border-color:#FECACA;
+      color:#B91C1C;
+    }
+    #investScreen .wealth-v3-goal-progress-line{
+      height:12px;
+      border-radius:999px;
+      background:#E8EEF8;
+      overflow:hidden;
+      margin-bottom:10px;
+    }
+    #investScreen .wealth-v3-goal-progress-fill{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#35C9D6 0%, #2AA7E8 100%);
+    }
+    #investScreen .wealth-v3-goal-meta{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      color:#64748B;
+      font-size:.84rem;
+      line-height:1.35;
+    }
+    #investScreen .wealth-v3-topmove-text{
+      color:#0F172A;
+      font-size:1rem;
+      line-height:1.45;
+      font-weight:700;
+      margin-top:6px;
+    }
+    #investScreen .wealth-v3-proj-compare{
+      color:#0F172A;
+      font-size:1rem;
+      line-height:1.3;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -3205,83 +3285,74 @@
 </div></section>
 <section class="screen" id="investScreen">
 
+
 <div class="wealth-v1-shell" id="wealthV1Shell">
   <div class="wealth-v1-top">
     <select class="month-select" id="wealthMonthSelect"></select>
     <button class="wealth-v1-add" type="button" onclick="togglePanel('investmentPanelWrap', true)">+</button>
   </div>
+
+  <div class="wealth-v3-goal card">
+    <div class="wealth-v3-goal-top">
+      <div>
+        <div class="wealth-v1-title">Wealth Goal (Starter)</div>
+        <div class="wealth-v3-goal-target" id="wealthGoalTarget">$500,000 goal</div>
+      </div>
+      <div class="wealth-v3-goal-status" id="wealthTrackStatus">Off Track</div>
+    </div>
+    <div class="wealth-v3-goal-progress-line">
+      <div class="wealth-v3-goal-progress-fill" id="wealthGoalProgressFill"></div>
+    </div>
+    <div class="wealth-v3-goal-meta">
+      <span id="wealthGoalProgressText">0% complete</span>
+      <span id="wealthGoalRemainingText">$500,000 remaining</span>
+    </div>
+  </div>
+
   <div class="wealth-v1-hero card">
     <div class="wealth-v1-hero-total" id="wealthTotalValue">$0</div>
     <div class="wealth-v1-hero-label">Total Wealth</div>
     <div class="wealth-v1-hero-change" id="wealthMonthlyChange">+$0 this month</div>
   </div>
-  <div class="wealth-v1-breakdown card">
-    <div class="wealth-v1-section-head"><div class="wealth-v1-title">Breakdown</div></div>
-    <div class="wealth-v1-row"><div><div class="wealth-v1-row-title">Cash</div><div class="wealth-v1-row-copy">Account balances available now.</div></div><div class="wealth-v1-row-value" id="wealthCashValue">$0</div></div>
-    <div class="wealth-v1-row"><div><div class="wealth-v1-row-title">Investments</div><div class="wealth-v1-row-copy">Portfolio value tracked this month.</div></div><div class="wealth-v1-row-value" id="wealthInvestmentsValue">$0</div></div>
-    <div class="wealth-v1-row"><div><div class="wealth-v1-row-title">Assets</div><div class="wealth-v1-row-copy">Vehicles, property, and other assets.</div></div><div class="wealth-v1-row-value" id="wealthAssetsValue">$0</div></div>
+
+  <div class="wealth-v3-topmove card">
+    <div class="wealth-v1-title">Top Move This Month</div>
+    <div class="wealth-v3-topmove-text" id="wealthTopMoveText">Start by funding your first savings or investment target.</div>
   </div>
+
   <div class="wealth-v1-grid">
+    <div class="wealth-v1-card card">
+      <div class="wealth-v1-section-head"><div class="wealth-v1-title">Projection</div></div>
+      <div class="wealth-v1-proj" id="wealth10YearProjection">$0 in 10 years</div>
+      <div class="wealth-v3-proj-compare" id="wealthTargetProjection">$500,000 target path</div>
+      <div class="wealth-v1-copy" id="wealthProjectionGapText">$0 gap to target</div>
+    </div>
+
     <div class="wealth-v1-card card">
       <div class="wealth-v1-section-head"><div class="wealth-v1-title">Portfolio</div></div>
       <div class="wealth-v1-kpi" id="wealthPortfolioValue">$0</div>
       <div class="wealth-v1-copy" id="wealthMonthlyAddValue">$0 added this month</div>
       <div class="wealth-v1-copy" id="wealthGrowthRateValue">Growth baseline: 6.0%</div>
     </div>
-    <div class="wealth-v1-card card">
-      <div class="wealth-v1-section-head"><div class="wealth-v1-title">Projection</div></div>
-      <div class="wealth-v1-proj" id="wealth5YearProjection">$0 in 5 years</div>
-      <div class="wealth-v1-proj" id="wealth10YearProjection">$0 in 10 years</div>
-      <div class="wealth-v1-copy">Simple monthly-contribution projection for planning.</div>
-    </div>
   </div>
+
+  <div class="wealth-v1-breakdown card">
+    <div class="wealth-v1-section-head"><div class="wealth-v1-title">Breakdown</div></div>
+    <div class="wealth-v1-row"><div><div class="wealth-v1-row-title">Cash</div><div class="wealth-v1-row-copy">Account balances available now.</div></div><div class="wealth-v1-row-value" id="wealthCashValue">$0</div></div>
+    <div class="wealth-v1-row"><div><div class="wealth-v1-row-title">Investments</div><div class="wealth-v1-row-copy">Portfolio value tracked this month.</div></div><div class="wealth-v1-row-value" id="wealthInvestmentsValue">$0</div></div>
+    <div class="wealth-v1-row"><div><div class="wealth-v1-row-title">Assets</div><div class="wealth-v1-row-copy">Vehicles, property, and other assets.</div></div><div class="wealth-v1-row-value" id="wealthAssetsValue">$0</div></div>
+  </div>
+
+  <div class="wealth-v1-insights card">
+    <div class="wealth-v1-section-head"><div class="wealth-v1-title">Wealth Insights</div></div>
+    <div id="wealthInsightsList"></div>
+  </div>
+
   <div class="wealth-v1-health card">
     <div class="wealth-v1-section-head"><div class="wealth-v1-title">Wealth Health</div><div class="wealth-v1-health-score" id="wealthHealthScore">0</div></div>
     <div class="wealth-v1-health-track"><div class="wealth-v1-health-fill" id="wealthHealthFill"></div></div>
     <div class="wealth-v1-health-copy" id="wealthHealthCopy">Needs setup</div>
   </div>
-  <div class="wealth-v1-insights card">
-    <div class="wealth-v1-section-head"><div class="wealth-v1-title">Wealth Insights</div></div>
-    <div id="wealthInsightsList"></div>
-  </div>
-</div>
-
-<div class="header">
-<div class="eyebrow">Wealth</div>
-<h2>Investments</h2>
-<p>Track investment balances feeding your portfolio and overall wealth view.</p>
-</div>
-<div class="top-row">
-<input class="month-select" id="investMonth" type="month" onchange="changeMonth(this.value)" />
-</div>
-<div class="card invest-card"><h4>Portfolio Total</h4><div class="budget-big good" id="portfolioTotal">$0</div></div><div class="card invest-card" id="investMiniChartCard">
-<div class="section-head">
-<div class="section-title label-with-info">Investment Breakdown <span class="info-dot" onclick="toggleTip('tipInvestBreakdown')">i</span></div>
-</div>
-<div class="tooltip-card hidden-tip" id="tipInvestBreakdown">This chart only uses investment accounts from the Invest tab, not cash accounts or physical assets.</div>
-<div class="invest-mini-wrap">
-<div class="invest-mini-chart" id="investMiniChart">
-<div class="invest-mini-center" id="investMiniCenter">NO<br/>DATA</div>
-</div>
-<div class="invest-legend" id="investLegend"></div>
-</div>
-</div>
-<div class="card invest-card">
-<div class="section-head"><div class="section-title">Investment Accounts</div><button class="add-btn pill" onclick="togglePanel('investPanelWrap')">+ Account</button></div>
-<div id="investList"></div>
-<div id="investPanelWrap" style="display:none;">
-<div class="stack" style="margin-top:12px;">
-<div class="two-col">
-<input class="small-input" id="investName" placeholder="Account name"/>
-<input class="small-input" id="investAmount" placeholder="Amount" step="0.01" type="number"/>
-</div>
-<input class="small-input" id="investNote" placeholder="Notes"/>
-<div class="actions">
-<button class="save-btn pill" onclick="addInvestment()">Save Account</button>
-<button class="secondary-btn pill" onclick="togglePanel('investPanelWrap', false)">Cancel</button>
-</div>
-</div>
-</div>
 </div>
 </section>
 <section class="screen" id="assetsScreen">
@@ -5108,84 +5179,106 @@ function getWealthScreenData(monthKey=data.currentMonth){
   )));
   return { cash, investments, assets, income, expenses, recurring, total, monthlyAdded, fiveYear, tenYear, netWorth, savingsRate, emergencyMonths, score, monthlyChange: monthlyAdded, growthRatePct: assumedGrowthRate * 100 };
 }
-function renderWealthScreen(monthKey=data.currentMonth){
-  syncWealthMonthSelect();
-  const d = getWealthScreenData(monthKey);
-  const setText = (id, value) => { const el = document.getElementById(id); if(el) el.textContent = value; };
-  setText('wealthTotalValue', money(d.total));
-  setText('wealthCashValue', money(d.cash));
-  setText('wealthInvestmentsValue', money(d.investments));
-  setText('wealthAssetsValue', money(d.assets));
-  setText('wealthPortfolioValue', money(d.investments));
-  setText('wealthMonthlyAddValue', `${money(d.monthlyAdded)} added this month`);
-  setText('wealthGrowthRateValue', `Growth baseline: ${d.growthRatePct.toFixed(1)}%`);
-  setText('wealth5YearProjection', `${money(d.fiveYear)} in 5 years`);
-  setText('wealth10YearProjection', `${money(d.tenYear)} in 10 years`);
-  setText('wealthHealthScore', String(d.score));
-  const changeEl = document.getElementById('wealthMonthlyChange');
-  if(changeEl){
-    changeEl.textContent = `${d.monthlyChange >= 0 ? '+' : ''}${money(d.monthlyChange)} this month`;
-    changeEl.style.color = d.monthlyChange >= 0 ? '#16A34A' : '#DC2626';
-  }
-  const fillEl = document.getElementById('wealthHealthFill');
-  if(fillEl) fillEl.style.width = `${Math.max(4, Math.min(100, d.score))}%`;
-  const healthCopy = document.getElementById('wealthHealthCopy');
-  if(healthCopy){
-    if(d.score >= 75) healthCopy.textContent = 'Strong. Your wealth picture is moving in a healthy direction.';
-    else if(d.score >= 50) healthCopy.textContent = 'Improving. Keep building cash flow and invested assets.';
-    else healthCopy.textContent = 'Needs improvement. Increasing contributions and cash reserves would help.';
-  }
-  const benchmarkNetWorth = 40000;
-  const insights = [
-    `Increase investing by about ${money(Math.max(0, 500000 - d.tenYear) / 120)} per month to move closer to a $500k 10-year path.`,
-    d.netWorth >= benchmarkNetWorth ? `You are ahead of the basic benchmark net worth used for this screen.` : `You are about ${money(Math.max(0, benchmarkNetWorth - d.netWorth))} below the basic benchmark net worth used for this screen.`,
-    d.emergencyMonths >= 3 ? `Cash reserves are at ${d.emergencyMonths.toFixed(1)} months, which supports long-term investing.` : `Emergency reserves are only ${d.emergencyMonths.toFixed(1)} months. Build cash first to strengthen your wealth plan.`
-  ];
-  const wrap = document.getElementById('wealthInsightsList');
-  if(wrap){
-    wrap.innerHTML = insights.map(item => `<div class="wealth-v1-insight"><div class="wealth-v1-insight-title">${escapeHtml(item)}</div><div class="wealth-v1-insight-copy">${escapeHtml(item)}</div></div>`).join('');
-  }
-}
 
+    function renderWealthScreen(monthKey=data.currentMonth){
+      syncWealthMonthSelect();
+      const d = getWealthScreenData(monthKey);
+      const wealthGoal = 500000;
 
-    function renderOverview(){
-      const monthKey = data.currentMonth;
-      const manualIncome = getManualIncomeTotal(monthKey);
-      const investmentTotal = getInvestmentTotal(monthKey);
-      const assetTotal = getAssetTotal(monthKey);
-      const manualExpenses = getManualExpenseTotal(monthKey);
-      const recurringBills = getRecurringBillEvents(monthKey).reduce((s, e) => s + Number(e.amount || 0), 0);
-      const totalAccounts = getAllAccountBalance(monthKey);
-      const netWorth = totalAccounts + investmentTotal + assetTotal - (manualExpenses + recurringBills);
-      const values = getBudgetDisplayValues();
-      const forecast = getForecast(monthKey);
+      const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if(el) el.textContent = value;
+      };
 
-      const hero = document.getElementById('overviewHeroValue');
-      const incomeCard = document.getElementById('overviewIncomeCard');
-      const cashCard = document.getElementById('overviewCashFlowCard');
-      const cashNote = document.getElementById('overviewCashFlowCardNote');
-      const portfolioCard = document.getElementById('overviewPortfolioCard');
-      const assetsCard = document.getElementById('overviewAssetsCard');
-      const assetsNote = document.getElementById('overviewAssetsCardNote');
+      setText('wealthTotalValue', money(d.total));
+      setText('wealthCashValue', money(d.cash));
+      setText('wealthInvestmentsValue', money(d.investments));
+      setText('wealthAssetsValue', money(d.assets));
+      setText('wealthPortfolioValue', money(d.investments));
+      setText('wealthMonthlyAddValue', `${money(d.monthlyAdded)} added this month`);
+      setText('wealthGrowthRateValue', `Growth baseline: ${d.growthRatePct.toFixed(1)}%`);
 
-      if(hero) hero.textContent = money(values.leftToBudget);
-      if(incomeCard) incomeCard.textContent = money(manualIncome);
-      if(cashCard) cashCard.textContent = money(values.cashFlow);
-      if(cashNote){
-        cashNote.textContent = forecast.safeToSpend > 0
-          ? 'Safe to spend ' + money(forecast.safeToSpend)
-          : 'Set schedules and bills to improve forecast.';
+      setText('wealthGoalTarget', `${money(wealthGoal)} goal`);
+      const progressPct = Math.max(0, Math.min(100, (d.total / wealthGoal) * 100));
+      setText('wealthGoalProgressText', `${progressPct.toFixed(0)}% complete`);
+      setText('wealthGoalRemainingText', `${money(Math.max(0, wealthGoal - d.total))} remaining`);
+
+      const progressFill = document.getElementById('wealthGoalProgressFill');
+      if(progressFill) progressFill.style.width = `${Math.max(2, progressPct)}%`;
+
+      const targetTrack = document.getElementById('wealthTrackStatus');
+      const targetPath10 = wealthGoal;
+      const gap10 = Math.max(0, targetPath10 - d.tenYear);
+      let trackTone = 'bad';
+      let trackText = 'Off Track';
+      if(d.tenYear >= targetPath10){
+        trackTone = 'good';
+        trackText = 'On Track';
+      } else if(d.tenYear >= targetPath10 * 0.85){
+        trackTone = 'warn';
+        trackText = 'Slightly Behind';
       }
-      if(portfolioCard) portfolioCard.textContent = money(investmentTotal);
-      if(assetsCard) assetsCard.textContent = money(assetTotal);
-      if(assetsNote) assetsNote.textContent = 'Net worth ' + money(netWorth);
+      if(targetTrack){
+        targetTrack.textContent = trackText;
+        targetTrack.className = `wealth-v3-goal-status ${trackTone}`;
+      }
 
-      syncOverviewModeToggle();
-      renderCompareCard(monthKey);
-      renderPlanningSnapshot(monthKey);
-      renderSmartInsights(monthKey);
-      renderActivity();
+      setText('wealth10YearProjection', `${money(d.tenYear)} in 10 years`);
+      setText('wealthTargetProjection', `${money(wealthGoal)} target path`);
+      setText('wealthProjectionGapText', `${money(gap10)} gap to target`);
+
+      const changeEl = document.getElementById('wealthMonthlyChange');
+      if(changeEl){
+        changeEl.textContent = `${d.monthlyChange >= 0 ? '+' : ''}${money(d.monthlyChange)} this month`;
+        changeEl.style.color = d.monthlyChange >= 0 ? '#16A34A' : '#DC2626';
+      }
+
+      const topMoveEl = document.getElementById('wealthTopMoveText');
+      const investNeeded = Math.max(0, gap10 / 120);
+      if(topMoveEl){
+        if(d.emergencyMonths < 3){
+          topMoveEl.textContent = `Build your emergency fund to 3 months first. You are at ${d.emergencyMonths.toFixed(1)} months now.`;
+        } else if(gap10 > 0){
+          topMoveEl.textContent = `Increase investing by about ${money(investNeeded)} per month to stay on track for ${money(wealthGoal)}.`;
+        } else {
+          topMoveEl.textContent = `You are on track. Keep your current investing pace steady this month.`;
+        }
+      }
+
+      setText('wealthHealthScore', String(d.score));
+      const fillEl = document.getElementById('wealthHealthFill');
+      if(fillEl) fillEl.style.width = `${Math.max(4, Math.min(100, d.score))}%`;
+
+      const healthCopy = document.getElementById('wealthHealthCopy');
+      if(healthCopy){
+        if(d.score >= 75) healthCopy.textContent = 'Strong. Your wealth plan is moving in a healthy direction.';
+        else if(d.score >= 50) healthCopy.textContent = 'Improving. Keep building cash flow, reserves, and contributions.';
+        else healthCopy.textContent = 'Needs improvement. Focus on reserves first, then increase investing.';
+      }
+
+      const insights = [
+        d.emergencyMonths < 3
+          ? `Emergency reserves are only ${d.emergencyMonths.toFixed(1)} months. Stabilize cash before taking more risk.`
+          : `Emergency reserves are at ${d.emergencyMonths.toFixed(1)} months, which supports long-term investing.`,
+        gap10 > 0
+          ? `At your current pace, you are about ${money(gap10)} short of the ${money(wealthGoal)} target in 10 years.`
+          : `Your current pace is enough to reach or exceed the starter wealth goal in 10 years.`,
+        d.netWorth >= 40000
+          ? `You are ahead of the starter benchmark net worth used for this screen.`
+          : `You are about ${money(Math.max(0, 40000 - d.netWorth))} below the starter benchmark net worth used for this screen.`
+      ];
+
+      const wrap = document.getElementById('wealthInsightsList');
+      if(wrap){
+        wrap.innerHTML = insights.map(item => `
+          <div class="wealth-v1-insight">
+            <div class="wealth-v1-insight-title">${escapeHtml(item)}</div>
+            <div class="wealth-v1-insight-copy">${escapeHtml(item)}</div>
+          </div>
+        `).join('');
+      }
     }
+
 
     function makeTextEditable(el, value, onSave){
       if(el.querySelector('input')) return;
