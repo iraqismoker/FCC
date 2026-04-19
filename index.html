@@ -2730,6 +2730,40 @@
 #overviewScreen .overview-v3-benchmark-badge.bad{background:#FEF2F2;border-color:#FECACA;color:#B91C1C;}
 #overviewScreen .overview-grid,#overviewScreen .networth-card,#overviewScreen .forecast-card,#overviewScreen .activity-card,#overviewScreen .chart-card{display:none !important;}
 
+    
+/* Wealth screen v1 */
+#investScreen{background:#F8FAFC;color:#0F172A;padding:18px 18px 132px;}
+#investScreen .card{background:#FFFFFF;border:1px solid #E5E7EB;box-shadow:0 10px 28px rgba(15,23,42,.07);border-radius:24px;backdrop-filter:none;}
+#investScreen .wealth-v1-shell{display:flex;flex-direction:column;gap:14px;}
+#investScreen .wealth-v1-top{display:flex;align-items:center;gap:12px;}
+#investScreen .wealth-v1-top .month-select{flex:1;height:56px;border-radius:18px;background:#FFFFFF;color:#0F172A;border:1px solid #E5E7EB;box-shadow:0 6px 18px rgba(15,23,42,.05);font-size:1rem;font-weight:700;}
+#investScreen .wealth-v1-add{width:56px;height:56px;border:none;border-radius:18px;background:#FFFFFF;color:#2563EB;font-size:2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(15,23,42,.05);border:1px solid #E5E7EB;cursor:pointer;flex:0 0 auto;}
+#investScreen .wealth-v1-hero,#investScreen .wealth-v1-breakdown,#investScreen .wealth-v1-health,#investScreen .wealth-v1-insights{padding:18px;}
+#investScreen .wealth-v1-hero{text-align:center;}
+#investScreen .wealth-v1-hero-total{color:#0F172A;font-size:2.5rem;line-height:1.02;font-weight:800;letter-spacing:-.045em;margin-bottom:6px;}
+#investScreen .wealth-v1-hero-label{color:#64748B;font-size:1rem;line-height:1.35;margin-bottom:8px;}
+#investScreen .wealth-v1-hero-change{color:#16A34A;font-size:.95rem;font-weight:700;}
+#investScreen .wealth-v1-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+#investScreen .wealth-v1-card{padding:18px;min-height:180px;}
+#investScreen .wealth-v1-section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;}
+#investScreen .wealth-v1-title{color:#0F172A;font-size:1.12rem;font-weight:800;letter-spacing:-.02em;}
+#investScreen .wealth-v1-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:14px 0;border-top:1px solid #E5E7EB;}
+#investScreen .wealth-v1-row:first-of-type{border-top:none;padding-top:2px;}
+#investScreen .wealth-v1-row-title{color:#0F172A;font-size:1rem;font-weight:800;margin-bottom:4px;}
+#investScreen .wealth-v1-row-copy,#investScreen .wealth-v1-copy,#investScreen .wealth-v1-health-copy{color:#64748B;font-size:.88rem;line-height:1.45;}
+#investScreen .wealth-v1-row-value{color:#0F172A;font-size:1rem;font-weight:800;white-space:nowrap;}
+#investScreen .wealth-v1-kpi{color:#0F172A;font-size:2rem;line-height:1.02;font-weight:800;letter-spacing:-.04em;margin-bottom:8px;}
+#investScreen .wealth-v1-proj{color:#0F172A;font-size:1.08rem;font-weight:800;margin-bottom:8px;}
+#investScreen .wealth-v1-health-score{color:#0F172A;font-size:2.3rem;line-height:1;font-weight:800;letter-spacing:-.05em;}
+#investScreen .wealth-v1-health-track{height:12px;border-radius:999px;background:#E8EEF8;overflow:hidden;margin-bottom:10px;}
+#investScreen .wealth-v1-health-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#35C9D6 0%, #F2B245 55%, #FF6A59 100%);}
+#investScreen .wealth-v1-insight{padding:14px 0;border-top:1px solid #E5E7EB;}
+#investScreen .wealth-v1-insight:first-child{border-top:none;padding-top:2px;}
+#investScreen .wealth-v1-insight-title{color:#0F172A;font-size:1rem;line-height:1.35;font-weight:700;margin-bottom:6px;}
+#investScreen .wealth-v1-insight-copy{color:#475569;font-size:.88rem;line-height:1.45;}
+#investScreen > .budget-card,#investScreen > .invest-card,#investScreen > .forecast-card,#investScreen > .activity-card,#investScreen > .networth-card{display:none !important;}
+@media (max-width:720px){#investScreen .wealth-v1-grid{grid-template-columns:1fr;}}
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -3170,8 +3204,50 @@
 <div id="timelineList"></div>
 </div></section>
 <section class="screen" id="investScreen">
+
+<div class="wealth-v1-shell" id="wealthV1Shell">
+  <div class="wealth-v1-top">
+    <select class="month-select" id="wealthMonthSelect"></select>
+    <button class="wealth-v1-add" type="button" onclick="togglePanel('investmentPanelWrap', true)">+</button>
+  </div>
+  <div class="wealth-v1-hero card">
+    <div class="wealth-v1-hero-total" id="wealthTotalValue">$0</div>
+    <div class="wealth-v1-hero-label">Total Wealth</div>
+    <div class="wealth-v1-hero-change" id="wealthMonthlyChange">+$0 this month</div>
+  </div>
+  <div class="wealth-v1-breakdown card">
+    <div class="wealth-v1-section-head"><div class="wealth-v1-title">Breakdown</div></div>
+    <div class="wealth-v1-row"><div><div class="wealth-v1-row-title">Cash</div><div class="wealth-v1-row-copy">Account balances available now.</div></div><div class="wealth-v1-row-value" id="wealthCashValue">$0</div></div>
+    <div class="wealth-v1-row"><div><div class="wealth-v1-row-title">Investments</div><div class="wealth-v1-row-copy">Portfolio value tracked this month.</div></div><div class="wealth-v1-row-value" id="wealthInvestmentsValue">$0</div></div>
+    <div class="wealth-v1-row"><div><div class="wealth-v1-row-title">Assets</div><div class="wealth-v1-row-copy">Vehicles, property, and other assets.</div></div><div class="wealth-v1-row-value" id="wealthAssetsValue">$0</div></div>
+  </div>
+  <div class="wealth-v1-grid">
+    <div class="wealth-v1-card card">
+      <div class="wealth-v1-section-head"><div class="wealth-v1-title">Portfolio</div></div>
+      <div class="wealth-v1-kpi" id="wealthPortfolioValue">$0</div>
+      <div class="wealth-v1-copy" id="wealthMonthlyAddValue">$0 added this month</div>
+      <div class="wealth-v1-copy" id="wealthGrowthRateValue">Growth baseline: 6.0%</div>
+    </div>
+    <div class="wealth-v1-card card">
+      <div class="wealth-v1-section-head"><div class="wealth-v1-title">Projection</div></div>
+      <div class="wealth-v1-proj" id="wealth5YearProjection">$0 in 5 years</div>
+      <div class="wealth-v1-proj" id="wealth10YearProjection">$0 in 10 years</div>
+      <div class="wealth-v1-copy">Simple monthly-contribution projection for planning.</div>
+    </div>
+  </div>
+  <div class="wealth-v1-health card">
+    <div class="wealth-v1-section-head"><div class="wealth-v1-title">Wealth Health</div><div class="wealth-v1-health-score" id="wealthHealthScore">0</div></div>
+    <div class="wealth-v1-health-track"><div class="wealth-v1-health-fill" id="wealthHealthFill"></div></div>
+    <div class="wealth-v1-health-copy" id="wealthHealthCopy">Needs setup</div>
+  </div>
+  <div class="wealth-v1-insights card">
+    <div class="wealth-v1-section-head"><div class="wealth-v1-title">Wealth Insights</div></div>
+    <div id="wealthInsightsList"></div>
+  </div>
+</div>
+
 <div class="header">
-<div class="eyebrow">Invest</div>
+<div class="eyebrow">Wealth</div>
 <h2>Investments</h2>
 <p>Track investment balances feeding your portfolio and overall wealth view.</p>
 </div>
@@ -3386,7 +3462,7 @@
 </div>
 
 </section>
-<nav class="bottom-nav"><button class="nav-btn active" onclick="openScreen('overviewScreen', 0)"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button><button class="nav-btn" onclick="openScreen('budgetScreen', 1)"><span class="nav-icon">💸</span><span class="nav-label">Budget</span></button><button class="nav-btn" onclick="openScreen('cashflowScreen', 2)"><span class="nav-icon">📅</span><span class="nav-label">Cash Flow</span></button><button class="nav-btn" onclick="openScreen('investScreen', 3)"><span class="nav-icon">📈</span><span class="nav-label">Invest</span></button><button class="nav-btn" onclick="openScreen('assetsScreen', 4)"><span class="nav-icon">📦</span><span class="nav-label">Assets</span></button><button class="nav-btn" onclick="openScreen('settingsScreen', 5)"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button></nav>
+<nav class="bottom-nav"><button class="nav-btn active" onclick="openScreen('overviewScreen', 0)"><span class="nav-icon">🏠</span><span class="nav-label">Overview</span></button><button class="nav-btn" onclick="openScreen('budgetScreen', 1)"><span class="nav-icon">💸</span><span class="nav-label">Budget</span></button><button class="nav-btn" onclick="openScreen('cashflowScreen', 2)"><span class="nav-icon">📅</span><span class="nav-label">Cash Flow</span></button><button class="nav-btn" onclick="openScreen('investScreen', 3)"><span class="nav-icon">📈</span><span class="nav-label">Wealth</span></button><button class="nav-btn" onclick="openScreen('assetsScreen', 4)"><span class="nav-icon">📦</span><span class="nav-label">Assets</span></button><button class="nav-btn" onclick="openScreen('settingsScreen', 5)"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button></nav>
 </div>
 <script>
     const STORAGE_KEY = 'fcc_full_v2';
@@ -3808,6 +3884,7 @@ let data = defaultData();
       syncBudgetToggle();
       syncOverviewModeToggle();
       renderOverview();
+      renderWealthScreen(data.currentMonth);
       renderOverviewV3(data.currentMonth);
       const expMonth = document.getElementById('expenseBudgetMonth');
       if(expMonth && expMonth.offsetParent !== null){
@@ -4996,6 +5073,78 @@ function renderOverviewBenchmarks(monthKey=data.currentMonth){
       <div class="overview-v3-benchmark-badge ${row.tone}">${escapeHtml(row.label)}</div>
     </div>
   `).join('');
+}
+
+
+    
+function syncWealthMonthSelect(){
+  const sel = document.getElementById('wealthMonthSelect');
+  if(!sel) return;
+  sel.innerHTML = monthOptions(data.currentMonth).map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
+  sel.value = data.currentMonth;
+  sel.onchange = () => { data.currentMonth = sel.value; saveData(); render(); };
+}
+function getWealthScreenData(monthKey=data.currentMonth){
+  const month = getMonthData(monthKey);
+  const cash = (month.accounts || []).reduce((s,a)=>s+Number(a.balance||0),0);
+  const investments = (month.investments || []).reduce((s,i)=>s+Number(i.amount||0),0);
+  const assets = (month.assets || []).reduce((s,a)=>s+Number(a.value||0),0);
+  const income = (month.incomes || []).reduce((s,i)=>s+Number(i.amount||0),0);
+  const expenses = (month.expenses || []).reduce((s,e)=>s+Number(e.amount||0),0);
+  const recurring = (data.recurringBills || []).reduce((s,b)=>s+Number(b.amount||0),0);
+  const total = cash + investments + assets;
+  const monthlyAdded = investments > 0 ? Math.max(200, investments * 0.02) : Math.max(100, income * 0.05 || 100);
+  const assumedGrowthRate = 0.06;
+  const fiveYear = total * Math.pow(1 + assumedGrowthRate, 5) + (monthlyAdded * 12 * 5);
+  const tenYear = total * Math.pow(1 + assumedGrowthRate, 10) + (monthlyAdded * 12 * 10);
+  const netWorth = total - expenses - recurring;
+  const benchmarkNetWorth = 40000;
+  const savingsRate = income > 0 ? (Math.max(0, income - expenses - recurring) / income) * 100 : 0;
+  const emergencyMonths = cash / Math.max(1, expenses + recurring);
+  const score = Math.max(0, Math.min(100, Math.round(
+    (Math.min(100, (savingsRate / 20) * 100 || 35) * 0.30) +
+    (Math.min(100, (emergencyMonths / 3) * 100) * 0.25) +
+    (Math.min(100, (Math.max(0, netWorth) / benchmarkNetWorth) * 100) * 0.45)
+  )));
+  return { cash, investments, assets, income, expenses, recurring, total, monthlyAdded, fiveYear, tenYear, netWorth, savingsRate, emergencyMonths, score, monthlyChange: monthlyAdded, growthRatePct: assumedGrowthRate * 100 };
+}
+function renderWealthScreen(monthKey=data.currentMonth){
+  syncWealthMonthSelect();
+  const d = getWealthScreenData(monthKey);
+  const setText = (id, value) => { const el = document.getElementById(id); if(el) el.textContent = value; };
+  setText('wealthTotalValue', money(d.total));
+  setText('wealthCashValue', money(d.cash));
+  setText('wealthInvestmentsValue', money(d.investments));
+  setText('wealthAssetsValue', money(d.assets));
+  setText('wealthPortfolioValue', money(d.investments));
+  setText('wealthMonthlyAddValue', `${money(d.monthlyAdded)} added this month`);
+  setText('wealthGrowthRateValue', `Growth baseline: ${d.growthRatePct.toFixed(1)}%`);
+  setText('wealth5YearProjection', `${money(d.fiveYear)} in 5 years`);
+  setText('wealth10YearProjection', `${money(d.tenYear)} in 10 years`);
+  setText('wealthHealthScore', String(d.score));
+  const changeEl = document.getElementById('wealthMonthlyChange');
+  if(changeEl){
+    changeEl.textContent = `${d.monthlyChange >= 0 ? '+' : ''}${money(d.monthlyChange)} this month`;
+    changeEl.style.color = d.monthlyChange >= 0 ? '#16A34A' : '#DC2626';
+  }
+  const fillEl = document.getElementById('wealthHealthFill');
+  if(fillEl) fillEl.style.width = `${Math.max(4, Math.min(100, d.score))}%`;
+  const healthCopy = document.getElementById('wealthHealthCopy');
+  if(healthCopy){
+    if(d.score >= 75) healthCopy.textContent = 'Strong. Your wealth picture is moving in a healthy direction.';
+    else if(d.score >= 50) healthCopy.textContent = 'Improving. Keep building cash flow and invested assets.';
+    else healthCopy.textContent = 'Needs improvement. Increasing contributions and cash reserves would help.';
+  }
+  const benchmarkNetWorth = 40000;
+  const insights = [
+    `Increase investing by about ${money(Math.max(0, 500000 - d.tenYear) / 120)} per month to move closer to a $500k 10-year path.`,
+    d.netWorth >= benchmarkNetWorth ? `You are ahead of the basic benchmark net worth used for this screen.` : `You are about ${money(Math.max(0, benchmarkNetWorth - d.netWorth))} below the basic benchmark net worth used for this screen.`,
+    d.emergencyMonths >= 3 ? `Cash reserves are at ${d.emergencyMonths.toFixed(1)} months, which supports long-term investing.` : `Emergency reserves are only ${d.emergencyMonths.toFixed(1)} months. Build cash first to strengthen your wealth plan.`
+  ];
+  const wrap = document.getElementById('wealthInsightsList');
+  if(wrap){
+    wrap.innerHTML = insights.map(item => `<div class="wealth-v1-insight"><div class="wealth-v1-insight-title">${escapeHtml(item)}</div><div class="wealth-v1-insight-copy">${escapeHtml(item)}</div></div>`).join('');
+  }
 }
 
 
