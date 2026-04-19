@@ -2047,6 +2047,135 @@
       font-weight:700;
     }
 
+    
+    /* Rebuilt Overview UI */
+    #overviewScreen{
+      padding:18px 18px 132px;
+    }
+    #overviewScreen .overview-health-card,
+    #overviewScreen .overview-snapshot-card,
+    #overviewScreen .overview-insights-card,
+    #overviewScreen .overview-activity-card{
+      background:#FFFFFF;
+      border:1px solid #E5E7EB;
+      border-radius:24px;
+      box-shadow:0 10px 28px rgba(15,23,42,.07);
+      padding:18px;
+      margin-bottom:14px;
+    }
+    .overview-health-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      margin-bottom:16px;
+    }
+    .overview-health-label{
+      color:#64748B;
+      font-size:.88rem;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+    .overview-health-score{
+      color:#0F172A;
+      font-size:3rem;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:-.05em;
+      margin-bottom:6px;
+    }
+    .overview-health-status{
+      color:#64748B;
+      font-size:.92rem;
+      font-weight:700;
+    }
+    .overview-health-ring{
+      width:94px;
+      height:94px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:conic-gradient(#3B82F6 0deg, #E5E7EB 0deg);
+      position:relative;
+      flex:0 0 auto;
+    }
+    .overview-health-ring::after{
+      content:"";
+      position:absolute;
+      inset:11px;
+      background:#FFFFFF;
+      border-radius:50%;
+      border:1px solid #E5E7EB;
+    }
+    .overview-health-ring-inner{
+      position:relative;
+      z-index:1;
+      color:#0F172A;
+      font-size:1.05rem;
+      font-weight:800;
+    }
+    .overview-health-breakdown{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .health-metric{
+      padding:12px;
+      border-radius:18px;
+      background:#F8FAFC;
+      border:1px solid #E5E7EB;
+    }
+    .health-metric-label{
+      color:#64748B;
+      font-size:.76rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:7px;
+    }
+    .health-metric-value{
+      color:#0F172A;
+      font-size:1rem;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .health-metric-copy{
+      color:#64748B;
+      font-size:.78rem;
+      line-height:1.35;
+    }
+    .overview-snapshot-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .overview-snapshot-tile{
+      padding:14px;
+      border-radius:18px;
+      background:#F8FAFC;
+      border:1px solid #E5E7EB;
+    }
+    .overview-snapshot-label{
+      color:#64748B;
+      font-size:.76rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:8px;
+    }
+    .overview-snapshot-value{
+      color:#0F172A;
+      font-size:1.15rem;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    #smartInsightsList .insight-row{
+      padding:14px 0;
+    }
+    #recentActivityList .history-row{
+      padding:14px 0;
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -2101,55 +2230,77 @@
 </div>
 </div>
 </div>
-<div class="card activity-card" id="compareCard">
-<div class="activity-head">
-<div class="activity-title label-with-info">How You Compare <span class="info-dot" onclick="toggleTip('tipCompareCard')">i</span></div>
 </div>
 <div class="tooltip-card hidden-tip" id="tipCompareCard">Based on simple general benchmarks for your selected age group. This is directional only, not personalized financial advice.</div>
 <div class="helper-copy" id="compareCardSub">Set your age group and state in Settings.</div>
 <div id="compareRows"></div>
 </div>
 
-<div class="card activity-card" id="notificationBannerCard" style="display:none;">
-  <div class="activity-head" style="margin-bottom:8px;">
-    <div class="activity-title label-with-info">Alerts <span class="info-dot" onclick="toggleTip('tipNotificationBanner')">i</span></div>
-    <button class="secondary-btn pill" type="button" onclick="dismissNotificationBanner()">Dismiss</button>
+
+
+
+
+
+
+
+<div class="card overview-health-card" id="healthScoreCard">
+  <div class="overview-health-top">
+    <div>
+      <div class="overview-health-label">Financial Health</div>
+      <div class="overview-health-score" id="healthScoreValue">0</div>
+      <div class="overview-health-status" id="healthScoreStatus">Needs setup</div>
+    </div>
+    <div class="overview-health-ring" id="healthScoreRing">
+      <div class="overview-health-ring-inner" id="healthScoreRingInner">0</div>
+    </div>
   </div>
-  <div id="tipNotificationBanner" class="tooltip-card hidden-tip">These alerts are driven by your notification settings and your latest actionable insights.</div>
-  <div id="notificationBannerList"></div>
+  <div class="overview-health-breakdown" id="healthBreakdown"></div>
 </div>
 
-
-<div class="card activity-card" id="comparisonEngineCard">
+<div class="card overview-snapshot-card" id="overviewSnapshotCard">
   <div class="activity-head">
-    <div class="activity-title label-with-info">How You Compare <span class="info-dot" onclick="toggleTip('tipComparisonEngine')">i</span></div>
+    <div class="activity-title">Money Snapshot</div>
   </div>
-  <div id="tipComparisonEngine" class="tooltip-card hidden-tip">Uses simple built-in benchmarks based on age and state to give directional comparisons. This is guidance, not personalized financial advice.</div>
-  <div id="comparisonEngineSub" class="helper-copy"></div>
-  <div id="comparisonEngineList"></div>
+  <div class="overview-snapshot-grid">
+    <div class="overview-snapshot-tile">
+      <div class="overview-snapshot-label">Budget Left</div>
+      <div class="overview-snapshot-value" id="snapshotBudgetLeft">$0</div>
+    </div>
+    <div class="overview-snapshot-tile">
+      <div class="overview-snapshot-label">Liquid Savings</div>
+      <div class="overview-snapshot-value" id="snapshotLiquidSavings">$0</div>
+    </div>
+    <div class="overview-snapshot-tile">
+      <div class="overview-snapshot-label">Emergency Fund</div>
+      <div class="overview-snapshot-value" id="snapshotEmergencyMonths">0.0 mo</div>
+    </div>
+    <div class="overview-snapshot-tile">
+      <div class="overview-snapshot-label">Net Worth</div>
+      <div class="overview-snapshot-value" id="snapshotNetWorth">$0</div>
+    </div>
+  </div>
 </div>
 
-<div class="card activity-card" id="smartInsightsCard">
+<div class="card overview-insights-card" id="smartInsightsCard">
   <div class="activity-head">
     <div class="activity-title label-with-info">Actionable Insights <span class="info-dot" onclick="toggleTip('tipSmartInsights')">i</span></div>
   </div>
-  <div id="tipSmartInsights" class="tooltip-card hidden-tip">This uses your profile, budget, accounts, and goals to show what needs attention first and what action to take next.</div>
+  <div id="tipSmartInsights" class="tooltip-card hidden-tip">Your highest-priority next moves based on your profile, budget, goals, and comparisons.</div>
   <div id="smartInsightsList"></div>
 </div>
 
-
-<div class="card activity-card" id="insightHistoryCard">
+<div class="card overview-activity-card" id="recentActivityCard">
   <div class="activity-head">
-    <div class="activity-title label-with-info">Insight History <span class="info-dot" onclick="toggleTip('tipInsightHistory')">i</span></div>
+    <div class="activity-title label-with-info">Recent Activity <span class="info-dot" onclick="toggleTip('tipRecentActivity')">i</span></div>
     <button class="secondary-btn pill" type="button" onclick="clearInsightHistory()">Clear</button>
   </div>
-  <div id="tipInsightHistory" class="tooltip-card hidden-tip">Tracks when actionable insights changed, so users can see what triggered attention recently.</div>
-  <div id="insightHistoryList"></div>
+  <div id="tipRecentActivity" class="tooltip-card hidden-tip">A simple timeline of insight changes and other recent app activity.</div>
+  <div id="recentActivityList"></div>
 </div>
 
 <div class="card activity-card">
 <div class="activity-head">
-<div class="activity-title">Recent Activity</div>
+<div class="activity-title">Ledger Activity</div>
 <button class="secondary-btn pill" onclick="clearActivity()">Clear</button>
 </div>
 <div id="activityList"></div>
@@ -2626,12 +2777,12 @@
         incomeSchedules: [],
         profile: { name:'', age: 0, state:'CO', monthlyIncome: 0, monthlySavingsTarget: 0, retirementAge: 65, emergencyMonthsTarget: 3 },
         notificationSettings: { criticalInsights: true, goalProgress: false, budgetWarnings: true, weeklySummary: false, growthUpdates: false, frequency: 'important_only', quietMode: 'off' },
-        insightHistory: [],
         profile: { ageGroup: '30-34', state: 'CO' }
       };
     }
 
     let previousInsightsState = {};
+let insightHistory = [];
 let data = defaultData();
 
     function saveData(){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {} }
@@ -3591,13 +3742,9 @@ let data = defaultData();
 
 
     function addInsightHistoryEntry(title, copy, tone, gap=''){
-      if(!data.insightHistory) data.insightHistory = [];
       const stamp = new Date().toISOString();
-      const latest = data.insightHistory[0];
-      if(latest && latest.title === title && latest.copy === copy && latest.gap === gap) return;
-      data.insightHistory.unshift({ title, copy, tone, gap, stamp });
-      data.insightHistory = data.insightHistory.slice(0, 20);
-      saveData();
+      insightHistory.unshift({ title, copy, tone, gap, stamp });
+      insightHistory = insightHistory.slice(0, 20);
     }
 
     function formatHistoryTime(iso){
@@ -3608,12 +3755,11 @@ let data = defaultData();
     function renderInsightHistory(){
       const wrap = document.getElementById('insightHistoryList');
       if(!wrap) return;
-      const history = data.insightHistory || [];
-      if(!history.length){
+      if(!insightHistory.length){
         wrap.innerHTML = `<div class="empty-state">No recent insight changes yet.</div>`;
         return;
       }
-      wrap.innerHTML = history.map(item => `
+      wrap.innerHTML = insightHistory.map(item => `
         <div class="history-row">
           <div style="flex:1;min-width:0;">
             <div class="history-title">${escapeHtml(item.title)}</div>
@@ -3625,9 +3771,8 @@ let data = defaultData();
     }
 
     function clearInsightHistory(){
-      data.insightHistory = [];
-      saveData();
-      renderInsightHistory();
+      insightHistory = [];
+      renderRecentActivity();
     }
 
 
@@ -3710,6 +3855,130 @@ let data = defaultData();
       if(value <= benchmark * 0.8) return { label: 'Below benchmark', tone: 'bad' };
       return { label: 'Near average', tone: 'warn' };
     }
+
+    
+    function getHealthScoreData(monthKey=data.currentMonth){
+      const p = data.profile || {};
+      const monthlyIncome = Number(p.monthlyIncome || 0);
+      const monthValues = getBudgetDisplayValues ? getBudgetDisplayValues() : { leftToBudget: 0 };
+      const available = Number(monthValues.leftToBudget || 0);
+      const comparisonBench = getComparisonBenchmarks ? getComparisonBenchmarks() : { savingsRate: 15, emergencyMonths: 3, netWorth: 40000 };
+      const savingsRate = monthlyIncome > 0 ? (Math.max(0, available) / monthlyIncome) * 100 : 0;
+      const monthlyOutflow = Math.max(1, getManualExpenseTotal(monthKey) + getRecurringBillEvents(monthKey).reduce((s,e)=>s+Number(e.amount||0),0));
+      const liquidCash = getAllAccountBalance(monthKey);
+      const emergencyMonths = liquidCash / monthlyOutflow;
+      const goals = getSavingsGoals ? getSavingsGoals(monthKey) : [];
+      const fundedGoals = goals.filter(g => {
+        const linked = g.accountId ? getAccountById(g.accountId, monthKey) : null;
+        const current = linked ? Number(linked.balance || 0) : Number(g.current || 0);
+        return Number(g.target || 0) > 0 && current >= Number(g.target || 0);
+      }).length;
+      const goalRatio = goals.length ? fundedGoals / goals.length : 0;
+      const netWorthValue = liquidCash + getInvestmentTotal(monthKey) + getAssetTotal(monthKey) - getManualExpenseTotal(monthKey) - getRecurringBillEvents(monthKey).reduce((s,e)=>s+Number(e.amount||0),0);
+
+      const savingsScore = monthlyIncome > 0 ? Math.min(100, (savingsRate / 20) * 100) : 35;
+      const emergencyScore = Math.min(100, (emergencyMonths / Math.max(1, comparisonBench.emergencyMonths)) * 100);
+      const goalsScore = goals.length ? goalRatio * 100 : 40;
+      const benchmarkScore = Math.min(100, (Math.max(0, netWorthValue) / Math.max(1, comparisonBench.netWorth)) * 100);
+
+      const weighted = (
+        savingsScore * 0.30 +
+        emergencyScore * 0.25 +
+        goalsScore * 0.20 +
+        benchmarkScore * 0.25
+      );
+
+      return {
+        score: Math.round(weighted),
+        savingsRate,
+        emergencyMonths,
+        fundedGoals,
+        totalGoals: goals.length,
+        benchmarkLabel: getComparisonLabel ? getComparisonLabel(netWorthValue, comparisonBench.netWorth) : { label:'Near average', tone:'warn' },
+        benchmarkState: comparisonBench.state || ((data.profile && data.profile.state) || 'CO'),
+        benchmarkAgeBand: comparisonBench.ageBand || '30-34'
+      };
+    }
+
+    function renderHealthScore(monthKey=data.currentMonth){
+      const scoreEl = document.getElementById('healthScoreValue');
+      const statusEl = document.getElementById('healthScoreStatus');
+      const ringEl = document.getElementById('healthScoreRing');
+      const ringInner = document.getElementById('healthScoreRingInner');
+      const breakdown = document.getElementById('healthBreakdown');
+      if(!scoreEl || !statusEl || !ringEl || !ringInner || !breakdown) return;
+
+      const dataScore = getHealthScoreData(monthKey);
+      const score = dataScore.score;
+      const tone = score >= 75 ? 'good' : (score >= 50 ? 'warn' : 'bad');
+      const status = score >= 75 ? 'Strong' : (score >= 50 ? 'Improving' : 'Needs improvement');
+      const deg = Math.max(0, Math.min(360, score * 3.6));
+      const color = tone === 'good' ? '#16A34A' : (tone === 'warn' ? '#F59E0B' : '#DC2626');
+
+      scoreEl.textContent = String(score);
+      scoreEl.className = 'overview-health-score ' + tone;
+      statusEl.textContent = status;
+      statusEl.className = 'overview-health-status ' + tone;
+      ringEl.style.background = `conic-gradient(${color} ${deg}deg, #E5E7EB ${deg}deg)`;
+      ringInner.textContent = String(score);
+
+      breakdown.innerHTML = `
+        <div class="health-metric">
+          <div class="health-metric-label">Savings Rate</div>
+          <div class="health-metric-value">${dataScore.savingsRate.toFixed(0)}%</div>
+          <div class="health-metric-copy">Target pace uses 20% as a simple planning benchmark.</div>
+        </div>
+        <div class="health-metric">
+          <div class="health-metric-label">Emergency Fund</div>
+          <div class="health-metric-value">${dataScore.emergencyMonths.toFixed(1)} months</div>
+          <div class="health-metric-copy">Compared against your benchmark emergency reserve target.</div>
+        </div>
+        <div class="health-metric">
+          <div class="health-metric-label">Goal Progress</div>
+          <div class="health-metric-value">${dataScore.fundedGoals}/${dataScore.totalGoals || 0} funded</div>
+          <div class="health-metric-copy">Funded goals strengthen your overall score.</div>
+        </div>
+        <div class="health-metric">
+          <div class="health-metric-label">Benchmark Position</div>
+          <div class="health-metric-value ${dataScore.benchmarkLabel.tone}">${dataScore.benchmarkLabel.label}</div>
+          <div class="health-metric-copy">${getStateName(dataScore.benchmarkState)} • Age band ${dataScore.benchmarkAgeBand}</div>
+        </div>
+      `;
+    }
+
+    function renderOverviewSnapshot(monthKey=data.currentMonth){
+      const monthValues = getBudgetDisplayValues ? getBudgetDisplayValues() : { leftToBudget: 0 };
+      const liquidCash = getAllAccountBalance(monthKey);
+      const monthlyOutflow = Math.max(1, getManualExpenseTotal(monthKey) + getRecurringBillEvents(monthKey).reduce((s,e)=>s+Number(e.amount||0),0));
+      const emergencyMonths = liquidCash / monthlyOutflow;
+      const netWorth = liquidCash + getInvestmentTotal(monthKey) + getAssetTotal(monthKey) - getManualExpenseTotal(monthKey) - getRecurringBillEvents(monthKey).reduce((s,e)=>s+Number(e.amount||0),0);
+
+      const setText = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+      setText('snapshotBudgetLeft', money(Number(monthValues.leftToBudget || 0)));
+      setText('snapshotLiquidSavings', money(liquidCash));
+      setText('snapshotEmergencyMonths', `${emergencyMonths.toFixed(1)} mo`);
+      setText('snapshotNetWorth', money(netWorth));
+    }
+
+    function renderRecentActivity(){
+      const wrap = document.getElementById('recentActivityList');
+      if(!wrap) return;
+      const history = data.insightHistory || [];
+      if(!history.length){
+        wrap.innerHTML = `<div class="empty-state">No recent activity yet.</div>`;
+        return;
+      }
+      wrap.innerHTML = history.slice(0,8).map(item => `
+        <div class="history-row">
+          <div style="flex:1;min-width:0;">
+            <div class="history-title">${escapeHtml(item.title)}</div>
+            <div class="history-copy">${escapeHtml(item.copy)}${item.gap ? `<br>${escapeHtml(item.gap)}` : ``}</div>
+          </div>
+          <div class="history-time">${escapeHtml(formatHistoryTime(item.stamp))}</div>
+        </div>
+      `).join('');
+    }
+
 
     function renderComparisonEngine(monthKey=data.currentMonth){
       const sub = document.getElementById('comparisonEngineSub');
@@ -3930,14 +4199,11 @@ let data = defaultData();
       resetDismissedAlertsForChangedInsights(currentInsightAlerts);
       renderNotificationBanner();
 
-      const changedInsights = [];
       const rendered = insights.map(item => {
         const key = item.title;
         const prev = previousInsightsState[key];
         const isNew = !prev || prev.copy !== item.copy || (prev.gap || '') !== (item.gap || '');
-        if(isNew){
-          changedInsights.push(item);
-        }
+        if(isNew){ addInsightHistoryEntry(item.title, item.copy, item.tone, item.gap || ''); }
 
         previousInsightsState[key] = { copy: item.copy, gap: item.gap || '' };
 
@@ -3961,10 +4227,6 @@ let data = defaultData();
       }).join('');
 
       wrap.innerHTML = rendered;
-
-      changedInsights.forEach(item => {
-        addInsightHistoryEntry(item.title, item.copy, item.tone, item.gap || '');
-      });
     }
 
 
