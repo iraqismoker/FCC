@@ -2283,6 +2283,395 @@
       }
     }
 
+    
+    /* Unified design system pass: Budget, Assets, Settings */
+    #budgetScreen,
+    #assetsScreen,
+    #settingsScreen{
+      padding:18px 18px 132px;
+      background:#F5F7FB;
+    }
+
+    #budgetScreen .header,
+    #assetsScreen .header,
+    #settingsScreen .header{
+      margin-bottom:14px;
+    }
+
+    #budgetScreen .header h2,
+    #assetsScreen .header h2,
+    #settingsScreen .header h2{
+      color:#0F172A;
+      font-size:2rem;
+      line-height:1.05;
+      font-weight:800;
+      letter-spacing:-.04em;
+      margin-bottom:10px;
+    }
+
+    #budgetScreen .header p,
+    #assetsScreen .header p,
+    #settingsScreen .header p{
+      color:#64748B;
+      font-size:1rem;
+      line-height:1.45;
+      max-width:42rem;
+    }
+
+    #budgetScreen .eyebrow,
+    #assetsScreen .eyebrow,
+    #settingsScreen .eyebrow{
+      color:#3B82F6;
+      font-size:.82rem;
+      font-weight:800;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      margin-bottom:12px;
+    }
+
+    #budgetScreen .card,
+    #assetsScreen .card,
+    #settingsScreen .card{
+      background:#FFFFFF;
+      border:1px solid #E5E7EB;
+      border-radius:24px;
+      box-shadow:0 8px 30px rgba(15,23,42,.06);
+      padding:18px;
+      margin-bottom:14px;
+    }
+
+    #budgetScreen .section-head,
+    #assetsScreen .section-head,
+    #settingsScreen .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    #budgetScreen .section-title,
+    #assetsScreen .section-title,
+    #settingsScreen .section-title,
+    #settingsScreen h4,
+    #assetsScreen h4,
+    #budgetScreen h4{
+      color:#0F172A;
+      font-size:1.08rem;
+      font-weight:800;
+      letter-spacing:-.02em;
+      margin:0;
+    }
+
+    #budgetScreen .top-row,
+    #assetsScreen .top-row{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto auto;
+      gap:12px;
+      margin-bottom:14px;
+      align-items:center;
+    }
+
+    .month-select,
+    .form-select,
+    .small-input{
+      min-height:58px;
+      border-radius:20px;
+      background:#FFFFFF;
+      border:1px solid #E5E7EB;
+      box-shadow:0 6px 18px rgba(15,23,42,.05);
+      color:#0F172A;
+      font-size:1rem;
+      font-weight:600;
+      padding:0 16px;
+    }
+
+    .small-input::placeholder{
+      color:#94A3B8;
+      font-weight:500;
+    }
+
+    .save-btn.pill,
+    .secondary-btn.pill,
+    .danger-btn.pill,
+    .add-btn.pill{
+      min-height:52px;
+      border-radius:999px;
+      padding:0 18px;
+      font-size:1rem;
+      font-weight:800;
+      letter-spacing:-.01em;
+      box-shadow:none;
+    }
+
+    .save-btn.pill,
+    .add-btn.pill{
+      background:linear-gradient(180deg, #5B8DFF 0%, #3768F4 100%);
+      color:#FFFFFF;
+      border:none;
+    }
+
+    .secondary-btn.pill{
+      background:#FFFFFF;
+      color:#334155;
+      border:1px solid #D7DFEA;
+    }
+
+    .danger-btn.pill{
+      background:#FFF7F7;
+      color:#B42318;
+      border:1px solid #F2C6C6;
+    }
+
+    #budgetScreen .segmented,
+    #budgetScreen .budget-segment,
+    #budgetScreen .mode-toggle{
+      background:#FFFFFF;
+      border:1px solid #E5E7EB;
+      border-radius:24px;
+      padding:6px;
+      box-shadow:0 6px 18px rgba(15,23,42,.04);
+    }
+
+    #budgetScreen .segmented button,
+    #budgetScreen .budget-segment button,
+    #budgetScreen .mode-toggle button{
+      min-height:52px;
+      border-radius:18px;
+      font-size:1rem;
+      font-weight:800;
+    }
+
+    #budgetScreen .segmented .active,
+    #budgetScreen .budget-segment .active,
+    #budgetScreen .mode-toggle .active{
+      background:#DBEAFE;
+      color:#1D4ED8;
+    }
+
+    #budgetScreen .row-item,
+    #assetsScreen .row-item,
+    #settingsScreen .row-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      padding:14px 0;
+      border-bottom:1px solid rgba(229,231,235,.95);
+    }
+
+    #budgetScreen .row-item:last-child,
+    #assetsScreen .row-item:last-child,
+    #settingsScreen .row-item:last-child{
+      border-bottom:none;
+    }
+
+    #budgetScreen .row-name,
+    #assetsScreen .row-name,
+    #settingsScreen .row-name{
+      color:#0F172A;
+      font-size:1rem;
+      line-height:1.35;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    #budgetScreen .row-note,
+    #assetsScreen .row-note,
+    #settingsScreen .row-note,
+    #budgetScreen .helper-copy,
+    #assetsScreen .helper-copy,
+    #settingsScreen .helper-copy{
+      color:#64748B;
+      font-size:.86rem;
+      line-height:1.45;
+    }
+
+    #budgetScreen .row-amount,
+    #assetsScreen .row-amount,
+    #settingsScreen .row-amount{
+      color:#0F172A;
+      font-size:1rem;
+      line-height:1.2;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    #budgetScreen .progress-track,
+    #assetsScreen .progress-track{
+      height:12px;
+      border-radius:999px;
+      background:#E9EEF6;
+      overflow:hidden;
+    }
+
+    #budgetScreen .progress-fill,
+    #assetsScreen .progress-fill{
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg, #35C9D6 0%, #2AA7E8 100%);
+    }
+
+    #budgetScreen .progress-fill.good,
+    #assetsScreen .progress-fill.good{
+      background:linear-gradient(90deg, #34D399 0%, #22C55E 100%);
+    }
+
+    #budgetScreen .goal-card,
+    #assetsScreen .goal-card{
+      padding:14px 0;
+      border-bottom:1px solid rgba(229,231,235,.95);
+    }
+
+    #budgetScreen .goal-card:last-child,
+    #assetsScreen .goal-card:last-child{
+      border-bottom:none;
+    }
+
+    #budgetScreen .goal-head,
+    #assetsScreen .goal-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:10px;
+    }
+
+    #budgetScreen .goal-name,
+    #assetsScreen .goal-name{
+      color:#0F172A;
+      font-size:1rem;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    #budgetScreen .goal-note,
+    #assetsScreen .goal-note{
+      color:#64748B;
+      font-size:.84rem;
+      line-height:1.4;
+    }
+
+    #budgetScreen .goal-amount,
+    #assetsScreen .goal-amount{
+      color:#0F172A;
+      font-size:1rem;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    #budgetScreen .goal-linked,
+    #assetsScreen .goal-linked{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#EFF6FF;
+      border:1px solid #BFDBFE;
+      color:#1D4ED8;
+      font-size:.74rem;
+      font-weight:800;
+      margin-top:6px;
+    }
+
+    #budgetScreen .goal-actions,
+    #assetsScreen .goal-actions,
+    #settingsScreen .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    #settingsScreen .stack,
+    #budgetScreen .stack,
+    #assetsScreen .stack{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    #settingsScreen .two-col,
+    #budgetScreen .two-col,
+    #assetsScreen .two-col,
+    #settingsScreen .three-col,
+    #budgetScreen .three-col,
+    #assetsScreen .three-col{
+      gap:12px;
+    }
+
+    #budgetScreen .tooltip-card,
+    #assetsScreen .tooltip-card,
+    #settingsScreen .tooltip-card{
+      background:#FFFFFF;
+      border:1px solid #E5E7EB;
+      border-radius:18px;
+      box-shadow:0 8px 24px rgba(15,23,42,.07);
+      color:#475569;
+      padding:12px 14px;
+    }
+
+    #settingsScreen .account-include{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 0;
+      color:#0F172A;
+      font-size:.96rem;
+      font-weight:600;
+    }
+
+    #budgetScreen .activity-card,
+    #assetsScreen .activity-card,
+    #settingsScreen .activity-card{
+      background:#FFFFFF;
+    }
+
+    #assetsScreen #assetTotalCard .money-big,
+    #assetsScreen #assetTotal .money-big{
+      font-size:3rem;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:-.05em;
+    }
+
+    #budgetScreen .info-grid,
+    #settingsScreen .info-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    #budgetScreen .info-card,
+    #settingsScreen .info-card{
+      padding:14px;
+      border-radius:18px;
+      background:#F8FAFC;
+      border:1px solid #E5E7EB;
+    }
+
+    #budgetScreen .info-value,
+    #settingsScreen .info-value{
+      font-size:1.05rem;
+      font-weight:800;
+      margin:6px 0;
+    }
+
+    @media (max-width: 720px){
+      #budgetScreen .top-row,
+      #assetsScreen .top-row{
+        grid-template-columns:minmax(0,1fr) auto;
+      }
+      #budgetScreen .top-row .wide-action{
+        grid-column:1 / -1;
+      }
+      #budgetScreen .info-grid,
+      #settingsScreen .info-grid{
+        grid-template-columns:1fr;
+      }
+    }
+
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -2458,7 +2847,8 @@
 </div>
 <div id="activityList"></div>
 </div></section>
-<section class="screen" id="budgetScreen"><div class="header">
+<section class="screen" id="budgetScreen">
+<div class="header"><div class="eyebrow">Budget</div><h2>Monthly Budget</h2><p>Plan spending, compare against targets, and adjust the month as needed.</p></div><div class="header">
 <div class="eyebrow">Budget</div>
 <h2>Monthly Budget</h2>
 <p>Organize income, categories, and spending for the selected month.</p>
@@ -2812,6 +3202,7 @@
 </div>
 </section>
 <section class="screen" id="settingsScreen">
+<div class="header"><div class="eyebrow">Settings</div><h2>Preferences & Planning</h2><p>Manage profile, notifications, and planning targets in one place.</p></div>
 
 <div class="card settings-card" id="notificationSettingsCard">
   <h4>Notification Settings</h4>
@@ -2835,7 +3226,7 @@
       </select>
     </div>
     <div class="actions">
-      <button class="save-btn pill" type="button" onclick="saveNotificationSettings()">Save Notification Settings</button>
+      <button class="save-btn pill" type="button" onclick="saveNotificationSettings()">Save Notifications</button>
     </div>
   </div>
 </div>
