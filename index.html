@@ -3075,6 +3075,15 @@
   #overviewScreen .overview-v3-mini-value{font-size:1.5rem;}
 }
 
+
+    .overview-v3-command-sub{
+      margin-top:10px;
+      color:rgba(255,255,255,.78);
+      font-size:.82rem;
+      line-height:1.35;
+      max-width:320px;
+    }
+
 </style>
 </head>
 <body>
@@ -3103,6 +3112,7 @@
         <div class="overview-v3-kicker">Overview</div>
         <div class="overview-v3-command-title">Your money at a glance</div>
         <div class="overview-v3-command-copy">See what is left to budget, how cash is moving, and where to focus next.</div>
+      <div class="overview-v3-command-sub" id="overviewHeroImpact">Recurring bills and investments will show here once added.</div>
       </div>
       <div class="overview-v3-month-wrap">
         <div class="overview-v3-month-label">Selected Month</div>
@@ -3391,10 +3401,11 @@
 <button onclick="setBudgetMode(event,'remaining')">Remaining</button>
 </div><div class="card budget-card">
 <h4 class="label-with-info">Left to Budget <span class="info-dot" onclick="toggleTip('tipLeftToBudget')">i</span></h4><div class="pinned-note">Pinned</div><div class="tooltip-card hidden-tip" id="tipLeftToBudget">This is your income minus the expenses shown in the current budget mode.</div>
-<div class="budget-big good" id="leftToBudget">$0</div>
+<div class="budget-big good" id="leftToBudget">$0</div><div class="helper-copy" id="leftToBudgetNote" style="margin-top:8px;">Includes planned expenses for this month.</div>
 </div><div class="card budget-card" id="budgetSummaryCard"><div class="section-head"><div class="section-title">Summary</div><div class="pinned-note">Pinned</div></div><div class="info-grid" id="budgetSummaryCard">
 <div class="card info-card"><h4>Income</h4><div class="info-value" id="budgetIncomeTotal">$0</div></div>
 <div class="card info-card"><h4>Cash Flow</h4><div class="info-value" id="budgetCashFlow">$0</div></div>
+<div class="card info-card"><h4>Recurring Bills</h4><div class="info-value" id="budgetRecurringBillsTotal">$0</div></div>
 </div></div><div class="card budget-card" id="budgetCategoriesCard"><div class="section-head"><div class="section-title">Categories</div></div><div id="categoriesWrap"></div></div><div class="card budget-card" id="budgetResetCard"><div class="section-head"><div class="section-title">Reset</div></div><div class="actions" id="budgetResetActions">
 <button class="danger-btn pill" onclick="resetMonth()">Reset This Month</button>
 </div></div></section>
@@ -4138,6 +4149,9 @@ let data = defaultData();
         date: `${year}-${String(month).padStart(2,'0')}-${String(Math.max(1, Math.min(28, Number(b.dueDay || 1)))).padStart(2,'0')}`
       }));
     }
+    function getRecurringBillTotal(monthKey=data.currentMonth){
+      return getRecurringBillEvents(monthKey).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    }
     function getRecurringPaycheckEvents(monthKey=data.currentMonth){
       const [year, month] = monthKey.split('-').map(Number);
       return data.incomeSchedules.filter(p => occursThisMonth(p, monthKey)).map(p => ({
@@ -4209,7 +4223,7 @@ let data = defaultData();
       const monthKey = data.currentMonth;
       const manualIncome = getManualIncomeTotal(monthKey);
       const manualExpenses = getManualExpenseTotal(monthKey);
-      const billTotal = getRecurringBillEvents(monthKey).reduce((s, e) => s + Number(e.amount || 0), 0);
+      const billTotal = getRecurringBillTotal(monthKey);
 
       let income = manualIncome;
       let expenses = manualExpenses;
@@ -5498,6 +5512,13 @@ function renderOverviewV3Hero(monthKey=data.currentMonth){
   if(el) el.textContent = money(Number(d.budgetLeft || 0));
   const netEl = document.getElementById('overviewNetWorthHero');
   if(netEl) netEl.textContent = money(Number(d.netWorth || 0));
+  const impactEl = document.getElementById('overviewHeroImpact');
+  if(impactEl){
+    const parts = [];
+    if(d.recurring > 0) parts.push(`${money(d.recurring)} in recurring bills`);
+    if(d.investments > 0) parts.push(`${money(d.investments)} in investments`);
+    impactEl.textContent = parts.length ? `This month includes ${parts.join(' and ')}.` : 'Recurring bills and investments will show here once added.';
+  }
 }
 
 function renderOverviewV3MiniCards(monthKey=data.currentMonth){
@@ -5508,7 +5529,11 @@ function renderOverviewV3MiniCards(monthKey=data.currentMonth){
   setText('overviewPortfolioCardValue', money(d.investments));
   setText('overviewAssetsCardValue', money(d.accounts + d.assets));
   const note = document.getElementById('overviewCashflowCardNote');
-  if(note) note.textContent = d.budgetLeft >= 0 ? `Safe to spend ${money(d.safeToSpend)}` : `Over plan by ${money(Math.abs(d.budgetLeft))}`;
+  if(note){
+    if(d.recurring > 0 && d.budgetLeft >= 0) note.textContent = `Safe to spend ${money(d.safeToSpend)} after ${money(d.recurring)} in bills.`;
+    else if(d.recurring > 0) note.textContent = `Over plan by ${money(Math.abs(d.budgetLeft))} with ${money(d.recurring)} in bills.`;
+    else note.textContent = d.budgetLeft >= 0 ? `Safe to spend ${money(d.safeToSpend)}` : `Over plan by ${money(Math.abs(d.budgetLeft))}`;
+  }
 }
 function renderOverviewV3Health(monthKey=data.currentMonth){
   const d = getOverviewV3Data(monthKey);
@@ -6329,11 +6354,24 @@ function getWealthScreenData(monthKey=data.currentMonth){
 
     function renderBudgetSummary(){
       const values = getBudgetDisplayValues();
+      const billTotal = getRecurringBillTotal(data.currentMonth);
       document.getElementById('budgetIncomeTotal').textContent = money(values.income);
       document.getElementById('budgetCashFlow').textContent = money(values.cashFlow);
+      const billEl = document.getElementById('budgetRecurringBillsTotal');
+      if(billEl) billEl.textContent = money(billTotal);
       document.getElementById('leftToBudget').textContent = money(values.leftToBudget);
       const el = document.getElementById('leftToBudget');
       el.className = 'budget-big ' + (values.leftToBudget < 0 ? 'bad' : values.leftToBudget < 300 ? 'warn' : 'good');
+      const noteEl = document.getElementById('leftToBudgetNote');
+      if(noteEl){
+        if(billTotal > 0){
+          noteEl.textContent = data.budgetMode === 'planned'
+            ? `Includes ${money(billTotal)} in recurring bills for ${monthLabel(data.currentMonth)}.`
+            : `Recurring bills total ${money(billTotal)} this month. Switch to Planned to include them in Left to Budget.`;
+        } else {
+          noteEl.textContent = 'Includes planned expenses for this month.';
+        }
+      }
     }
 
     function syncBudgetToggle(){
@@ -6588,6 +6626,7 @@ function getWealthScreenData(monthKey=data.currentMonth){
       document.getElementById('billFrequency').value = 'monthly';
       document.getElementById('billAutoPay').value = 'true';
       togglePanel('billPanelWrap', false);
+      data.budgetMode = 'planned';
       saveData(); render();
     }
 
