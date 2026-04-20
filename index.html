@@ -3084,6 +3084,97 @@
       max-width:320px;
     }
 
+
+    /* Budget tab rebuild */
+    #budgetScreen .budget-quick-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    #budgetScreen .budget-quick-btn{
+      min-height:52px;
+      border-radius:16px;
+      border:1px solid #BFDBFE;
+      background:#EFF6FF;
+      color:#1D4ED8;
+      font-size:.95rem;
+      font-weight:800;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      cursor:pointer;
+      box-shadow:0 6px 18px rgba(15,23,42,.04);
+    }
+    #budgetScreen .budget-quick-btn.primary{
+      background:linear-gradient(180deg,#3B82F6,#2563EB);
+      color:#FFFFFF;
+      border-color:#2563EB;
+    }
+    #budgetScreen .budget-notice{
+      display:none;
+      margin-bottom:12px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:#ECFDF5;
+      border:1px solid #BBF7D0;
+      color:#166534;
+      font-size:.9rem;
+      font-weight:700;
+      line-height:1.35;
+    }
+    #budgetScreen .budget-helper-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    #budgetScreen .budget-helper-card{
+      padding:16px;
+      border-radius:18px;
+      background:#F8FAFC;
+      border:1px solid #E5E7EB;
+    }
+    #budgetScreen .budget-helper-label{
+      color:#64748B;
+      font-size:.76rem;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:6px;
+      font-weight:800;
+    }
+    #budgetScreen .budget-helper-value{
+      color:#0F172A;
+      font-size:1.45rem;
+      line-height:1.05;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:6px;
+    }
+    #budgetScreen .budget-helper-copy{
+      color:#64748B;
+      font-size:.82rem;
+      line-height:1.35;
+    }
+    #budgetScreen .budget-section-copy{
+      color:#64748B;
+      font-size:.88rem;
+      line-height:1.4;
+      margin:4px 0 12px;
+    }
+    #budgetScreen .budget-link-btn{
+      min-height:40px;
+      border-radius:14px;
+      border:1px solid #E5E7EB;
+      background:#FFFFFF;
+      color:#334155;
+      font-size:.88rem;
+      font-weight:800;
+      padding:0 12px;
+      cursor:pointer;
+    }
+
 </style>
 </head>
 <body>
@@ -3333,15 +3424,19 @@
 <div id="activityList"></div>
 </div></section>
 <section class="screen" id="budgetScreen">
-<div class="header"><div class="eyebrow">Budget</div><h2>Monthly Budget</h2><p>Plan spending, compare against targets, and adjust the month as needed.</p></div><div class="header">
-<div class="eyebrow">Budget</div>
-<h2>Monthly Budget</h2>
-<p>Organize income, categories, and spending for the selected month.</p>
-</div><div class="top-row">
+<div class="header"><div class="eyebrow">Budget</div><h2>Monthly Budget</h2><p>Build your month in order: income first, then recurring bills, then categories and expenses.</p></div>
+<div class="top-row">
 <input class="month-select" id="budgetMonth" type="month" onchange="changeMonth(this.value)" />
 <button class="add-btn icon" onclick="togglePanel('expensePanelWrap')">+</button>
-<button class="add-btn pill" onclick="togglePanel('categoryPanelWrap')">+ Category</button>
-</div><div class="card budget-card" id="expensePanelWrap" style="display:none;">
+</div>
+<div class="budget-quick-actions">
+<button class="budget-quick-btn primary" onclick="togglePanel('incomePanelWrap')">+ Income</button>
+<button class="budget-quick-btn" onclick="togglePanel('budgetBillPanelWrap')">+ Recurring Bill</button>
+<button class="budget-quick-btn" onclick="togglePanel('categoryPanelWrap')">+ Category</button>
+<button class="budget-quick-btn" onclick="togglePanel('expensePanelWrap')">+ Expense</button>
+</div>
+<div class="budget-notice" id="budgetActionNotice"></div>
+<div class="card budget-card" id="expensePanelWrap" style="display:none;">
 <h4>New Expense</h4>
 <div class="stack">
 <select class="form-select" id="expenseCategory"></select>
@@ -3367,7 +3462,8 @@
 <button class="secondary-btn pill" onclick="togglePanel('expensePanelWrap', false)">Cancel</button>
 </div>
 </div>
-</div><div class="card budget-card" id="categoryPanelWrap" style="display:none;">
+</div>
+<div class="card budget-card" id="categoryPanelWrap" style="display:none;">
 <h4>New Category</h4>
 <div class="stack">
 <input class="small-input" id="newCategoryName" placeholder="Category name"/>
@@ -3376,7 +3472,40 @@
 <button class="secondary-btn pill" onclick="togglePanel('categoryPanelWrap', false)">Cancel</button>
 </div>
 </div>
-</div><div class="card budget-card">
+</div>
+<div class="card budget-card" id="budgetBillPanelWrap" style="display:none;">
+<h4>New Recurring Bill</h4>
+<div class="stack">
+<div class="two-col">
+<input class="small-input" id="budgetBillName" placeholder="Bill name"/>
+<input class="small-input" id="budgetBillAmount" placeholder="Amount" step="0.01" type="number"/>
+</div>
+<div class="three-col">
+<input class="small-input" id="budgetBillDueDate" type="date"/>
+<select class="form-select" id="budgetBillFrequency">
+<option value="monthly">Monthly</option>
+<option value="weekly">Weekly</option>
+<option value="biweekly">Biweekly</option>
+<option value="quarterly">Quarterly</option>
+<option value="yearly">Yearly</option>
+</select>
+<select class="form-select" id="budgetBillCategory"></select>
+</div>
+<div class="two-col">
+<select class="form-select" id="budgetBillAutoPay">
+<option value="true">Auto-pay</option>
+<option value="false">Manual pay</option>
+</select>
+<input class="small-input" id="budgetBillReminderDays" placeholder="Reminder days" type="number"/>
+</div>
+<input class="small-input" id="budgetBillNote" placeholder="Notes"/>
+<div class="actions">
+<button class="save-btn pill" onclick="addRecurringBillFromBudget()">Save Bill</button>
+<button class="secondary-btn pill" onclick="togglePanel('budgetBillPanelWrap', false)">Cancel</button>
+</div>
+</div>
+</div>
+<div class="card budget-card">
 <div class="section-head"><div><div class="section-title label-with-info">Monthly Income <span class="info-dot" onclick="toggleTip('tipBudgetIncome')">i</span></div><div class="pinned-note">Pinned</div></div>
 <button class="add-btn pill" onclick="togglePanel('incomePanelWrap')">+ Income</button>
 </div>
@@ -3395,18 +3524,30 @@
 </div>
 </div>
 </div>
-</div><div class="toggle">
+</div>
+<div class="toggle">
 <button class="active" onclick="setBudgetMode(event,'planned')">Planned</button>
 <button onclick="setBudgetMode(event,'spent')">Spent</button>
 <button onclick="setBudgetMode(event,'remaining')">Remaining</button>
-</div><div class="card budget-card">
+</div>
+<div class="card budget-card">
 <h4 class="label-with-info">Left to Budget <span class="info-dot" onclick="toggleTip('tipLeftToBudget')">i</span></h4><div class="pinned-note">Pinned</div><div class="tooltip-card hidden-tip" id="tipLeftToBudget">This is your income minus the expenses shown in the current budget mode.</div>
 <div class="budget-big good" id="leftToBudget">$0</div><div class="helper-copy" id="leftToBudgetNote" style="margin-top:8px;">Includes planned expenses for this month.</div>
-</div><div class="card budget-card" id="budgetSummaryCard"><div class="section-head"><div class="section-title">Summary</div><div class="pinned-note">Pinned</div></div><div class="info-grid" id="budgetSummaryCard">
+<div class="budget-helper-grid">
+<div class="budget-helper-card"><div class="budget-helper-label">Budgeted</div><div class="budget-helper-value" id="budgetPlannedTotal">$0</div><div class="budget-helper-copy">Category expenses entered for this month.</div></div>
+<div class="budget-helper-card"><div class="budget-helper-label">Recurring Bills</div><div class="budget-helper-value" id="budgetRecurringBillsMini">$0</div><div class="budget-helper-copy">Bills that hit every month and affect your plan.</div></div>
+</div>
+</div>
+<div class="card budget-card" id="budgetSummaryCard"><div class="section-head"><div class="section-title">Summary</div><div class="pinned-note">Pinned</div></div><div class="budget-section-copy">Use this section to confirm where your month stands before you start adjusting categories.</div><div class="info-grid" id="budgetSummaryCard">
 <div class="card info-card"><h4>Income</h4><div class="info-value" id="budgetIncomeTotal">$0</div></div>
+<div class="card info-card"><h4>Budgeted</h4><div class="info-value" id="budgetPlannedTotalCard">$0</div></div>
 <div class="card info-card"><h4>Cash Flow</h4><div class="info-value" id="budgetCashFlow">$0</div></div>
 <div class="card info-card"><h4>Recurring Bills</h4><div class="info-value" id="budgetRecurringBillsTotal">$0</div></div>
-</div></div><div class="card budget-card" id="budgetCategoriesCard"><div class="section-head"><div class="section-title">Categories</div></div><div id="categoriesWrap"></div></div><div class="card budget-card" id="budgetResetCard"><div class="section-head"><div class="section-title">Reset</div></div><div class="actions" id="budgetResetActions">
+</div></div>
+<div class="card budget-card" id="budgetBillsCard"><div class="section-head"><div><div class="section-title">Recurring Bills</div><div class="pinned-note">Pinned</div></div><button class="add-btn pill" onclick="togglePanel('budgetBillPanelWrap')">+ Bill</button></div><div class="budget-section-copy">Add monthly bills here so they clearly affect your budget before you drill into cash flow timing.</div><div id="budgetBillsList"></div><div class="actions" style="margin-top:12px;"><button class="budget-link-btn" onclick="openScreen('cashflowScreen',1)">Open Cash Flow timing</button></div></div>
+<div class="card budget-card" id="budgetCategoriesCard"><div class="section-head"><div class="section-title">Categories</div></div><div class="budget-section-copy">Create categories, then add expenses to the one you want each cost to count against.</div><div id="categoriesWrap"></div></div>
+<div class="card budget-card" id="budgetRecentExpensesCard"><div class="section-head"><div class="section-title">Recent Expenses</div><button class="add-btn pill" onclick="togglePanel('expensePanelWrap')">+ Expense</button></div><div class="budget-section-copy">Your latest expenses for the selected month. Edit or delete here if something looks off.</div><div id="budgetRecentExpensesList"></div></div>
+<div class="card budget-card" id="budgetResetCard"><div class="section-head"><div class="section-title">Reset</div></div><div class="actions" id="budgetResetActions">
 <button class="danger-btn pill" onclick="resetMonth()">Reset This Month</button>
 </div></div></section>
 <section class="screen" id="cashflowScreen"><div class="header">
@@ -4431,6 +4572,7 @@ let data = defaultData();
       }
       saveData();
       render();
+      setBudgetNotice(`Expense saved to ${monthLabel(budgetMonth)}.`);
     }
 
 
@@ -4571,6 +4713,7 @@ let data = defaultData();
       account.autoGrow = !account.autoGrow;
       addActivity('account', account.autoGrow ? 'Auto-grow enabled' : 'Auto-grow disabled', account.name, Number(account.balance || 0), 'neutral');
       saveData(); render();
+      setBudgetNotice(`Income schedule added for ${income.name}.`);
     }
 
     function getAccountGrowthLabel(account){
@@ -6359,6 +6502,12 @@ function getWealthScreenData(monthKey=data.currentMonth){
       document.getElementById('budgetCashFlow').textContent = money(values.cashFlow);
       const billEl = document.getElementById('budgetRecurringBillsTotal');
       if(billEl) billEl.textContent = money(billTotal);
+      const billMiniEl = document.getElementById('budgetRecurringBillsMini');
+      if(billMiniEl) billMiniEl.textContent = money(billTotal);
+      const plannedEl = document.getElementById('budgetPlannedTotal');
+      if(plannedEl) plannedEl.textContent = money(getManualExpenseTotal(data.currentMonth));
+      const plannedCardEl = document.getElementById('budgetPlannedTotalCard');
+      if(plannedCardEl) plannedCardEl.textContent = money(getManualExpenseTotal(data.currentMonth));
       document.getElementById('leftToBudget').textContent = money(values.leftToBudget);
       const el = document.getElementById('leftToBudget');
       el.className = 'budget-big ' + (values.leftToBudget < 0 ? 'bad' : values.leftToBudget < 300 ? 'warn' : 'good');
@@ -6500,6 +6649,7 @@ function getWealthScreenData(monthKey=data.currentMonth){
       ['incomeName','incomeAmount','incomeNote'].forEach(id => document.getElementById(id).value = '');
       togglePanel('incomePanelWrap', false);
       saveData(); render();
+      setBudgetNotice(`Income added: ${name} ${money(amount)}.`);
     }
 
     function addExpense(){
@@ -6574,6 +6724,7 @@ function getWealthScreenData(monthKey=data.currentMonth){
       document.getElementById('newCategoryName').value = '';
       togglePanel('categoryPanelWrap', false);
       saveData(); render();
+      setBudgetNotice(`Category added: ${titleCase(key)}.`);
     }
 
     function addInvestment(){
@@ -6628,6 +6779,7 @@ function getWealthScreenData(monthKey=data.currentMonth){
       togglePanel('billPanelWrap', false);
       data.budgetMode = 'planned';
       saveData(); render();
+      setBudgetNotice(`Recurring bill added: ${name} ${money(amount)}.`);
     }
 
     function addRecurringPaycheck(){
@@ -6792,6 +6944,83 @@ function getWealthScreenData(monthKey=data.currentMonth){
       reader.readAsText(file);
     }
 
+    function setBudgetNotice(message){
+      const el = document.getElementById('budgetActionNotice');
+      if(!el) return;
+      if(!message){
+        el.style.display = 'none';
+        el.textContent = '';
+        return;
+      }
+      el.textContent = message;
+      el.style.display = 'block';
+      clearTimeout(window.__budgetNoticeTimer);
+      window.__budgetNoticeTimer = setTimeout(() => {
+        const current = document.getElementById('budgetActionNotice');
+        if(current){ current.style.display = 'none'; }
+      }, 2800);
+    }
+
+    function renderBudgetBillsSection(){
+      const list = (data.recurringBills || []).map(b => ({
+        ...b,
+        note: `${titleCase(b.frequency)} • due day ${b.dueDay} • ${titleCase(b.category || 'other')}`
+      }));
+      renderRowList('budgetBillsList', list, 'bill');
+      const catSelect = document.getElementById('budgetBillCategory');
+      if(catSelect) catSelect.innerHTML = getCategoryNames().map(cat => `<option value="${cat}">${titleCase(cat)}</option>`).join('');
+    }
+
+    function getBudgetRecentExpenses(monthKey=data.currentMonth){
+      const month = getMonthData(monthKey);
+      const rows = [];
+      Object.entries(month.categories || {}).forEach(([cat, items]) => {
+        (items || []).forEach(item => rows.push({ ...item, category: cat }));
+      });
+      rows.sort((a,b) => {
+        const ad = String(a.date || a.createdAt || '');
+        const bd = String(b.date || b.createdAt || '');
+        if(ad && bd && ad !== bd) return bd.localeCompare(ad);
+        return String(b.id || '').localeCompare(String(a.id || ''));
+      });
+      return rows.slice(0, 8).map(item => ({
+        ...item,
+        note: `${titleCase(item.category)}${item.note ? ' • ' + item.note : ''}`,
+        budgetMonth: monthKey
+      }));
+    }
+
+    function renderBudgetRecentExpenses(){
+      renderRowList('budgetRecentExpensesList', getBudgetRecentExpenses(), 'expense');
+    }
+
+    function addRecurringBillFromBudget(){
+      const map = {
+        budgetBillName: 'billName',
+        budgetBillAmount: 'billAmount',
+        budgetBillDueDate: 'billDueDate',
+        budgetBillFrequency: 'billFrequency',
+        budgetBillAutoPay: 'billAutoPay',
+        budgetBillReminderDays: 'billReminderDays',
+        budgetBillCategory: 'billCategory',
+        budgetBillNote: 'billNote'
+      };
+      Object.entries(map).forEach(([fromId,toId]) => {
+        const from = document.getElementById(fromId);
+        const to = document.getElementById(toId);
+        if(from && to) to.value = from.value;
+      });
+      addRecurringBill();
+      Object.keys(map).forEach(id => {
+        const el = document.getElementById(id);
+        if(el && el.tagName === 'INPUT') el.value = '';
+      });
+      const freq = document.getElementById('budgetBillFrequency'); if(freq) freq.value = 'monthly';
+      const auto = document.getElementById('budgetBillAutoPay'); if(auto) auto.value = 'true';
+      togglePanel('budgetBillPanelWrap', false);
+      setBudgetNotice('Recurring bill added and included in this month.');
+    }
+
     function render(){
       ensureMonth(data.currentMonth);
       syncMonthSelectors();
@@ -6811,6 +7040,8 @@ function getWealthScreenData(monthKey=data.currentMonth){
       renderIncomeSection();
       renderBudgetSummary();
       renderBudgetCategories();
+      renderBudgetBillsSection();
+      renderBudgetRecentExpenses();
       renderCashFlow();
       renderInvestSection();
       try{ renderWealthScreen(data.currentMonth); renderWealthV3Safe(data.currentMonth); }catch(e){ console.error(e); }
