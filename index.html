@@ -2832,28 +2832,144 @@
 
         /* Cleanup passes: preserving behavior while reducing duplicates */
     @keyframes loadBar{from{width:0;}to{width:100%;}}
-  </style>
+  
+
+/* ===== v2.2 splash + overview refresh ===== */
+#loadingScreen{
+  background:
+    radial-gradient(circle at 20% 0%, rgba(37,99,235,.16), transparent 34%),
+    radial-gradient(circle at 100% 10%, rgba(20,184,166,.14), transparent 28%),
+    linear-gradient(180deg,#0B1220 0%,#111C34 48%,#EAF1FB 100%);
+}
+#loadingScreen .splash-panel{
+  width:min(352px,100%);
+  padding:26px 22px 22px;
+  border-radius:28px;
+  background:rgba(255,255,255,.84);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:0 24px 48px rgba(15,23,42,.18);
+  backdrop-filter:blur(18px);
+}
+#loadingScreen .brand-mark{
+  width:82px;height:82px;border-radius:26px;margin:0 auto 16px;
+  background:linear-gradient(135deg,#2563EB 0%,#14B8A6 100%);
+  box-shadow:0 18px 34px rgba(37,99,235,.24);
+  font-size:1.35rem;letter-spacing:.16em;
+}
+#loadingScreen .splash-kicker{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:7px 12px;margin-bottom:12px;border-radius:999px;
+  background:#E0ECFF;color:#1D4ED8;border:1px solid #BFDBFE;
+  font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+}
+#loadingScreen .splash-title{font-size:2.05rem;margin-bottom:8px;}
+#loadingScreen .splash-subtitle{max-width:270px;margin:0 auto 18px;font-size:.95rem;color:#475569;}
+#loadingScreen .splash-points{display:grid;gap:8px;margin:0 auto 18px;max-width:260px;text-align:left;}
+#loadingScreen .splash-point{display:flex;align-items:center;gap:10px;color:#334155;font-size:.84rem;font-weight:700;}
+#loadingScreen .splash-point-dot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,#2563EB,#14B8A6);flex:0 0 auto;}
+#loadingScreen .loading-label{margin-top:10px;font-size:.8rem;color:#64748B;font-weight:700;}
+
+#overviewScreen{
+  background:linear-gradient(180deg,#F4F8FF 0%, #F8FAFC 38%, #F8FAFC 100%);
+}
+#overviewScreen .overview-v3-shell{gap:16px;}
+#overviewScreen .overview-v3-top{display:none;}
+#overviewScreen .overview-v3-command{
+  padding:20px 18px 18px;
+  border-radius:28px;
+  background:linear-gradient(135deg,#0F172A 0%, #1E3A5F 56%, #1D4ED8 100%);
+  box-shadow:0 20px 44px rgba(30,58,95,.18);
+  color:#fff;
+  overflow:hidden;
+  position:relative;
+}
+#overviewScreen .overview-v3-command::before{
+  content:"";position:absolute;inset:auto -30px -40px auto;width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,.18), transparent 62%);
+}
+#overviewScreen .overview-v3-command-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:16px;position:relative;z-index:1;}
+#overviewScreen .overview-v3-kicker{display:inline-flex;align-items:center;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#DBEAFE;margin-bottom:12px;}
+#overviewScreen .overview-v3-command-title{font-size:1.72rem;line-height:1.04;font-weight:800;letter-spacing:-.04em;margin-bottom:8px;color:#fff;}
+#overviewScreen .overview-v3-command-copy{color:rgba(255,255,255,.78);font-size:.92rem;line-height:1.45;max-width:230px;}
+#overviewScreen .overview-v3-month-wrap{display:grid;gap:8px;min-width:126px;position:relative;z-index:1;}
+#overviewScreen .overview-v3-month-label{font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#BFDBFE;text-align:right;}
+#overviewScreen .overview-v3-month-wrap .month-select{height:52px;border-radius:16px;background:rgba(255,255,255,.96);border:1px solid rgba(255,255,255,.26);box-shadow:none;color:#0F172A;font-size:.96rem;font-weight:800;}
+#overviewScreen .overview-v3-summary-grid{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:10px;position:relative;z-index:1;}
+#overviewScreen .overview-v3-summary-box{padding:14px 14px 12px;border-radius:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(8px);min-height:92px;}
+#overviewScreen .overview-v3-summary-box.primary{background:rgba(255,255,255,.14);}
+#overviewScreen .overview-v3-summary-label{color:rgba(255,255,255,.72);font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+#overviewScreen .overview-v3-summary-value{color:#fff;font-size:1.4rem;line-height:1.04;font-weight:800;letter-spacing:-.03em;}
+#overviewScreen .overview-v3-summary-value.primary{font-size:2rem;}
+#overviewScreen .overview-v3-summary-note{margin-top:6px;color:rgba(255,255,255,.72);font-size:.78rem;line-height:1.3;}
+#overviewScreen .overview-v3-grid{gap:12px;}
+#overviewScreen .overview-v3-mini{padding:16px 16px 14px;min-height:178px;border-radius:24px;box-shadow:0 16px 28px rgba(15,23,42,.06);transition:transform .18s ease, box-shadow .18s ease;}
+#overviewScreen .overview-v3-mini:active{transform:translateY(1px);}
+#overviewScreen .overview-v3-icon{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,#DBEAFE 0%,#ECFEFF 100%);color:#1D4ED8;box-shadow:inset 0 0 0 1px #BFDBFE;}
+#overviewScreen .overview-v3-mini-title{font-size:.86rem;text-transform:uppercase;letter-spacing:.05em;color:#64748B;}
+#overviewScreen .overview-v3-mini-value{font-size:1.5rem;}
+#overviewScreen .overview-v3-mini-link{height:40px;border-radius:13px;background:#F8FBFF;color:#0F5DAA;border:1px solid #D8E7FF;font-size:.9rem;}
+#overviewScreen .overview-v3-health,
+#overviewScreen .overview-v3-section{border-radius:26px;box-shadow:0 16px 28px rgba(15,23,42,.055);}
+#overviewScreen .overview-v3-health{padding:20px 18px;}
+#overviewScreen .overview-v3-health-score{font-size:3rem;}
+#overviewScreen .overview-v3-health-track{background:#E6EDF8;height:14px;}
+#overviewScreen .overview-v3-health-fill{background:linear-gradient(90deg,#14B8A6 0%, #3B82F6 42%, #F59E0B 72%, #EF4444 100%);}
+#overviewScreen .overview-v3-section{padding:20px 18px;}
+#overviewScreen .overview-v3-link{color:#2563EB;font-weight:700;}
+#overviewScreen .overview-v3-snapshot-grid{gap:10px;}
+#overviewScreen .overview-v3-snapshot-box{border-radius:20px;padding:15px 14px 13px;background:#FCFDFF;}
+
+</style>
 </head>
 <body>
 <div id="loadingScreen">
 <div class="card splash-panel">
 <div class="brand-mark">CC</div>
+<div class="splash-kicker">Financial Command Center</div>
 <div class="splash-title">Cash Command</div>
-<div class="splash-subtitle">Budgeting, cash flow, investing, and assets.</div>
+<div class="splash-subtitle">Your budget, cash flow, investing, and assets in one clear command center.</div>
+<div class="splash-points">
+  <div class="splash-point"><span class="splash-point-dot"></span><span>Track what is left to budget</span></div>
+  <div class="splash-point"><span class="splash-point-dot"></span><span>Spot cash flow issues early</span></div>
+  <div class="splash-point"><span class="splash-point-dot"></span><span>See your full money picture fast</span></div>
+</div>
 <div class="loading-track"><span></span></div>
+<div class="loading-label">Loading your money snapshot…</div>
 </div>
 </div>
 <div class="app-shell" id="appShell">
 <section class="screen active" id="overviewScreen">
 
 <div class="overview-v3-shell" id="overviewV3Shell">
-  <div class="overview-v3-top">
-    <select class="month-select" id="overviewMonthSelect"></select>
-    <button class="overview-v3-add" type="button" onclick="openScreen('budgetScreen',1)">+</button>
-  </div>
-  <div class="overview-v3-hero card">
-    <div class="overview-v3-hero-value" id="overviewHeroLeft">$0</div>
-    <div class="overview-v3-hero-label">left to budget</div>
+  <div class="overview-v3-command card">
+    <div class="overview-v3-command-top">
+      <div>
+        <div class="overview-v3-kicker">Overview</div>
+        <div class="overview-v3-command-title">Your money at a glance</div>
+        <div class="overview-v3-command-copy">See what is left to budget, how cash is moving, and where to focus next.</div>
+      </div>
+      <div class="overview-v3-month-wrap">
+        <div class="overview-v3-month-label">Selected Month</div>
+        <select class="month-select" id="overviewMonthSelect"></select>
+      </div>
+    </div>
+    <div class="overview-v3-summary-grid">
+      <div class="overview-v3-summary-box primary">
+        <div class="overview-v3-summary-label">Left to Budget</div>
+        <div class="overview-v3-summary-value primary" id="overviewHeroLeft">$0</div>
+        <div class="overview-v3-summary-note">Available after expenses, recurring bills, and investments.</div>
+      </div>
+      <div class="overview-v3-summary-box">
+        <div class="overview-v3-summary-label">Health Score</div>
+        <div class="overview-v3-summary-value" id="overviewHealthScoreHero">0</div>
+        <div class="overview-v3-summary-note" id="overviewHealthStatusHero">Needs setup</div>
+      </div>
+      <div class="overview-v3-summary-box">
+        <div class="overview-v3-summary-label">Net Worth</div>
+        <div class="overview-v3-summary-value" id="overviewNetWorthHero">$0</div>
+        <div class="overview-v3-summary-note">Cash, assets, and investments.</div>
+      </div>
+    </div>
   </div>
   <div class="overview-v3-grid">
     <div class="overview-v3-mini card" onclick="openScreen('budgetScreen',1)"><div class="overview-v3-icon">💰</div><div class="overview-v3-mini-title">Planned Income</div><div class="overview-v3-mini-value" id="overviewIncomeCardValue">$0</div><div class="overview-v3-mini-note">Income entered for the selected month.</div><div class="overview-v3-mini-link">Open Budget</div></div>
@@ -5147,12 +5263,17 @@ function renderOverviewV3Health(monthKey=data.currentMonth){
   const statusEl = document.getElementById('overviewHealthStatus');
   const fillEl = document.getElementById('overviewHealthFill');
   if(scoreEl) scoreEl.textContent = String(d.score);
+  const heroScoreEl = document.getElementById('overviewHealthScoreHero');
+  const heroStatusEl = document.getElementById('overviewHealthStatusHero');
+  if(heroScoreEl) heroScoreEl.textContent = String(d.score);
   if(fillEl) fillEl.style.width = `${Math.max(4, Math.min(100, d.score))}%`;
   let status = 'Needs Improvement';
   if(d.score >= 75) status = 'Strong';
   else if(d.score >= 50) status = 'Improving';
   if(statusEl) statusEl.textContent = status;
+  if(heroStatusEl) heroStatusEl.textContent = status;
 }
+
 function renderOverviewV3Insights(monthKey=data.currentMonth){
   const wrap = document.getElementById('overviewInsightsList');
   if(!wrap) return;
@@ -5197,7 +5318,10 @@ function renderOverviewV3Snapshot(monthKey=data.currentMonth){
   setText('overviewSnapshotEmergency', `${d.emergencyMonths.toFixed(1)} months`);
   setText('overviewSnapshotBudget', `Left: ${money(Number(d.budgetLeft || 0))}`, Number(d.budgetLeft || 0) < 0 ? 'overview-v3-bad' : 'overview-v3-good');
   setText('overviewSnapshotNetWorth', money(d.netWorth));
+  const heroNetWorth = document.getElementById('overviewNetWorthHero');
+  if(heroNetWorth) heroNetWorth.textContent = money(d.netWorth);
 }
+
 function renderOverviewBenchmarks(monthKey=data.currentMonth){
   const wrap = document.getElementById('overviewBenchmarksList');
   const copy = document.getElementById('overviewBenchmarksCopy');
