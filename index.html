@@ -3271,25 +3271,68 @@
     }
     #budgetScreen .budget-quick-btn,
     #budgetScreen .budget-link-btn,
+    #budgetScreen .add-btn,
+    #budgetScreen .save-btn,
+    #budgetScreen .secondary-btn,
+    #budgetScreen .danger-btn,
+    #budgetScreen .mini-move{
+      min-height:48px !important;
+      border-radius:18px !important;
+      padding:0 18px !important;
+      font-size:.98rem !important;
+      font-weight:800 !important;
+      letter-spacing:-.02em !important;
+      transition:transform .18s ease, box-shadow .18s ease, background .18s ease !important;
+    }
+    #budgetScreen .budget-quick-btn,
+    #budgetScreen .budget-link-btn,
     #budgetScreen .secondary-btn,
     #budgetScreen .mini-move{
-      background:rgba(255,255,255,.06) !important;
-      color:#DBEAFE !important;
-      border:1px solid rgba(147,197,253,.25) !important;
-      box-shadow:none !important;
+      background:linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.05)) !important;
+      color:#E5F0FF !important;
+      border:1px solid rgba(191,219,254,.20) !important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.10), 0 8px 18px rgba(2,6,23,.14) !important;
+      backdrop-filter:blur(10px) !important;
     }
     #budgetScreen .budget-quick-btn.primary,
     #budgetScreen .add-btn,
     #budgetScreen .save-btn{
-      background:linear-gradient(180deg,#60A5FA,#2563EB) !important;
+      background:linear-gradient(180deg,#79B8FF 0%, #4C8CFF 42%, #2F6AF6 100%) !important;
       color:#FFFFFF !important;
-      border:1px solid rgba(147,197,253,.34) !important;
-      box-shadow:0 12px 26px rgba(37,99,235,.24) !important;
+      border:1px solid rgba(191,219,254,.24) !important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 14px 28px rgba(37,99,235,.28) !important;
+    }
+    #budgetScreen .budget-link-btn{
+      padding:0 20px !important;
+    }
+    #budgetScreen .secondary-btn{
+      color:#F8FBFF !important;
     }
     #budgetScreen .danger-btn{
-      background:rgba(239,68,68,.14) !important;
+      background:linear-gradient(180deg, rgba(127,29,29,.34), rgba(127,29,29,.20)) !important;
       color:#FECACA !important;
-      border:1px solid rgba(248,113,113,.24) !important;
+      border:1px solid rgba(248,113,113,.28) !important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 10px 22px rgba(127,29,29,.18) !important;
+    }
+    #budgetScreen .mini-move{
+      width:44px !important;
+      height:44px !important;
+      min-height:44px !important;
+      padding:0 !important;
+      border-radius:14px !important;
+      display:inline-flex !important;
+      align-items:center !important;
+      justify-content:center !important;
+    }
+    #budgetScreen .add-btn:active,
+    #budgetScreen .save-btn:active,
+    #budgetScreen .secondary-btn:active,
+    #budgetScreen .danger-btn:active,
+    #budgetScreen .budget-quick-btn:active,
+    #budgetScreen .budget-link-btn:active,
+    #budgetScreen .mini-move:active{
+      transform:translateY(1px) scale(.99) !important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 6px 14px rgba(2,6,23,.18) !important;
     }
     #budgetScreen .info-dot{
       background:rgba(255,255,255,.08) !important;
