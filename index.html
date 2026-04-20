@@ -5331,34 +5331,128 @@ function toggleOverviewHistory(){
 }
 function getOverviewV3Data(monthKey=data.currentMonth){
   const month = getMonthData(monthKey);
-  const income = (month.incomes || []).reduce((s,i)=>s+Number(i.amount||0),0);
-  const expenses = (month.expenses || []).reduce((s,e)=>s+Number(e.amount||0),0);
-  const investments = (month.investments || []).reduce((s,i)=>s+Number(i.amount||0),0);
-  const accounts = (month.accounts || []).reduce((s,a)=>s+Number(a.balance||0),0);
-  const assets = (month.assets || []).reduce((s,a)=>s+Number(a.value||0),0);
-  const recurring = (data.recurringBills || []).reduce((s,b)=>s+Number(b.amount||0),0);
-  const budgetLeft = income - expenses - recurring - investments;
+  const safeNum = value => {
+    const n = Number(value || 0);
+    return Number.isFinite(n) ? n : 0;
+  };
+  const income = (month.incomes || []).reduce((s,i)=>s+safeNum(i.amount),0);
+  const expenses = (month.expenses || []).reduce((s,e)=>s+safeNum(e.amount),0);
+  const investments = (month.investments || []).reduce((s,i)=>s+safeNum(i.amount),0);
+  const accounts = (month.accounts || []).reduce((s,a)=>s+safeNum(a.balance),0);
+  const includedAccounts = (month.accounts || []).filter(a => a && a.include !== false && String(a.include) !== 'false').reduce((s,a)=>s+safeNum(a.balance),0);
+  const assets = (month.assets || []).reduce((s,a)=>s+safeNum(a.value),0);
+  const recurring = (data.recurringBills || []).reduce((s,b)=>s+safeNum(b.amount),0);
+  const plannedTotal = expenses + recurring + investments;
+  const budgetLeft = income - plannedTotal;
   const monthlyOutflow = Math.max(1, expenses + recurring);
   const emergencyMonths = accounts / monthlyOutflow;
   const netWorth = accounts + assets + investments - recurring - expenses;
   const benchmarks = getBenchmarks();
   const savingsRate = income > 0 ? (Math.max(0, budgetLeft) / income) * 100 : 0;
+  const expenseRatio = income > 0 ? plannedTotal / Math.max(1, income) : 1;
+  const fundedRatio = income > 0 ? Math.max(0, Math.min(1.2, budgetLeft / Math.max(1, income))) : 0;
+  const monthlyBillsCoverage = recurring > 0 ? includedAccounts / recurring : (includedAccounts > 0 ? 1.25 : 0);
+  const safeToSpend = Math.max(0, Math.min(
+    budgetLeft,
+    includedAccounts - Math.max(0, recurring * 0.5)
+  ));
+  const scoreParts = {
+    budget: Math.min(100, Math.max(0, fundedRatio * 220 + (budgetLeft >= 0 ? 20 : -25))),
+    cashflow: Math.min(100, Math.max(0, monthlyBillsCoverage * 55)),
+    emergency: Math.min(100, (emergencyMonths / Math.max(1, benchmarks.emergencyMonths)) * 100),
+    wealth: Math.min(100, (Math.max(0, netWorth) / Math.max(1, benchmarks.netWorth)) * 100)
+  };
   const score = Math.max(0, Math.min(100, Math.round(
-    (Math.min(100, income > 0 ? (savingsRate / 20) * 100 : 35) * 0.35) +
-    (Math.min(100, (emergencyMonths / Math.max(1, benchmarks.emergencyMonths)) * 100) * 0.30) +
-    (Math.min(100, (Math.max(0, netWorth) / Math.max(1, benchmarks.netWorth)) * 100) * 0.35)
+    scoreParts.budget * 0.35 +
+    scoreParts.cashflow * 0.25 +
+    scoreParts.emergency * 0.20 +
+    scoreParts.wealth * 0.20
   )));
-  return { income, expenses, investments, accounts, assets, recurring, budgetLeft, emergencyMonths, netWorth, savingsRate, benchmarks, score };
+  let status = 'Critical';
+  if(score >= 80) status = 'Strong';
+  else if(score >= 60) status = 'Stable';
+  else if(score >= 40) status = 'Warning';
+  const setupReady = income > 0 || expenses > 0 || accounts > 0 || investments > 0 || assets > 0 || recurring > 0;
+  return {
+    income, expenses, investments, accounts, includedAccounts, assets, recurring, plannedTotal,
+    budgetLeft, emergencyMonths, netWorth, savingsRate, expenseRatio, monthlyBillsCoverage,
+    safeToSpend, benchmarks, score, scoreParts, status, setupReady
+  };
 }
 function generateOverviewInsights(monthKey=data.currentMonth){
   const d = getOverviewV3Data(monthKey);
-  const savingsGap = d.income > 0 ? Math.max(0, d.income * (d.benchmarks.savingsRate / 100) - Math.max(0, d.budgetLeft)) : 0;
+  const benchmarkSavingsAmount = d.income * (d.benchmarks.savingsRate / 100);
+  const savingsGap = d.income > 0 ? Math.max(0, benchmarkSavingsAmount - Math.max(0, d.budgetLeft)) : 0;
   const emergencyGapAmount = Math.max(0, (d.benchmarks.emergencyMonths - d.emergencyMonths) * Math.max(1, d.expenses + d.recurring));
-  return { data:d, insights:[
-    { headline:`You are saving ${Math.max(0, Math.round(d.savingsRate))}%`, sub:`Benchmark: ${d.benchmarks.savingsRate.toFixed(0)}%`, gap:`Increase ${money(savingsGap)}/month to match peers`, showBar:true },
-    { headline:`You have ${d.emergencyMonths.toFixed(1)} months of emergency fund`, sub:`Benchmark: ${d.benchmarks.emergencyMonths.toFixed(1)} months`, gap:`Add ${money(emergencyGapAmount)} to match peers` },
-    { headline:`Your net worth is ${money(d.netWorth)}`, sub:`Benchmark: ${money(d.benchmarks.netWorth)}`, gap:`Grow your net worth to keep pace with peers in ${d.benchmarks.state}` }
-  ]};
+  const overPlanAmount = Math.max(0, d.plannedTotal - d.income);
+  const insights = [];
+
+  if(!d.setupReady){
+    insights.push(
+      { headline:'Start with income or accounts', sub:'Setup step 1', gap:'Add at least one income source or cash account so your overview can calculate safe-to-spend and health.' },
+      { headline:'Then add recurring bills', sub:'Setup step 2', gap:'Bills are the fastest way to make cash flow and alerts useful.' },
+      { headline:'Track one savings target', sub:'Setup step 3', gap:'Even a single goal makes the dashboard more useful.' }
+    );
+    return { data:d, insights };
+  }
+
+  if(d.budgetLeft < 0){
+    insights.push({
+      headline:`You are ${money(Math.abs(d.budgetLeft))} over plan`,
+      sub:'Budget pressure',
+      gap:`Cut planned spending or add income by ${money(Math.abs(d.budgetLeft))} to get this month back above zero.`
+    });
+  } else {
+    insights.push({
+      headline:`You can safely spend about ${money(d.safeToSpend)}`,
+      sub:'Hybrid cash flow',
+      gap: d.safeToSpend > 0 ? `That leaves room for upcoming bills while keeping ${money(Math.max(0, d.budgetLeft - d.safeToSpend))} buffered.` : 'Keep a little more cash in included accounts to raise safe-to-spend.'
+    });
+  }
+
+  if(d.savingsRate >= d.benchmarks.savingsRate){
+    insights.push({
+      headline:`Savings pace is ${Math.round(d.savingsRate)}%`,
+      sub:`Above ${d.benchmarks.savingsRate.toFixed(0)}% benchmark`,
+      gap:'You are meeting or beating the current savings benchmark for this profile.'
+    });
+  } else {
+    insights.push({
+      headline:`Savings pace is ${Math.round(d.savingsRate)}%`,
+      sub:`Target ${d.benchmarks.savingsRate.toFixed(0)}%`,
+      gap:`Improve by about ${money(savingsGap)} this month to hit the benchmark pace.`
+    });
+  }
+
+  if(d.emergencyMonths < d.benchmarks.emergencyMonths){
+    insights.push({
+      headline:`Emergency fund covers ${d.emergencyMonths.toFixed(1)} months`,
+      sub:`Goal ${d.benchmarks.emergencyMonths.toFixed(1)} months`,
+      gap:`Build another ${money(emergencyGapAmount)} to reach the emergency reserve target.`
+    });
+  } else {
+    insights.push({
+      headline:`Emergency fund covers ${d.emergencyMonths.toFixed(1)} months`,
+      sub:'Cash reserve ready',
+      gap:'Your current reserve can absorb normal month-to-month surprises better than before.'
+    });
+  }
+
+  if(d.netWorth >= d.benchmarks.netWorth){
+    insights.push({
+      headline:`Net worth is ${money(d.netWorth)}`,
+      sub:'Above benchmark',
+      gap:`You are ahead of the benchmark used for ${d.benchmarks.state}. Keep compounding with steady contributions.`
+    });
+  } else {
+    insights.push({
+      headline:`Net worth is ${money(d.netWorth)}`,
+      sub:`Benchmark ${money(d.benchmarks.netWorth)}`,
+      gap:`Closing the gap will come from more cash retention and investment contributions, not just cutting one expense.`
+    });
+  }
+
+  return { data:d, insights: insights.slice(0,4) };
 }
 function recordOverviewInsightChanges(monthKey=data.currentMonth){
   const d = getOverviewV3Data(monthKey);
@@ -5402,7 +5496,10 @@ function renderOverviewV3Hero(monthKey=data.currentMonth){
   const d = getOverviewV3Data(monthKey);
   const el = document.getElementById('overviewHeroLeft');
   if(el) el.textContent = money(Number(d.budgetLeft || 0));
+  const netEl = document.getElementById('overviewNetWorthHero');
+  if(netEl) netEl.textContent = money(Number(d.netWorth || 0));
 }
+
 function renderOverviewV3MiniCards(monthKey=data.currentMonth){
   const d = getOverviewV3Data(monthKey);
   const setText = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
@@ -5411,7 +5508,7 @@ function renderOverviewV3MiniCards(monthKey=data.currentMonth){
   setText('overviewPortfolioCardValue', money(d.investments));
   setText('overviewAssetsCardValue', money(d.accounts + d.assets));
   const note = document.getElementById('overviewCashflowCardNote');
-  if(note) note.textContent = d.budgetLeft >= 0 ? `Safe to spend ${money(Math.max(0, d.budgetLeft * 0.63))}` : 'Spending is ahead of plan this month.';
+  if(note) note.textContent = d.budgetLeft >= 0 ? `Safe to spend ${money(d.safeToSpend)}` : `Over plan by ${money(Math.abs(d.budgetLeft))}`;
 }
 function renderOverviewV3Health(monthKey=data.currentMonth){
   const d = getOverviewV3Data(monthKey);
@@ -5423,11 +5520,11 @@ function renderOverviewV3Health(monthKey=data.currentMonth){
   const heroStatusEl = document.getElementById('overviewHealthStatusHero');
   if(heroScoreEl) heroScoreEl.textContent = String(d.score);
   if(fillEl) fillEl.style.width = `${Math.max(4, Math.min(100, d.score))}%`;
-  let status = 'Needs Improvement';
-  if(d.score >= 75) status = 'Strong';
-  else if(d.score >= 50) status = 'Improving';
-  if(statusEl) statusEl.textContent = status;
-  if(heroStatusEl) heroStatusEl.textContent = status;
+  if(fillEl) fillEl.style.width = `${Math.max(4, Math.min(100, d.score))}%`;
+  if(statusEl) statusEl.textContent = d.status;
+  if(heroStatusEl) heroStatusEl.textContent = d.status;
+  const labels = document.querySelector('.overview-v3-health-labels');
+  if(labels) labels.innerHTML = '<span>Critical</span><span>Warning</span><span>Stable</span><span>Strong</span>';
 }
 
 function renderOverviewV3Insights(monthKey=data.currentMonth){
