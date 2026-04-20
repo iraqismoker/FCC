@@ -7069,10 +7069,9 @@ function getWealthScreenData(monthKey=data.currentMonth){
               <div id="cat-${cat}" data-budget-category="${escapeHtml(cat)}"></div>
               ${activeInlineCategory === cat ? `
                 <div class="budget-inline-entry">
-                  <input class="budget-inline-input" id="inlineName-${cat}" placeholder="Item Name" onkeydown="handleInlineBudgetKey(event, '${cat}')">
-                  <input class="budget-inline-input budget-inline-amount" id="inlineAmount-${cat}" placeholder="$0.00" inputmode="decimal" onkeydown="handleInlineBudgetKey(event, '${cat}')">
+                  <input class="budget-inline-input" id="inlineName-${cat}" placeholder="Item Name" onkeydown="handleInlineBudgetKey(event, '${cat}', 'name')" onblur="handleInlineBudgetBlur('${cat}', 'name')">
+                  <input class="budget-inline-input budget-inline-amount" id="inlineAmount-${cat}" placeholder="$0.00" inputmode="decimal" type="number" step="0.01" onkeydown="handleInlineBudgetKey(event, '${cat}', 'amount')" onblur="handleInlineBudgetBlur('${cat}', 'amount')">
                 </div>
-                <div class="budget-inline-hint">Press return to save this item.</div>
               ` : `
                 <button class="budget-add-link" type="button" onclick="openInlineBudgetItem('${cat}')">Add Item</button>
               `}
@@ -7118,34 +7117,83 @@ function getWealthScreenData(monthKey=data.currentMonth){
 
     function openInlineBudgetItem(cat){
       window.__budgetInlineAddCategory = cat;
+      window.__budgetInlineBlurLock = false;
       renderBudgetCategories();
     }
 
     function closeInlineBudgetItem(){
       window.__budgetInlineAddCategory = null;
+      window.__budgetInlineBlurLock = false;
       renderBudgetCategories();
     }
 
-    function handleInlineBudgetKey(event, cat){
+    function saveInlineBudgetItem(cat){
+      const nameEl = document.getElementById(`inlineName-${cat}`);
+      const amountEl = document.getElementById(`inlineAmount-${cat}`);
+      const name = (nameEl?.value || '').trim();
+      const rawAmount = (amountEl?.value || '0').toString();
+      const amount = Number(rawAmount.replace(/[^\d.-]/g,''));
+      if(!name){
+        closeInlineBudgetItem();
+        return false;
+      }
+      const month = getMonthData(data.currentMonth);
+      if(!month.categories[cat]) month.categories[cat] = [];
+      month.categories[cat].push({
+        id: uid('exp'),
+        name,
+        amount: Number.isFinite(amount) ? amount : 0,
+        note:'',
+        date:'',
+        createdAt: Date.now()
+      });
+      addActivity('expense', 'Expense added', name, Number.isFinite(amount) ? amount : 0, 'minus');
+      setBudgetNotice(`Added ${name} to ${titleCase(cat)}.`);
+      window.__budgetInlineAddCategory = null;
+      window.__budgetInlineBlurLock = false;
+      saveData();
+      render();
+      return true;
+    }
+
+    function handleInlineBudgetKey(event, cat, field='name'){
       if(event.key === 'Escape'){
         closeInlineBudgetItem();
         return;
       }
       if(event.key !== 'Enter') return;
       event.preventDefault();
-      const nameEl = document.getElementById(`inlineName-${cat}`);
-      const amountEl = document.getElementById(`inlineAmount-${cat}`);
-      const name = (nameEl?.value || '').trim();
-      const amount = Number((amountEl?.value || '0').replace(/[^\d.-]/g,''));
-      if(!name) return;
-      const month = getMonthData(data.currentMonth);
-      if(!month.categories[cat]) month.categories[cat] = [];
-      month.categories[cat].push({ id: uid('exp'), name, amount: Number.isFinite(amount) ? amount : 0, note:'', date:'', createdAt: Date.now() });
-      addActivity('expense', 'Expense added', name, Number.isFinite(amount) ? amount : 0, 'minus');
-      setBudgetNotice(`Added ${name} to ${titleCase(cat)}.`);
-      window.__budgetInlineAddCategory = null;
-      saveData();
-      render();
+      if(field === 'name'){
+        const amountEl = document.getElementById(`inlineAmount-${cat}`);
+        if(amountEl){
+          window.__budgetInlineBlurLock = true;
+          amountEl.focus();
+          amountEl.select?.();
+          setTimeout(() => { window.__budgetInlineBlurLock = false; }, 120);
+        }
+        return;
+      }
+      saveInlineBudgetItem(cat);
+    }
+
+    function handleInlineBudgetBlur(cat, field='name'){
+      if(window.__budgetInlineBlurLock) return;
+      setTimeout(() => {
+        if(window.__budgetInlineBlurLock) return;
+        const active = document.activeElement;
+        const nameEl = document.getElementById(`inlineName-${cat}`);
+        const amountEl = document.getElementById(`inlineAmount-${cat}`);
+        if(active === nameEl || active === amountEl) return;
+        const hasName = !!(nameEl?.value || '').trim();
+        const hasAmount = !!(amountEl?.value || '').trim();
+        if(field === 'amount' && hasName){
+          saveInlineBudgetItem(cat);
+          return;
+        }
+        if(!hasName && !hasAmount){
+          closeInlineBudgetItem();
+        }
+      }, 120);
     }
 
     function openBudgetDetailPanel(type, id, categoryName=''){
