@@ -2919,6 +2919,162 @@
 #overviewScreen .overview-v3-snapshot-grid{gap:10px;}
 #overviewScreen .overview-v3-snapshot-box{border-radius:20px;padding:15px 14px 13px;background:#FCFDFF;}
 
+
+
+/* Overview v3 full-screen finish */
+#overviewScreen{
+  background:
+    radial-gradient(circle at top right, rgba(59,130,246,.22), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(14,165,233,.14), transparent 24%),
+    linear-gradient(180deg,#EAF1FF 0%, #F5F8FF 26%, #F6F8FC 100%) !important;
+}
+#overviewScreen > .overview-redesign-shell,
+#overviewScreen > .header,
+#overviewScreen > #compareCard,
+#overviewScreen > #notificationBannerCard,
+#overviewScreen > #comparisonEngineCard,
+#overviewScreen > #smartInsightsCard,
+#overviewScreen > #insightHistoryCard,
+#overviewScreen > #healthScoreCard,
+#overviewScreen > #overviewSnapshotCard,
+#overviewScreen > #recentActivityCard,
+#overviewScreen > .overview-grid,
+#overviewScreen > .forecast-card,
+#overviewScreen > .networth-card,
+#overviewScreen > .activity-card,
+#overviewScreen > .chart-card{
+  display:none !important;
+}
+#overviewScreen .overview-v3-shell{gap:16px;}
+#overviewScreen .overview-v3-grid{gap:14px;}
+#overviewScreen .overview-v3-mini,
+#overviewScreen .overview-v3-health,
+#overviewScreen .overview-v3-section{
+  position:relative;
+  overflow:hidden;
+  border-radius:26px;
+  border:1px solid rgba(255,255,255,.14) !important;
+  background:linear-gradient(135deg, rgba(15,23,42,.96) 0%, rgba(30,58,95,.94) 54%, rgba(29,78,216,.92) 100%) !important;
+  box-shadow:0 18px 36px rgba(30,58,95,.14) !important;
+  color:#FFFFFF;
+}
+#overviewScreen .overview-v3-mini::before,
+#overviewScreen .overview-v3-health::before,
+#overviewScreen .overview-v3-section::before{
+  content:"";
+  position:absolute;
+  inset:auto -42px -50px auto;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,.18), transparent 64%);
+  pointer-events:none;
+}
+#overviewScreen .overview-v3-mini > *,
+#overviewScreen .overview-v3-health > *,
+#overviewScreen .overview-v3-section > *{
+  position:relative;
+  z-index:1;
+}
+#overviewScreen .overview-v3-mini{
+  min-height:212px;
+  padding:18px 16px 16px;
+}
+#overviewScreen .overview-v3-icon{
+  width:50px;
+  height:50px;
+  border-radius:16px;
+  background:rgba(255,255,255,.16);
+  color:#FFFFFF;
+  border:1px solid rgba(255,255,255,.16);
+  margin-bottom:16px;
+}
+#overviewScreen .overview-v3-mini-title,
+#overviewScreen .overview-v3-summary-label,
+#overviewScreen .overview-v3-month-label,
+#overviewScreen .overview-v3-health-status,
+#overviewScreen .overview-v3-snapshot-label,
+#overviewScreen .overview-v3-activity-time,
+#overviewScreen .overview-v3-activity-copy,
+#overviewScreen .overview-v3-mini-note,
+#overviewScreen .overview-v3-health-labels,
+#overviewScreen .helper-copy,
+#overviewScreen .overview-v3-benchmark-copy{
+  color:rgba(255,255,255,.76) !important;
+}
+#overviewScreen .overview-v3-mini-value,
+#overviewScreen .overview-v3-title,
+#overviewScreen .overview-v3-health-score,
+#overviewScreen .overview-v3-insight-headline,
+#overviewScreen .overview-v3-activity-title,
+#overviewScreen .overview-v3-snapshot-value,
+#overviewScreen .overview-v3-benchmark-title{
+  color:#FFFFFF !important;
+}
+#overviewScreen .overview-v3-mini-link,
+#overviewScreen .overview-v3-link{
+  background:rgba(255,255,255,.12);
+  color:#FFFFFF;
+  border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(10px);
+}
+#overviewScreen .overview-v3-mini-link{
+  min-height:42px;
+}
+#overviewScreen .overview-v3-link{
+  padding:10px 14px;
+  border-radius:14px;
+  line-height:1;
+}
+#overviewScreen .overview-v3-health-track,
+#overviewScreen .overview-v3-mini-progress{
+  background:rgba(255,255,255,.14);
+}
+#overviewScreen #overviewInsightsList .overview-v3-insight,
+#overviewScreen #overviewRecentActivityList .overview-v3-activity,
+#overviewScreen .overview-v3-benchmark-row,
+#overviewScreen .overview-v3-benchmarks{
+  border-top:1px solid rgba(255,255,255,.12);
+}
+#overviewScreen .overview-v3-snapshot-grid{
+  gap:14px;
+}
+#overviewScreen .overview-v3-snapshot-box{
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.1);
+  border-radius:20px;
+}
+#overviewScreen .overview-v3-benchmark-badge{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.18);
+  color:#FFFFFF;
+}
+#overviewScreen .overview-v3-benchmark-badge.good{
+  background:rgba(34,197,94,.18);
+  border-color:rgba(34,197,94,.28);
+  color:#DCFCE7;
+}
+#overviewScreen .overview-v3-benchmark-badge.warn{
+  background:rgba(245,158,11,.18);
+  border-color:rgba(245,158,11,.28);
+  color:#FEF3C7;
+}
+#overviewScreen .overview-v3-benchmark-badge.bad{
+  background:rgba(239,68,68,.18);
+  border-color:rgba(239,68,68,.28);
+  color:#FEE2E2;
+}
+#overviewScreen .overview-v3-good{color:#86EFAC !important;}
+#overviewScreen .overview-v3-bad{color:#FCA5A5 !important;}
+#overviewScreen .overview-v3-section-head,
+#overviewScreen .overview-v3-health-head{
+  margin-bottom:14px;
+}
+@media (max-width: 430px){
+  #overviewScreen .overview-v3-mini{min-height:198px;}
+  #overviewScreen .overview-v3-mini-value{font-size:1.5rem;}
+}
+
 </style>
 </head>
 <body>
