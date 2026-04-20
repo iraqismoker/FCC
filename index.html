@@ -6,6 +6,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Financial Command Center v2</title>
 <style>
+    /* Cleanup pass 3: section markers + safe duplicate removal only */
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     :root{
       --bg1:#050816; --bg2:#0b1220; --panelTop:rgba(18,26,44,.88); --panelBottom:rgba(10,16,30,.94);
@@ -2829,7 +2830,7 @@
       margin-bottom:8px;
     }
 
-    /* Cleanup pass 1: removed obvious duplicate CSS blocks while preserving behavior */
+        /* Cleanup passes: preserving behavior while reducing duplicates */
     @keyframes loadBar{from{width:0;}to{width:100%;}}
   </style>
 </head>
@@ -4992,7 +4993,11 @@ function getOverviewMonthKey(){
   const sel = document.getElementById('overviewMonthSelect');
   return (sel && sel.value) ? sel.value : data.currentMonth;
 }
-function syncOverviewMonthSelectV3(){
+
+    // =========================
+    // Active Overview V3 helpers
+    // =========================
+    function syncOverviewMonthSelectV3(){
   const sel = document.getElementById('overviewMonthSelect');
   if(!sel) return;
   sel.innerHTML = monthOptions(data.currentMonth).map(k => `<option value="${k}">${monthLabel(k)}</option>`).join('');
@@ -5272,6 +5277,10 @@ function getWealthScreenData(monthKey=data.currentMonth){
     }
 
 
+    
+    // =========================
+    // Active Wealth screen helpers
+    // =========================
     function renderWealthScreen(monthKey=data.currentMonth){
   syncWealthMonthSelect();
   const d = getWealthScreenData(monthKey);
