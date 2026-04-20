@@ -5984,6 +5984,7 @@ function getWealthScreenData(monthKey=data.currentMonth){
       renderPlanningSnapshot(monthKey);
       renderSmartInsights(monthKey);
       renderActivity();
+      try { renderOverviewV3(monthKey); } catch(e) { console.error('Overview V3 render error', e); }
     }
 
     function makeTextEditable(el, value, onSave){
