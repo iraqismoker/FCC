@@ -5635,6 +5635,81 @@
   font-weight:700;
 }
 
+
+/* ===== Overview color polish + benchmark toggle fix ===== */
+#overviewScreen .overview-month-trigger{
+  background:
+    radial-gradient(circle at 85% 50%, rgba(45,212,191,.18), transparent 30%),
+    linear-gradient(135deg,#0F172A 0%, #17325A 52%, #1E3A8A 100%) !important;
+  box-shadow:0 18px 36px rgba(15,23,42,.18) !important;
+  border:1px solid rgba(191,219,254,.14) !important;
+}
+#overviewScreen .overview-month-current{
+  color:#FFFFFF !important;
+}
+#overviewScreen .overview-month-arrow{
+  color:#DDEAFE !important;
+}
+#overviewScreen .overview-month-chip{
+  border:2px solid #3B82F6 !important;
+  color:#1D4ED8 !important;
+}
+#overviewScreen .overview-month-chip.selected{
+  background:linear-gradient(135deg,#2563EB 0%, #1E40AF 100%) !important;
+  border-color:#2563EB !important;
+}
+#overviewScreen .overview-v3-health{
+  background:
+    radial-gradient(circle at 88% 84%, rgba(59,130,246,.34), transparent 30%),
+    linear-gradient(135deg,#0F172A 0%, #17325A 52%, #1E3A8A 100%) !important;
+}
+#overviewScreen .overview-v3-section.card{
+  background:
+    radial-gradient(circle at 88% 84%, rgba(59,130,246,.26), transparent 30%),
+    linear-gradient(135deg,#0F172A 0%, #17325A 52%, #1E3A8A 100%) !important;
+}
+#overviewScreen .overview-v3-summary-panel{
+  background:
+    radial-gradient(circle at 88% 84%, rgba(59,130,246,.30), transparent 30%),
+    linear-gradient(135deg,#0F172A 0%, #17325A 52%, #1E3A8A 100%) !important;
+}
+#overviewScreen .overview-v3-summary-box{
+  background:rgba(255,255,255,.09) !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+}
+#overviewScreen .overview-v3-summary-box .overview-v3-title,
+#overviewScreen .overview-v3-summary-box .overview-v3-big,
+#overviewScreen .overview-v3-summary-box .overview-v3-copy{
+  color:#FFFFFF !important;
+}
+#overviewScreen .overview-v3-copy,
+#overviewScreen .overview-v3-insight-copy{
+  color:rgba(226,232,240,.86) !important;
+}
+#overviewScreen .overview-v3-link{
+  background:rgba(255,255,255,.12) !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  color:#FFFFFF !important;
+  box-shadow:none !important;
+}
+#overviewScreen .overview-v3-link:hover{
+  background:rgba(255,255,255,.16) !important;
+}
+#overviewScreen #overviewBenchmarksPanel{
+  margin-top:12px !important;
+  padding-top:12px !important;
+  border-top:1px solid rgba(255,255,255,.12) !important;
+}
+#overviewScreen .overview-v3-benchmark-row{
+  border-top:1px solid rgba(255,255,255,.10) !important;
+}
+#overviewScreen .overview-v3-benchmark-title{
+  color:#FFFFFF !important;
+}
+#overviewScreen .overview-v3-benchmark-copy{
+  color:rgba(226,232,240,.82) !important;
+}
+
 </style>
   </head>
   <body>
@@ -12985,6 +13060,29 @@ renderOverviewV3 = function(monthKey = data.currentMonth) {
   __oldRenderOverviewV3(monthKey);
   ensureOverviewTopLayout();
   renderOverviewMonthTopbar();
+};
+
+
+// ===== benchmark toggle binding hard-fix =====
+function bindOverviewTopControls() {
+  const benchButton = document.querySelector('#overviewScreen .overview-v3-section-head .overview-v3-link');
+  const benchLabel = document.getElementById('overviewBenchmarksToggleLabel');
+  const panel = document.getElementById('overviewBenchmarksPanel');
+  if (benchButton && panel && benchLabel) {
+    benchButton.onclick = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      overviewBenchmarksOpen = !overviewBenchmarksOpen;
+      panel.style.display = overviewBenchmarksOpen ? 'block' : 'none';
+      benchLabel.textContent = overviewBenchmarksOpen ? 'Hide Benchmarks ›' : 'View Benchmarks ›';
+      if (overviewBenchmarksOpen) renderOverviewBenchmarks(getOverviewMonthKey());
+    };
+  }
+}
+const __oldRenderOverviewV3_phase2 = renderOverviewV3;
+renderOverviewV3 = function(monthKey = data.currentMonth) {
+  __oldRenderOverviewV3_phase2(monthKey);
+  bindOverviewTopControls();
 };
 
 </script>
