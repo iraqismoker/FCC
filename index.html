@@ -3602,59 +3602,362 @@
       margin-top:14px;
     }
 
-    #budgetScreen .budget-sheet-subcard{
-      margin-top:14px;
-      padding-top:14px;
-      border-top:1px solid #E5E7EB;
+
+
+    /* Budget detail sheet global fix */
+    .budget-detail-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.28);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .24s ease;
+      z-index:4000;
     }
-    #budgetScreen .budget-sheet-subcard-title{
+    .budget-detail-overlay.open{
+      opacity:1;
+      pointer-events:auto;
+    }
+    .budget-detail-sheet{
+      position:fixed;
+      left:50%;
+      bottom:0;
+      transform:translate(-50%, 104%);
+      transition:transform .28s cubic-bezier(.2,.8,.2,1);
+      width:min(440px, 100%);
+      max-height:min(82vh, 760px);
+      overflow:auto;
+      background:#FFFFFF;
+      border-top-left-radius:28px;
+      border-top-right-radius:28px;
+      box-shadow:0 -14px 40px rgba(17,24,39,.18);
+      z-index:4001;
+      padding:10px 18px calc(16px + env(safe-area-inset-bottom));
+      border:1px solid #E5E7EB;
+      border-bottom:none;
+      color:#0F172A;
+    }
+    .budget-detail-sheet.open{ transform:translate(-50%, 0); }
+    .budget-sheet-grabber{
+      width:44px;
+      height:5px;
+      border-radius:999px;
+      background:#D7DDE2;
+      margin:6px auto 12px;
+    }
+    .budget-sheet-header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .budget-sheet-title{
+      font-size:2rem;
+      line-height:1.04;
+      font-weight:800;
+      color:#0F172A;
+      margin-bottom:6px;
+      letter-spacing:-.04em;
+    }
+    .budget-sheet-subtitle{
+      color:#748089;
+      font-size:1rem;
+      line-height:1.3;
+    }
+    .budget-sheet-balance{ text-align:right; }
+    .budget-sheet-balance-label{
+      color:#748089;
+      font-size:.9rem;
+      margin-top:6px;
+      margin-bottom:4px;
+    }
+    .budget-sheet-balance-value{
+      color:#0F172A;
+      font-size:2.15rem;
+      font-weight:800;
+      letter-spacing:-.05em;
+    }
+    .budget-sheet-progress{ margin:14px 0 18px; }
+    .budget-sheet-stats{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    .budget-sheet-stat{
+      padding:12px 10px;
+      border-radius:16px;
+      background:#FAFBFC;
+      border:1px solid #EDF0F2;
+    }
+    .budget-sheet-stat-label{
+      color:#748089;
+      font-size:.72rem;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      margin-bottom:5px;
+    }
+    .budget-sheet-stat-value{
       color:#0F172A;
       font-size:1rem;
       font-weight:800;
+    }
+    .budget-sheet-card{
+      margin-top:14px;
+      padding:16px;
+      border-radius:22px;
+      background:#FAFBFC;
+      border:1px solid #EDF0F2;
+    }
+    .budget-sheet-card-title{
+      color:#0F172A;
+      font-size:.98rem;
+      font-weight:800;
       margin-bottom:12px;
     }
-    #budgetScreen .budget-sheet-switch-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      min-height:54px;
-      padding:4px 0 0;
+    .budget-sheet-grid{ display:grid; gap:12px; }
+    .budget-sheet-label{
+      color:#748089;
+      font-size:.78rem;
+      font-weight:700;
+      margin-bottom:6px;
+      text-transform:uppercase;
+      letter-spacing:.05em;
     }
-    #budgetScreen .budget-sheet-switch-copy{
-      color:#64748B;
-      font-size:.82rem;
-      line-height:1.3;
-      margin-top:4px;
+    .budget-sheet-actions{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+      margin-top:16px;
     }
-    #budgetScreen .budget-switch{
-      width:54px;
-      height:32px;
-      border-radius:999px;
-      background:#CBD5E1;
-      position:relative;
-      cursor:pointer;
-      border:none;
-      transition:background .2s ease;
-      flex:0 0 auto;
+    .budget-sheet-delete{ width:100%; margin-top:14px; }
+    .budget-sheet-hint{
+      color:#8b97a1;
+      font-size:.88rem;
+      line-height:1.35;
+      margin-top:10px;
     }
-    #budgetScreen .budget-switch::after{
-      content:"";
-      position:absolute;
-      top:3px;
-      left:3px;
-      width:26px;
-      height:26px;
-      border-radius:50%;
-      background:#FFFFFF;
-      box-shadow:0 2px 6px rgba(15,23,42,.18);
-      transition:left .2s ease;
+    .budget-sheet-amount-input{
+      text-align:right;
+      font-weight:700;
     }
-    #budgetScreen .budget-switch.on{
-      background:#2563EB;
+
+
+
+    /* Budget style unification pass */
+    #budgetScreen{
+      background:#eef1f4 !important;
+      color:#263238 !important;
     }
-    #budgetScreen .budget-switch.on::after{
-      left:25px;
+    #budgetScreen .header h2,
+    #budgetScreen .header p,
+    #budgetScreen .section-title,
+    #budgetScreen .budget-section-copy,
+    #budgetScreen .helper-copy,
+    #budgetScreen .row-name,
+    #budgetScreen .row-note,
+    #budgetScreen .budget-list-title,
+    #budgetScreen .budget-simple-name,
+    #budgetScreen .budget-sheet-title,
+    #budgetScreen .budget-sheet-card-title,
+    #budgetScreen .budget-sheet-stat-value,
+    #budgetScreen .budget-sheet-balance-value,
+    #budgetScreen .budget-sheet-subtitle,
+    #budgetScreen .budget-sheet-balance-label,
+    #budgetScreen .budget-sheet-label,
+    #budgetScreen .budget-sheet-stat-label,
+    #budgetScreen .empty-state{
+      color:#263238 !important;
+    }
+    #budgetScreen .pinned-note,
+    #budgetScreen .budget-list-mode,
+    #budgetScreen .budget-sheet-subtitle,
+    #budgetScreen .budget-sheet-balance-label,
+    #budgetScreen .budget-sheet-label,
+    #budgetScreen .budget-sheet-stat-label,
+    #budgetScreen .budget-section-copy,
+    #budgetScreen .row-note,
+    #budgetScreen .empty-state,
+    #budgetScreen .budget-sheet-hint,
+    #budgetScreen .budget-helper-copy{
+      color:#75808a !important;
+    }
+    #budgetScreen .card,
+    #budgetScreen .budget-card,
+    #budgetScreen .budget-list-card,
+    #budgetScreen #budgetCategoriesCard,
+    #budgetScreen #budgetBillsCard,
+    #budgetScreen #budgetIncomeCard,
+    #budgetScreen #budgetSummaryCard,
+    #budgetScreen #budgetRecentExpensesCard,
+    #budgetScreen #budgetResetCard{
+      background:#fbfbfc !important;
+      border:1px solid rgba(0,0,0,.05) !important;
+      box-shadow:0 2px 0 rgba(255,255,255,.7), 0 8px 24px rgba(31,41,55,.04) !important;
+      backdrop-filter:none !important;
+    }
+    #budgetScreen .budget-list-head{
+      padding:16px 18px 8px !important;
+    }
+    #budgetScreen .budget-list-title{
+      font-size:1.02rem !important;
+      font-weight:800 !important;
+      color:#66737d !important;
+    }
+    #budgetScreen .budget-list-mode{
+      color:#66737d !important;
+      font-size:1rem !important;
+      font-weight:500 !important;
+    }
+    #budgetScreen .budget-list-body{
+      padding:0 18px 10px !important;
+    }
+    #budgetScreen .budget-simple-row{
+      padding:18px 0 !important;
+      border-top:1px solid #d9dee3 !important;
+      background:transparent !important;
+      transform:none !important;
+    }
+    #budgetScreen .budget-simple-row:first-child{ border-top:none !important; }
+    #budgetScreen .budget-simple-name{
+      color:#263238 !important;
+      font-size:1.06rem !important;
+      font-weight:500 !important;
+    }
+    #budgetScreen .budget-simple-amount{
+      color:#4f5a61 !important;
+      font-size:1.04rem !important;
+      font-weight:500 !important;
+    }
+    #budgetScreen .budget-add-link{
+      color:#167ddf !important;
+      font-size:1rem !important;
+      font-weight:500 !important;
+      padding:16px 0 14px !important;
+    }
+    #budgetScreen .budget-inline-entry{
+      grid-template-columns:minmax(0,1fr) 112px !important;
+      gap:16px !important;
+      padding:18px 0 12px !important;
+      border-top:1px solid #d9dee3 !important;
+    }
+    #budgetScreen .budget-inline-input{
+      color:#263238 !important;
+      border:none !important;
+      border-bottom:2px solid #d9dee3 !important;
+      padding:10px 0 12px !important;
+      font-size:1.08rem !important;
+      background:transparent !important;
+    }
+    #budgetScreen .budget-inline-input::placeholder{ color:#adb7bf !important; }
+    #budgetScreen .budget-inline-amount{
+      text-align:right !important;
+    }
+    #budgetScreen .budget-link-btn{
+      background:#fbfbfc !important;
+      color:#167ddf !important;
+      border:1px solid #d9dee3 !important;
+      box-shadow:none !important;
+    }
+    #budgetScreen .budget-detail-overlay{
+      background:rgba(15,23,42,.22) !important;
+    }
+    #budgetScreen .budget-detail-sheet,
+    .budget-detail-sheet{
+      background:transparent !important;
+      width:min(440px,100vw) !important;
+      padding:0 0 max(10px, env(safe-area-inset-bottom)) !important;
+      border:none !important;
+      box-shadow:none !important;
+    }
+    #budgetScreen .budget-detail-content,
+    .budget-detail-content{
+      background:#f7f8fa !important;
+      border-top-left-radius:32px !important;
+      border-top-right-radius:32px !important;
+      box-shadow:0 -12px 40px rgba(17,24,39,.18) !important;
+      padding:12px 18px 24px !important;
+      border:1px solid rgba(0,0,0,.04) !important;
+      max-height:min(82vh,780px) !important;
+      overflow:auto !important;
+    }
+    #budgetScreen .budget-sheet-grabber,
+    .budget-sheet-grabber{
+      width:56px !important;
+      height:7px !important;
+      border-radius:999px !important;
+      background:#cfd5da !important;
+      margin:6px auto 14px !important;
+    }
+    #budgetScreen .budget-sheet-progress .progress-track,
+    .budget-sheet-progress .progress-track{
+      height:16px !important;
+      background:#dfe5ea !important;
+      border:none !important;
+      margin-bottom:16px !important;
+    }
+    #budgetScreen .budget-sheet-progress .progress-fill,
+    .budget-sheet-progress .progress-fill{
+      background:linear-gradient(90deg,#37c15a,#6ed487) !important;
+    }
+    #budgetScreen .budget-sheet-stats,
+    .budget-sheet-stats{
+      grid-template-columns:repeat(3,1fr) !important;
+      gap:12px !important;
+    }
+    #budgetScreen .budget-sheet-stat,
+    .budget-sheet-stat{
+      background:#fbfbfc !important;
+      border:1px solid #e3e8eb !important;
+      border-radius:20px !important;
+      padding:16px 14px !important;
+      box-shadow:none !important;
+    }
+    #budgetScreen .budget-sheet-card,
+    .budget-sheet-card{
+      background:#fbfbfc !important;
+      border:1px solid #e3e8eb !important;
+      border-radius:24px !important;
+      padding:18px !important;
+      box-shadow:none !important;
+    }
+    #budgetScreen .budget-sheet-grid,
+    .budget-sheet-grid{
+      gap:14px !important;
+    }
+    #budgetScreen .budget-sheet-card .small-input,
+    #budgetScreen .budget-sheet-card .form-select,
+    .budget-sheet-card .small-input,
+    .budget-sheet-card .form-select{
+      background:#ffffff !important;
+      border:1px solid #d9dee3 !important;
+      box-shadow:none !important;
+      border-radius:18px !important;
+      min-height:54px !important;
+      color:#0f172a !important;
+      font-size:1.05rem !important;
+      font-weight:600 !important;
+      padding:0 16px !important;
+    }
+    #budgetScreen .budget-sheet-card input::placeholder,
+    .budget-sheet-card input::placeholder{ color:#adb7bf !important; }
+    #budgetScreen .budget-sheet-delete,
+    .budget-sheet-delete{
+      background:#fff1f0 !important;
+      color:#df3f35 !important;
+      border:1px solid #ffd4d1 !important;
+      box-shadow:none !important;
+      width:100% !important;
+      justify-content:center !important;
+      margin-top:12px !important;
+    }
+    #budgetScreen .secondary-btn.pill,
+    .secondary-btn.pill{
+      background:#ffffff !important;
+      color:#334155 !important;
+      border:1px solid #d9dee3 !important;
+      box-shadow:none !important;
     }
 
 </style>
@@ -6983,10 +7286,9 @@ function getWealthScreenData(monthKey=data.currentMonth){
               <div id="cat-${cat}" data-budget-category="${escapeHtml(cat)}"></div>
               ${activeInlineCategory === cat ? `
                 <div class="budget-inline-entry">
-                  <input class="budget-inline-input" id="inlineName-${cat}" placeholder="Item Name" onkeydown="handleInlineBudgetKey(event, '${cat}')">
-                  <input class="budget-inline-input budget-inline-amount" id="inlineAmount-${cat}" placeholder="$0.00" inputmode="decimal" onkeydown="handleInlineBudgetKey(event, '${cat}')">
+                  <input class="budget-inline-input" id="inlineName-${cat}" placeholder="Item Name" onkeydown="handleInlineBudgetKey(event, '${cat}', 'name')" onblur="handleInlineBudgetBlur('${cat}', 'name')">
+                  <input class="budget-inline-input budget-inline-amount" id="inlineAmount-${cat}" placeholder="$0.00" inputmode="decimal" type="number" step="0.01" onkeydown="handleInlineBudgetKey(event, '${cat}', 'amount')" onblur="handleInlineBudgetBlur('${cat}', 'amount')">
                 </div>
-                <div class="budget-inline-hint">Press return to save this item.</div>
               ` : `
                 <button class="budget-add-link" type="button" onclick="openInlineBudgetItem('${cat}')">Add Item</button>
               `}
@@ -7032,34 +7334,83 @@ function getWealthScreenData(monthKey=data.currentMonth){
 
     function openInlineBudgetItem(cat){
       window.__budgetInlineAddCategory = cat;
+      window.__budgetInlineBlurLock = false;
       renderBudgetCategories();
     }
 
     function closeInlineBudgetItem(){
       window.__budgetInlineAddCategory = null;
+      window.__budgetInlineBlurLock = false;
       renderBudgetCategories();
     }
 
-    function handleInlineBudgetKey(event, cat){
+    function saveInlineBudgetItem(cat){
+      const nameEl = document.getElementById(`inlineName-${cat}`);
+      const amountEl = document.getElementById(`inlineAmount-${cat}`);
+      const name = (nameEl?.value || '').trim();
+      const rawAmount = (amountEl?.value || '0').toString();
+      const amount = Number(rawAmount.replace(/[^\d.-]/g,''));
+      if(!name){
+        closeInlineBudgetItem();
+        return false;
+      }
+      const month = getMonthData(data.currentMonth);
+      if(!month.categories[cat]) month.categories[cat] = [];
+      month.categories[cat].push({
+        id: uid('exp'),
+        name,
+        amount: Number.isFinite(amount) ? amount : 0,
+        note:'',
+        date:'',
+        createdAt: Date.now()
+      });
+      addActivity('expense', 'Expense added', name, Number.isFinite(amount) ? amount : 0, 'minus');
+      setBudgetNotice(`Added ${name} to ${titleCase(cat)}.`);
+      window.__budgetInlineAddCategory = null;
+      window.__budgetInlineBlurLock = false;
+      saveData();
+      render();
+      return true;
+    }
+
+    function handleInlineBudgetKey(event, cat, field='name'){
       if(event.key === 'Escape'){
         closeInlineBudgetItem();
         return;
       }
       if(event.key !== 'Enter') return;
       event.preventDefault();
-      const nameEl = document.getElementById(`inlineName-${cat}`);
-      const amountEl = document.getElementById(`inlineAmount-${cat}`);
-      const name = (nameEl?.value || '').trim();
-      const amount = Number((amountEl?.value || '0').replace(/[^\d.-]/g,''));
-      if(!name) return;
-      const month = getMonthData(data.currentMonth);
-      if(!month.categories[cat]) month.categories[cat] = [];
-      month.categories[cat].push({ id: uid('exp'), name, amount: Number.isFinite(amount) ? amount : 0, note:'', date:'', createdAt: Date.now() });
-      addActivity('expense', 'Expense added', name, Number.isFinite(amount) ? amount : 0, 'minus');
-      setBudgetNotice(`Added ${name} to ${titleCase(cat)}.`);
-      window.__budgetInlineAddCategory = null;
-      saveData();
-      render();
+      if(field === 'name'){
+        const amountEl = document.getElementById(`inlineAmount-${cat}`);
+        if(amountEl){
+          window.__budgetInlineBlurLock = true;
+          amountEl.focus();
+          amountEl.select?.();
+          setTimeout(() => { window.__budgetInlineBlurLock = false; }, 120);
+        }
+        return;
+      }
+      saveInlineBudgetItem(cat);
+    }
+
+    function handleInlineBudgetBlur(cat, field='name'){
+      if(window.__budgetInlineBlurLock) return;
+      setTimeout(() => {
+        if(window.__budgetInlineBlurLock) return;
+        const active = document.activeElement;
+        const nameEl = document.getElementById(`inlineName-${cat}`);
+        const amountEl = document.getElementById(`inlineAmount-${cat}`);
+        if(active === nameEl || active === amountEl) return;
+        const hasName = !!(nameEl?.value || '').trim();
+        const hasAmount = !!(amountEl?.value || '').trim();
+        if(field === 'amount' && hasName){
+          saveInlineBudgetItem(cat);
+          return;
+        }
+        if(!hasName && !hasAmount){
+          closeInlineBudgetItem();
+        }
+      }, 120);
     }
 
     function openBudgetDetailPanel(type, id, categoryName=''){
@@ -7109,7 +7460,7 @@ function getWealthScreenData(monthKey=data.currentMonth){
             </div>
             <div>
               <div class="budget-sheet-label">Amount</div>
-              <input id="budgetDetailAmount" class="small-input" inputmode="decimal" value="${escapeAttr(String(item.amount ?? 0))}">
+              <input id="budgetDetailAmount" type="number" step="0.01" class="small-input budget-sheet-amount-input" inputmode="decimal" value="${escapeAttr(String(item.amount ?? 0))}">
             </div>
             ${type === 'bill' ? `
               <div class="two-col">
@@ -7124,36 +7475,6 @@ function getWealthScreenData(monthKey=data.currentMonth){
                   <input id="budgetDetailDueDay" class="small-input" inputmode="numeric" value="${escapeAttr(String(item.dueDay || 1))}">
                 </div>
               </div>
-              <div class="budget-sheet-subcard">
-                <div class="budget-sheet-subcard-title">Debt / Bill Info</div>
-                <div class="two-col">
-                  <div>
-                    <div class="budget-sheet-label">APR (%)</div>
-                    <input id="budgetDetailAPR" class="small-input" inputmode="decimal" value="${escapeAttr(String(item.apr ?? ''))}" placeholder="0.00">
-                  </div>
-                  <div>
-                    <div class="budget-sheet-label">Current balance</div>
-                    <input id="budgetDetailBalance" class="small-input" inputmode="decimal" value="${escapeAttr(String(item.balance ?? ''))}" placeholder="0.00">
-                  </div>
-                </div>
-                <div class="two-col">
-                  <div>
-                    <div class="budget-sheet-label">Minimum payment</div>
-                    <input id="budgetDetailMinPayment" class="small-input" inputmode="decimal" value="${escapeAttr(String(item.minPayment ?? ''))}" placeholder="0.00">
-                  </div>
-                  <div>
-                    <div class="budget-sheet-label">Statement balance</div>
-                    <input id="budgetDetailStatementBalance" class="small-input" inputmode="decimal" value="${escapeAttr(String(item.statementBalance ?? ''))}" placeholder="0.00">
-                  </div>
-                </div>
-                <div class="budget-sheet-switch-row">
-                  <div>
-                    <div class="budget-sheet-label">Autopay</div>
-                    <div class="budget-sheet-switch-copy">Track if this bill is paid automatically each month.</div>
-                  </div>
-                  <button id="budgetDetailAutopay" type="button" class="budget-switch ${item.autopay ? 'on' : ''}" aria-pressed="${item.autopay ? 'true' : 'false'}"></button>
-                </div>
-              </div>
             ` : `
               <div>
                 <div class="budget-sheet-label">Date</div>
@@ -7166,9 +7487,9 @@ function getWealthScreenData(monthKey=data.currentMonth){
             </div>
           </div>
           <div class="budget-sheet-actions">
-            <button class="secondary-btn pill" type="button" onclick="closeBudgetDetailPanel()">Close</button>
-            <button class="add-btn pill" type="button" onclick="saveBudgetDetailPanel()">Save</button>
+            <button class="secondary-btn pill" type="button" onclick="closeBudgetDetailPanel()">Done</button>
           </div>
+          <div class="budget-sheet-hint">Amount saves automatically when you leave the field or tap Done on the keyboard.</div>
           <button class="danger-btn pill budget-sheet-delete" type="button" onclick="deleteBudgetDetailPanelItem()">Delete Item</button>
         </div>
       `;
@@ -7176,14 +7497,32 @@ function getWealthScreenData(monthKey=data.currentMonth){
       sheet.classList.add('open');
       sheet.setAttribute('aria-hidden','false');
       document.body.style.overflow = 'hidden';
-      const autopayBtn = document.getElementById('budgetDetailAutopay');
-      if(autopayBtn){
-        autopayBtn.addEventListener('click', () => {
-          const next = autopayBtn.getAttribute('aria-pressed') !== 'true';
-          autopayBtn.setAttribute('aria-pressed', next ? 'true' : 'false');
-          autopayBtn.classList.toggle('on', next);
+      setTimeout(() => attachBudgetDetailAutoSave(), 20);
+    }
+
+
+    function attachBudgetDetailAutoSave(){
+      const amountEl = document.getElementById('budgetDetailAmount');
+      const dateEl = document.getElementById('budgetDetailDate');
+      const freqEl = document.getElementById('budgetDetailFrequency');
+      const dueEl = document.getElementById('budgetDetailDueDay');
+      const noteEl = document.getElementById('budgetDetailNote');
+      const nameEl = document.getElementById('budgetDetailName');
+      if(amountEl){
+        amountEl.addEventListener('focus', () => amountEl.select());
+        amountEl.addEventListener('blur', () => saveBudgetDetailPanel(true));
+        amountEl.addEventListener('keydown', (event) => {
+          if(event.key === 'Enter'){
+            event.preventDefault();
+            amountEl.blur();
+          }
         });
       }
+      if(dateEl) dateEl.addEventListener('change', () => saveBudgetDetailPanel(true));
+      if(freqEl) freqEl.addEventListener('change', () => saveBudgetDetailPanel(true));
+      if(dueEl) dueEl.addEventListener('change', () => saveBudgetDetailPanel(true));
+      if(noteEl) noteEl.addEventListener('blur', () => saveBudgetDetailPanel(true));
+      if(nameEl) nameEl.addEventListener('blur', () => saveBudgetDetailPanel(true));
     }
 
     function closeBudgetDetailPanel(event){
@@ -7212,7 +7551,7 @@ function getWealthScreenData(monthKey=data.currentMonth){
       return null;
     }
 
-    function saveBudgetDetailPanel(){
+    function saveBudgetDetailPanel(isAutoSave=false){
       const state = window.__budgetDetailState;
       if(!state) return;
       const item = findBudgetDetailItem(state.type, state.id, state.categoryName);
@@ -7228,18 +7567,8 @@ function getWealthScreenData(monthKey=data.currentMonth){
         bill.note = note;
         const frequency = document.getElementById('budgetDetailFrequency')?.value || bill.frequency || 'monthly';
         const dueDay = Number(document.getElementById('budgetDetailDueDay')?.value || bill.dueDay || 1);
-        const apr = Number((document.getElementById('budgetDetailAPR')?.value || '').replace(/[^\d.-]/g,''));
-        const balance = Number((document.getElementById('budgetDetailBalance')?.value || '').replace(/[^\d.-]/g,''));
-        const minPayment = Number((document.getElementById('budgetDetailMinPayment')?.value || '').replace(/[^\d.-]/g,''));
-        const statementBalance = Number((document.getElementById('budgetDetailStatementBalance')?.value || '').replace(/[^\d.-]/g,''));
-        const autopayPressed = document.getElementById('budgetDetailAutopay')?.getAttribute('aria-pressed') === 'true';
         bill.frequency = frequency;
         bill.dueDay = Math.max(1, Math.min(31, Number.isFinite(dueDay) ? dueDay : 1));
-        bill.apr = Number.isFinite(apr) ? apr : 0;
-        bill.balance = Number.isFinite(balance) ? balance : 0;
-        bill.minPayment = Number.isFinite(minPayment) ? minPayment : 0;
-        bill.statementBalance = Number.isFinite(statementBalance) ? statementBalance : 0;
-        bill.autopay = !!autopayPressed;
       } else {
         for(const monthKey of Object.keys(data.months || {})){
           const monthData = data.months[monthKey];
@@ -7257,8 +7586,8 @@ function getWealthScreenData(monthKey=data.currentMonth){
       }
       saveData();
       render();
-      closeBudgetDetailPanel();
-      setBudgetNotice('Budget item updated.');
+      if(!isAutoSave) closeBudgetDetailPanel();
+      if(!isAutoSave) setBudgetNotice('Budget item updated.');
     }
 
     function deleteBudgetDetailPanelItem(){
