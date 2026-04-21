@@ -13096,5 +13096,45 @@ renderOverviewV3 = function(monthKey = data.currentMonth) {
       <div class="budget-sheet-grabber"></div>
       <div id="budgetDetailContent"></div>
     </div>
-  </body>
+  
+<script>
+// ===== hard override for benchmarks toggle =====
+(function(){
+  function forceBindBenchmarksToggle(){
+    const panel = document.getElementById('overviewBenchmarksPanel');
+    const label = document.getElementById('overviewBenchmarksToggleLabel');
+    const button = label ? label.closest('button') : null;
+    if (!panel || !label || !button) return;
+
+    panel.style.display = window.overviewBenchmarksOpen ? 'block' : 'none';
+    label.textContent = window.overviewBenchmarksOpen ? 'Hide Benchmarks ›' : 'View Benchmarks ›';
+
+    button.removeAttribute('onclick');
+    button.onclick = function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      window.overviewBenchmarksOpen = !window.overviewBenchmarksOpen;
+      panel.style.display = window.overviewBenchmarksOpen ? 'block' : 'none';
+      label.textContent = window.overviewBenchmarksOpen ? 'Hide Benchmarks ›' : 'View Benchmarks ›';
+      if (window.overviewBenchmarksOpen && typeof renderOverviewBenchmarks === 'function') {
+        const monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : null;
+        renderOverviewBenchmarks(monthKey);
+      }
+      return false;
+    };
+  }
+
+  const __oldRenderOverviewV3_phase3 = window.renderOverviewV3;
+  window.renderOverviewV3 = function(monthKey){
+    __oldRenderOverviewV3_phase3(monthKey);
+    forceBindBenchmarksToggle();
+  };
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(forceBindBenchmarksToggle, 200);
+  });
+})();
+</script>
+
+</body>
 </html>
