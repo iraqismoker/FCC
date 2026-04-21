@@ -3960,6 +3960,167 @@
       box-shadow:none !important;
     }
 
+
+
+    /* SAFE Budget visual reset + popup fix */
+    #budgetScreen{
+      background:#F8FAFC !important;
+      color:#0F172A !important;
+    }
+    #budgetScreen .header h2,
+    #budgetScreen .section-title,
+    #budgetScreen h4,
+    #budgetScreen .row-name,
+    #budgetScreen .category-title-wrap h4,
+    #budgetScreen .budget-helper-value,
+    #budgetScreen .budget-big,
+    #budgetScreen .info-value,
+    #budgetScreen .row-amount,
+    #budgetScreen .category-total,
+    #budgetScreen .activity-main,
+    #budgetScreen .timeline-main,
+    #budgetScreen .budget-list-title,
+    #budgetScreen .budget-list-mode,
+    #budgetScreen .budget-inline-input{
+      color:#0F172A !important;
+    }
+    #budgetScreen .header p,
+    #budgetScreen .helper-copy,
+    #budgetScreen .budget-section-copy,
+    #budgetScreen .budget-helper-copy,
+    #budgetScreen .row-note,
+    #budgetScreen .category-progress-label,
+    #budgetScreen .tooltip-card,
+    #budgetScreen .empty-state,
+    #budgetScreen .activity-empty,
+    #budgetScreen .activity-meta,
+    #budgetScreen .timeline-meta,
+    #budgetScreen .collapse-indicator,
+    #budgetScreen .budget-helper-label,
+    #budgetScreen .budget-inline-hint,
+    #budgetScreen .pinned-note,
+    #budgetScreen .budget-sheet-subtitle,
+    #budgetScreen .budget-sheet-balance-label,
+    #budgetScreen .budget-sheet-label,
+    #budgetScreen .budget-sheet-hint,
+    #budgetScreen .budget-sheet-stat-label{
+      color:#64748B !important;
+    }
+    #budgetScreen .month-select,
+    #budgetScreen .small-input,
+    #budgetScreen .form-select,
+    #budgetScreen input[type="date"].small-input,
+    #budgetScreen #expenseDate,
+    #budgetScreen #budgetBillDueDate,
+    #budgetScreen #scheduleDate{
+      background:#FFFFFF !important;
+      color:#0F172A !important;
+      border:1px solid #E5E7EB !important;
+      box-shadow:0 6px 18px rgba(15,23,42,.05) !important;
+    }
+    #budgetScreen .month-select option,
+    #budgetScreen .form-select option{ color:#0F172A !important; background:#FFFFFF !important; }
+    #budgetScreen .card,
+    #budgetScreen .budget-card,
+    #budgetScreen .info-card,
+    #budgetScreen .budget-helper-card,
+    #budgetScreen .category-card,
+    #budgetScreen .tooltip-card,
+    #budgetScreen .toggle,
+    #budgetScreen .budget-notice,
+    #budgetScreen .budget-list-card{
+      background:#FFFFFF !important;
+      border:1px solid #E5E7EB !important;
+      box-shadow:0 10px 28px rgba(15,23,42,.07) !important;
+      backdrop-filter:none !important;
+    }
+    #budgetScreen .budget-quick-btn,
+    #budgetScreen .budget-link-btn,
+    #budgetScreen .secondary-btn,
+    #budgetScreen .mini-move{
+      background:#FFFFFF !important;
+      color:#2563EB !important;
+      border:1px solid #BFDBFE !important;
+      box-shadow:0 6px 18px rgba(15,23,42,.05) !important;
+      opacity:1 !important;
+    }
+    #budgetScreen .budget-quick-btn.primary,
+    #budgetScreen .add-btn,
+    #budgetScreen .save-btn{
+      background:linear-gradient(180deg,#60A5FA,#2563EB) !important;
+      color:#FFFFFF !important;
+      border:1px solid #60A5FA !important;
+      box-shadow:0 10px 24px rgba(37,99,235,.16) !important;
+      opacity:1 !important;
+    }
+    #budgetScreen .danger-btn{
+      background:#FEF2F2 !important;
+      color:#B91C1C !important;
+      border:1px solid #FECACA !important;
+      opacity:1 !important;
+      box-shadow:none !important;
+    }
+    #budgetScreen .budget-add-link{
+      color:#167ddf !important;
+      opacity:1 !important;
+    }
+    #budgetScreen .progress-track{ background:#E2E8F0 !important; border-color:#E2E8F0 !important; }
+    #budgetScreen .progress-fill{ background:linear-gradient(90deg,#3B82F6,#2563EB) !important; }
+
+    /* Budget detail popup safe layout */
+    .budget-detail-overlay{
+      position:fixed !important;
+      inset:0 !important;
+      background:rgba(15,23,42,.28) !important;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .24s ease;
+      z-index:4000 !important;
+    }
+    .budget-detail-overlay.open{ opacity:1 !important; pointer-events:auto !important; }
+    .budget-detail-sheet,
+    #budgetScreen .budget-detail-sheet{
+      position:fixed !important;
+      left:0 !important;
+      right:0 !important;
+      bottom:0 !important;
+      margin:0 auto !important;
+      width:min(430px, calc(100vw - 8px)) !important;
+      max-height:min(82vh, 760px) !important;
+      overflow:auto !important;
+      transform:translateY(104%) !important;
+      transition:transform .28s cubic-bezier(.2,.8,.2,1) !important;
+      background:#FFFFFF !important;
+      border:1px solid #E5E7EB !important;
+      border-bottom:none !important;
+      border-top-left-radius:28px !important;
+      border-top-right-radius:28px !important;
+      box-shadow:0 -14px 40px rgba(17,24,39,.18) !important;
+      z-index:4001 !important;
+      padding:10px 18px calc(18px + env(safe-area-inset-bottom)) !important;
+      color:#0F172A !important;
+      backdrop-filter:none !important;
+    }
+    .budget-detail-sheet.open,
+    #budgetScreen .budget-detail-sheet.open{ transform:translateY(0) !important; }
+    .budget-sheet-grabber{ width:44px !important; height:5px !important; background:#D7DDE2 !important; margin:6px auto 12px !important; }
+    .budget-sheet-header{ display:flex !important; justify-content:space-between !important; align-items:flex-start !important; gap:12px !important; margin-bottom:12px !important; }
+    .budget-sheet-title{ font-size:2rem !important; line-height:1.02 !important; font-weight:800 !important; color:#0F172A !important; letter-spacing:-.04em !important; margin-bottom:6px !important; }
+    .budget-sheet-balance{ text-align:right !important; }
+    .budget-sheet-balance-value{ font-size:2rem !important; font-weight:800 !important; color:#0F172A !important; letter-spacing:-.04em !important; }
+    .budget-sheet-progress{ margin-bottom:14px !important; }
+    .budget-sheet-stats{ display:grid !important; grid-template-columns:repeat(3,1fr) !important; gap:10px !important; }
+    .budget-sheet-stat{ background:#F8FAFC !important; border:1px solid #E5E7EB !important; border-radius:18px !important; padding:12px 12px !important; }
+    .budget-sheet-stat-value{ font-size:1.05rem !important; font-weight:800 !important; color:#0F172A !important; }
+    .budget-sheet-card{ background:#F8FAFC !important; border:1px solid #E5E7EB !important; border-radius:24px !important; padding:16px !important; }
+    .budget-sheet-card-title{ font-size:1.05rem !important; font-weight:800 !important; color:#0F172A !important; margin-bottom:10px !important; }
+    .budget-sheet-grid{ display:grid !important; gap:12px !important; }
+    .budget-sheet-grid .two-col{ display:grid !important; grid-template-columns:1fr 1fr !important; gap:12px !important; }
+    .budget-sheet-actions{ display:flex !important; gap:10px !important; margin-top:14px !important; }
+    .budget-sheet-actions .secondary-btn,
+    .budget-sheet-actions .add-btn{ flex:1 1 0 !important; justify-content:center !important; }
+    .budget-sheet-delete{ width:100% !important; margin-top:12px !important; }
+
 </style>
 </head>
 <body>
