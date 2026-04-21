@@ -5695,6 +5695,115 @@
   border:1px solid #E5E7EB !important;
 }
 
+
+/* ===== Final category card rebuild inside Budget ===== */
+#budgetScreen #budgetCategoriesCard{
+  background:
+    radial-gradient(circle at 88% 88%, rgba(59,130,246,.30), transparent 28%),
+    linear-gradient(135deg,#0F172A 0%, #132746 48%, #1E3A8A 100%) !important;
+  border:1px solid rgba(191,219,254,.16) !important;
+  box-shadow:0 14px 34px rgba(15,23,42,.18) !important;
+  color:#FFFFFF !important;
+  border-radius:28px !important;
+  padding:20px !important;
+}
+
+#budgetScreen #budgetCategoriesCard .section-title{
+  color:#FFFFFF !important;
+  font-size:1.15rem !important;
+  font-weight:800 !important;
+  letter-spacing:-.02em !important;
+}
+#budgetScreen #budgetCategoriesCard .helper-copy{
+  color:rgba(226,232,240,.86) !important;
+  margin-bottom:16px !important;
+}
+
+/* rebuild each category card itself instead of white inner cards */
+#budgetScreen #budgetCategoriesCard .budget-list-card{
+  background:rgba(255,255,255,.06) !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03) !important;
+  border-radius:24px !important;
+  overflow:hidden !important;
+  margin-bottom:14px !important;
+  backdrop-filter:blur(6px) !important;
+}
+#budgetScreen #budgetCategoriesCard .budget-list-card:last-child{
+  margin-bottom:0 !important;
+}
+
+#budgetScreen #budgetCategoriesCard .budget-list-head{
+  padding:22px 22px 10px !important;
+}
+#budgetScreen #budgetCategoriesCard .budget-list-title{
+  color:#F8FAFC !important;
+  font-size:1.08rem !important;
+  font-weight:800 !important;
+}
+#budgetScreen #budgetCategoriesCard .budget-list-mode{
+  color:#BFDBFE !important;
+  font-size:.92rem !important;
+  font-weight:700 !important;
+}
+
+#budgetScreen #budgetCategoriesCard .budget-list-body{
+  padding:0 22px 18px !important;
+}
+
+#budgetScreen #budgetCategoriesCard .budget-simple-row{
+  border-top:1px solid rgba(255,255,255,.10) !important;
+  padding:22px 0 !important;
+}
+#budgetScreen #budgetCategoriesCard .budget-simple-row:first-child{
+  border-top:none !important;
+}
+
+#budgetScreen #budgetCategoriesCard .budget-simple-name{
+  color:#F8FAFC !important;
+  font-size:1.06rem !important;
+  font-weight:700 !important;
+}
+#budgetScreen #budgetCategoriesCard .budget-simple-amount{
+  color:#EEF5FF !important;
+  font-size:1.02rem !important;
+  font-weight:700 !important;
+}
+
+#budgetScreen #budgetCategoriesCard .budget-inline-entry{
+  border-top:1px solid rgba(255,255,255,.10) !important;
+  padding:18px 0 10px !important;
+}
+#budgetScreen #budgetCategoriesCard .budget-inline-input{
+  color:#F8FBFF !important;
+  border-bottom:2px solid rgba(160,190,255,.24) !important;
+}
+#budgetScreen #budgetCategoriesCard .budget-inline-input::placeholder{
+  color:rgba(225,235,248,.58) !important;
+}
+
+#budgetScreen #budgetCategoriesCard .budget-add-link{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin-top:12px !important;
+  padding:10px 14px !important;
+  border-radius:12px !important;
+  background:rgba(59,130,246,.18) !important;
+  color:#93C5FD !important;
+  border:1px solid rgba(147,197,253,.24) !important;
+  font-weight:700 !important;
+  font-size:.98rem !important;
+}
+
+/* make categories section not inherit any pale layer */
+#budgetScreen #budgetCategoriesCard .card,
+#budgetScreen #budgetCategoriesCard .budget-card{
+  background:transparent !important;
+  box-shadow:none !important;
+  border:none !important;
+}
+
 </style>
   </head>
   <body>
