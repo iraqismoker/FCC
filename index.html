@@ -5447,111 +5447,235 @@
         box-shadow: none !important;
       }
     
-/* ===== Budget hard contrast fix ===== */
-#budgetScreen,
-#budgetScreen *{
-  text-shadow:none !important;
-}
-
+/* ===== Budget redesign to match Overview tab ===== */
 #budgetScreen{
   background:#F5F7FB !important;
+  padding:18px 18px 132px !important;
 }
 
-#budgetScreen .header,
-#budgetScreen .header h2,
-#budgetScreen .header p{
+/* keep light app background but make Budget use dark overview cards */
+#budgetScreen .header{
+  margin-bottom:14px !important;
+}
+#budgetScreen .eyebrow{
+  color:#93C5FD !important;
+}
+#budgetScreen .header h2{
   color:#0F172A !important;
-  opacity:1 !important;
+}
+#budgetScreen .header p{
+  color:#64748B !important;
 }
 
-#budgetScreen .month-select{
+#budgetScreen .top-row .month-select{
   background:#FFFFFF !important;
   color:#0F172A !important;
   border:1px solid #E5E7EB !important;
-  box-shadow:0 8px 20px rgba(15,23,42,.06) !important;
+  box-shadow:0 8px 22px rgba(15,23,42,.06) !important;
   font-weight:700 !important;
-  opacity:1 !important;
 }
-
-#budgetScreen .add-btn,
-#budgetScreen .secondary-btn,
-#budgetScreen .save-btn,
-#budgetScreen .danger-btn,
-#budgetScreen .mini-move{
-  opacity:1 !important;
-  filter:none !important;
-}
-
-#budgetScreen .add-btn{
-  background:linear-gradient(180deg,#78B8FF 0%, #4B8CFF 45%, #2F6AF6 100%) !important;
+#budgetScreen .top-row .add-btn.icon{
+  background:linear-gradient(180deg,#79B8FF 0%, #4C8CFF 42%, #2F6AF6 100%) !important;
   color:#FFFFFF !important;
-  border:1px solid rgba(191,219,254,.28) !important;
+  border:1px solid rgba(191,219,254,.26) !important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 14px 28px rgba(37,99,235,.18) !important;
 }
 
-#budgetScreen .secondary-btn{
+#budgetScreen .budget-quick-actions{
+  gap:12px !important;
+  margin-bottom:14px !important;
+}
+#budgetScreen .budget-quick-btn{
+  min-height:54px !important;
+  border-radius:18px !important;
+  border:1px solid rgba(191,219,254,.20) !important;
   background:#FFFFFF !important;
-  color:#2563EB !important;
-  border:1px solid #D9DEE3 !important;
-  box-shadow:0 10px 20px rgba(15,23,42,.06) !important;
+  color:#1D4ED8 !important;
+  box-shadow:0 10px 24px rgba(15,23,42,.08) !important;
+}
+#budgetScreen .budget-quick-btn.primary{
+  background:linear-gradient(180deg,#79B8FF 0%, #4C8CFF 42%, #2F6AF6 100%) !important;
+  color:#FFFFFF !important;
+  border-color:rgba(191,219,254,.24) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 14px 28px rgba(37,99,235,.18) !important;
 }
 
-#budgetScreen .danger-btn{
-  background:#FFF1F0 !important;
-  color:#DF3F35 !important;
-  border:1px solid #FFD3CF !important;
-  box-shadow:0 10px 20px rgba(223,63,53,.08) !important;
+#budgetScreen .budget-notice{
+  background:#EFF6FF !important;
+  color:#1D4ED8 !important;
+  border:1px solid #BFDBFE !important;
+  border-radius:16px !important;
+  box-shadow:none !important;
 }
 
-#budgetScreen .card,
-#budgetScreen .budget-card,
-#budgetScreen .info-card,
-#budgetScreen .category-card,
-#budgetScreen .tooltip-card{
-  background:#FFFFFF !important;
-  border:1px solid #E5E7EB !important;
-  box-shadow:0 12px 28px rgba(15,23,42,.07) !important;
-  opacity:1 !important;
+/* all main budget sections become overview-style dark cards */
+#budgetScreen #budgetSummaryCard,
+#budgetScreen #budgetBillsCard,
+#budgetScreen #budgetCategoriesCard,
+#budgetScreen #budgetRecentExpensesCard,
+#budgetScreen #budgetResetCard,
+#budgetScreen .card.budget-card:has(#incomeList),
+#budgetScreen .card.budget-card:has(#leftToBudget),
+#budgetScreen .card.budget-card:has(#expensePanelWrap),
+#budgetScreen .card.budget-card:has(#categoryPanelWrap),
+#budgetScreen .card.budget-card:has(#budgetBillPanelWrap){
+  background:
+    radial-gradient(circle at 88% 88%, rgba(59,130,246,.30), transparent 28%),
+    linear-gradient(135deg,#0F172A 0%, #132746 48%, #1E3A8A 100%) !important;
+  border:1px solid rgba(191,219,254,.16) !important;
+  box-shadow:0 14px 34px rgba(15,23,42,.18) !important;
+  color:#FFFFFF !important;
+}
+
+/* fallback for browsers without :has by targeting known IDs only */
+#budgetScreen #budgetSummaryCard,
+#budgetScreen #budgetBillsCard,
+#budgetScreen #budgetCategoriesCard,
+#budgetScreen #budgetRecentExpensesCard,
+#budgetScreen #budgetResetCard{
+  border-radius:28px !important;
+  overflow:hidden !important;
 }
 
 #budgetScreen .section-title,
 #budgetScreen h4,
 #budgetScreen .row-name,
 #budgetScreen .row-amount,
-#budgetScreen .info-value,
 #budgetScreen .budget-big,
+#budgetScreen .info-value,
 #budgetScreen .category-title-wrap h4,
 #budgetScreen .category-total{
-  color:#0F172A !important;
-  opacity:1 !important;
+  color:#F8FAFC !important;
 }
-
 #budgetScreen .helper-copy,
+#budgetScreen .budget-section-copy,
 #budgetScreen .row-note,
 #budgetScreen .empty-state,
 #budgetScreen .activity-empty,
 #budgetScreen .activity-meta,
 #budgetScreen .timeline-meta,
 #budgetScreen .category-progress-label,
-#budgetScreen .collapse-indicator,
-#budgetScreen .tooltip-card,
-#budgetScreen .pinned-note{
-  color:#64748B !important;
-  opacity:1 !important;
+#budgetScreen .collapse-indicator{
+  color:rgba(226,232,240,.84) !important;
 }
-
 #budgetScreen .pinned-note,
-#budgetScreen .category-tag{
-  color:#2563EB !important;
+#budgetScreen .category-tag,
+#budgetScreen .budget-helper-label{
+  color:#BFDBFE !important;
 }
 
+/* Monthly income card and Left to Budget card */
+#budgetScreen .card.budget-card{
+  border-radius:28px !important;
+}
+#budgetScreen .card.budget-card .info-dot{
+  background:rgba(255,255,255,.10) !important;
+  color:#E2E8F0 !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+}
+#budgetScreen #leftToBudget{
+  color:#FFFFFF !important;
+}
+#budgetScreen #leftToBudgetNote{
+  color:rgba(226,232,240,.84) !important;
+}
+#budgetScreen .budget-helper-card{
+  background:rgba(255,255,255,.08) !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  border-radius:22px !important;
+}
+#budgetScreen .budget-helper-value{
+  color:#FFFFFF !important;
+}
+#budgetScreen .budget-helper-copy{
+  color:rgba(226,232,240,.78) !important;
+}
+
+/* Summary mini cards */
+#budgetScreen #budgetSummaryCard .info-grid{
+  gap:14px !important;
+}
+#budgetScreen #budgetSummaryCard .info-card{
+  background:rgba(255,255,255,.08) !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  box-shadow:none !important;
+  border-radius:24px !important;
+}
+#budgetScreen #budgetSummaryCard .info-card h4{
+  color:#BFDBFE !important;
+}
+#budgetScreen #budgetSummaryCard .info-card .info-value{
+  color:#FFFFFF !important;
+}
+
+/* Categories */
+#budgetScreen .category-card{
+  background:rgba(255,255,255,.05) !important;
+  border:1px solid rgba(191,219,254,.12) !important;
+  box-shadow:none !important;
+  border-radius:24px !important;
+}
+#budgetScreen .row-item{
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+}
+#budgetScreen .row-item:last-child{
+  border-bottom:none !important;
+}
+#budgetScreen .progress-track{
+  background:rgba(255,255,255,.12) !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+}
+#budgetScreen .progress-fill{
+  background:linear-gradient(90deg,#60A5FA,#3B82F6) !important;
+}
+#budgetScreen .progress-fill.warn{
+  background:linear-gradient(90deg,#F59E0B,#FBBF24) !important;
+}
+#budgetScreen .progress-fill.bad{
+  background:linear-gradient(90deg,#EF4444,#F87171) !important;
+}
+
+/* Bills / expenses list cards */
+#budgetScreen #budgetBillsCard .row-item,
+#budgetScreen #budgetRecentExpensesCard .row-item{
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+}
+#budgetScreen #budgetBillsCard .row-item:last-child,
+#budgetScreen #budgetRecentExpensesCard .row-item:last-child{
+  border-bottom:none !important;
+}
+
+/* Buttons in dark cards */
+#budgetScreen .add-btn,
+#budgetScreen .save-btn{
+  background:linear-gradient(180deg,#79B8FF 0%, #4C8CFF 42%, #2F6AF6 100%) !important;
+  color:#FFFFFF !important;
+  border:1px solid rgba(191,219,254,.24) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 14px 28px rgba(37,99,235,.20) !important;
+}
+#budgetScreen .secondary-btn,
+#budgetScreen .budget-link-btn,
+#budgetScreen .mini-move{
+  background:rgba(255,255,255,.10) !important;
+  color:#F8FAFC !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+  box-shadow:none !important;
+}
+#budgetScreen .danger-btn{
+  background:rgba(239,68,68,.16) !important;
+  color:#FFD6D6 !important;
+  border:1px solid rgba(248,113,113,.26) !important;
+  box-shadow:none !important;
+}
+
+/* Budget mode toggle */
 #budgetScreen .toggle{
-  background:linear-gradient(180deg,#2C3649,#374151) !important;
-  border:1px solid rgba(15,23,42,.16) !important;
-  box-shadow:0 12px 24px rgba(15,23,42,.14) !important;
+  background:linear-gradient(135deg,#334155,#475569) !important;
+  border:1px solid rgba(148,163,184,.25) !important;
+  box-shadow:0 12px 24px rgba(15,23,42,.12) !important;
 }
 #budgetScreen .toggle button{
-  color:#E5E7EB !important;
+  color:#E2E8F0 !important;
 }
 #budgetScreen .toggle button.active{
   background:rgba(147,197,253,.20) !important;
@@ -5559,36 +5683,16 @@
   border:1px solid rgba(191,219,254,.20) !important;
 }
 
-#budgetScreen .info-grid .info-card{
-  background:
-    radial-gradient(circle at 88% 90%, rgba(59,130,246,.24), transparent 28%),
-    linear-gradient(135deg, #0F172A 0%, #132746 46%, #1E3A8A 100%) !important;
-  border:1px solid rgba(191,219,254,.18) !important;
+/* keep popup readable */
+.budget-detail-sheet{
+  background:#F8FAFC !important;
+  border-top-left-radius:30px !important;
+  border-top-right-radius:30px !important;
+  box-shadow:0 -16px 40px rgba(15,23,42,.18) !important;
 }
-#budgetScreen .info-grid .info-card h4,
-#budgetScreen .info-grid .info-card .info-value,
-#budgetScreen .info-grid .info-card .row-name,
-#budgetScreen .info-grid .info-card .row-amount{
-  color:#FFFFFF !important;
-}
-#budgetScreen .info-grid .info-card .helper-copy,
-#budgetScreen .info-grid .info-card .row-note{
-  color:rgba(226,232,240,.84) !important;
-}
-
-#budgetScreen .row-item{
-  border-bottom:1px solid #EEF2F7 !important;
-}
-#budgetScreen .row-item:last-child{
-  border-bottom:none !important;
-}
-
-#budgetScreen .progress-track{
-  background:#E2E8F0 !important;
-  border:1px solid #E2E8F0 !important;
-}
-#budgetScreen .progress-fill{
-  background:linear-gradient(90deg,#3B82F6,#2563EB) !important;
+#budgetDetailContent .budget-sheet-card{
+  background:#FFFFFF !important;
+  border:1px solid #E5E7EB !important;
 }
 
 </style>
