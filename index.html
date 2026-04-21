@@ -5447,438 +5447,192 @@
         box-shadow: none !important;
       }
     
-/* ===== Budget redesign to match Overview tab ===== */
-#budgetScreen{
-  background:#F5F7FB !important;
-  padding:18px 18px 132px !important;
+/* ===== Overview top bar + month picker rebuild ===== */
+#overviewRedesignShell{
+  display:none !important;
 }
-
-/* keep light app background but make Budget use dark overview cards */
-#budgetScreen .header{
-  margin-bottom:14px !important;
+#overviewV3Shell{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:16px !important;
 }
-#budgetScreen .eyebrow{
-  color:#93C5FD !important;
-}
-#budgetScreen .header h2{
-  color:#0F172A !important;
-}
-#budgetScreen .header p{
-  color:#64748B !important;
-}
-
-#budgetScreen .top-row .month-select{
-  background:#FFFFFF !important;
-  color:#0F172A !important;
-  border:1px solid #E5E7EB !important;
-  box-shadow:0 8px 22px rgba(15,23,42,.06) !important;
-  font-weight:700 !important;
-}
-#budgetScreen .top-row .add-btn.icon{
-  background:linear-gradient(180deg,#79B8FF 0%, #4C8CFF 42%, #2F6AF6 100%) !important;
-  color:#FFFFFF !important;
-  border:1px solid rgba(191,219,254,.26) !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 14px 28px rgba(37,99,235,.18) !important;
-}
-
-#budgetScreen .budget-quick-actions{
-  gap:12px !important;
-  margin-bottom:14px !important;
-}
-#budgetScreen .budget-quick-btn{
-  min-height:54px !important;
-  border-radius:18px !important;
-  border:1px solid rgba(191,219,254,.20) !important;
-  background:#FFFFFF !important;
-  color:#1D4ED8 !important;
-  box-shadow:0 10px 24px rgba(15,23,42,.08) !important;
-}
-#budgetScreen .budget-quick-btn.primary{
-  background:linear-gradient(180deg,#79B8FF 0%, #4C8CFF 42%, #2F6AF6 100%) !important;
-  color:#FFFFFF !important;
-  border-color:rgba(191,219,254,.24) !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 14px 28px rgba(37,99,235,.18) !important;
-}
-
-#budgetScreen .budget-notice{
-  background:#EFF6FF !important;
-  color:#1D4ED8 !important;
-  border:1px solid #BFDBFE !important;
-  border-radius:16px !important;
-  box-shadow:none !important;
-}
-
-/* all main budget sections become overview-style dark cards */
-#budgetScreen #budgetSummaryCard,
-#budgetScreen #budgetBillsCard,
-#budgetScreen #budgetCategoriesCard,
-#budgetScreen #budgetRecentExpensesCard,
-#budgetScreen #budgetResetCard,
-#budgetScreen .card.budget-card:has(#incomeList),
-#budgetScreen .card.budget-card:has(#leftToBudget),
-#budgetScreen .card.budget-card:has(#expensePanelWrap),
-#budgetScreen .card.budget-card:has(#categoryPanelWrap),
-#budgetScreen .card.budget-card:has(#budgetBillPanelWrap){
-  background:
-    radial-gradient(circle at 88% 88%, rgba(59,130,246,.30), transparent 28%),
-    linear-gradient(135deg,#0F172A 0%, #132746 48%, #1E3A8A 100%) !important;
-  border:1px solid rgba(191,219,254,.16) !important;
-  box-shadow:0 14px 34px rgba(15,23,42,.18) !important;
-  color:#FFFFFF !important;
-}
-
-/* fallback for browsers without :has by targeting known IDs only */
-#budgetScreen #budgetSummaryCard,
-#budgetScreen #budgetBillsCard,
-#budgetScreen #budgetCategoriesCard,
-#budgetScreen #budgetRecentExpensesCard,
-#budgetScreen #budgetResetCard{
-  border-radius:28px !important;
-  overflow:hidden !important;
-}
-
-#budgetScreen .section-title,
-#budgetScreen h4,
-#budgetScreen .row-name,
-#budgetScreen .row-amount,
-#budgetScreen .budget-big,
-#budgetScreen .info-value,
-#budgetScreen .category-title-wrap h4,
-#budgetScreen .category-total{
-  color:#F8FAFC !important;
-}
-#budgetScreen .helper-copy,
-#budgetScreen .budget-section-copy,
-#budgetScreen .row-note,
-#budgetScreen .empty-state,
-#budgetScreen .activity-empty,
-#budgetScreen .activity-meta,
-#budgetScreen .timeline-meta,
-#budgetScreen .category-progress-label,
-#budgetScreen .collapse-indicator{
-  color:rgba(226,232,240,.84) !important;
-}
-#budgetScreen .pinned-note,
-#budgetScreen .category-tag,
-#budgetScreen .budget-helper-label{
-  color:#BFDBFE !important;
-}
-
-/* Monthly income card and Left to Budget card */
-#budgetScreen .card.budget-card{
-  border-radius:28px !important;
-}
-#budgetScreen .card.budget-card .info-dot{
-  background:rgba(255,255,255,.10) !important;
-  color:#E2E8F0 !important;
-  border:1px solid rgba(255,255,255,.14) !important;
-}
-#budgetScreen #leftToBudget{
-  color:#FFFFFF !important;
-}
-#budgetScreen #leftToBudgetNote{
-  color:rgba(226,232,240,.84) !important;
-}
-#budgetScreen .budget-helper-card{
-  background:rgba(255,255,255,.08) !important;
-  border:1px solid rgba(255,255,255,.12) !important;
-  border-radius:22px !important;
-}
-#budgetScreen .budget-helper-value{
-  color:#FFFFFF !important;
-}
-#budgetScreen .budget-helper-copy{
-  color:rgba(226,232,240,.78) !important;
-}
-
-/* Summary mini cards */
-#budgetScreen #budgetSummaryCard .info-grid{
-  gap:14px !important;
-}
-#budgetScreen #budgetSummaryCard .info-card{
-  background:rgba(255,255,255,.08) !important;
-  border:1px solid rgba(255,255,255,.12) !important;
-  box-shadow:none !important;
-  border-radius:24px !important;
-}
-#budgetScreen #budgetSummaryCard .info-card h4{
-  color:#BFDBFE !important;
-}
-#budgetScreen #budgetSummaryCard .info-card .info-value{
-  color:#FFFFFF !important;
-}
-
-/* Categories */
-#budgetScreen .category-card{
-  background:rgba(255,255,255,.05) !important;
-  border:1px solid rgba(191,219,254,.12) !important;
-  box-shadow:none !important;
-  border-radius:24px !important;
-}
-#budgetScreen .row-item{
-  border-bottom:1px solid rgba(255,255,255,.08) !important;
-}
-#budgetScreen .row-item:last-child{
-  border-bottom:none !important;
-}
-#budgetScreen .progress-track{
-  background:rgba(255,255,255,.12) !important;
-  border:1px solid rgba(255,255,255,.08) !important;
-}
-#budgetScreen .progress-fill{
-  background:linear-gradient(90deg,#60A5FA,#3B82F6) !important;
-}
-#budgetScreen .progress-fill.warn{
-  background:linear-gradient(90deg,#F59E0B,#FBBF24) !important;
-}
-#budgetScreen .progress-fill.bad{
-  background:linear-gradient(90deg,#EF4444,#F87171) !important;
-}
-
-/* Bills / expenses list cards */
-#budgetScreen #budgetBillsCard .row-item,
-#budgetScreen #budgetRecentExpensesCard .row-item{
-  border-bottom:1px solid rgba(255,255,255,.08) !important;
-}
-#budgetScreen #budgetBillsCard .row-item:last-child,
-#budgetScreen #budgetRecentExpensesCard .row-item:last-child{
-  border-bottom:none !important;
-}
-
-/* Buttons in dark cards */
-#budgetScreen .add-btn,
-#budgetScreen .save-btn{
-  background:linear-gradient(180deg,#79B8FF 0%, #4C8CFF 42%, #2F6AF6 100%) !important;
-  color:#FFFFFF !important;
-  border:1px solid rgba(191,219,254,.24) !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 14px 28px rgba(37,99,235,.20) !important;
-}
-#budgetScreen .secondary-btn,
-#budgetScreen .budget-link-btn,
-#budgetScreen .mini-move{
-  background:rgba(255,255,255,.10) !important;
-  color:#F8FAFC !important;
-  border:1px solid rgba(255,255,255,.14) !important;
-  box-shadow:none !important;
-}
-#budgetScreen .danger-btn{
-  background:rgba(239,68,68,.16) !important;
-  color:#FFD6D6 !important;
-  border:1px solid rgba(248,113,113,.26) !important;
-  box-shadow:none !important;
-}
-
-/* Budget mode toggle */
-#budgetScreen .toggle{
-  background:linear-gradient(135deg,#334155,#475569) !important;
-  border:1px solid rgba(148,163,184,.25) !important;
-  box-shadow:0 12px 24px rgba(15,23,42,.12) !important;
-}
-#budgetScreen .toggle button{
-  color:#E2E8F0 !important;
-}
-#budgetScreen .toggle button.active{
-  background:rgba(147,197,253,.20) !important;
-  color:#FFFFFF !important;
-  border:1px solid rgba(191,219,254,.20) !important;
-}
-
-/* keep popup readable */
-.budget-detail-sheet{
-  background:#F8FAFC !important;
-  border-top-left-radius:30px !important;
-  border-top-right-radius:30px !important;
-  box-shadow:0 -16px 40px rgba(15,23,42,.18) !important;
-}
-#budgetDetailContent .budget-sheet-card{
-  background:#FFFFFF !important;
-  border:1px solid #E5E7EB !important;
-}
-
-
-/* ===== Final category card rebuild inside Budget ===== */
-#budgetScreen #budgetCategoriesCard{
-  background:
-    radial-gradient(circle at 88% 88%, rgba(59,130,246,.30), transparent 28%),
-    linear-gradient(135deg,#0F172A 0%, #132746 48%, #1E3A8A 100%) !important;
-  border:1px solid rgba(191,219,254,.16) !important;
-  box-shadow:0 14px 34px rgba(15,23,42,.18) !important;
-  color:#FFFFFF !important;
-  border-radius:28px !important;
-  padding:20px !important;
-}
-
-#budgetScreen #budgetCategoriesCard .section-title{
-  color:#FFFFFF !important;
-  font-size:1.15rem !important;
-  font-weight:800 !important;
-  letter-spacing:-.02em !important;
-}
-#budgetScreen #budgetCategoriesCard .helper-copy{
-  color:rgba(226,232,240,.86) !important;
-  margin-bottom:16px !important;
-}
-
-/* rebuild each category card itself instead of white inner cards */
-#budgetScreen #budgetCategoriesCard .budget-list-card{
-  background:rgba(255,255,255,.06) !important;
-  border:1px solid rgba(255,255,255,.10) !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.03) !important;
-  border-radius:24px !important;
-  overflow:hidden !important;
-  margin-bottom:14px !important;
-  backdrop-filter:blur(6px) !important;
-}
-#budgetScreen #budgetCategoriesCard .budget-list-card:last-child{
-  margin-bottom:0 !important;
-}
-
-#budgetScreen #budgetCategoriesCard .budget-list-head{
-  padding:22px 22px 10px !important;
-}
-#budgetScreen #budgetCategoriesCard .budget-list-title{
-  color:#F8FAFC !important;
-  font-size:1.08rem !important;
-  font-weight:800 !important;
-}
-#budgetScreen #budgetCategoriesCard .budget-list-mode{
-  color:#BFDBFE !important;
-  font-size:.92rem !important;
-  font-weight:700 !important;
-}
-
-#budgetScreen #budgetCategoriesCard .budget-list-body{
-  padding:0 22px 18px !important;
-}
-
-#budgetScreen #budgetCategoriesCard .budget-simple-row{
-  border-top:1px solid rgba(255,255,255,.10) !important;
-  padding:22px 0 !important;
-}
-#budgetScreen #budgetCategoriesCard .budget-simple-row:first-child{
-  border-top:none !important;
-}
-
-#budgetScreen #budgetCategoriesCard .budget-simple-name{
-  color:#F8FAFC !important;
-  font-size:1.06rem !important;
-  font-weight:700 !important;
-}
-#budgetScreen #budgetCategoriesCard .budget-simple-amount{
-  color:#EEF5FF !important;
-  font-size:1.02rem !important;
-  font-weight:700 !important;
-}
-
-#budgetScreen #budgetCategoriesCard .budget-inline-entry{
-  border-top:1px solid rgba(255,255,255,.10) !important;
-  padding:18px 0 10px !important;
-}
-#budgetScreen #budgetCategoriesCard .budget-inline-input{
-  color:#F8FBFF !important;
-  border-bottom:2px solid rgba(160,190,255,.24) !important;
-}
-#budgetScreen #budgetCategoriesCard .budget-inline-input::placeholder{
-  color:rgba(225,235,248,.58) !important;
-}
-
-#budgetScreen #budgetCategoriesCard .budget-add-link{
-  display:inline-flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  margin-top:12px !important;
-  padding:10px 14px !important;
-  border-radius:12px !important;
-  background:rgba(59,130,246,.18) !important;
-  color:#93C5FD !important;
-  border:1px solid rgba(147,197,253,.24) !important;
-  font-weight:700 !important;
-  font-size:.98rem !important;
-}
-
-/* make categories section not inherit any pale layer */
-#budgetScreen #budgetCategoriesCard .card,
-#budgetScreen #budgetCategoriesCard .budget-card{
+#overviewScreen .overview-v3-command{
   background:transparent !important;
-  box-shadow:none !important;
   border:none !important;
+  box-shadow:none !important;
+  padding:0 !important;
+  overflow:visible !important;
 }
-
-
-/* ===== Budget categories split into separate overview-style cards ===== */
-#budgetScreen #budgetCategoriesCard{
-  background:#FFFFFF !important;
-  border:1px solid #E5E7EB !important;
-  box-shadow:0 10px 28px rgba(15,23,42,.07) !important;
-  color:#0F172A !important;
-  padding:18px !important;
+#overviewScreen .overview-v3-command::before{
+  display:none !important;
 }
-#budgetScreen #budgetCategoriesCard .section-title{
-  color:#0F172A !important;
-}
-#budgetScreen #budgetCategoriesCard .helper-copy{
-  color:#64748B !important;
-  margin-bottom:16px !important;
-}
-
-#budgetScreen #budgetCategoriesCard .budget-list-card{
-  background:
-    radial-gradient(circle at 88% 88%, rgba(59,130,246,.26), transparent 28%),
-    linear-gradient(135deg,#0F172A 0%, #132746 48%, #1E3A8A 100%) !important;
-  border:1px solid rgba(191,219,254,.16) !important;
-  box-shadow:0 14px 30px rgba(15,23,42,.16) !important;
-  border-radius:26px !important;
-  margin-bottom:16px !important;
-  overflow:hidden !important;
-}
-#budgetScreen #budgetCategoriesCard .budget-list-card:last-child{
+#overviewScreen .overview-v3-command-top{
   margin-bottom:0 !important;
+  display:block !important;
 }
-#budgetScreen #budgetCategoriesCard .budget-list-head{
-  padding:20px 20px 8px !important;
+#overviewScreen .overview-month-topbar{
+  width:100%;
 }
-#budgetScreen #budgetCategoriesCard .budget-list-title{
+#overviewScreen .overview-month-trigger{
+  width:100%;
+  border:none;
+  border-radius:28px;
+  background:linear-gradient(135deg,#34C759 0%, #30C65A 45%, #28B84F 100%);
+  color:#FFFFFF;
+  padding:22px 24px;
+  box-shadow:0 16px 34px rgba(34,197,94,.18);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  cursor:pointer;
+}
+#overviewScreen .overview-month-current{
+  font-size:2.15rem;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:-.05em;
+  text-align:left;
+}
+#overviewScreen .overview-month-arrow{
+  font-size:2rem;
+  line-height:1;
+  transition:transform .22s ease;
+  flex:0 0 auto;
+}
+#overviewScreen .overview-month-arrow.open{
+  transform:rotate(180deg);
+}
+#overviewScreen .overview-month-dropdown{
+  display:none;
+  margin-top:14px;
+  gap:12px;
+  overflow-x:auto;
+  padding:2px 2px 6px;
+  scrollbar-width:none;
+}
+#overviewScreen .overview-month-dropdown::-webkit-scrollbar{
+  display:none;
+}
+#overviewScreen .overview-month-dropdown.open{
+  display:flex;
+}
+#overviewScreen .overview-month-chip{
+  flex:0 0 auto;
+  width:126px;
+  min-height:112px;
+  border-radius:22px;
+  border:2px solid #1580C7;
+  background:#FFFFFF;
+  color:#1580C7;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  font-weight:800;
+  box-shadow:0 10px 24px rgba(15,23,42,.06);
+  cursor:pointer;
+}
+#overviewScreen .overview-month-chip span:first-child{
+  font-size:1.05rem;
+  line-height:1.05;
+}
+#overviewScreen .overview-month-chip span:last-child{
+  font-size:.88rem;
+  line-height:1.05;
+}
+#overviewScreen .overview-month-chip.selected{
+  background:#1179C7;
+  color:#FFFFFF;
+  border-color:#1179C7;
+}
+#overviewScreen .overview-month-chip.selected .overview-month-chip-badge{
+  color:#FFFFFF;
+}
+#overviewScreen .overview-month-chip-badge{
+  margin-top:2px;
+  font-size:.75rem;
+  line-height:1;
+  color:#1179C7;
+  font-weight:800;
+}
+#overviewScreen #overviewHeroImpact{
+  margin-top:12px;
+  color:#64748B !important;
+  font-size:.94rem;
+  line-height:1.4;
+}
+#overviewScreen .overview-v3-summary-panel{
+  background:linear-gradient(135deg,#0F172A 0%, #132746 52%, #1E3A8A 100%);
+  border:1px solid rgba(191,219,254,.16);
+  box-shadow:0 18px 38px rgba(15,23,42,.18);
+  border-radius:28px;
+  padding:18px;
+  overflow:hidden;
+}
+#overviewScreen .overview-v3-summary-grid{
+  grid-template-columns:1.25fr 1fr 1fr;
+  gap:12px;
+}
+#overviewScreen .overview-v3-summary-box{
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(8px);
+  min-height:118px;
+}
+#overviewScreen .overview-v3-health{
+  background:linear-gradient(135deg,#0F172A 0%, #203459 55%, #2F63E2 100%) !important;
+  border:1px solid rgba(191,219,254,.16) !important;
+  box-shadow:0 18px 38px rgba(15,23,42,.18) !important;
+}
+#overviewScreen .overview-v3-health .overview-v3-title,
+#overviewScreen .overview-v3-health .overview-v3-health-status,
+#overviewScreen .overview-v3-health .overview-v3-health-score,
+#overviewScreen .overview-v3-health .overview-v3-health-labels{
   color:#FFFFFF !important;
-  font-size:1.05rem !important;
-  font-weight:800 !important;
 }
-#budgetScreen #budgetCategoriesCard .budget-list-mode{
-  color:#BFDBFE !important;
-  font-size:.9rem !important;
-  font-weight:700 !important;
+#overviewScreen .overview-v3-health .overview-v3-health-status{
+  color:rgba(255,255,255,.82) !important;
 }
-#budgetScreen #budgetCategoriesCard .budget-list-body{
-  padding:0 20px 18px !important;
+#overviewScreen .overview-v3-health-track{
+  background:rgba(255,255,255,.16) !important;
 }
-#budgetScreen #budgetCategoriesCard .budget-simple-row{
-  padding:18px 0 !important;
-  border-top:1px solid rgba(255,255,255,.10) !important;
+#overviewScreen .overview-v3-health-fill{
+  background:linear-gradient(90deg,#1DD6C4 0%, #3B82F6 45%, #F59E0B 75%, #EF4444 100%) !important;
 }
-#budgetScreen #budgetCategoriesCard .budget-simple-row:first-child{
-  border-top:none !important;
+#overviewScreen .overview-v3-health-labels{
+  justify-content:space-between;
+  gap:10px;
+  font-size:.86rem !important;
+  opacity:.9;
 }
-#budgetScreen #budgetCategoriesCard .budget-simple-name{
-  color:#F8FAFC !important;
-  font-size:1.02rem !important;
-  font-weight:700 !important;
+#overviewScreen .overview-v3-section.card{
+  background:linear-gradient(135deg,#0F172A 0%, #203459 55%, #2F63E2 100%) !important;
+  border:1px solid rgba(191,219,254,.16) !important;
+  box-shadow:0 18px 38px rgba(15,23,42,.18) !important;
 }
-#budgetScreen #budgetCategoriesCard .budget-simple-amount{
-  color:#EEF5FF !important;
-  font-size:1rem !important;
-  font-weight:700 !important;
+#overviewScreen .overview-v3-section.card .overview-v3-title,
+#overviewScreen .overview-v3-section.card .overview-v3-insight-headline,
+#overviewScreen .overview-v3-section.card .overview-v3-insight-gap{
+  color:#FFFFFF !important;
 }
-#budgetScreen #budgetCategoriesCard .budget-add-link{
-  display:inline-flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  padding:9px 14px !important;
-  margin-top:12px !important;
-  border-radius:14px !important;
-  background:rgba(255,255,255,.10) !important;
-  color:#BFDBFE !important;
-  border:1px solid rgba(191,219,254,.18) !important;
-  font-weight:700 !important;
-  font-size:.95rem !important;
+#overviewScreen .overview-v3-section.card .overview-v3-copy,
+#overviewScreen .overview-v3-section.card .helper-copy,
+#overviewScreen .overview-v3-section.card .overview-v3-insight-copy{
+  color:rgba(226,232,240,.84) !important;
+}
+#overviewScreen .overview-v3-link{
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.14);
+  color:#FFFFFF !important;
+  min-height:44px;
+  padding:0 18px;
+  border-radius:18px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
 }
 
 </style>
@@ -13106,7 +12860,134 @@
       });
 
       window.addEventListener("load", bootApp);
-    </script>
+    
+// ===== Overview top bar redesign =====
+let overviewMonthDropdownOpen = false;
+
+function overviewVisibleMonths(centerKey = data.currentMonth) {
+  const all = monthOptions(centerKey);
+  const idx = Math.max(0, all.indexOf(centerKey));
+  const start = Math.max(0, idx - 2);
+  return all.slice(start, start + 5);
+}
+function overviewMonthShortLabel(monthKey) {
+  const [y, m] = monthKey.split("-").map(Number);
+  const d = new Date(y, m - 1, 1);
+  return d.toLocaleString("en-US", { month: "short" });
+}
+function ensureOverviewTopLayout() {
+  const shell = document.getElementById("overviewV3Shell");
+  const command = shell && shell.querySelector(".overview-v3-command");
+  if (!shell || !command) return;
+
+  const top = command.querySelector(".overview-v3-command-top");
+  if (top && !document.getElementById("overviewMonthTopbar")) {
+    top.innerHTML = `
+      <div class="overview-month-topbar" id="overviewMonthTopbar">
+        <button class="overview-month-trigger" type="button" onclick="toggleOverviewMonthDropdown()">
+          <span class="overview-month-current" id="overviewMonthCurrentText">Month</span>
+          <span class="overview-month-arrow" id="overviewMonthArrow">⌄</span>
+        </button>
+        <div class="overview-month-dropdown" id="overviewMonthDropdown"></div>
+      </div>
+      <select class="month-select" id="overviewMonthSelect" style="display:none"></select>
+    `;
+  }
+
+  const summaryGrid = command.querySelector(".overview-v3-summary-grid");
+  let summaryPanel = document.getElementById("overviewSummaryPanel");
+  if (summaryGrid && !summaryPanel) {
+    summaryPanel = document.createElement("div");
+    summaryPanel.id = "overviewSummaryPanel";
+    summaryPanel.className = "overview-v3-summary-panel card";
+    summaryGrid.parentNode.removeChild(summaryGrid);
+    summaryPanel.appendChild(summaryGrid);
+  }
+
+  const health = shell.querySelector(".overview-v3-health");
+  const grid = shell.querySelector(".overview-v3-grid");
+  const sections = shell.querySelectorAll(".overview-v3-section.card");
+  const insights = sections[0];
+  const activity = sections[1];
+  const snapshot = sections[2];
+
+  [command, health, insights, summaryPanel, grid, activity, snapshot]
+    .filter(Boolean)
+    .forEach((node) => shell.appendChild(node));
+
+  const labels = health && health.querySelector(".overview-v3-health-labels");
+  if (labels) {
+    labels.innerHTML = "<span>Critical</span><span>Warning</span><span>Stable</span><span>Strong</span>";
+  }
+}
+
+function renderOverviewMonthTopbar() {
+  const sel = document.getElementById("overviewMonthSelect");
+  if (!sel) return;
+  sel.innerHTML = monthOptions(data.currentMonth)
+    .map((k) => `<option value="${k}">${monthLabel(k)}</option>`)
+    .join("");
+  sel.value = data.currentMonth;
+  sel.onchange = () => {
+    data.currentMonth = sel.value;
+    saveData();
+    render();
+  };
+
+  const textEl = document.getElementById("overviewMonthCurrentText");
+  if (textEl) textEl.textContent = monthLabel(data.currentMonth);
+
+  const arrow = document.getElementById("overviewMonthArrow");
+  if (arrow) arrow.classList.toggle("open", overviewMonthDropdownOpen);
+
+  const drop = document.getElementById("overviewMonthDropdown");
+  if (!drop) return;
+
+  const currentRealMonth = new Date();
+  const realMonthKey = `${currentRealMonth.getFullYear()}-${String(currentRealMonth.getMonth() + 1).padStart(2, "0")}`;
+
+  drop.classList.toggle("open", overviewMonthDropdownOpen);
+  drop.innerHTML = overviewVisibleMonths(data.currentMonth)
+    .map((k) => {
+      const selected = k === data.currentMonth ? "selected" : "";
+      const badge = k === realMonthKey ? '<div class="overview-month-chip-badge">Today</div>' : '<div class="overview-month-chip-badge">&nbsp;</div>';
+      return `
+        <button class="overview-month-chip ${selected}" type="button" onclick="selectOverviewMonth('${k}')">
+          <span>${overviewMonthShortLabel(k)}</span>
+          <span>${k.slice(0, 4)}</span>
+          ${badge}
+        </button>
+      `;
+    })
+    .join("");
+}
+function toggleOverviewMonthDropdown() {
+  overviewMonthDropdownOpen = !overviewMonthDropdownOpen;
+  renderOverviewMonthTopbar();
+}
+function selectOverviewMonth(monthKey) {
+  data.currentMonth = monthKey;
+  overviewMonthDropdownOpen = false;
+  saveData();
+  render();
+}
+document.addEventListener("click", (e) => {
+  const topbar = document.getElementById("overviewMonthTopbar");
+  if (!topbar) return;
+  if (overviewMonthDropdownOpen && !topbar.contains(e.target)) {
+    overviewMonthDropdownOpen = false;
+    renderOverviewMonthTopbar();
+  }
+});
+
+const __oldRenderOverviewV3 = renderOverviewV3;
+renderOverviewV3 = function(monthKey = data.currentMonth) {
+  __oldRenderOverviewV3(monthKey);
+  ensureOverviewTopLayout();
+  renderOverviewMonthTopbar();
+};
+
+</script>
 
     <div
       id="budgetDetailOverlay"
