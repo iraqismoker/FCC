@@ -5714,59 +5714,426 @@
 #overviewScreen .overview-benchmarks-details{
   margin-left:auto;
 }
+#overviewScreen .overview-benchmarks-details summary{
+  list-style:none;
+}
+#overviewScreen .overview-benchmarks-details summary::-webkit-details-marker{
+  display:none;
+}
+#overviewScreen .overview-benchmarks-details[open] #overviewBenchmarksToggleLabel::before{
+  content:"Hide Benchmarks ›";
+}
+#overviewScreen .overview-benchmarks-details:not([open]) #overviewBenchmarksToggleLabel::before{
+  content:"View Benchmarks ›";
+}
+#overviewScreen .overview-benchmarks-details #overviewBenchmarksToggleLabel{
+  font-size:0;
+}
+#overviewScreen .overview-benchmarks-details[open] #overviewBenchmarksPanel{
+  display:block !important;
+}
+#overviewScreen .overview-benchmarks-details:not([open]) #overviewBenchmarksPanel{
+  display:none !important;
+}
 
 
+/* ===== Smart Insights arrow toggle ===== */
+#overviewScreen .overview-benchmarks-wrap{
+  margin-left:auto;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+}
+#overviewScreen .overview-benchmarks-arrow{
+  width:118px;
+  height:98px;
+  border-radius:30px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.10);
+  color:#FFFFFF;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+#overviewScreen .overview-benchmarks-arrow-icon{
+  font-size:3rem;
+  line-height:1;
+  transition:transform .22s ease;
+}
+#overviewScreen .overview-benchmarks-arrow[aria-expanded="true"] .overview-benchmarks-arrow-icon{
+  transform:rotate(180deg);
+}
+#overviewScreen #overviewBenchmarksPanel{
+  width:100%;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.12);
+}
 
-/* ===== Clean Overview polish ===== */
-#overviewScreen .overview-v3-command {
-  overflow: hidden;
+
+/* ===== Smart Insights arrow match top date bar ===== */
+#overviewScreen .overview-v3-section-head{
+  display:flex !important;
+  justify-content:space-between !important;
+  align-items:center !important;
+  gap:12px !important;
 }
-#overviewScreen .overview-v3-summary-grid {
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.8fr) minmax(0, 0.82fr);
-  gap: 8px;
+#overviewScreen .overview-benchmarks-wrap{
+  margin-left:auto !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
 }
-#overviewScreen .overview-v3-summary-box {
-  min-width: 0;
-  min-height: 84px;
-  padding: 12px 12px 10px;
+#overviewScreen .overview-benchmarks-arrow{
+  width:auto !important;
+  height:auto !important;
+  min-width:44px !important;
+  padding:4px 8px !important;
+  border:none !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+  color:rgba(255,255,255,.88) !important;
 }
-#overviewScreen .overview-v3-summary-label {
-  font-size: 0.68rem;
-  margin-bottom: 6px;
+#overviewScreen .overview-benchmarks-arrow-icon{
+  font-size:2.45rem !important;
+  line-height:1 !important;
+  font-weight:500 !important;
+  transition:transform .22s ease !important;
 }
-#overviewScreen .overview-v3-summary-value {
-  font-size: 1.22rem;
+#overviewScreen .overview-benchmarks-arrow[aria-expanded="true"] .overview-benchmarks-arrow-icon{
+  transform:rotate(180deg) !important;
 }
-#overviewScreen .overview-v3-summary-value.primary {
-  font-size: 1.78rem;
+#overviewScreen .overview-benchmarks-wrap #overviewBenchmarksPanel{
+  width:100% !important;
 }
-#overviewScreen .overview-v3-summary-note {
-  font-size: 0.72rem;
-  line-height: 1.22;
+
+
+/* ===== Clean Smart Insights + Benchmarks tiles ===== */
+#overviewScreen .ov-clean-stack{
+  display:grid;
+  gap:14px;
 }
-#overviewScreen #overviewNetWorthHero {
-  font-size: 1.18rem;
+#overviewScreen .ov-clean-card{
+  background:
+    radial-gradient(circle at 88% 84%, rgba(59,130,246,.26), transparent 30%),
+    linear-gradient(135deg,#0F172A 0%, #17325A 52%, #1E3A8A 100%) !important;
+  border:1px solid rgba(191,219,254,.16) !important;
+  box-shadow:0 18px 38px rgba(15,23,42,.18) !important;
+  border-radius:28px !important;
+  color:#FFFFFF !important;
+  padding:18px !important;
 }
-#overviewScreen .overview-v3-section.card {
-  overflow: hidden;
+#overviewScreen .ov-clean-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
 }
-#overviewScreen .overview-v3-snapshot-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+#overviewScreen .ov-clean-title{
+  font-size:1.15rem;
+  font-weight:800;
+  letter-spacing:-.02em;
+  color:#FFFFFF;
 }
-#overviewScreen .overview-v3-snapshot-box {
-  min-width: 0;
-  padding: 12px 12px 10px;
-  border-radius: 16px;
+#overviewScreen .ov-clean-arrow{
+  appearance:none;
+  -webkit-appearance:none;
+  border:none;
+  background:transparent;
+  color:rgba(255,255,255,.92);
+  width:48px;
+  min-width:48px;
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
 }
-#overviewScreen .overview-v3-snapshot-label {
-  font-size: 0.78rem;
-  margin-bottom: 6px;
+#overviewScreen .ov-clean-arrow span{
+  display:inline-block;
+  font-size:2rem;
+  line-height:1;
+  transition:transform .22s ease;
 }
-#overviewScreen .overview-v3-snapshot-value {
-  font-size: 1.02rem;
-  line-height: 1.18;
-  word-break: break-word;
+#overviewScreen .ov-clean-arrow[aria-expanded="true"] span{
+  transform:rotate(180deg);
+}
+#overviewScreen .ov-clean-panel{
+  display:none;
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,.12);
+}
+#overviewScreen .ov-clean-panel.open{
+  display:block;
+}
+#overviewScreen .ov-clean-item{
+  padding:14px 0;
+  border-top:1px solid rgba(255,255,255,.10);
+}
+#overviewScreen .ov-clean-item:first-child{
+  border-top:none;
+  padding-top:2px;
+}
+#overviewScreen .ov-clean-item-title{
+  color:#FFFFFF;
+  font-size:1rem;
+  line-height:1.35;
+  font-weight:700;
+  margin-bottom:6px;
+}
+#overviewScreen .ov-clean-item-copy{
+  color:rgba(226,232,240,.84);
+  font-size:.95rem;
+  line-height:1.4;
+}
+#overviewScreen .ov-clean-bench-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 0;
+  border-top:1px solid rgba(255,255,255,.10);
+}
+#overviewScreen .ov-clean-bench-row:first-child{
+  border-top:none;
+  padding-top:2px;
+}
+#overviewScreen .ov-clean-bench-title{
+  color:#FFFFFF;
+  font-size:1rem;
+  line-height:1.35;
+  font-weight:700;
+  margin-bottom:6px;
+}
+#overviewScreen .ov-clean-bench-copy{
+  color:rgba(226,232,240,.84);
+  font-size:.95rem;
+  line-height:1.4;
+}
+#overviewScreen .ov-clean-pill{
+  flex:0 0 auto;
+  align-self:flex-start;
+  padding:10px 14px;
+  border-radius:999px;
+  font-size:.84rem;
+  font-weight:800;
+  border:1px solid transparent;
+}
+#overviewScreen .ov-clean-pill.good{
+  background:rgba(34,197,94,.14);
+  color:#86EFAC;
+  border-color:rgba(34,197,94,.22);
+}
+#overviewScreen .ov-clean-pill.bad{
+  background:rgba(239,68,68,.14);
+  color:#FCA5A5;
+  border-color:rgba(239,68,68,.22);
+}
+#overviewScreen .ov-clean-helper{
+  color:rgba(226,232,240,.84);
+  font-size:.95rem;
+  line-height:1.4;
+  margin-bottom:4px;
+}
+
+
+/* ===== Overview polish pass: hero sizing + move money snapshot up ===== */
+#overviewTapShell{
+  gap:12px !important;
+}
+#overviewTapShell .ov-card{
+  overflow:hidden;
+}
+#overviewTapShell .ov-snapshot-wrap{
+  order:3 !important;
+  padding:16px !important;
+}
+#overviewTapShell .ov-health{
+  order:2 !important;
+}
+#overviewTapShell .ov-month-topbar{
+  order:1 !important;
+}
+#overviewTapShell #ovInsightsCard{
+  order:4 !important;
+}
+#overviewTapShell #ovBenchCard{
+  order:5 !important;
+}
+
+/* Make snapshot tiles fit and not hang off */
+#overviewTapShell .ov-grid-4{
+  grid-template-columns:repeat(2, minmax(0,1fr)) !important;
+  gap:10px !important;
+  margin-bottom:10px !important;
+}
+#overviewTapShell .ov-grid-2{
+  grid-template-columns:repeat(2, minmax(0,1fr)) !important;
+  gap:10px !important;
+}
+#overviewTapShell .ov-tile{
+  min-height:122px !important;
+  padding:13px 12px !important;
+  border-radius:18px !important;
+}
+#overviewTapShell .ov-tile-label{
+  font-size:.76rem !important;
+  line-height:1.1 !important;
+}
+#overviewTapShell .ov-tile-value{
+  font-size:1.08rem !important;
+  line-height:1.05 !important;
+  letter-spacing:-.02em !important;
+  word-break:break-word;
+}
+#overviewTapShell .ov-snapshot-title{
+  margin:0 0 10px !important;
+  font-size:.98rem !important;
+}
+
+
+/* ===== Final overview cleanup: summary fit + separate insights/benchmarks ===== */
+#overviewScreen .overview-v3-summary-grid{
+  grid-template-columns:minmax(0,1.12fr) minmax(0,0.78fr) minmax(0,0.82fr) !important;
+  gap:8px !important;
+}
+#overviewScreen .overview-v3-summary-box{
+  min-width:0 !important;
+  min-height:86px !important;
+  padding:12px 12px 10px !important;
+  overflow:hidden !important;
+}
+#overviewScreen .overview-v3-summary-label{
+  font-size:.68rem !important;
+  line-height:1.1 !important;
+  margin-bottom:6px !important;
+}
+#overviewScreen .overview-v3-summary-value{
+  font-size:1.22rem !important;
+  line-height:1.02 !important;
+  letter-spacing:-.02em !important;
+}
+#overviewScreen .overview-v3-summary-value.primary{
+  font-size:1.78rem !important;
+}
+#overviewScreen .overview-v3-summary-note{
+  font-size:.72rem !important;
+  line-height:1.2 !important;
+}
+#overviewScreen .overview-v3-command,
+#overviewScreen .overview-v3-section.card{
+  overflow:hidden !important;
+}
+#overviewScreen .ov-final-clean-stack{
+  display:grid;
+  gap:14px;
+}
+#overviewScreen .ov-final-clean-card{
+  background:
+    radial-gradient(circle at 88% 84%, rgba(59,130,246,.26), transparent 30%),
+    linear-gradient(135deg,#0F172A 0%, #17325A 52%, #1E3A8A 100%) !important;
+  border:1px solid rgba(191,219,254,.16) !important;
+  box-shadow:0 18px 38px rgba(15,23,42,.18) !important;
+  border-radius:28px !important;
+  color:#FFFFFF !important;
+  padding:18px !important;
+}
+#overviewScreen .ov-final-clean-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+#overviewScreen .ov-final-clean-title{
+  font-size:1.15rem;
+  font-weight:800;
+  letter-spacing:-.02em;
+  color:#FFFFFF;
+}
+#overviewScreen .ov-final-clean-arrow{
+  appearance:none;
+  -webkit-appearance:none;
+  border:none;
+  background:transparent;
+  color:rgba(255,255,255,.92);
+  width:48px;
+  min-width:48px;
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  padding:0;
+}
+#overviewScreen .ov-final-clean-arrow span{
+  display:inline-block;
+  font-size:2rem;
+  line-height:1;
+  transition:transform .22s ease;
+}
+#overviewScreen .ov-final-clean-arrow[aria-expanded="true"] span{
+  transform:rotate(180deg);
+}
+#overviewScreen .ov-final-clean-panel{
+  display:none;
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,.12);
+}
+#overviewScreen .ov-final-clean-panel.open{
+  display:block;
+}
+#overviewScreen .ov-final-insight{
+  padding:14px 0;
+  border-top:1px solid rgba(255,255,255,.10);
+}
+#overviewScreen .ov-final-insight:first-child,
+#overviewScreen .ov-final-benchmark-row:first-child{
+  border-top:none;
+  padding-top:2px;
+}
+#overviewScreen .ov-final-insight-headline,
+#overviewScreen .ov-final-benchmark-title{
+  color:#FFFFFF;
+  font-size:1rem;
+  line-height:1.35;
+  font-weight:700;
+  margin-bottom:6px;
+}
+#overviewScreen .ov-final-insight-copy,
+#overviewScreen .ov-final-benchmark-copy,
+#overviewScreen .ov-final-helper{
+  color:rgba(226,232,240,.84);
+  font-size:.95rem;
+  line-height:1.4;
+}
+#overviewScreen .ov-final-benchmark-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 0;
+  border-top:1px solid rgba(255,255,255,.10);
+}
+#overviewScreen .ov-final-benchmark-pill{
+  flex:0 0 auto;
+  align-self:flex-start;
+  padding:10px 14px;
+  border-radius:999px;
+  font-size:.84rem;
+  font-weight:800;
+  border:1px solid transparent;
+}
+#overviewScreen .ov-final-benchmark-pill.good{
+  background:rgba(34,197,94,.14);
+  color:#86EFAC;
+  border-color:rgba(34,197,94,.22);
+}
+#overviewScreen .ov-final-benchmark-pill.bad{
+  background:rgba(239,68,68,.14);
+  color:#FCA5A5;
+  border-color:rgba(239,68,68,.22);
 }
 
 </style>
@@ -5926,50 +6293,8 @@
                 Assets and cash balances combined.
               </div>
               <div class="overview-v3-mini-link">Open Assets</div>
-            </div>          </div>
-          
-          <div class="overview-v3-section card">
-            <div class="overview-v3-section-head">
-              <div class="overview-v3-title">Money Snapshot</div>
             </div>
-            <div class="overview-v3-snapshot-grid">
-              <div class="overview-v3-snapshot-box">
-                <div class="overview-v3-snapshot-label">Savings</div>
-                <div
-                  class="overview-v3-snapshot-value"
-                  id="overviewSnapshotSavings"
-                >
-                  $0
-                </div>
-              </div>
-              <div class="overview-v3-snapshot-box">
-                <div class="overview-v3-snapshot-label">Emergency</div>
-                <div
-                  class="overview-v3-snapshot-value"
-                  id="overviewSnapshotEmergency"
-                >
-                  0.0 months
-                </div>
-              </div>
-              <div class="overview-v3-snapshot-box">
-                <div class="overview-v3-snapshot-label">Budgets</div>
-                <div
-                  class="overview-v3-snapshot-value"
-                  id="overviewSnapshotBudget"
-                >
-                  Left: $0
-                </div>
-              </div>
-              <div class="overview-v3-snapshot-box">
-                <div class="overview-v3-snapshot-label">Net Worth</div>
-                <div
-                  class="overview-v3-snapshot-value"
-                  id="overviewSnapshotNetWorth"
-                >
-                  $0
-                </div>
-              </div>
-            </div>
+          </div>
           <div class="overview-v3-health card">
             <div class="overview-v3-health-head">
               <div>
@@ -6027,9 +6352,52 @@
             </div>
             <div id="overviewRecentActivityList"></div>
           </div>
+          <div class="overview-v3-section card">
+            <div class="overview-v3-section-head">
+              <div class="overview-v3-title">Money Snapshot</div>
+            </div>
+            <div class="overview-v3-snapshot-grid">
+              <div class="overview-v3-snapshot-box">
+                <div class="overview-v3-snapshot-label">Savings</div>
+                <div
+                  class="overview-v3-snapshot-value"
+                  id="overviewSnapshotSavings"
+                >
+                  $0
+                </div>
+              </div>
+              <div class="overview-v3-snapshot-box">
+                <div class="overview-v3-snapshot-label">Emergency</div>
+                <div
+                  class="overview-v3-snapshot-value"
+                  id="overviewSnapshotEmergency"
+                >
+                  0.0 months
+                </div>
+              </div>
+              <div class="overview-v3-snapshot-box">
+                <div class="overview-v3-snapshot-label">Budgets</div>
+                <div
+                  class="overview-v3-snapshot-value"
+                  id="overviewSnapshotBudget"
+                >
+                  Left: $0
+                </div>
+              </div>
+              <div class="overview-v3-snapshot-box">
+                <div class="overview-v3-snapshot-label">Net Worth</div>
+                <div
+                  class="overview-v3-snapshot-value"
+                  id="overviewSnapshotNetWorth"
+                >
+                  $0
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-<div class="overview-redesign-shell" id="overviewRedesignShell">
+        <div class="overview-redesign-shell" id="overviewRedesignShell">
           <div class="overview-redesign-card overview-score-card">
             <div class="overview-score-layout">
               <div class="overview-score-left">
@@ -13262,49 +13630,436 @@ renderOverviewV3 = function(monthKey = data.currentMonth) {
 </script>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+<script>
+(function(){
+  function bindNativeBenchmarksDisclosure(){
+    const details = document.getElementById('overviewBenchmarksDetails');
+    if (!details || details.dataset.bound === '1') return;
+    details.dataset.bound = '1';
+    details.addEventListener('toggle', function(){
+      if (details.open && typeof renderOverviewBenchmarks === 'function') {
+        const monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : undefined;
+        renderOverviewBenchmarks(monthKey);
+      }
+    });
+  }
+  const __prevRenderOverviewV3_native = window.renderOverviewV3;
+  if (typeof __prevRenderOverviewV3_native === 'function') {
+    window.renderOverviewV3 = function(monthKey){
+      __prevRenderOverviewV3_native(monthKey);
+      bindNativeBenchmarksDisclosure();
+    };
+  }
+  document.addEventListener('DOMContentLoaded', bindNativeBenchmarksDisclosure);
+  setTimeout(bindNativeBenchmarksDisclosure, 300);
+})();
+</script>
 
 
 <script>
-/* ===== Clean Overview section order ===== */
+// ===== Smart Insights arrow toggle hard replacement =====
 (function(){
-  function keepMoneySnapshotHigher(){
-    const shell = document.getElementById('overviewV3Shell');
-    if (!shell) return;
-    const grid = shell.querySelector('.overview-v3-grid');
-    const snapshot = Array.from(shell.querySelectorAll('.overview-v3-section.card'))
-      .find(node => {
-        const t = node.querySelector('.overview-v3-title');
-        return t && t.textContent.trim() === 'Money Snapshot';
-      });
-    if (!grid || !snapshot) return;
-    if (grid.nextElementSibling !== snapshot) {
-      grid.insertAdjacentElement('afterend', snapshot);
-    }
+  function bindSmartInsightsArrow(){
+    const btn = document.getElementById('overviewBenchmarksArrowBtn');
+    const panel = document.getElementById('overviewBenchmarksPanel');
+    if (!btn || !panel) return;
+    btn.onclick = function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      const next = !open;
+      btn.setAttribute('aria-expanded', next ? 'true' : 'false');
+      panel.style.display = next ? 'block' : 'none';
+      if (next && typeof renderOverviewBenchmarks === 'function') {
+        const monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : undefined;
+        renderOverviewBenchmarks(monthKey);
+      }
+      return false;
+    };
   }
 
-  const prevRenderOverviewV3 = window.renderOverviewV3;
-  if (typeof prevRenderOverviewV3 === 'function') {
+  const __prevRenderOverviewArrow = window.renderOverviewV3;
+  if (typeof __prevRenderOverviewArrow === 'function') {
     window.renderOverviewV3 = function(monthKey){
-      prevRenderOverviewV3(monthKey);
-      keepMoneySnapshotHigher();
+      __prevRenderOverviewArrow(monthKey);
+      bindSmartInsightsArrow();
     };
   }
 
   document.addEventListener('DOMContentLoaded', function(){
-    setTimeout(keepMoneySnapshotHigher, 120);
+    setTimeout(bindSmartInsightsArrow, 150);
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function bindSmartInsightsArrowInline(){
+    const btn = document.getElementById('overviewBenchmarksArrowBtn');
+    const panel = document.getElementById('overviewBenchmarksPanel');
+    if (!btn || !panel) return;
+    btn.onclick = function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      const next = !open;
+      btn.setAttribute('aria-expanded', next ? 'true' : 'false');
+      panel.style.display = next ? 'block' : 'none';
+      if (next && typeof renderOverviewBenchmarks === 'function') {
+        const monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : undefined;
+        renderOverviewBenchmarks(monthKey);
+      }
+      return false;
+    };
+  }
+
+  const prev = window.renderOverviewV3;
+  if (typeof prev === 'function') {
+    window.renderOverviewV3 = function(monthKey){
+      prev(monthKey);
+      bindSmartInsightsArrowInline();
+    };
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(bindSmartInsightsArrowInline, 120);
+  });
+})();
+</script>
+
+
+<script>
+/* ===== Clean Smart Insights + Benchmarks tiles ===== */
+(function(){
+  let overviewCleanInsightsOpen = true;
+  let overviewCleanBenchOpen = false;
+
+  function findOverviewShell(){
+    return document.getElementById('overviewV3Shell');
+  }
+
+  function escapeOverviewHtml(value){
+    return String(value ?? '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  }
+
+  function findOverviewSectionByTitle(titleText){
+    const shell = findOverviewShell();
+    if (!shell) return null;
+    const nodes = Array.from(shell.querySelectorAll('.overview-v3-section.card, .overview-redesign-card, .card'));
+    return nodes.find(node => {
+      const t = node.querySelector('.overview-v3-title, .overview-section-title, .section-title, .activity-title');
+      return t && (t.textContent || '').trim().toLowerCase() === titleText.toLowerCase();
+    }) || null;
+  }
+
+  function ensureCleanOverviewTiles(monthKey){
+    const shell = findOverviewShell();
+    if (!shell || typeof generateOverviewInsights !== 'function' || typeof getOverviewV3Data !== 'function') return;
+
+    // hide old smart insights / benchmarks controls if present
+    const oldSmart = findOverviewSectionByTitle('Smart Insights');
+    if (oldSmart) oldSmart.style.display = 'none';
+
+    const activity = findOverviewSectionByTitle('Recent Activity');
+    let stack = document.getElementById('overviewCleanInsightStack');
+    if (!stack) {
+      stack = document.createElement('div');
+      stack.id = 'overviewCleanInsightStack';
+      stack.className = 'ov-clean-stack';
+      const smart = document.createElement('div');
+      smart.className = 'ov-clean-card';
+      smart.id = 'overviewCleanSmartCard';
+      const bench = document.createElement('div');
+      bench.className = 'ov-clean-card';
+      bench.id = 'overviewCleanBenchCard';
+      stack.appendChild(smart);
+      stack.appendChild(bench);
+
+      if (activity && activity.parentNode === shell) {
+        shell.insertBefore(stack, activity);
+      } else {
+        shell.appendChild(stack);
+      }
+    }
+
+    const smartCard = document.getElementById('overviewCleanSmartCard');
+    const benchCard = document.getElementById('overviewCleanBenchCard');
+    const payload = generateOverviewInsights(monthKey);
+    const d = getOverviewV3Data(monthKey);
+
+    smartCard.innerHTML = `
+      <div class="ov-clean-head">
+        <div class="ov-clean-title">Smart Insights</div>
+        <button class="ov-clean-arrow" id="overviewCleanSmartArrow" type="button" aria-expanded="${overviewCleanInsightsOpen ? 'true' : 'false'}">
+          <span>&#9662;</span>
+        </button>
+      </div>
+      <div class="ov-clean-panel ${overviewCleanInsightsOpen ? 'open' : ''}" id="overviewCleanSmartPanel">
+        ${payload.insights.map((row, idx) => `
+          <div class="ov-clean-item">
+            <div class="ov-clean-item-title">${escapeOverviewHtml(row.headline)} <span style="font-weight:500;">(${escapeOverviewHtml(row.sub)})</span></div>
+            <div class="ov-clean-item-copy">${escapeOverviewHtml(row.gap)}</div>
+            ${idx===0 ? `<div class="overview-v3-mini-progress" style="margin-top:12px;"><div style="width:${Math.min(100, Math.max(8, (d.savingsRate / d.benchmarks.savingsRate) * 100 || 8))}%;"></div></div>` : ``}
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    const benchRows = [
+      {
+        title: "Savings rate",
+        copy: `You: ${Math.max(0, Math.round(d.savingsRate))}% • Benchmark: ${d.benchmarks.savingsRate}%`,
+        label: d.savingsRate >= d.benchmarks.savingsRate ? "Above benchmark" : "Below benchmark",
+        tone: d.savingsRate >= d.benchmarks.savingsRate ? "good" : "bad",
+      },
+      {
+        title: "Emergency fund",
+        copy: `You: ${d.emergencyMonths.toFixed(1)} months • Benchmark: ${d.benchmarks.emergencyMonths.toFixed(1)} months`,
+        label: d.emergencyMonths >= d.benchmarks.emergencyMonths ? "Above benchmark" : "Below benchmark",
+        tone: d.emergencyMonths >= d.benchmarks.emergencyMonths ? "good" : "bad",
+      },
+      {
+        title: "Net worth",
+        copy: `You: ${money(d.netWorth)} • Benchmark: ${money(d.benchmarks.netWorth)}`,
+        label: d.netWorth >= d.benchmarks.netWorth ? "Above benchmark" : "Below benchmark",
+        tone: d.netWorth >= d.benchmarks.netWorth ? "good" : "bad",
+      },
+    ];
+
+    benchCard.innerHTML = `
+      <div class="ov-clean-head">
+        <div class="ov-clean-title">Benchmarks</div>
+        <button class="ov-clean-arrow" id="overviewCleanBenchArrow" type="button" aria-expanded="${overviewCleanBenchOpen ? 'true' : 'false'}">
+          <span>&#9662;</span>
+        </button>
+      </div>
+      <div class="ov-clean-panel ${overviewCleanBenchOpen ? 'open' : ''}" id="overviewCleanBenchPanel">
+        <div class="ov-clean-helper">Colorado • Age band ${escapeOverviewHtml(d.benchmarks.ageBand)}</div>
+        ${benchRows.map(row => `
+          <div class="ov-clean-bench-row">
+            <div>
+              <div class="ov-clean-bench-title">${escapeOverviewHtml(row.title)}</div>
+              <div class="ov-clean-bench-copy">${escapeOverviewHtml(row.copy)}</div>
+            </div>
+            <div class="ov-clean-pill ${row.tone}">${escapeOverviewHtml(row.label)}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    const smartBtn = document.getElementById('overviewCleanSmartArrow');
+    const benchBtn = document.getElementById('overviewCleanBenchArrow');
+    if (smartBtn) smartBtn.onclick = function(e){
+      e.preventDefault(); e.stopPropagation();
+      overviewCleanInsightsOpen = !overviewCleanInsightsOpen;
+      ensureCleanOverviewTiles(monthKey);
+      return false;
+    };
+    if (benchBtn) benchBtn.onclick = function(e){
+      e.preventDefault(); e.stopPropagation();
+      overviewCleanBenchOpen = !overviewCleanBenchOpen;
+      ensureCleanOverviewTiles(monthKey);
+      return false;
+    };
+  }
+
+  const __prevRenderOverviewCleanTiles = window.renderOverviewV3;
+  if (typeof __prevRenderOverviewCleanTiles === 'function') {
+    window.renderOverviewV3 = function(monthKey = data.currentMonth){
+      __prevRenderOverviewCleanTiles(monthKey);
+      ensureCleanOverviewTiles(monthKey);
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(function(){
+      ensureCleanOverviewTiles((window.data && window.data.currentMonth) ? window.data.currentMonth : undefined);
+    }, 200);
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function polishOverviewLayoutOrder(){
+    const shell = document.getElementById('overviewTapShell');
+    if (!shell) return;
+    const month = shell.querySelector('.ov-month-topbar');
+    const health = shell.querySelector('.ov-health');
+    const snapshot = shell.querySelector('.ov-snapshot-wrap');
+    const insights = document.getElementById('ovInsightsCard');
+    const bench = document.getElementById('ovBenchCard');
+    [month, health, snapshot, insights, bench].filter(Boolean).forEach(node => shell.appendChild(node));
+  }
+
+  const __prevRenderOverviewPolish = window.renderOverviewTapLayout;
+  if (typeof __prevRenderOverviewPolish === 'function') {
+    window.renderOverviewTapLayout = function(monthKey){
+      __prevRenderOverviewPolish(monthKey);
+      polishOverviewLayoutOrder();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(polishOverviewLayoutOrder, 120);
+  });
+})();
+</script>
+
+
+<script>
+/* ===== Final overview cleanup: separate Smart Insights + Benchmarks ===== */
+(function(){
+  let finalInsightsOpen = true;
+  let finalBenchOpen = false;
+
+  function findOverviewShell(){
+    return document.getElementById('overviewV3Shell');
+  }
+  function findSectionByTitle(shell, titleText){
+    if (!shell) return null;
+    return Array.from(shell.querySelectorAll('.overview-v3-section.card')).find(card => {
+      const t = card.querySelector('.overview-v3-title');
+      return t && t.textContent.trim() === titleText;
+    }) || null;
+  }
+  function moveMoneySnapshot(shell){
+    const snapshot = findSectionByTitle(shell, 'Money Snapshot');
+    const grid = shell ? shell.querySelector('.overview-v3-grid') : null;
+    if (shell && snapshot && grid && grid.nextElementSibling !== snapshot){
+      grid.insertAdjacentElement('afterend', snapshot);
+    }
+  }
+  function buildCleanCards(shell, monthKey){
+    const oldSmart = findSectionByTitle(shell, 'Smart Insights');
+    if (oldSmart) oldSmart.style.display = 'none';
+
+    let stack = document.getElementById('overviewFinalCleanStack');
+    if (!stack){
+      stack = document.createElement('div');
+      stack.id = 'overviewFinalCleanStack';
+      stack.className = 'ov-final-clean-stack';
+    }
+
+    const payload = generateOverviewInsights(monthKey);
+    const d = payload.data;
+    const insights = payload.insights || [];
+
+    const rows = [
+      {
+        title: 'Savings rate',
+        copy: `You: ${Math.max(0, Math.round(d.savingsRate))}% • Benchmark: ${d.benchmarks.savingsRate}%`,
+        label: d.savingsRate >= d.benchmarks.savingsRate ? 'Above benchmark' : 'Below benchmark',
+        tone: d.savingsRate >= d.benchmarks.savingsRate ? 'good' : 'bad',
+      },
+      {
+        title: 'Emergency fund',
+        copy: `You: ${d.emergencyMonths.toFixed(1)} months • Benchmark: ${d.benchmarks.emergencyMonths.toFixed(1)} months`,
+        label: d.emergencyMonths >= d.benchmarks.emergencyMonths ? 'Above benchmark' : 'Below benchmark',
+        tone: d.emergencyMonths >= d.benchmarks.emergencyMonths ? 'good' : 'bad',
+      },
+      {
+        title: 'Net worth',
+        copy: `You: ${money(d.netWorth)} • Benchmark: ${money(d.benchmarks.netWorth)}`,
+        label: d.netWorth >= d.benchmarks.netWorth ? 'Above benchmark' : 'Below benchmark',
+        tone: d.netWorth >= d.benchmarks.netWorth ? 'good' : 'bad',
+      },
+    ];
+
+    stack.innerHTML = `
+      <div class="ov-final-clean-card" id="ovFinalInsightsCard">
+        <div class="ov-final-clean-head">
+          <div class="ov-final-clean-title">Smart Insights</div>
+          <button class="ov-final-clean-arrow" id="ovFinalInsightsToggle" type="button" aria-expanded="${finalInsightsOpen ? 'true' : 'false'}">
+            <span>&#9662;</span>
+          </button>
+        </div>
+        <div class="ov-final-clean-panel ${finalInsightsOpen ? 'open' : ''}" id="ovFinalInsightsPanel">
+          ${insights.map((row, idx) => `
+            <div class="ov-final-insight">
+              <div class="ov-final-insight-headline">${escapeHtml(row.headline)} <span style="font-weight:500;">(${escapeHtml(row.sub)})</span></div>
+              <div class="ov-final-insight-copy">${escapeHtml(row.gap)}</div>
+              ${idx===0 ? `<div class="overview-v3-mini-progress" style="margin-top:12px;"><div style="width:${Math.min(100, Math.max(8, (d.savingsRate / d.benchmarks.savingsRate) * 100 || 8))}%;"></div></div>` : ``}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="ov-final-clean-card" id="ovFinalBenchCard">
+        <div class="ov-final-clean-head">
+          <div class="ov-final-clean-title">Benchmarks</div>
+          <button class="ov-final-clean-arrow" id="ovFinalBenchToggle" type="button" aria-expanded="${finalBenchOpen ? 'true' : 'false'}">
+            <span>&#9662;</span>
+          </button>
+        </div>
+        <div class="ov-final-clean-panel ${finalBenchOpen ? 'open' : ''}" id="ovFinalBenchPanel">
+          <div class="ov-final-helper">Colorado • Age band ${d.benchmarks.ageBand}</div>
+          ${rows.map(row => `
+            <div class="ov-final-benchmark-row">
+              <div>
+                <div class="ov-final-benchmark-title">${escapeHtml(row.title)}</div>
+                <div class="ov-final-benchmark-copy">${escapeHtml(row.copy)}</div>
+              </div>
+              <div class="ov-final-benchmark-pill ${row.tone}">${escapeHtml(row.label)}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+
+    const snapshot = findSectionByTitle(shell, 'Money Snapshot');
+    if (snapshot){
+      snapshot.insertAdjacentElement('afterend', stack);
+    } else {
+      shell.appendChild(stack);
+    }
+
+    const insightsBtn = document.getElementById('ovFinalInsightsToggle');
+    const insightsPanel = document.getElementById('ovFinalInsightsPanel');
+    if (insightsBtn && insightsPanel){
+      insightsBtn.onclick = function(e){
+        e.preventDefault();
+        finalInsightsOpen = !finalInsightsOpen;
+        insightsBtn.setAttribute('aria-expanded', finalInsightsOpen ? 'true' : 'false');
+        insightsPanel.classList.toggle('open', finalInsightsOpen);
+      };
+    }
+
+    const benchBtn = document.getElementById('ovFinalBenchToggle');
+    const benchPanel = document.getElementById('ovFinalBenchPanel');
+    if (benchBtn && benchPanel){
+      benchBtn.onclick = function(e){
+        e.preventDefault();
+        finalBenchOpen = !finalBenchOpen;
+        benchBtn.setAttribute('aria-expanded', finalBenchOpen ? 'true' : 'false');
+        benchPanel.classList.toggle('open', finalBenchOpen);
+      };
+    }
+  }
+
+  function cleanupOverview(monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : undefined){
+    const shell = findOverviewShell();
+    if (!shell) return;
+    moveMoneySnapshot(shell);
+    buildCleanCards(shell, monthKey);
+  }
+
+  const prevRenderOverviewV3_final = window.renderOverviewV3;
+  if (typeof prevRenderOverviewV3_final === 'function') {
+    window.renderOverviewV3 = function(monthKey){
+      prevRenderOverviewV3_final(monthKey);
+      cleanupOverview(monthKey);
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(function(){ cleanupOverview(); }, 160);
   });
 })();
 </script>
