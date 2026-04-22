@@ -5736,6 +5736,41 @@
   display:none !important;
 }
 
+
+/* ===== Smart Insights arrow toggle ===== */
+#overviewScreen .overview-benchmarks-wrap{
+  margin-left:auto;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+}
+#overviewScreen .overview-benchmarks-arrow{
+  width:118px;
+  height:98px;
+  border-radius:30px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.10);
+  color:#FFFFFF;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+#overviewScreen .overview-benchmarks-arrow-icon{
+  font-size:3rem;
+  line-height:1;
+  transition:transform .22s ease;
+}
+#overviewScreen .overview-benchmarks-arrow[aria-expanded="true"] .overview-benchmarks-arrow-icon{
+  transform:rotate(180deg);
+}
+#overviewScreen #overviewBenchmarksPanel{
+  width:100%;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.12);
+}
+
 </style>
   </head>
   <body>
@@ -5923,15 +5958,19 @@
           <div class="overview-v3-section card">
             <div class="overview-v3-section-head">
               <div class="overview-v3-title">Smart Insights</div>
-            <details class="overview-benchmarks-details" id="overviewBenchmarksDetails">
-              <summary class="overview-v3-link"><span id="overviewBenchmarksToggleLabel">View Benchmarks ›</span></summary>
-              <div class="overview-v3-benchmarks" id="overviewBenchmarksPanel">
-                <div class="helper-copy" id="overviewBenchmarksCopy">
-                  Benchmarks are based on your current month.
-                </div>
-                <div id="overviewBenchmarksList"></div>
-              </div>
-            </details>
+            
+<div class="overview-benchmarks-wrap" id="overviewBenchmarksWrap">
+  <button class="overview-benchmarks-arrow" id="overviewBenchmarksArrowBtn" type="button" aria-expanded="false" aria-controls="overviewBenchmarksPanel">
+    <span class="overview-benchmarks-arrow-icon" id="overviewBenchmarksArrowIcon">⌄</span>
+  </button>
+  <div class="overview-v3-benchmarks" id="overviewBenchmarksPanel" style="display:none;">
+    <div class="helper-copy" id="overviewBenchmarksCopy">
+      Benchmarks compare this month against profile targets.
+    </div>
+    <div id="overviewBenchmarksList"></div>
+  </div>
+</div>
+
           </div>
           <div id="overviewInsightsList"></div>
           </div>
@@ -13248,6 +13287,43 @@ renderOverviewV3 = function(monthKey = data.currentMonth) {
   }
   document.addEventListener('DOMContentLoaded', bindNativeBenchmarksDisclosure);
   setTimeout(bindNativeBenchmarksDisclosure, 300);
+})();
+</script>
+
+
+<script>
+// ===== Smart Insights arrow toggle hard replacement =====
+(function(){
+  function bindSmartInsightsArrow(){
+    const btn = document.getElementById('overviewBenchmarksArrowBtn');
+    const panel = document.getElementById('overviewBenchmarksPanel');
+    if (!btn || !panel) return;
+    btn.onclick = function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      const next = !open;
+      btn.setAttribute('aria-expanded', next ? 'true' : 'false');
+      panel.style.display = next ? 'block' : 'none';
+      if (next && typeof renderOverviewBenchmarks === 'function') {
+        const monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : undefined;
+        renderOverviewBenchmarks(monthKey);
+      }
+      return false;
+    };
+  }
+
+  const __prevRenderOverviewArrow = window.renderOverviewV3;
+  if (typeof __prevRenderOverviewArrow === 'function') {
+    window.renderOverviewV3 = function(monthKey){
+      __prevRenderOverviewArrow(monthKey);
+      bindSmartInsightsArrow();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(bindSmartInsightsArrow, 150);
+  });
 })();
 </script>
 
