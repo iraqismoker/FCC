@@ -5861,6 +5861,21 @@
   display:none !important;
 }
 
+
+/* ===== Smart Insights benchmark mode: show one view at a time ===== */
+#overviewScreen .insights-normal-view.hidden-when-benchmarks-open{
+  display:block;
+}
+#overviewScreen .insights-normal-view.hidden-when-benchmarks-open.is-hidden{
+  display:none !important;
+}
+#overviewScreen #overviewBenchmarksPanel{
+  display:none;
+}
+#overviewScreen #overviewBenchmarksPanel.is-open{
+  display:block !important;
+}
+
 </style>
   </head>
   <body>
@@ -13537,6 +13552,99 @@ renderOverviewV3 = function(monthKey = data.currentMonth) {
 
   document.addEventListener('DOMContentLoaded', function(){
     setTimeout(hardResetBenchmarksControl, 200);
+  });
+})();
+</script>
+
+
+<script>
+/* ===== Smart Insights benchmark mode toggle ===== */
+(function(){
+  function getSmartInsightsSection(){
+    const sections = Array.from(document.querySelectorAll('#overviewScreen .overview-v3-section.card'));
+    return sections.find(sec => {
+      const title = sec.querySelector('.overview-v3-title');
+      return title && /smart insights/i.test((title.textContent || '').trim());
+    }) || null;
+  }
+
+  function ensureNormalInsightsWrapper(section){
+    if (!section) return null;
+    let wrapper = section.querySelector('.insights-normal-view.hidden-when-benchmarks-open');
+    if (wrapper) return wrapper;
+
+    const panel = section.querySelector('#overviewBenchmarksPanel');
+    const insightsList = section.querySelector('#overviewInsightsList');
+    if (!insightsList) return null;
+
+    wrapper = document.createElement('div');
+    wrapper.className = 'insights-normal-view hidden-when-benchmarks-open';
+
+    // Move the normal Smart Insights content into the wrapper
+    // Keep anything after benchmarks panel that belongs to the normal view.
+    let startNode = insightsList;
+    while (startNode) {
+      const next = startNode.nextSibling
+      wrapper.appendChild(startNode);
+      startNode = next;
+    }
+
+    if (panel && panel.parentNode === section) {
+      panel.insertAdjacentElement('afterend', wrapper);
+    } else {
+      section.appendChild(wrapper);
+    }
+    return wrapper;
+  }
+
+  function applyBenchmarkMode(){
+    const section = getSmartInsightsSection();
+    if (!section) return;
+
+    const panel = section.querySelector('#overviewBenchmarksPanel');
+    const wrapper = ensureNormalInsightsWrapper(section);
+    const btn = document.getElementById('overviewBenchmarksCleanArrow') || section.querySelector('.benchmark-reset-arrow');
+
+    if (!panel || !wrapper || !btn) return;
+
+    const open = !!window.__cleanBenchmarksOpen;
+    panel.classList.toggle('is-open', open);
+    panel.style.display = open ? 'block' : 'none';
+    wrapper.classList.toggle('is-hidden', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+    if (open && typeof renderOverviewBenchmarks === 'function') {
+      const monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : undefined;
+      renderOverviewBenchmarks(monthKey);
+    }
+  }
+
+  function bindBenchmarkModeButton(){
+    const btn = document.getElementById('overviewBenchmarksCleanArrow') || document.querySelector('#overviewScreen .benchmark-reset-arrow');
+    if (!btn) return;
+    btn.onclick = function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      window.__cleanBenchmarksOpen = !window.__cleanBenchmarksOpen;
+      applyBenchmarkMode();
+      return false;
+    };
+  }
+
+  const prevRenderOverviewV3_mode = window.renderOverviewV3;
+  if (typeof prevRenderOverviewV3_mode === 'function') {
+    window.renderOverviewV3 = function(monthKey){
+      prevRenderOverviewV3_mode(monthKey);
+      bindBenchmarkModeButton();
+      applyBenchmarkMode();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(function(){
+      bindBenchmarkModeButton();
+      applyBenchmarkMode();
+    }, 180);
   });
 })();
 </script>
