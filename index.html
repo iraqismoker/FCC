@@ -6136,6 +6136,296 @@
   border-color:rgba(239,68,68,.22);
 }
 
+
+/* ===== Clean rebuilt Overview only ===== */
+#overviewScreen .header,
+#overviewScreen > .top-row,
+#overviewScreen > .card,
+#overviewScreen > .overview-grid,
+#overviewScreen > .activity-card,
+#overviewScreen > .networth-card,
+#overviewScreen > .forecast-card,
+#overviewScreen > .invest-card,
+#overviewScreen > .budget-card,
+#overviewScreen > .info-grid,
+#overviewScreen > .toggle,
+#overviewScreen > .stack,
+#overviewScreen > .two-col,
+#overviewScreen > .three-col {
+  display: none !important;
+}
+
+#overviewCleanRoot {
+  display: grid;
+  gap: 14px;
+}
+
+#overviewCleanRoot .ov-card {
+  background:
+    radial-gradient(circle at 88% 84%, rgba(59,130,246,.28), transparent 30%),
+    linear-gradient(135deg,#0F172A 0%, #17325A 52%, #1E3A8A 100%);
+  border: 1px solid rgba(191,219,254,.16);
+  box-shadow: 0 18px 38px rgba(15,23,42,.18);
+  border-radius: 28px;
+  color: #FFFFFF;
+  overflow: hidden;
+}
+
+#overviewCleanRoot .ov-topbar-btn {
+  width: 100%;
+  border: none;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 88% 84%, rgba(59,130,246,.28), transparent 30%),
+    linear-gradient(135deg,#0F172A 0%, #17325A 52%, #1E3A8A 100%);
+  border: 1px solid rgba(191,219,254,.16);
+  box-shadow: 0 18px 38px rgba(15,23,42,.18);
+  color: #FFFFFF;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  font: inherit;
+  cursor: pointer;
+}
+#overviewCleanRoot .ov-topbar-text {
+  font-size: 2.05rem;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+#overviewCleanRoot .ov-arrow {
+  display: inline-block;
+  font-size: 2rem;
+  line-height: 1;
+  transition: transform .22s ease;
+}
+#overviewCleanRoot .ov-arrow.open {
+  transform: rotate(180deg);
+}
+#overviewCleanRoot .ov-month-list {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px 2px 4px;
+  scrollbar-width: none;
+}
+#overviewCleanRoot .ov-month-list::-webkit-scrollbar { display: none; }
+#overviewCleanRoot .ov-month-chip {
+  flex: 0 0 auto;
+  width: 116px;
+  min-height: 104px;
+  border-radius: 22px;
+  border: 2px solid #3B82F6;
+  background: #FFFFFF;
+  color: #1D4ED8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(15,23,42,.06);
+  cursor: pointer;
+}
+#overviewCleanRoot .ov-month-chip.selected {
+  background: linear-gradient(135deg,#2563EB 0%, #1E40AF 100%);
+  color: #FFFFFF;
+  border-color: #2563EB;
+}
+#overviewCleanRoot .ov-month-chip-badge {
+  font-size: .74rem;
+  color: inherit;
+}
+
+#overviewCleanRoot .ov-health {
+  padding: 18px;
+}
+#overviewCleanRoot .ov-health-head,
+#overviewCleanRoot .ov-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+#overviewCleanRoot .ov-title {
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+#overviewCleanRoot .ov-health-status {
+  color: rgba(255,255,255,.82);
+  font-size: .96rem;
+  margin-top: 4px;
+}
+#overviewCleanRoot .ov-health-score {
+  font-size: 4.35rem;
+  line-height: .95;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+}
+#overviewCleanRoot .ov-health-track {
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.16);
+  overflow: hidden;
+  margin: 16px 0 12px;
+}
+#overviewCleanRoot .ov-health-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg,#1DD6C4 0%, #3B82F6 45%, #F59E0B 75%, #EF4444 100%);
+}
+#overviewCleanRoot .ov-health-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: rgba(255,255,255,.88);
+  font-size: .86rem;
+}
+
+#overviewCleanRoot .ov-snapshot-wrap {
+  padding: 18px;
+}
+#overviewCleanRoot .ov-snapshot-title {
+  margin: 0 0 12px;
+  color: rgba(255,255,255,.86);
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+}
+#overviewCleanRoot .ov-group-label {
+  margin: 0 0 8px;
+  color: #BFDBFE;
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+#overviewCleanRoot .ov-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+#overviewCleanRoot .ov-grid-1 {
+  display: grid;
+  grid-template-columns: minmax(0,1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+#overviewCleanRoot .ov-grid-2:last-child,
+#overviewCleanRoot .ov-grid-1:last-child {
+  margin-bottom: 0;
+}
+#overviewCleanRoot .ov-tile {
+  min-height: 128px;
+  padding: 14px 12px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  min-width: 0;
+}
+#overviewCleanRoot .ov-tile.primary {
+  min-height: 144px;
+}
+#overviewCleanRoot .ov-tile-label {
+  color: #BFDBFE;
+  font-size: .8rem;
+  line-height: 1.12;
+  font-weight: 800;
+}
+#overviewCleanRoot .ov-tile-value {
+  color: #FFFFFF;
+  font-size: 1.18rem;
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  word-break: break-word;
+}
+#overviewCleanRoot .ov-tile-value.primary {
+  font-size: 1.52rem;
+}
+
+#overviewCleanRoot .ov-collapsible {
+  padding: 18px;
+}
+#overviewCleanRoot .ov-collapsible-btn {
+  border: none;
+  background: transparent;
+  color: #FFFFFF;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  cursor: pointer;
+}
+#overviewCleanRoot .ov-collapsible-panel {
+  display: none;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+#overviewCleanRoot .ov-collapsible-panel.open {
+  display: block;
+}
+#overviewCleanRoot .ov-insight,
+#overviewCleanRoot .ov-benchmark-row {
+  padding: 14px 0;
+  border-top: 1px solid rgba(255,255,255,.10);
+}
+#overviewCleanRoot .ov-insight:first-child,
+#overviewCleanRoot .ov-benchmark-row:first-child {
+  border-top: none;
+  padding-top: 2px;
+}
+#overviewCleanRoot .ov-insight-headline,
+#overviewCleanRoot .ov-benchmark-title {
+  color: #FFFFFF;
+  font-size: 1rem;
+  line-height: 1.35;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+#overviewCleanRoot .ov-insight-copy,
+#overviewCleanRoot .ov-benchmark-copy,
+#overviewCleanRoot .ov-helper {
+  color: rgba(226,232,240,.84);
+  font-size: .95rem;
+  line-height: 1.4;
+}
+#overviewCleanRoot .ov-benchmark-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+#overviewCleanRoot .ov-benchmark-pill {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: .84rem;
+  font-weight: 800;
+  border: 1px solid transparent;
+}
+#overviewCleanRoot .ov-benchmark-pill.good {
+  background: rgba(34,197,94,.14);
+  color: #86EFAC;
+  border-color: rgba(34,197,94,.22);
+}
+#overviewCleanRoot .ov-benchmark-pill.bad {
+  background: rgba(239,68,68,.14);
+  color: #FCA5A5;
+  border-color: rgba(239,68,68,.22);
+}
+
 </style>
   </head>
   <body>
@@ -14060,6 +14350,232 @@ renderOverviewV3 = function(monthKey = data.currentMonth) {
 
   document.addEventListener('DOMContentLoaded', function(){
     setTimeout(function(){ cleanupOverview(); }, 160);
+  });
+})();
+</script>
+
+
+<script>
+/* ===== Clean Overview rebuild only ===== */
+(function(){
+  let overviewCleanMonthOpen = false;
+  let overviewCleanInsightsOpen = true;
+  let overviewCleanBenchOpen = false;
+
+  function moneyVal(v){
+    return typeof money === 'function' ? money(Number(v || 0)) : `$${Number(v || 0).toLocaleString()}`;
+  }
+  function monthLabelSafe(key){
+    return typeof monthLabel === 'function' ? monthLabel(key) : key;
+  }
+  function monthOptionsSafe(centerKey){
+    return typeof monthOptions === 'function' ? monthOptions(centerKey) : [centerKey];
+  }
+  function visibleMonths(centerKey){
+    const all = monthOptionsSafe(centerKey);
+    const idx = Math.max(0, all.indexOf(centerKey));
+    const start = Math.max(0, idx - 2);
+    return all.slice(start, start + 5);
+  }
+  function shortMonth(key){
+    const [y,m] = key.split('-').map(Number);
+    return new Date(y, m - 1, 1).toLocaleString('en-US', { month: 'short' });
+  }
+  function esc(s){
+    const div = document.createElement('div');
+    div.textContent = s == null ? '' : String(s);
+    return div.innerHTML;
+  }
+
+  function ensureOverviewCleanRoot(){
+    const screen = document.getElementById('overviewScreen');
+    if (!screen) return null;
+    let root = document.getElementById('overviewCleanRoot');
+    if (!root){
+      root = document.createElement('div');
+      root.id = 'overviewCleanRoot';
+      screen.appendChild(root);
+    }
+    return root;
+  }
+
+  function selectOverviewCleanMonth(monthKey){
+    if (window.data) window.data.currentMonth = monthKey;
+    overviewCleanMonthOpen = false;
+    if (typeof saveData === 'function') saveData();
+    if (typeof render === 'function') render();
+  }
+  window.selectOverviewCleanMonth = selectOverviewCleanMonth;
+  window.toggleOverviewCleanMonth = function(){
+    overviewCleanMonthOpen = !overviewCleanMonthOpen;
+    renderOverviewClean(window.data ? window.data.currentMonth : undefined);
+  };
+  window.toggleOverviewCleanInsights = function(){
+    overviewCleanInsightsOpen = !overviewCleanInsightsOpen;
+    renderOverviewClean(window.data ? window.data.currentMonth : undefined);
+  };
+  window.toggleOverviewCleanBench = function(){
+    overviewCleanBenchOpen = !overviewCleanBenchOpen;
+    renderOverviewClean(window.data ? window.data.currentMonth : undefined);
+  };
+
+  function renderOverviewClean(monthKey){
+    const key = monthKey || (window.data ? window.data.currentMonth : undefined);
+    const root = ensureOverviewCleanRoot();
+    if (!root || !key) return;
+
+    const d = typeof getOverviewV3Data === 'function' ? getOverviewV3Data(key) : {};
+    const payload = typeof generateOverviewInsights === 'function' ? generateOverviewInsights(key) : { insights: [], data: d };
+    const pd = payload.data || d;
+
+    const current = new Date();
+    const currentKey = `${current.getFullYear()}-${String(current.getMonth()+1).padStart(2,'0')}`;
+
+    const benchmarkRows = [
+      {
+        title: 'Savings rate',
+        copy: `You: ${Math.max(0, Math.round(pd.savingsRate || 0))}% • Benchmark: ${(pd.benchmarks && pd.benchmarks.savingsRate) || 0}%`,
+        label: (pd.savingsRate || 0) >= ((pd.benchmarks && pd.benchmarks.savingsRate) || 0) ? 'Above benchmark' : 'Below benchmark',
+        tone: (pd.savingsRate || 0) >= ((pd.benchmarks && pd.benchmarks.savingsRate) || 0) ? 'good' : 'bad',
+      },
+      {
+        title: 'Emergency fund',
+        copy: `You: ${Number(pd.emergencyMonths || 0).toFixed(1)} months • Benchmark: ${Number((pd.benchmarks && pd.benchmarks.emergencyMonths) || 0).toFixed(1)} months`,
+        label: (pd.emergencyMonths || 0) >= ((pd.benchmarks && pd.benchmarks.emergencyMonths) || 0) ? 'Above benchmark' : 'Below benchmark',
+        tone: (pd.emergencyMonths || 0) >= ((pd.benchmarks && pd.benchmarks.emergencyMonths) || 0) ? 'good' : 'bad',
+      },
+      {
+        title: 'Net worth',
+        copy: `You: ${moneyVal(pd.netWorth)} • Benchmark: ${moneyVal(pd.benchmarks && pd.benchmarks.netWorth)}`,
+        label: (pd.netWorth || 0) >= ((pd.benchmarks && pd.benchmarks.netWorth) || 0) ? 'Above benchmark' : 'Below benchmark',
+        tone: (pd.netWorth || 0) >= ((pd.benchmarks && pd.benchmarks.netWorth) || 0) ? 'good' : 'bad',
+      }
+    ];
+
+    root.innerHTML = `
+      <div class="ov-month-topbar">
+        <button class="ov-topbar-btn" type="button" onclick="toggleOverviewCleanMonth()">
+          <span class="ov-topbar-text">${esc(monthLabelSafe(key))}</span>
+          <span class="ov-arrow ${overviewCleanMonthOpen ? 'open' : ''}">&#9662;</span>
+        </button>
+        ${overviewCleanMonthOpen ? `
+          <div class="ov-month-list">
+            ${visibleMonths(key).map(k => `
+              <button class="ov-month-chip ${k===key ? 'selected' : ''}" type="button" onclick="selectOverviewCleanMonth('${k}')">
+                <span>${esc(shortMonth(k))}</span>
+                <span>${esc(k.slice(0,4))}</span>
+                <div class="ov-month-chip-badge">${k===currentKey ? 'Today' : '&nbsp;'}</div>
+              </button>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>
+
+      <div class="ov-card ov-health">
+        <div class="ov-health-head">
+          <div>
+            <div class="ov-title">Financial Health Score</div>
+            <div class="ov-health-status">${esc(d.status || 'Needs setup')}</div>
+          </div>
+          <div class="ov-health-score">${esc(String(d.score ?? 0))}</div>
+        </div>
+        <div class="ov-health-track"><div class="ov-health-fill" style="width:${Math.max(4, Math.min(100, Number(d.score || 0)))}%;"></div></div>
+        <div class="ov-health-labels"><span>Critical</span><span>Warning</span><span>Stable</span><span>Strong</span></div>
+      </div>
+
+      <div class="ov-card ov-snapshot-wrap">
+        <div class="ov-snapshot-title">Money Snapshot</div>
+
+        <div class="ov-group-label">Cash Position</div>
+        <div class="ov-grid-2">
+          <div class="ov-tile primary">
+            <div class="ov-tile-label">Left to<br>Budget</div>
+            <div class="ov-tile-value primary">${esc(moneyVal(d.budgetLeft))}</div>
+          </div>
+          <div class="ov-tile primary">
+            <div class="ov-tile-label">Monthly<br>Cash Flow</div>
+            <div class="ov-tile-value primary">${esc(moneyVal(d.safeToSpend ?? d.budgetLeft))}</div>
+          </div>
+        </div>
+
+        <div class="ov-group-label">Wealth</div>
+        <div class="ov-grid-2">
+          <div class="ov-tile">
+            <div class="ov-tile-label">Portfolio<br>Total</div>
+            <div class="ov-tile-value">${esc(moneyVal(d.investments))}</div>
+          </div>
+          <div class="ov-tile">
+            <div class="ov-tile-label">Assets /<br>Net Worth</div>
+            <div class="ov-tile-value">${esc(moneyVal(d.netWorth || ((d.accounts || 0) + (d.assets || 0))))}</div>
+          </div>
+        </div>
+
+        <div class="ov-group-label">Safety</div>
+        <div class="ov-grid-2">
+          <div class="ov-tile">
+            <div class="ov-tile-label">Savings</div>
+            <div class="ov-tile-value">${esc(moneyVal(d.accounts))}</div>
+          </div>
+          <div class="ov-tile">
+            <div class="ov-tile-label">Emergency<br>Fund</div>
+            <div class="ov-tile-value">${esc(Number(d.emergencyMonths || 0).toFixed(1))} mo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ov-card ov-collapsible">
+        <div class="ov-section-head">
+          <div class="ov-title">Smart Insights</div>
+          <button class="ov-collapsible-btn" type="button" onclick="toggleOverviewCleanInsights()" aria-expanded="${overviewCleanInsightsOpen ? 'true' : 'false'}">
+            <span class="ov-arrow ${overviewCleanInsightsOpen ? 'open' : ''}">&#9662;</span>
+          </button>
+        </div>
+        <div class="ov-collapsible-panel ${overviewCleanInsightsOpen ? 'open' : ''}">
+          ${(payload.insights || []).map((row, idx) => `
+            <div class="ov-insight">
+              <div class="ov-insight-headline">${esc(row.headline)} <span style="font-weight:500;">(${esc(row.sub)})</span></div>
+              <div class="ov-insight-copy">${esc(row.gap)}</div>
+              ${idx===0 ? `<div class="overview-v3-mini-progress" style="margin-top:12px;"><div style="width:${Math.min(100, Math.max(8, ((pd.savingsRate || 0) / (((pd.benchmarks && pd.benchmarks.savingsRate) || 1))) * 100 || 8))}%;"></div></div>` : ``}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="ov-card ov-collapsible">
+        <div class="ov-section-head">
+          <div class="ov-title">Benchmarks</div>
+          <button class="ov-collapsible-btn" type="button" onclick="toggleOverviewCleanBench()" aria-expanded="${overviewCleanBenchOpen ? 'true' : 'false'}">
+            <span class="ov-arrow ${overviewCleanBenchOpen ? 'open' : ''}">&#9662;</span>
+          </button>
+        </div>
+        <div class="ov-collapsible-panel ${overviewCleanBenchOpen ? 'open' : ''}">
+          <div class="ov-helper">Colorado • Age band ${esc((pd.benchmarks && pd.benchmarks.ageBand) || '')}</div>
+          ${benchmarkRows.map(row => `
+            <div class="ov-benchmark-row">
+              <div>
+                <div class="ov-benchmark-title">${esc(row.title)}</div>
+                <div class="ov-benchmark-copy">${esc(row.copy)}</div>
+              </div>
+              <div class="ov-benchmark-pill ${row.tone}">${esc(row.label)}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  const prevRender = window.renderOverviewV3;
+  if (typeof prevRender === 'function') {
+    window.renderOverviewV3 = function(monthKey){
+      prevRender(monthKey);
+      renderOverviewClean(monthKey);
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(function(){
+      renderOverviewClean(window.data ? window.data.currentMonth : undefined);
+    }, 140);
   });
 })();
 </script>
