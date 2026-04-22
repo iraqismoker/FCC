@@ -5810,70 +5810,51 @@
 }
 
 
-/* ===== Hard reset: Smart Insights benchmarks control ===== */
-#overviewScreen .benchmark-reset-arrow{
-  appearance:none !important;
-  -webkit-appearance:none !important;
-  border:none !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  color:rgba(255,255,255,.92) !important;
-  width:56px !important;
-  min-width:56px !important;
-  height:56px !important;
-  padding:0 !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  margin-left:auto !important;
-  cursor:pointer !important;
+/* ===== Smart Insights final clean separation ===== */
+#overviewSmartInsightsSection .overview-v3-section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
 }
-#overviewScreen .benchmark-reset-arrow span{
-  display:inline-block !important;
-  font-size:2.2rem !important;
-  line-height:1 !important;
-  transition:transform .22s ease !important;
+#overviewSmartInsightsSection .overview-v3-title{
+  flex:1 1 auto;
 }
-#overviewScreen .benchmark-reset-arrow[aria-expanded="true"] span{
-  transform:rotate(180deg) !important;
+#overviewSmartInsightsSection .overview-inline-arrow-btn{
+  appearance:none;
+  -webkit-appearance:none;
+  border:none;
+  background:transparent;
+  color:rgba(255,255,255,.92);
+  width:48px;
+  height:48px;
+  min-width:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  cursor:pointer;
 }
-#overviewScreen #overviewBenchmarksPanel{
+#overviewSmartInsightsSection .overview-inline-arrow-icon{
+  display:inline-block;
+  font-size:2rem;
+  line-height:1;
+  transition:transform .22s ease;
+}
+#overviewSmartInsightsSection .overview-inline-arrow-btn[aria-expanded="true"] .overview-inline-arrow-icon{
+  transform:rotate(180deg);
+}
+#overviewSmartInsightsSection #overviewBenchmarksPanel{
   display:none;
-  margin:10px 0 16px !important;
-  padding-top:14px !important;
-  border-top:1px solid rgba(255,255,255,.12) !important;
+  margin:10px 0 16px 0;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,.12);
 }
-#overviewScreen .overview-v3-section-head{
-  display:flex !important;
-  align-items:center !important;
-  justify-content:space-between !important;
-  gap:12px !important;
-}
-#overviewScreen .overview-v3-section-head .overview-v3-title{
-  flex:1 1 auto !important;
-}
-
-/* hide every older benchmark control inside Smart Insights */
-#overviewScreen .overview-v3-section.card .overview-v3-link,
-#overviewScreen .overview-v3-section.card .overview-benchmarks-details,
-#overviewScreen .overview-v3-section.card #overviewBenchmarksToggleLabel,
-#overviewScreen .overview-v3-section.card .overview-benchmarks-wrap{
-  display:none !important;
-}
-
-
-/* ===== Smart Insights benchmark mode: show one view at a time ===== */
-#overviewScreen .insights-normal-view.hidden-when-benchmarks-open{
-  display:block;
-}
-#overviewScreen .insights-normal-view.hidden-when-benchmarks-open.is-hidden{
-  display:none !important;
-}
-#overviewScreen #overviewBenchmarksPanel{
-  display:none;
-}
-#overviewScreen #overviewBenchmarksPanel.is-open{
+#overviewSmartInsightsSection.benchmark-mode #overviewBenchmarksPanel{
   display:block !important;
+}
+#overviewSmartInsightsSection.benchmark-mode #overviewInsightsList{
+  display:none !important;
 }
 
 </style>
@@ -6060,24 +6041,20 @@
               <span>Good</span><span>Fair</span><span>Needs Improvement</span>
             </div>
           </div>
-          <div class="overview-v3-section card">
+          <div class="overview-v3-section card" id="overviewSmartInsightsSection">
             <div class="overview-v3-section-head">
               <div class="overview-v3-title">Smart Insights</div>
-            
-<div class="overview-benchmarks-wrap" id="overviewBenchmarksWrap">
-  <button class="overview-benchmarks-arrow" id="overviewBenchmarksArrowBtn" type="button" aria-expanded="false" aria-controls="overviewBenchmarksPanel">
-    <span class="overview-benchmarks-arrow-icon" id="overviewBenchmarksArrowIcon">⌄</span>
-  </button>
-  <div class="overview-v3-benchmarks" id="overviewBenchmarksPanel" style="display:none;">
-    <div class="helper-copy" id="overviewBenchmarksCopy">
-      Benchmarks compare this month against profile targets.
-    </div>
-    <div id="overviewBenchmarksList"></div>
-  </div>
-</div>
-
-          </div>
-          <div id="overviewInsightsList"></div>
+              <button class="overview-inline-arrow-btn" id="overviewBenchmarksArrowBtn" type="button" aria-expanded="false" aria-controls="overviewBenchmarksPanel">
+                <span class="overview-inline-arrow-icon">&#9662;</span>
+              </button>
+            </div>
+            <div class="overview-v3-benchmarks" id="overviewBenchmarksPanel" style="display:none;">
+              <div class="helper-copy" id="overviewBenchmarksCopy">
+                Benchmarks compare this month against profile targets.
+              </div>
+              <div id="overviewBenchmarksList"></div>
+            </div>
+            <div id="overviewInsightsList"></div>
           </div>
           <div class="overview-v3-section card">
             <div class="overview-v3-section-head">
@@ -13469,182 +13446,47 @@ renderOverviewV3 = function(monthKey = data.currentMonth) {
 
 
 <script>
-/* ===== Hard reset: Smart Insights benchmarks control ===== */
+/* ===== Smart Insights final clean separation ===== */
 (function(){
-  function getSmartInsightsSection(){
-    const sections = Array.from(document.querySelectorAll('#overviewScreen .overview-v3-section.card'));
-    return sections.find(sec => {
-      const title = sec.querySelector('.overview-v3-title');
-      return title && /smart insights/i.test((title.textContent || '').trim());
-    }) || null;
-  }
-
-  function renderBenchmarksIfNeeded(){
-    if (window.__cleanBenchmarksOpen && typeof renderOverviewBenchmarks === 'function') {
-      const monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : undefined;
-      renderOverviewBenchmarks(monthKey);
-    }
-  }
-
-  function hardResetBenchmarksControl(){
-    const section = getSmartInsightsSection();
-    if (!section) return;
-
-    const head = section.querySelector('.overview-v3-section-head');
+  function bindFinalSmartInsightsToggle(){
+    const section = document.getElementById('overviewSmartInsightsSection');
+    const btn = document.getElementById('overviewBenchmarksArrowBtn');
     const panel = document.getElementById('overviewBenchmarksPanel');
-    const insightsList = section.querySelector('#overviewInsightsList');
-    if (!head || !panel || !insightsList) return;
+    const insights = document.getElementById('overviewInsightsList');
+    if (!section || !btn || !panel || !insights) return;
 
-    // move panel directly under header, before insight content
-    if (panel.parentElement !== section || head.nextElementSibling !== panel) {
-      section.insertBefore(panel, insightsList);
-    }
-
-    // hide any old benchmark controls inside this section
-    section.querySelectorAll('.overview-v3-link, .overview-benchmarks-details, .overview-benchmarks-wrap').forEach(el => {
-      if (el !== panel) el.style.display = 'none';
-    });
-    section.querySelectorAll('#overviewBenchmarksToggleLabel').forEach(el => {
-      if (el.parentElement) el.parentElement.style.display = 'none';
-    });
-
-    // install one clean arrow button
-    let btn = document.getElementById('overviewBenchmarksCleanArrow');
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.type = 'button';
-      btn.id = 'overviewBenchmarksCleanArrow';
-      btn.className = 'benchmark-reset-arrow';
-      btn.setAttribute('aria-expanded', 'false');
-      btn.innerHTML = '<span>&#9662;</span>';
-      head.appendChild(btn);
-    } else if (btn.parentElement !== head) {
-      head.appendChild(btn);
-    }
-
-    btn.setAttribute('aria-expanded', window.__cleanBenchmarksOpen ? 'true' : 'false');
-    panel.style.display = window.__cleanBenchmarksOpen ? 'block' : 'none';
-
+    // kill any old handlers
     btn.onclick = function(e){
       e.preventDefault();
       e.stopPropagation();
-      window.__cleanBenchmarksOpen = !window.__cleanBenchmarksOpen;
-      btn.setAttribute('aria-expanded', window.__cleanBenchmarksOpen ? 'true' : 'false');
-      panel.style.display = window.__cleanBenchmarksOpen ? 'block' : 'none';
-      renderBenchmarksIfNeeded();
+      const open = section.classList.toggle('benchmark-mode');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.style.display = open ? 'block' : 'none';
+      insights.style.display = open ? 'none' : 'block';
+      if (open && typeof renderOverviewBenchmarks === 'function') {
+        const monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : undefined;
+        renderOverviewBenchmarks(monthKey);
+      }
       return false;
     };
 
-    renderBenchmarksIfNeeded();
+    // default state closed
+    section.classList.remove('benchmark-mode');
+    btn.setAttribute('aria-expanded', 'false');
+    panel.style.display = 'none';
+    insights.style.display = 'block';
   }
 
-  window.__cleanBenchmarksOpen = false;
-  window.overviewBenchmarksOpen = false;
-
-  const prevRenderOverviewV3 = window.renderOverviewV3;
-  if (typeof prevRenderOverviewV3 === 'function') {
+  const __prevOverviewRenderClean = window.renderOverviewV3;
+  if (typeof __prevOverviewRenderClean === 'function') {
     window.renderOverviewV3 = function(monthKey){
-      prevRenderOverviewV3(monthKey);
-      window.overviewBenchmarksOpen = false;
-      hardResetBenchmarksControl();
+      __prevOverviewRenderClean(monthKey);
+      bindFinalSmartInsightsToggle();
     };
   }
 
   document.addEventListener('DOMContentLoaded', function(){
-    setTimeout(hardResetBenchmarksControl, 200);
-  });
-})();
-</script>
-
-
-<script>
-/* ===== Smart Insights benchmark mode toggle ===== */
-(function(){
-  function getSmartInsightsSection(){
-    const sections = Array.from(document.querySelectorAll('#overviewScreen .overview-v3-section.card'));
-    return sections.find(sec => {
-      const title = sec.querySelector('.overview-v3-title');
-      return title && /smart insights/i.test((title.textContent || '').trim());
-    }) || null;
-  }
-
-  function ensureNormalInsightsWrapper(section){
-    if (!section) return null;
-    let wrapper = section.querySelector('.insights-normal-view.hidden-when-benchmarks-open');
-    if (wrapper) return wrapper;
-
-    const panel = section.querySelector('#overviewBenchmarksPanel');
-    const insightsList = section.querySelector('#overviewInsightsList');
-    if (!insightsList) return null;
-
-    wrapper = document.createElement('div');
-    wrapper.className = 'insights-normal-view hidden-when-benchmarks-open';
-
-    // Move the normal Smart Insights content into the wrapper
-    // Keep anything after benchmarks panel that belongs to the normal view.
-    let startNode = insightsList;
-    while (startNode) {
-      const next = startNode.nextSibling
-      wrapper.appendChild(startNode);
-      startNode = next;
-    }
-
-    if (panel && panel.parentNode === section) {
-      panel.insertAdjacentElement('afterend', wrapper);
-    } else {
-      section.appendChild(wrapper);
-    }
-    return wrapper;
-  }
-
-  function applyBenchmarkMode(){
-    const section = getSmartInsightsSection();
-    if (!section) return;
-
-    const panel = section.querySelector('#overviewBenchmarksPanel');
-    const wrapper = ensureNormalInsightsWrapper(section);
-    const btn = document.getElementById('overviewBenchmarksCleanArrow') || section.querySelector('.benchmark-reset-arrow');
-
-    if (!panel || !wrapper || !btn) return;
-
-    const open = !!window.__cleanBenchmarksOpen;
-    panel.classList.toggle('is-open', open);
-    panel.style.display = open ? 'block' : 'none';
-    wrapper.classList.toggle('is-hidden', open);
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-
-    if (open && typeof renderOverviewBenchmarks === 'function') {
-      const monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : undefined;
-      renderOverviewBenchmarks(monthKey);
-    }
-  }
-
-  function bindBenchmarkModeButton(){
-    const btn = document.getElementById('overviewBenchmarksCleanArrow') || document.querySelector('#overviewScreen .benchmark-reset-arrow');
-    if (!btn) return;
-    btn.onclick = function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      window.__cleanBenchmarksOpen = !window.__cleanBenchmarksOpen;
-      applyBenchmarkMode();
-      return false;
-    };
-  }
-
-  const prevRenderOverviewV3_mode = window.renderOverviewV3;
-  if (typeof prevRenderOverviewV3_mode === 'function') {
-    window.renderOverviewV3 = function(monthKey){
-      prevRenderOverviewV3_mode(monthKey);
-      bindBenchmarkModeButton();
-      applyBenchmarkMode();
-    };
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    setTimeout(function(){
-      bindBenchmarkModeButton();
-      applyBenchmarkMode();
-    }, 180);
+    setTimeout(bindFinalSmartInsightsToggle, 120);
   });
 })();
 </script>
