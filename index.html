@@ -5710,6 +5710,32 @@
   color:rgba(226,232,240,.82) !important;
 }
 
+
+#overviewScreen .overview-benchmarks-details{
+  margin-left:auto;
+}
+#overviewScreen .overview-benchmarks-details summary{
+  list-style:none;
+}
+#overviewScreen .overview-benchmarks-details summary::-webkit-details-marker{
+  display:none;
+}
+#overviewScreen .overview-benchmarks-details[open] #overviewBenchmarksToggleLabel::before{
+  content:"Hide Benchmarks ›";
+}
+#overviewScreen .overview-benchmarks-details:not([open]) #overviewBenchmarksToggleLabel::before{
+  content:"View Benchmarks ›";
+}
+#overviewScreen .overview-benchmarks-details #overviewBenchmarksToggleLabel{
+  font-size:0;
+}
+#overviewScreen .overview-benchmarks-details[open] #overviewBenchmarksPanel{
+  display:block !important;
+}
+#overviewScreen .overview-benchmarks-details:not([open]) #overviewBenchmarksPanel{
+  display:none !important;
+}
+
 </style>
   </head>
   <body>
@@ -5897,27 +5923,17 @@
           <div class="overview-v3-section card">
             <div class="overview-v3-section-head">
               <div class="overview-v3-title">Smart Insights</div>
-              <button
-                class="overview-v3-link"
-                type="button"
-                onclick="toggleOverviewBenchmarks()"
-              >
-                <span id="overviewBenchmarksToggleLabel"
-                  >View Benchmarks ›</span
-                >
-              </button>
-            </div>
-            <div id="overviewInsightsList"></div>
-            <div
-              class="overview-v3-benchmarks"
-              id="overviewBenchmarksPanel"
-              style="display: none"
-            >
-              <div class="helper-copy" id="overviewBenchmarksCopy">
-                Benchmarks are based on your current month.
+            <details class="overview-benchmarks-details" id="overviewBenchmarksDetails">
+              <summary class="overview-v3-link"><span id="overviewBenchmarksToggleLabel">View Benchmarks ›</span></summary>
+              <div class="overview-v3-benchmarks" id="overviewBenchmarksPanel">
+                <div class="helper-copy" id="overviewBenchmarksCopy">
+                  Benchmarks are based on your current month.
+                </div>
+                <div id="overviewBenchmarksList"></div>
               </div>
-              <div id="overviewBenchmarksList"></div>
-            </div>
+            </details>
+          </div>
+          <div id="overviewInsightsList"></div>
           </div>
           <div class="overview-v3-section card">
             <div class="overview-v3-section-head">
@@ -13206,6 +13222,32 @@ renderOverviewV3 = function(monthKey = data.currentMonth) {
     installBenchmarkToggle();
     syncBenchmarkUI();
   }, 300);
+})();
+</script>
+
+
+<script>
+(function(){
+  function bindNativeBenchmarksDisclosure(){
+    const details = document.getElementById('overviewBenchmarksDetails');
+    if (!details || details.dataset.bound === '1') return;
+    details.dataset.bound = '1';
+    details.addEventListener('toggle', function(){
+      if (details.open && typeof renderOverviewBenchmarks === 'function') {
+        const monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : undefined;
+        renderOverviewBenchmarks(monthKey);
+      }
+    });
+  }
+  const __prevRenderOverviewV3_native = window.renderOverviewV3;
+  if (typeof __prevRenderOverviewV3_native === 'function') {
+    window.renderOverviewV3 = function(monthKey){
+      __prevRenderOverviewV3_native(monthKey);
+      bindNativeBenchmarksDisclosure();
+    };
+  }
+  document.addEventListener('DOMContentLoaded', bindNativeBenchmarksDisclosure);
+  setTimeout(bindNativeBenchmarksDisclosure, 300);
 })();
 </script>
 
