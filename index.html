@@ -5810,237 +5810,109 @@
 }
 
 
-/* ===== Custom Overview Tap Layout ===== */
-#overviewScreen #overviewV3Shell{
-  display:none !important;
-}
-#overviewTapShell{
-  display:flex;
-  flex-direction:column;
+/* ===== Clean Smart Insights + Benchmarks tiles ===== */
+#overviewScreen .ov-clean-stack{
+  display:grid;
   gap:14px;
 }
-#overviewTapShell .ov-card{
+#overviewScreen .ov-clean-card{
   background:
-    radial-gradient(circle at 88% 84%, rgba(59,130,246,.28), transparent 30%),
-    linear-gradient(135deg,#0F172A 0%, #17325A 52%, #1E3A8A 100%);
-  border:1px solid rgba(191,219,254,.16);
-  box-shadow:0 18px 38px rgba(15,23,42,.18);
-  border-radius:28px;
-  color:#FFFFFF;
+    radial-gradient(circle at 88% 84%, rgba(59,130,246,.26), transparent 30%),
+    linear-gradient(135deg,#0F172A 0%, #17325A 52%, #1E3A8A 100%) !important;
+  border:1px solid rgba(191,219,254,.16) !important;
+  box-shadow:0 18px 38px rgba(15,23,42,.18) !important;
+  border-radius:28px !important;
+  color:#FFFFFF !important;
+  padding:18px !important;
 }
-#overviewTapShell .ov-topbar-btn{
-  width:100%;
-  border:none;
-  border-radius:28px;
-  background:
-    radial-gradient(circle at 88% 84%, rgba(59,130,246,.28), transparent 30%),
-    linear-gradient(135deg,#0F172A 0%, #17325A 52%, #1E3A8A 100%);
-  border:1px solid rgba(191,219,254,.16);
-  box-shadow:0 18px 38px rgba(15,23,42,.18);
-  color:#FFFFFF;
-  padding:22px 24px;
+#overviewScreen .ov-clean-head{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:14px;
-  font:inherit;
+  gap:12px;
+}
+#overviewScreen .ov-clean-title{
+  font-size:1.15rem;
+  font-weight:800;
+  letter-spacing:-.02em;
+  color:#FFFFFF;
+}
+#overviewScreen .ov-clean-arrow{
+  appearance:none;
+  -webkit-appearance:none;
+  border:none;
+  background:transparent;
+  color:rgba(255,255,255,.92);
+  width:48px;
+  min-width:48px;
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   cursor:pointer;
 }
-#overviewTapShell .ov-topbar-text{
-  font-size:2.2rem;
-  line-height:1;
-  font-weight:800;
-  letter-spacing:-.05em;
-}
-#overviewTapShell .ov-arrow{
+#overviewScreen .ov-clean-arrow span{
   display:inline-block;
   font-size:2rem;
   line-height:1;
   transition:transform .22s ease;
 }
-#overviewTapShell .ov-arrow.open{
+#overviewScreen .ov-clean-arrow[aria-expanded="true"] span{
   transform:rotate(180deg);
 }
-#overviewTapShell .ov-month-list{
-  display:flex;
-  gap:12px;
-  overflow-x:auto;
-  padding:2px 2px 6px;
-  scrollbar-width:none;
-}
-#overviewTapShell .ov-month-list::-webkit-scrollbar{display:none;}
-#overviewTapShell .ov-month-chip{
-  flex:0 0 auto;
-  width:116px;
-  min-height:104px;
-  border-radius:22px;
-  border:2px solid #3B82F6;
-  background:#FFFFFF;
-  color:#1D4ED8;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  font-weight:800;
-  box-shadow:0 10px 24px rgba(15,23,42,.06);
-  cursor:pointer;
-}
-#overviewTapShell .ov-month-chip.selected{
-  background:linear-gradient(135deg,#2563EB 0%, #1E40AF 100%);
-  color:#FFFFFF;
-  border-color:#2563EB;
-}
-#overviewTapShell .ov-month-chip-badge{
-  font-size:.74rem;
-  color:inherit;
-}
-#overviewTapShell .ov-health{
-  padding:18px;
-}
-#overviewTapShell .ov-section-head,
-#overviewTapShell .ov-health-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-#overviewTapShell .ov-title{
-  font-size:1.15rem;
-  font-weight:800;
-  letter-spacing:-.02em;
-}
-#overviewTapShell .ov-health-status{
-  color:rgba(255,255,255,.82);
-  font-size:.96rem;
-  margin-top:4px;
-}
-#overviewTapShell .ov-health-score{
-  font-size:4.5rem;
-  line-height:.95;
-  font-weight:800;
-  letter-spacing:-.06em;
-}
-#overviewTapShell .ov-health-track{
-  height:18px;
-  border-radius:999px;
-  background:rgba(255,255,255,.16);
-  overflow:hidden;
-  margin:16px 0 12px;
-}
-#overviewTapShell .ov-health-fill{
-  height:100%;
-  border-radius:999px;
-  background:linear-gradient(90deg,#1DD6C4 0%, #3B82F6 45%, #F59E0B 75%, #EF4444 100%);
-}
-#overviewTapShell .ov-health-labels{
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  color:rgba(255,255,255,.88);
-  font-size:.86rem;
-}
-#overviewTapShell .ov-snapshot-wrap{
-  padding:18px;
-}
-#overviewTapShell .ov-snapshot-title{
-  margin:0 0 12px;
-  color:rgba(255,255,255,.86);
-  text-align:center;
-  font-size:1rem;
-  font-weight:700;
-}
-#overviewTapShell .ov-grid-4{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:10px;
-}
-#overviewTapShell .ov-grid-2{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-#overviewTapShell .ov-tile{
-  min-height:148px;
-  padding:14px 12px;
-  border-radius:20px;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.12);
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
-}
-#overviewTapShell .ov-tile-label{
-  color:#BFDBFE;
-  font-size:.82rem;
-  line-height:1.15;
-  font-weight:800;
-}
-#overviewTapShell .ov-tile-value{
-  color:#FFFFFF;
-  font-size:1.28rem;
-  line-height:1.05;
-  font-weight:800;
-  letter-spacing:-.03em;
-}
-#overviewTapShell .ov-collapsible{
-  padding:18px;
-}
-#overviewTapShell .ov-collapsible-btn{
-  border:none;
-  background:transparent;
-  color:#FFFFFF;
-  width:44px;
-  height:44px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font:inherit;
-  cursor:pointer;
-}
-#overviewTapShell .ov-collapsible-panel{
+#overviewScreen .ov-clean-panel{
   display:none;
   margin-top:14px;
   padding-top:14px;
   border-top:1px solid rgba(255,255,255,.12);
 }
-#overviewTapShell .ov-collapsible-panel.open{
+#overviewScreen .ov-clean-panel.open{
   display:block;
 }
-#overviewTapShell .ov-insight{
+#overviewScreen .ov-clean-item{
   padding:14px 0;
   border-top:1px solid rgba(255,255,255,.10);
 }
-#overviewTapShell .ov-insight:first-child,
-#overviewTapShell .ov-benchmark-row:first-child{
+#overviewScreen .ov-clean-item:first-child{
   border-top:none;
   padding-top:2px;
 }
-#overviewTapShell .ov-insight-headline,
-#overviewTapShell .ov-benchmark-title{
+#overviewScreen .ov-clean-item-title{
   color:#FFFFFF;
   font-size:1rem;
   line-height:1.35;
   font-weight:700;
   margin-bottom:6px;
 }
-#overviewTapShell .ov-insight-copy,
-#overviewTapShell .ov-benchmark-copy,
-#overviewTapShell .ov-helper{
+#overviewScreen .ov-clean-item-copy{
   color:rgba(226,232,240,.84);
   font-size:.95rem;
   line-height:1.4;
 }
-#overviewTapShell .ov-benchmark-row{
+#overviewScreen .ov-clean-bench-row{
   display:flex;
   justify-content:space-between;
   gap:12px;
   padding:14px 0;
   border-top:1px solid rgba(255,255,255,.10);
 }
-#overviewTapShell .ov-benchmark-pill{
+#overviewScreen .ov-clean-bench-row:first-child{
+  border-top:none;
+  padding-top:2px;
+}
+#overviewScreen .ov-clean-bench-title{
+  color:#FFFFFF;
+  font-size:1rem;
+  line-height:1.35;
+  font-weight:700;
+  margin-bottom:6px;
+}
+#overviewScreen .ov-clean-bench-copy{
+  color:rgba(226,232,240,.84);
+  font-size:.95rem;
+  line-height:1.4;
+}
+#overviewScreen .ov-clean-pill{
   flex:0 0 auto;
   align-self:flex-start;
   padding:10px 14px;
@@ -6049,15 +5921,21 @@
   font-weight:800;
   border:1px solid transparent;
 }
-#overviewTapShell .ov-benchmark-pill.good{
+#overviewScreen .ov-clean-pill.good{
   background:rgba(34,197,94,.14);
   color:#86EFAC;
   border-color:rgba(34,197,94,.22);
 }
-#overviewTapShell .ov-benchmark-pill.bad{
+#overviewScreen .ov-clean-pill.bad{
   background:rgba(239,68,68,.14);
   color:#FCA5A5;
   border-color:rgba(239,68,68,.22);
+}
+#overviewScreen .ov-clean-helper{
+  color:rgba(226,232,240,.84);
+  font-size:.95rem;
+  line-height:1.4;
+  margin-bottom:4px;
 }
 
 </style>
@@ -13653,193 +13531,88 @@ renderOverviewV3 = function(monthKey = data.currentMonth) {
 
 
 <script>
-/* ===== Custom Overview Tap Layout ===== */
-let overviewTapMonthOpen = false;
-let overviewTapInsightsOpen = true;
-let overviewTapBenchmarksOpen = false;
+/* ===== Clean Smart Insights + Benchmarks tiles ===== */
+(function(){
+  let overviewCleanInsightsOpen = true;
+  let overviewCleanBenchOpen = false;
 
-function overviewTapVisibleMonths(centerKey = data.currentMonth) {
-  const all = monthOptions(centerKey);
-  const idx = Math.max(0, all.indexOf(centerKey));
-  const start = Math.max(0, idx - 2);
-  return all.slice(start, start + 5);
-}
-function overviewTapShortMonth(monthKey) {
-  const [y, m] = monthKey.split("-").map(Number);
-  return new Date(y, m - 1, 1).toLocaleString("en-US", { month: "short" });
-}
-function ensureOverviewTapShell() {
-  const screen = document.getElementById("overviewScreen");
-  if (!screen) return null;
-  let shell = document.getElementById("overviewTapShell");
-  if (!shell) {
-    shell = document.createElement("div");
-    shell.id = "overviewTapShell";
-    screen.appendChild(shell);
+  function findOverviewShell(){
+    return document.getElementById('overviewV3Shell');
   }
-  return shell;
-}
-function buildOverviewTapMarkup() {
-  const shell = ensureOverviewTapShell();
-  if (!shell) return;
-  shell.innerHTML = `
-    <div class="ov-month-topbar">
-      <button class="ov-topbar-btn" type="button" onclick="toggleOverviewTapMonthDropdown()">
-        <span class="ov-topbar-text" id="ovTopbarMonthText">Month</span>
-        <span class="ov-arrow" id="ovTopbarArrow">&#9662;</span>
-      </button>
-      <div class="ov-month-list" id="ovMonthList" style="display:none;"></div>
-    </div>
 
-    <div class="ov-card ov-health">
-      <div class="ov-health-head">
-        <div>
-          <div class="ov-title">Financial Health Score</div>
-          <div class="ov-health-status" id="ovHealthStatus">Needs setup</div>
-        </div>
-        <div class="ov-health-score" id="ovHealthScore">0</div>
-      </div>
-      <div class="ov-health-track"><div class="ov-health-fill" id="ovHealthFill" style="width:4%;"></div></div>
-      <div class="ov-health-labels"><span>Critical</span><span>Warning</span><span>Stable</span><span>Strong</span></div>
-    </div>
+  function escapeOverviewHtml(value){
+    return String(value ?? '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  }
 
-    <div class="ov-card ov-snapshot-wrap">
-      <div class="ov-snapshot-title">Money Snapshot</div>
-      <div class="ov-grid-4">
-        <div class="ov-tile">
-          <div class="ov-tile-label">Left to<br>Budget</div>
-          <div class="ov-tile-value" id="ovSnapLeft">$0</div>
-        </div>
-        <div class="ov-tile">
-          <div class="ov-tile-label">Monthly<br>Cash Flow</div>
-          <div class="ov-tile-value" id="ovSnapCash">$0</div>
-        </div>
-        <div class="ov-tile">
-          <div class="ov-tile-label">Portfolio<br>Total</div>
-          <div class="ov-tile-value" id="ovSnapPortfolio">$0</div>
-        </div>
-        <div class="ov-tile">
-          <div class="ov-tile-label">Assets /<br>Net Worth</div>
-          <div class="ov-tile-value" id="ovSnapAssets">$0</div>
-        </div>
-      </div>
-      <div class="ov-grid-2">
-        <div class="ov-tile">
-          <div class="ov-tile-label">Savings</div>
-          <div class="ov-tile-value" id="ovSnapSavings">$0</div>
-        </div>
-        <div class="ov-tile">
-          <div class="ov-tile-label">Emergency<br>Fund</div>
-          <div class="ov-tile-value" id="ovSnapEmergency">0.0 mo</div>
-        </div>
-      </div>
-    </div>
+  function findOverviewSectionByTitle(titleText){
+    const shell = findOverviewShell();
+    if (!shell) return null;
+    const nodes = Array.from(shell.querySelectorAll('.overview-v3-section.card, .overview-redesign-card, .card'));
+    return nodes.find(node => {
+      const t = node.querySelector('.overview-v3-title, .overview-section-title, .section-title, .activity-title');
+      return t && (t.textContent || '').trim().toLowerCase() === titleText.toLowerCase();
+    }) || null;
+  }
 
-    <div class="ov-card ov-collapsible" id="ovInsightsCard">
-      <div class="ov-section-head">
-        <div class="ov-title">Smart Insights</div>
-        <button class="ov-collapsible-btn" type="button" onclick="toggleOverviewTapInsights()" aria-expanded="true">
-          <span class="ov-arrow" id="ovInsightsArrow">&#9662;</span>
+  function ensureCleanOverviewTiles(monthKey){
+    const shell = findOverviewShell();
+    if (!shell || typeof generateOverviewInsights !== 'function' || typeof getOverviewV3Data !== 'function') return;
+
+    // hide old smart insights / benchmarks controls if present
+    const oldSmart = findOverviewSectionByTitle('Smart Insights');
+    if (oldSmart) oldSmart.style.display = 'none';
+
+    const activity = findOverviewSectionByTitle('Recent Activity');
+    let stack = document.getElementById('overviewCleanInsightStack');
+    if (!stack) {
+      stack = document.createElement('div');
+      stack.id = 'overviewCleanInsightStack';
+      stack.className = 'ov-clean-stack';
+      const smart = document.createElement('div');
+      smart.className = 'ov-clean-card';
+      smart.id = 'overviewCleanSmartCard';
+      const bench = document.createElement('div');
+      bench.className = 'ov-clean-card';
+      bench.id = 'overviewCleanBenchCard';
+      stack.appendChild(smart);
+      stack.appendChild(bench);
+
+      if (activity && activity.parentNode === shell) {
+        shell.insertBefore(stack, activity);
+      } else {
+        shell.appendChild(stack);
+      }
+    }
+
+    const smartCard = document.getElementById('overviewCleanSmartCard');
+    const benchCard = document.getElementById('overviewCleanBenchCard');
+    const payload = generateOverviewInsights(monthKey);
+    const d = getOverviewV3Data(monthKey);
+
+    smartCard.innerHTML = `
+      <div class="ov-clean-head">
+        <div class="ov-clean-title">Smart Insights</div>
+        <button class="ov-clean-arrow" id="overviewCleanSmartArrow" type="button" aria-expanded="${overviewCleanInsightsOpen ? 'true' : 'false'}">
+          <span>&#9662;</span>
         </button>
       </div>
-      <div class="ov-collapsible-panel" id="ovInsightsPanel"></div>
-    </div>
-
-    <div class="ov-card ov-collapsible" id="ovBenchCard">
-      <div class="ov-section-head">
-        <div class="ov-title">Benchmarks</div>
-        <button class="ov-collapsible-btn" type="button" onclick="toggleOverviewTapBenchmarks()" aria-expanded="false">
-          <span class="ov-arrow" id="ovBenchArrow">&#9662;</span>
-        </button>
+      <div class="ov-clean-panel ${overviewCleanInsightsOpen ? 'open' : ''}" id="overviewCleanSmartPanel">
+        ${payload.insights.map((row, idx) => `
+          <div class="ov-clean-item">
+            <div class="ov-clean-item-title">${escapeOverviewHtml(row.headline)} <span style="font-weight:500;">(${escapeOverviewHtml(row.sub)})</span></div>
+            <div class="ov-clean-item-copy">${escapeOverviewHtml(row.gap)}</div>
+            ${idx===0 ? `<div class="overview-v3-mini-progress" style="margin-top:12px;"><div style="width:${Math.min(100, Math.max(8, (d.savingsRate / d.benchmarks.savingsRate) * 100 || 8))}%;"></div></div>` : ``}
+          </div>
+        `).join('')}
       </div>
-      <div class="ov-collapsible-panel" id="ovBenchPanel"></div>
-    </div>
-  `;
-}
-function toggleOverviewTapMonthDropdown() {
-  overviewTapMonthOpen = !overviewTapMonthOpen;
-  renderOverviewTapLayout(data.currentMonth);
-}
-function selectOverviewTapMonth(monthKey) {
-  data.currentMonth = monthKey;
-  overviewTapMonthOpen = false;
-  saveData();
-  render();
-}
-function toggleOverviewTapInsights() {
-  overviewTapInsightsOpen = !overviewTapInsightsOpen;
-  renderOverviewTapLayout(data.currentMonth);
-}
-function toggleOverviewTapBenchmarks() {
-  overviewTapBenchmarksOpen = !overviewTapBenchmarksOpen;
-  renderOverviewTapLayout(data.currentMonth);
-}
-document.addEventListener("click", function(e){
-  const topbar = document.querySelector("#overviewTapShell .ov-month-topbar");
-  if (topbar && overviewTapMonthOpen && !topbar.contains(e.target)) {
-    overviewTapMonthOpen = false;
-    renderOverviewTapLayout(data.currentMonth);
-  }
-});
+    `;
 
-function renderOverviewTapLayout(monthKey = data.currentMonth) {
-  buildOverviewTapMarkup();
-  const shell = document.getElementById("overviewTapShell");
-  if (!shell) return;
-  const d = getOverviewV3Data(monthKey);
-  const payload = generateOverviewInsights(monthKey);
-
-  const monthText = document.getElementById("ovTopbarMonthText");
-  if (monthText) monthText.textContent = monthLabel(monthKey);
-  const monthArrow = document.getElementById("ovTopbarArrow");
-  if (monthArrow) monthArrow.classList.toggle("open", overviewTapMonthOpen);
-  const monthList = document.getElementById("ovMonthList");
-  if (monthList) {
-    monthList.style.display = overviewTapMonthOpen ? "flex" : "none";
-    const current = new Date();
-    const currentKey = `${current.getFullYear()}-${String(current.getMonth()+1).padStart(2,'0')}`;
-    monthList.innerHTML = overviewTapVisibleMonths(monthKey).map(k => `
-      <button class="ov-month-chip ${k===monthKey ? 'selected' : ''}" type="button" onclick="selectOverviewTapMonth('${k}')">
-        <span>${overviewTapShortMonth(k)}</span>
-        <span>${k.slice(0,4)}</span>
-        <div class="ov-month-chip-badge">${k===currentKey ? 'Today' : '&nbsp;'}</div>
-      </button>
-    `).join('');
-  }
-
-  const setText = (id, txt) => { const el=document.getElementById(id); if(el) el.textContent = txt; };
-  setText("ovHealthScore", String(d.score));
-  setText("ovHealthStatus", d.status);
-  const fill = document.getElementById("ovHealthFill");
-  if (fill) fill.style.width = `${Math.max(4, Math.min(100, d.score))}%`;
-
-  setText("ovSnapLeft", money(Number(d.budgetLeft || 0)));
-  setText("ovSnapCash", money(Number(d.safeToSpend || d.budgetLeft || 0)));
-  setText("ovSnapPortfolio", money(Number(d.investments || 0)));
-  setText("ovSnapAssets", money(Number(d.netWorth || (d.accounts + d.assets) || 0)));
-  setText("ovSnapSavings", money(Number(d.accounts || 0)));
-  setText("ovSnapEmergency", `${Number(d.emergencyMonths || 0).toFixed(1)} mo`);
-
-  const insightsPanel = document.getElementById("ovInsightsPanel");
-  const insightsArrow = document.getElementById("ovInsightsArrow");
-  if (insightsPanel && insightsArrow) {
-    insightsPanel.classList.toggle("open", overviewTapInsightsOpen);
-    insightsArrow.classList.toggle("open", overviewTapInsightsOpen);
-    insightsPanel.innerHTML = payload.insights.map((row, idx) => `
-      <div class="ov-insight">
-        <div class="ov-insight-headline">${escapeHtml(row.headline)} <span style="font-weight:500;">(${escapeHtml(row.sub)})</span></div>
-        <div class="ov-insight-copy">${escapeHtml(row.gap)}</div>
-        ${idx===0 ? `<div class="overview-v3-mini-progress" style="margin-top:12px;"><div style="width:${Math.min(100, Math.max(8, (d.savingsRate / d.benchmarks.savingsRate) * 100 || 8))}%;"></div></div>` : ``}
-      </div>
-    `).join("");
-  }
-
-  const benchPanel = document.getElementById("ovBenchPanel");
-  const benchArrow = document.getElementById("ovBenchArrow");
-  if (benchPanel && benchArrow) {
-    benchPanel.classList.toggle("open", overviewTapBenchmarksOpen);
-    benchArrow.classList.toggle("open", overviewTapBenchmarksOpen);
-    const rows = [
+    const benchRows = [
       {
         title: "Savings rate",
         copy: `You: ${Math.max(0, Math.round(d.savingsRate))}% • Benchmark: ${d.benchmarks.savingsRate}%`,
@@ -13859,28 +13632,58 @@ function renderOverviewTapLayout(monthKey = data.currentMonth) {
         tone: d.netWorth >= d.benchmarks.netWorth ? "good" : "bad",
       },
     ];
-    benchPanel.innerHTML = `
-      <div class="ov-helper">Colorado • Age band ${d.benchmarks.ageBand}</div>
-      ${rows.map(row => `
-        <div class="ov-benchmark-row">
-          <div>
-            <div class="ov-benchmark-title">${escapeHtml(row.title)}</div>
-            <div class="ov-benchmark-copy">${escapeHtml(row.copy)}</div>
-          </div>
-          <div class="ov-benchmark-pill ${row.tone}">${escapeHtml(row.label)}</div>
-        </div>
-      `).join("")}
-    `;
-  }
-}
 
-const __prevRenderOverviewTap = window.renderOverviewV3;
-if (typeof __prevRenderOverviewTap === "function") {
-  window.renderOverviewV3 = function(monthKey = data.currentMonth) {
-    __prevRenderOverviewTap(monthKey);
-    renderOverviewTapLayout(monthKey);
-  };
-}
+    benchCard.innerHTML = `
+      <div class="ov-clean-head">
+        <div class="ov-clean-title">Benchmarks</div>
+        <button class="ov-clean-arrow" id="overviewCleanBenchArrow" type="button" aria-expanded="${overviewCleanBenchOpen ? 'true' : 'false'}">
+          <span>&#9662;</span>
+        </button>
+      </div>
+      <div class="ov-clean-panel ${overviewCleanBenchOpen ? 'open' : ''}" id="overviewCleanBenchPanel">
+        <div class="ov-clean-helper">Colorado • Age band ${escapeOverviewHtml(d.benchmarks.ageBand)}</div>
+        ${benchRows.map(row => `
+          <div class="ov-clean-bench-row">
+            <div>
+              <div class="ov-clean-bench-title">${escapeOverviewHtml(row.title)}</div>
+              <div class="ov-clean-bench-copy">${escapeOverviewHtml(row.copy)}</div>
+            </div>
+            <div class="ov-clean-pill ${row.tone}">${escapeOverviewHtml(row.label)}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    const smartBtn = document.getElementById('overviewCleanSmartArrow');
+    const benchBtn = document.getElementById('overviewCleanBenchArrow');
+    if (smartBtn) smartBtn.onclick = function(e){
+      e.preventDefault(); e.stopPropagation();
+      overviewCleanInsightsOpen = !overviewCleanInsightsOpen;
+      ensureCleanOverviewTiles(monthKey);
+      return false;
+    };
+    if (benchBtn) benchBtn.onclick = function(e){
+      e.preventDefault(); e.stopPropagation();
+      overviewCleanBenchOpen = !overviewCleanBenchOpen;
+      ensureCleanOverviewTiles(monthKey);
+      return false;
+    };
+  }
+
+  const __prevRenderOverviewCleanTiles = window.renderOverviewV3;
+  if (typeof __prevRenderOverviewCleanTiles === 'function') {
+    window.renderOverviewV3 = function(monthKey = data.currentMonth){
+      __prevRenderOverviewCleanTiles(monthKey);
+      ensureCleanOverviewTiles(monthKey);
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(function(){
+      ensureCleanOverviewTiles((window.data && window.data.currentMonth) ? window.data.currentMonth : undefined);
+    }, 200);
+  });
+})();
 </script>
 
 </body>
