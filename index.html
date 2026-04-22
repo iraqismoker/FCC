@@ -5809,6 +5809,49 @@
   width:100% !important;
 }
 
+
+/* ===== Final Smart Insights arrow normalization ===== */
+#overviewScreen .overview-v3-section-head{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+}
+#overviewScreen .overview-v3-section-head .overview-v3-title{
+  flex:1 1 auto !important;
+}
+#overviewScreen .benchmark-arrow-inline{
+  appearance:none !important;
+  -webkit-appearance:none !important;
+  border:none !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:rgba(255,255,255,.92) !important;
+  width:56px !important;
+  min-width:56px !important;
+  height:56px !important;
+  padding:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin-left:auto !important;
+}
+#overviewScreen .benchmark-arrow-inline .overview-inline-arrow-icon{
+  display:inline-block !important;
+  font-size:2.2rem !important;
+  line-height:1 !important;
+  transition:transform .22s ease !important;
+}
+#overviewScreen .benchmark-arrow-inline[aria-expanded="true"] .overview-inline-arrow-icon{
+  transform:rotate(180deg) !important;
+}
+#overviewScreen #overviewBenchmarksPanel{
+  display:none;
+  margin:10px 0 16px !important;
+  padding-top:14px !important;
+  border-top:1px solid rgba(255,255,255,.12) !important;
+}
+
 </style>
   </head>
   <body>
@@ -13396,6 +13439,69 @@ renderOverviewV3 = function(monthKey = data.currentMonth) {
   }
   document.addEventListener('DOMContentLoaded', function(){
     setTimeout(bindSmartInsightsArrowInline, 120);
+  });
+})();
+</script>
+
+
+<script>
+/* ===== Final Smart Insights arrow normalization ===== */
+(function(){
+  function getSmartInsightsSection(){
+    const sections = Array.from(document.querySelectorAll('#overviewScreen .overview-v3-section.card'));
+    return sections.find(sec => {
+      const title = sec.querySelector('.overview-v3-title');
+      return title && /smart insights/i.test(title.textContent || '');
+    }) || null;
+  }
+
+  function normalizeSmartInsightsToggle(){
+    const section = getSmartInsightsSection();
+    if (!section) return;
+
+    const head = section.querySelector('.overview-v3-section-head');
+    const button = section.querySelector('#overviewBenchmarksToggleLabel')?.closest('button');
+    const panel = section.querySelector('#overviewBenchmarksPanel');
+    const insightsList = section.querySelector('#overviewInsightsList');
+    if (!head || !button || !panel) return;
+
+    button.classList.add('benchmark-arrow-inline');
+    button.innerHTML = '<span class="overview-inline-arrow-icon">&#9662;</span>';
+    button.setAttribute('aria-expanded', window.__smartInsightsOpen ? 'true' : 'false');
+    button.removeAttribute('onclick');
+
+    if (insightsList && insightsList.previousElementSibling !== panel) {
+      insightsList.parentNode.insertBefore(panel, insightsList);
+    }
+
+    panel.style.display = window.__smartInsightsOpen ? 'block' : 'none';
+
+    button.onclick = function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      window.__smartInsightsOpen = !window.__smartInsightsOpen;
+      button.setAttribute('aria-expanded', window.__smartInsightsOpen ? 'true' : 'false');
+      panel.style.display = window.__smartInsightsOpen ? 'block' : 'none';
+      if (window.__smartInsightsOpen && typeof renderOverviewBenchmarks === 'function') {
+        const monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : undefined;
+        renderOverviewBenchmarks(monthKey);
+      }
+      return false;
+    };
+  }
+
+  window.__smartInsightsOpen = false;
+
+  const prev = window.renderOverviewV3;
+  if (typeof prev === 'function') {
+    window.renderOverviewV3 = function(monthKey){
+      prev(monthKey);
+      normalizeSmartInsightsToggle();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(normalizeSmartInsightsToggle, 150);
   });
 })();
 </script>
