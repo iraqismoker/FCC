@@ -5938,6 +5938,61 @@
   margin-bottom:4px;
 }
 
+
+/* ===== Overview polish pass: hero sizing + move money snapshot up ===== */
+#overviewTapShell{
+  gap:12px !important;
+}
+#overviewTapShell .ov-card{
+  overflow:hidden;
+}
+#overviewTapShell .ov-snapshot-wrap{
+  order:3 !important;
+  padding:16px !important;
+}
+#overviewTapShell .ov-health{
+  order:2 !important;
+}
+#overviewTapShell .ov-month-topbar{
+  order:1 !important;
+}
+#overviewTapShell #ovInsightsCard{
+  order:4 !important;
+}
+#overviewTapShell #ovBenchCard{
+  order:5 !important;
+}
+
+/* Make snapshot tiles fit and not hang off */
+#overviewTapShell .ov-grid-4{
+  grid-template-columns:repeat(2, minmax(0,1fr)) !important;
+  gap:10px !important;
+  margin-bottom:10px !important;
+}
+#overviewTapShell .ov-grid-2{
+  grid-template-columns:repeat(2, minmax(0,1fr)) !important;
+  gap:10px !important;
+}
+#overviewTapShell .ov-tile{
+  min-height:122px !important;
+  padding:13px 12px !important;
+  border-radius:18px !important;
+}
+#overviewTapShell .ov-tile-label{
+  font-size:.76rem !important;
+  line-height:1.1 !important;
+}
+#overviewTapShell .ov-tile-value{
+  font-size:1.08rem !important;
+  line-height:1.05 !important;
+  letter-spacing:-.02em !important;
+  word-break:break-word;
+}
+#overviewTapShell .ov-snapshot-title{
+  margin:0 0 10px !important;
+  font-size:.98rem !important;
+}
+
 </style>
   </head>
   <body>
@@ -13682,6 +13737,34 @@ renderOverviewV3 = function(monthKey = data.currentMonth) {
     setTimeout(function(){
       ensureCleanOverviewTiles((window.data && window.data.currentMonth) ? window.data.currentMonth : undefined);
     }, 200);
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function polishOverviewLayoutOrder(){
+    const shell = document.getElementById('overviewTapShell');
+    if (!shell) return;
+    const month = shell.querySelector('.ov-month-topbar');
+    const health = shell.querySelector('.ov-health');
+    const snapshot = shell.querySelector('.ov-snapshot-wrap');
+    const insights = document.getElementById('ovInsightsCard');
+    const bench = document.getElementById('ovBenchCard');
+    [month, health, snapshot, insights, bench].filter(Boolean).forEach(node => shell.appendChild(node));
+  }
+
+  const __prevRenderOverviewPolish = window.renderOverviewTapLayout;
+  if (typeof __prevRenderOverviewPolish === 'function') {
+    window.renderOverviewTapLayout = function(monthKey){
+      __prevRenderOverviewPolish(monthKey);
+      polishOverviewLayoutOrder();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(polishOverviewLayoutOrder, 120);
   });
 })();
 </script>
