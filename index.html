@@ -13136,5 +13136,78 @@ renderOverviewV3 = function(monthKey = data.currentMonth) {
 })();
 </script>
 
+
+<script>
+// ===== single-source benchmark toggle fix =====
+(function(){
+  function syncBenchmarkUI(){
+    const panel = document.getElementById('overviewBenchmarksPanel');
+    const label = document.getElementById('overviewBenchmarksToggleLabel');
+    if (!panel || !label) return;
+    const open = !!window.__overviewBenchmarksOpen;
+    panel.hidden = !open;
+    panel.style.display = open ? 'block' : 'none';
+    label.textContent = open ? 'Hide Benchmarks ›' : 'View Benchmarks ›';
+    if (open && typeof renderOverviewBenchmarks === 'function') {
+      const monthKey = (window.data && window.data.currentMonth) ? window.data.currentMonth : undefined;
+      renderOverviewBenchmarks(monthKey);
+    }
+  }
+
+  function installBenchmarkToggle(){
+    const label = document.getElementById('overviewBenchmarksToggleLabel');
+    const panel = document.getElementById('overviewBenchmarksPanel');
+    if (!label || !panel) return;
+    const button = label.closest('button');
+    if (!button) return;
+
+    // neutralize older inline handler / bindings
+    button.onclick = null;
+    button.removeAttribute('onclick');
+
+    panel.hidden = !window.__overviewBenchmarksOpen;
+    syncBenchmarkUI();
+  }
+
+  // capture click before any bubbling handlers can interfere
+  document.addEventListener('click', function(e){
+    const button = e.target.closest('#overviewScreen button');
+    const label = e.target.closest('#overviewBenchmarksToggleLabel');
+    const benchButton = label ? label.closest('button') : button;
+    if (!benchButton) return;
+    const hasBenchLabel = benchButton.querySelector('#overviewBenchmarksToggleLabel');
+    if (!hasBenchLabel) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+
+    window.__overviewBenchmarksOpen = !window.__overviewBenchmarksOpen;
+    syncBenchmarkUI();
+  }, true);
+
+  const __prevRenderOverviewV3 = window.renderOverviewV3;
+  if (typeof __prevRenderOverviewV3 === 'function') {
+    window.renderOverviewV3 = function(monthKey){
+      __prevRenderOverviewV3(monthKey);
+      installBenchmarkToggle();
+      syncBenchmarkUI();
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    window.__overviewBenchmarksOpen = false;
+    installBenchmarkToggle();
+    syncBenchmarkUI();
+  });
+
+  setTimeout(function(){
+    if (window.__overviewBenchmarksOpen == null) window.__overviewBenchmarksOpen = false;
+    installBenchmarkToggle();
+    syncBenchmarkUI();
+  }, 300);
+})();
+</script>
+
 </body>
 </html>
