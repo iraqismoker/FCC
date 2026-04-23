@@ -134,6 +134,13 @@
       line-height:1.25;
     }
 
+    .date-hint{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:600;
+      margin-top:2px;
+    }
+
     .date-controls{
       display:flex;
       align-items:center;
@@ -562,6 +569,7 @@
             <div class="date-left">
               <span class="date-label" id="period-mode-label">Selected Month</span>
               <span class="date-value" id="period-label">April 2026</span>
+              <span class="date-hint" id="period-hint">Biweekly is anchored to Apr 10, 2026.</span>
             </div>
             <div class="date-controls">
               <button class="icon-btn" id="prev-period" aria-label="Previous period">
@@ -765,11 +773,25 @@
     const modeButtons = document.querySelectorAll('.mode-switch button');
     const periodLabel = document.getElementById('period-label');
     const periodModeLabel = document.getElementById('period-mode-label');
+    const periodHint = document.getElementById('period-hint');
     const prevBtn = document.getElementById('prev-period');
     const nextBtn = document.getElementById('next-period');
 
     let currentMode = 'monthly';
     let currentDate = new Date(2026, 3, 1);
+
+    // Change this one date later to match the user's real paycheck anchor.
+    const biweeklyAnchor = new Date(2026, 3, 10);
+
+    function startOfDay(date) {
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+
+    function addDays(date, days) {
+      const copy = new Date(date);
+      copy.setDate(copy.getDate() + days);
+      return copy;
+    }
 
     function formatMonth(date) {
       return date.toLocaleDateString('en-US', {
@@ -786,29 +808,24 @@
       });
     }
 
-    function getBiweeklyRange(date) {
-      const day = date.getDate();
-      const year = date.getFullYear();
-      const month = date.getMonth();
+    function daysBetween(a, b) {
+      const ms = startOfDay(a) - startOfDay(b);
+      return Math.floor(ms / 86400000);
+    }
 
-      if (day <= 14) {
-        return {
-          start: new Date(year, month, 1),
-          end: new Date(year, month, 14)
-        };
-      }
-
-      return {
-        start: new Date(year, month, 15),
-        end: new Date(year, month + 1, 0)
-      };
+    function getAnchoredBiweeklyRange(date) {
+      const diff = daysBetween(date, biweeklyAnchor);
+      const cycleIndex = Math.floor(diff / 14);
+      const start = addDays(biweeklyAnchor, cycleIndex * 14);
+      const end = addDays(start, 13);
+      return { start, end };
     }
 
     function shiftPeriod(direction) {
       if (currentMode === 'monthly') {
         currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + direction, 1);
       } else if (currentMode === 'biweekly') {
-        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + (14 * direction));
+        currentDate = addDays(currentDate, 14 * direction);
       } else {
         currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + direction, 1);
       }
@@ -819,14 +836,17 @@
       if (currentMode === 'monthly') {
         periodModeLabel.textContent = 'Selected Month';
         periodLabel.textContent = formatMonth(currentDate);
+        periodHint.textContent = 'Switch to Biweekly for paycheck-based periods.';
       } else if (currentMode === 'biweekly') {
         periodModeLabel.textContent = 'Selected Pay Period';
-        const range = getBiweeklyRange(currentDate);
+        const range = getAnchoredBiweeklyRange(currentDate);
         periodLabel.textContent = formatShort(range.start) + ' – ' + formatShort(range.end);
+        periodHint.textContent = 'Biweekly cycle anchored to ' + formatShort(biweeklyAnchor) + '.';
       } else {
         periodModeLabel.textContent = 'Selected View';
-        const range = getBiweeklyRange(currentDate);
+        const range = getAnchoredBiweeklyRange(currentDate);
         periodLabel.textContent = formatMonth(currentDate) + ' · ' + formatShort(range.start) + ' – ' + formatShort(range.end);
+        periodHint.textContent = 'Shows month plus the active anchored pay period.';
       }
     }
 
@@ -845,6 +865,7 @@
 
     prevBtn.addEventListener('click', () => shiftPeriod(-1));
     nextBtn.addEventListener('click', () => shiftPeriod(1));
+
     renderPeriod();
   </script>
 </body>
