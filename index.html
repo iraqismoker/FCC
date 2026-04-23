@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Budget App – Overview</title>
+  <title>Budget App – Settings</title>
   <style>
     :root{
       --bg:#f4f6f9;
@@ -15,15 +14,17 @@
       --line:#d7dee8;
       --primary:#2b7fff;
       --primary-soft:#e9f1ff;
-      --good:#2bb5a8;
-      --warn:#f0b24d;
-      --bad:#e26b5b;
+      --success:#2bb5a8;
+      --danger:#e26b5b;
       --shadow:0 10px 30px rgba(16,33,60,.08);
       --radius-xl:28px;
       --radius-lg:22px;
+      --radius-md:16px;
+      --radius-sm:12px;
     }
 
     *{box-sizing:border-box}
+
     body{
       margin:0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -39,166 +40,108 @@
 
     .topbar{
       display:flex;
-      align-items:flex-start;
+      align-items:center;
       justify-content:space-between;
       gap:16px;
       margin-bottom:18px;
     }
 
-    .identity{
-      min-width:0;
-      flex:1;
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      text-decoration:none;
+      color:var(--text);
+      font-weight:700;
+      font-size:15px;
     }
 
-    .name-row{
-      justify-content:space-between;
+    .back-icon{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow:var(--shadow);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
 
+    .back-icon svg{
+      width:18px;
+      height:18px;
+      stroke-width:2.2;
+    }
+
+    .header-card{
+      background:linear-gradient(135deg, #eef5ff 0%, #ffffff 100%);
+      border:1px solid var(--line);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      padding:22px;
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:18px;
+      align-items:center;
+      margin-bottom:18px;
+    }
+
+    .avatar{
+      width:84px;
+      height:84px;
+      border-radius:50%;
+      background:var(--primary-soft);
+      color:var(--primary);
       display:flex;
       align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
+      justify-content:center;
+      font-size:34px;
+      font-weight:800;
+      letter-spacing:-0.03em;
+      border:1px solid #d7e7ff;
     }
 
-    .hello{
-      font-size:15px;
-      color:var(--muted);
-      margin:0 0 4px;
-      font-weight:600;
-      letter-spacing:.02em;
-    }
-
-    h1{
-      margin:0;
-      font-size:clamp(32px, 7vw, 52px);
+    .profile-meta h1{
+      margin:0 0 6px;
+      font-size:32px;
       line-height:1;
       letter-spacing:-0.03em;
     }
 
-    .settings-btn{
-      flex:0 0 auto;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:50px;
-      height:50px;
-      border:1px solid var(--line);
-      border-radius:16px;
-      background:#fff;
-      color:var(--text);
-      box-shadow:var(--shadow);
-      cursor:pointer;
-      transition:.18s ease;
-      text-decoration:none;
+    .profile-meta p{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      font-weight:600;
     }
 
-    .settings-btn:hover{transform:translateY(-1px)}
-    .settings-btn svg{width:21px;height:21px;stroke-width:1.8}
-
-    .period-panel{
-      margin-top:12px;
+    .profile-stats{
+      margin-top:14px;
       display:flex;
       flex-wrap:wrap;
       gap:10px;
-      align-items:center;
     }
 
-    .date-card{
-      flex:1 1 360px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:20px;
-      padding:12px 14px;
-      box-shadow:var(--shadow);
-    }
-
-    .date-left{
-      display:flex;
-      flex-direction:column;
-      gap:3px;
-      min-width:0;
-    }
-
-    .date-label{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
-    .date-value{
-      font-size:18px;
-      font-weight:700;
-      line-height:1.25;
-    }
-
-    .date-hint{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:600;
-      margin-top:2px;
-    }
-
-    .date-controls{
-      display:flex;
+    .pill{
+      display:inline-flex;
       align-items:center;
       gap:8px;
-      flex:0 0 auto;
-    }
-
-    .icon-btn{
-      width:38px;
-      height:38px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:var(--card-2);
-      color:var(--text);
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      cursor:pointer;
-      transition:.16s ease;
-    }
-
-    .icon-btn:hover{background:#fff; transform:translateY(-1px);}
-    .icon-btn svg{width:18px;height:18px;stroke-width:2}
-
-    .mode-switch{
-      display:inline-flex;
-      gap:6px;
-      padding:6px;
-      border:1px solid var(--line);
-      border-radius:18px;
       background:#fff;
-      box-shadow:var(--shadow);
-    }
-
-    .mode-switch button{
-      border:0;
-      background:transparent;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:9px 12px;
       color:var(--muted);
+      font-size:13px;
       font-weight:700;
-      padding:10px 14px;
-      border-radius:12px;
-      cursor:pointer;
-      transition:.16s ease;
     }
 
-    .mode-switch .active{
-      background:var(--primary-soft);
-      color:var(--primary);
-    }
-
-    .overview-grid{
+    .stack{
       display:grid;
       gap:18px;
     }
 
-    .card{
+    .section{
       background:var(--card);
       border:1px solid var(--line);
       border-radius:var(--radius-xl);
@@ -206,670 +149,514 @@
       overflow:hidden;
     }
 
-    .card-pad{padding:22px}
-
-    .hero{
-      display:grid;
-      grid-template-columns:1.1fr .95fr;
-      gap:18px;
-      align-items:center;
-    }
-
-    .eyebrow{
-      margin:0 0 8px;
-      font-size:14px;
-      color:var(--muted);
-      font-weight:700;
-      letter-spacing:.02em;
-    }
-
-    .hero h2{
-      margin:0 0 8px;
-      font-size:24px;
-      letter-spacing:-0.02em;
-    }
-
-    .status{
-      font-size:18px;
-      color:#33435d;
-      margin-bottom:22px;
-    }
-
-    .score-strip{
-      height:14px;
-      border-radius:999px;
-      background:linear-gradient(90deg, var(--good), #8ecfb4, #f3c86b, var(--bad));
-      position:relative;
-      overflow:hidden;
-    }
-
-    .score-marker{
-      position:absolute;
-      top:50%;
-      left:68%;
-      transform:translate(-50%,-50%);
-      width:18px;
-      height:18px;
-      background:#fff;
-      border:3px solid var(--text);
-      border-radius:50%;
-      box-shadow:0 2px 8px rgba(0,0,0,.15);
-    }
-
-    .legend{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      margin-top:10px;
-      color:var(--muted);
-      font-size:13px;
-      font-weight:600;
-    }
-
-    .score-ring-wrap{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-    }
-
-    .score-ring{
-      width:min(240px,100%);
-      aspect-ratio:1/1;
-      border-radius:50%;
-      background:
-        radial-gradient(closest-side, #fff 77%, transparent 78% 100%),
-        conic-gradient(from 220deg, var(--good) 0 24%, #6dc8c0 24% 38%, var(--warn) 38% 70%, var(--bad) 70% 100%);
-      position:relative;
-    }
-
-    .score-ring::after{
-      content:"";
-      position:absolute;
-      inset:18px;
-      border-radius:50%;
-      border:1px solid #eef2f7;
-    }
-
-    .score-center{
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-    }
-
-    .score-number{
-      font-size:72px;
-      line-height:1;
-      letter-spacing:-0.04em;
-      font-weight:800;
-    }
-
-    .hero-link{
-      color:#1d5c9f;
-      text-decoration:none;
-      font-weight:700;
-      font-size:17px;
-    }
-
-    .quick-income{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:14px;
-      margin-top:18px;
-    }
-
-    .quick-stat{
-      background:var(--card-2);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .quick-stat .label{
-      color:var(--muted);
-      font-size:13px;
-      font-weight:700;
-      margin-bottom:6px;
-    }
-
-    .quick-stat .value{
-      font-size:32px;
-      line-height:1.05;
-      font-weight:800;
-      letter-spacing:-0.03em;
-    }
-
-    .quick-stat .sub{
-      margin-top:6px;
-      color:var(--muted);
-      font-size:13px;
-      font-weight:600;
-    }
-
     .section-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
       padding:20px 22px;
       border-bottom:1px solid #edf1f5;
     }
 
     .section-title{
       margin:0;
-      font-size:18px;
+      font-size:20px;
       letter-spacing:-0.02em;
     }
 
     .section-sub{
+      margin-top:5px;
       color:var(--muted);
-      font-size:13px;
-      margin-top:4px;
+      font-size:14px;
       font-weight:600;
     }
 
-    .toggle{
+    .section-body{
+      padding:20px 22px 22px;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:14px;
+    }
+
+    .field{
+      display:grid;
+      gap:8px;
+    }
+
+    .field.full{
+      grid-column:1 / -1;
+    }
+
+    label{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+      letter-spacing:.02em;
+    }
+
+    input, select{
+      width:100%;
       border:1px solid var(--line);
       background:var(--card-2);
+      color:var(--text);
       border-radius:14px;
+      padding:14px 14px;
+      font-size:15px;
+      font-weight:600;
+      outline:none;
+    }
+
+    input:focus, select:focus{
+      border-color:#b8d3ff;
+      background:#fff;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:13px 16px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.16s ease;
+    }
+
+    .btn:hover{transform:translateY(-1px)}
+
+    .btn-primary{
+      background:var(--primary);
+      color:#fff;
+    }
+
+    .btn-secondary{
+      background:var(--primary-soft);
+      color:var(--primary);
+    }
+
+    .btn-ghost{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+
+    .row-list{
+      display:grid;
+    }
+
+    .row-item{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:14px;
+      align-items:center;
+      padding:18px 22px;
+      text-decoration:none;
+      color:inherit;
+      border-bottom:1px solid #edf1f5;
+      background:#fff;
+    }
+
+    .row-item:last-child{
+      border-bottom:0;
+    }
+
+    .row-icon{
       width:42px;
       height:42px;
-      cursor:pointer;
-      display:inline-flex;
+      border-radius:14px;
+      background:var(--primary-soft);
+      color:var(--primary);
+      display:flex;
       align-items:center;
       justify-content:center;
+      border:1px solid #d7e7ff;
     }
 
-    .toggle svg{
-      width:18px;
-      height:18px;
-      transition:.18s ease;
+    .row-icon svg{
+      width:20px;
+      height:20px;
+      stroke-width:2;
     }
 
-    .toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
-    .content{padding:0 22px 22px}
-    .insight-list{display:grid; gap:14px}
-
-    .insight{
-      padding:16px 0;
-      border-bottom:1px solid #edf1f5;
-    }
-
-    .insight:last-child{
-      border-bottom:0;
-      padding-bottom:0;
-    }
-
-    .insight strong{
+    .row-text strong{
       display:block;
       font-size:18px;
-      margin-bottom:6px;
-      letter-spacing:-0.02em;
-    }
-
-    .insight .meta{
-      color:#46556e;
-      font-size:15px;
-      margin-bottom:8px;
-    }
-
-    .insight .action{
-      color:var(--muted);
-      font-size:15px;
-    }
-
-    .upcoming-row{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0,1fr));
-      gap:14px;
-    }
-
-    .mini{
-      background:var(--card-2);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .mini .label{
-      color:var(--muted);
-      font-size:12px;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-bottom:8px;
-    }
-
-    .mini .value{
-      font-size:28px;
-      font-weight:800;
-      line-height:1.05;
-      letter-spacing:-0.03em;
-    }
-
-    .mini .foot{
-      color:var(--muted);
-      font-size:13px;
-      margin-top:8px;
-      font-weight:600;
-    }
-
-    .collapsible[hidden]{display:none}
-
-    .snapshot-grid{
-      display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
-      gap:12px;
-    }
-
-    .snapshot-card{
-      border:1px solid var(--line);
-      background:var(--card-2);
-      border-radius:18px;
-      padding:16px;
-      min-height:116px;
-    }
-
-    .snapshot-card .label{
-      color:var(--muted);
-      font-size:12px;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-bottom:10px;
-    }
-
-    .snapshot-card .value{
-      font-size:22px;
-      font-weight:800;
-      line-height:1.1;
-      letter-spacing:-0.03em;
-    }
-
-    .snapshot-card .note{
-      color:var(--muted);
-      font-size:13px;
-      margin-top:8px;
-      font-weight:600;
-    }
-
-    .activity-list{
-      display:grid;
-      gap:12px;
-    }
-
-    .activity{
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:14px;
-      align-items:start;
-      padding:14px 0;
-      border-bottom:1px solid #edf1f5;
-    }
-
-    .activity:last-child{
-      border-bottom:0;
-      padding-bottom:0;
-    }
-
-    .activity .title{
-      font-size:17px;
-      font-weight:800;
       letter-spacing:-0.02em;
       margin-bottom:4px;
     }
 
-    .activity .desc{
+    .row-text span{
       color:var(--muted);
       font-size:14px;
       font-weight:600;
     }
 
-    .activity .time{
+    .row-chevron{
+      color:#7a8ba4;
+      font-size:26px;
+      line-height:1;
+    }
+
+    .save-bar{
+      position:sticky;
+      bottom:12px;
+      margin-top:18px;
+      background:rgba(255,255,255,.88);
+      backdrop-filter: blur(8px);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      padding:14px 16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+
+    .save-status{
       color:var(--muted);
       font-size:14px;
       font-weight:700;
-      white-space:nowrap;
+    }
+
+    .save-status strong{
+      color:var(--success);
+    }
+
+    .note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:600;
     }
 
     @media (max-width:760px){
       .app{padding:16px 12px 28px}
-      .hero{grid-template-columns:1fr}
-      .quick-income{grid-template-columns:1fr}
-      .upcoming-row{grid-template-columns:1fr}
-      .snapshot-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
-      .date-card{flex-basis:100%}
-      .mode-switch{width:100%; justify-content:space-between}
-      .mode-switch button{flex:1}
-      .settings-btn{width:48px;height:48px}
-      .score-number{font-size:58px}
-      .date-value{font-size:16px}
+      .header-card{
+        grid-template-columns:1fr;
+        text-align:left;
+      }
+      .form-grid{
+        grid-template-columns:1fr;
+      }
+      .save-bar{
+        flex-direction:column;
+        align-items:stretch;
+      }
+      .profile-meta h1{
+        font-size:28px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="app">
     <header class="topbar">
-      <div class="identity">
-        <p class="hello">Good morning</p>
-        <div class="name-row">
-          <h1>Gabriel</h1>
-          <span style="flex:1"></span>
-          <a href="#" class="settings-btn" aria-label="Open settings">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/>
-              <path d="M19.4 15a1.6 1.6 0 0 0 .32 1.76l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.76-.32 1.6 1.6 0 0 0-.97 1.46V21a2 2 0 1 1-4 0v-.09a1.6 1.6 0 0 0-.97-1.46 1.6 1.6 0 0 0-1.76.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.6 1.6 0 0 0 4.6 15a1.6 1.6 0 0 0-1.46-.97H3a2 2 0 1 1 0-4h.14A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.32-1.76l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.6 1.6 0 0 0 8.87 4.1a1.6 1.6 0 0 0 .97-1.46V2.5a2 2 0 1 1 4 0v.14a1.6 1.6 0 0 0 .97 1.46 1.6 1.6 0 0 0 1.76-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.6 1.6 0 0 0 19.4 9c.65.24 1.1.87 1.1 1.57V10a2 2 0 1 1 0 4v.14c0 .7-.45 1.33-1.1 1.57Z"/>
-            </svg>
-          </a>
-        </div>
-
-        <div class="period-panel">
-          <div class="date-card" aria-label="Date selector">
-            <div class="date-left">
-              <span class="date-label" id="period-mode-label">Selected Month</span>
-              <span class="date-value" id="period-label">April 2026</span>
-              <span class="date-hint" id="period-hint">Biweekly is anchored to Apr 10, 2026.</span>
-            </div>
-            <div class="date-controls">
-              <button class="icon-btn" id="prev-period" aria-label="Previous period">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="m15 18-6-6 6-6"/>
-                </svg>
-              </button>
-              <button class="icon-btn" id="next-period" aria-label="Next period">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="m9 18 6-6-6-6"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="mode-switch" role="tablist" aria-label="View mode">
-            <button class="active" role="tab" aria-selected="true" data-mode="monthly">Monthly</button>
-            <button role="tab" aria-selected="false" data-mode="biweekly">Biweekly</button>
-            <button role="tab" aria-selected="false" data-mode="both">Both</button>
-          </div>
-        </div>
-      </div>
+      <a href="dashboard_overview_v8.html" class="back-link">
+        <span class="back-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+        </span>
+        Back to Overview
+      </a>
     </header>
 
-    <main class="overview-grid">
-      <section class="card">
-        <div class="card-pad hero">
-          <div>
-            <p class="eyebrow">Overview</p>
-            <h2>Financial Health Score</h2>
-            <div class="status">Needs Improvement</div>
+    <section class="header-card">
+      <div class="avatar" id="avatar-initials">GL</div>
+      <div class="profile-meta">
+        <h1 id="display-name">Gabriel Lopez</h1>
+        <p id="display-email">gabriel.lopez1311@yahoo.com</p>
+        <div class="profile-stats">
+          <span class="pill">Profile Mode: Individual</span>
+          <span class="pill">Local Storage Ready</span>
+          <span class="pill">Manual Data Entry</span>
+        </div>
+      </div>
+    </section>
 
-            <div class="score-strip" aria-hidden="true">
-              <div class="score-marker"></div>
+    <main class="stack">
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Personal Information</h2>
+          <div class="section-sub">Update the details tied to your account and profile header.</div>
+        </div>
+        <div class="section-body">
+          <form id="profile-form" class="form-grid">
+            <div class="field">
+              <label for="firstName">First name</label>
+              <input id="firstName" name="firstName" type="text" value="Gabriel" />
             </div>
-            <div class="legend">
-              <span>Good</span>
-              <span>Fair</span>
-              <span>Needs Improvement</span>
+            <div class="field">
+              <label for="lastName">Last name</label>
+              <input id="lastName" name="lastName" type="text" value="Lopez" />
             </div>
-
-            <div class="quick-income">
-              <div class="quick-stat">
-                <div class="label">Total Monthly Income</div>
-                <div class="value">$6,800</div>
-                <div class="sub">After recurring paycheck inputs</div>
-              </div>
-              <div class="quick-stat">
-                <div class="label">Available to Spend</div>
-                <div class="value">$1,240</div>
-                <div class="sub">After bills, goals, and planned spending</div>
-              </div>
+            <div class="field full">
+              <label for="email">Email address</label>
+              <input id="email" name="email" type="email" value="gabriel.lopez1311@yahoo.com" />
             </div>
+            <div class="field">
+              <label for="profileMode">Profile mode</label>
+              <select id="profileMode" name="profileMode">
+                <option selected>Individual</option>
+                <option>Couple</option>
+                <option>Military / Veteran</option>
+                <option>Government Employee</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="entryPreference">Data style</label>
+              <select id="entryPreference" name="entryPreference">
+                <option selected>Manual Entry</option>
+                <option>Manual + Import</option>
+                <option>Connected Accounts</option>
+              </select>
+            </div>
+          </form>
+          <div class="actions">
+            <button class="btn btn-primary" id="save-profile" type="button">Save Profile</button>
+            <button class="btn btn-secondary" id="reset-profile" type="button">Reset</button>
           </div>
-
-          <div class="score-ring-wrap">
-            <div class="score-ring">
-              <div class="score-center">
-                <div class="score-number">68</div>
-              </div>
-            </div>
-            <a href="#" class="hero-link">See how to improve →</a>
-          </div>
+          <div class="note">This page is a good place to store <code>user.profile</code> in localStorage.</div>
         </div>
       </section>
 
-      <section class="card">
+      <section class="section">
         <div class="section-head">
-          <div>
-            <h3 class="section-title">Actionable Insights</h3>
-            <div class="section-sub">Top 2 insights only for the Overview tab</div>
-          </div>
+          <h2 class="section-title">Security</h2>
+          <div class="section-sub">Keep password and account-access tools separate from money setup.</div>
         </div>
-        <div class="content">
-          <div class="insight-list">
-            <article class="insight">
-              <strong>You are saving $6,800 (10% of income)</strong>
-              <div class="meta">Benchmark: 15%</div>
-              <div class="action">Increase by $300/month to match peers in Colorado, age 35–44.</div>
-            </article>
-            <article class="insight">
-              <strong>You have 1.5 months of emergency fund</strong>
-              <div class="meta">Goal: 3–6 months · Benchmark: 4.0 months</div>
-              <div class="action">Add to your emergency fund to improve security and your health score.</div>
-            </article>
-          </div>
+        <div class="row-list">
+          <a href="#" class="row-item">
+            <div class="row-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M6 10V8a6 6 0 1 1 12 0v2"/>
+                <rect x="4" y="10" width="16" height="10" rx="2"/>
+                <path d="M12 14v2"/>
+              </svg>
+            </div>
+            <div class="row-text">
+              <strong>Change Password</strong>
+              <span>Build this next when you wire up auth and account security.</span>
+            </div>
+            <div class="row-chevron">›</div>
+          </a>
+          <a href="#" class="row-item">
+            <div class="row-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+              </svg>
+            </div>
+            <div class="row-text">
+              <strong>Two-Factor Authentication</strong>
+              <span>Optional later if you want stronger account protection.</span>
+            </div>
+            <div class="row-chevron">›</div>
+          </a>
         </div>
       </section>
 
-      <section class="card">
+      <section class="section">
         <div class="section-head">
-          <div>
-            <h3 class="section-title">Upcoming Impact</h3>
-            <div class="section-sub">What is about to hit your money next</div>
-          </div>
+          <h2 class="section-title">Preferences</h2>
+          <div class="section-sub">Notifications and display preferences belong here. Budget rules do not.</div>
         </div>
-        <div class="content">
-          <div class="upcoming-row">
-            <div class="mini">
-              <div class="label">Bills in Next 14 Days</div>
-              <div class="value">$1,200</div>
-              <div class="foot">Mortgage, utilities, insurance</div>
+        <div class="row-list">
+          <a href="#" class="row-item">
+            <div class="row-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"/>
+                <path d="M10 17a2 2 0 0 0 4 0"/>
+              </svg>
             </div>
-            <div class="mini">
-              <div class="label">Expected Balance</div>
-              <div class="value">$900</div>
-              <div class="foot">After scheduled outflows</div>
+            <div class="row-text">
+              <strong>Notifications</strong>
+              <span>Bill reminders, insight alerts, and goal updates.</span>
             </div>
-            <div class="mini">
-              <div class="label">Next Paycheck</div>
-              <div class="value">Apr 26, 2026</div>
-              <div class="foot">Estimated deposit: $2,400</div>
+            <div class="row-chevron">›</div>
+          </a>
+          <a href="#" class="row-item">
+            <div class="row-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M3 6h18"/>
+                <path d="M7 12h10"/>
+                <path d="M10 18h4"/>
+              </svg>
             </div>
-          </div>
+            <div class="row-text">
+              <strong>Dashboard Display</strong>
+              <span>Choose what appears on Overview and what stays collapsed.</span>
+            </div>
+            <div class="row-chevron">›</div>
+          </a>
         </div>
       </section>
 
-      <section class="card">
+      <section class="section">
         <div class="section-head">
-          <div>
-            <h3 class="section-title">Money Snapshot</h3>
-            <div class="section-sub">Expandable daily metrics</div>
-          </div>
-          <button class="toggle" aria-expanded="false" aria-controls="snapshot-content">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="m6 9 6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
+          <h2 class="section-title">Privacy & Data</h2>
+          <div class="section-sub">Control how your data is stored and exported.</div>
         </div>
-        <div class="content collapsible" id="snapshot-content" hidden>
-          <div class="snapshot-grid">
-            <div class="snapshot-card">
-              <div class="label">Budget Left</div>
-              <div class="value">-$215</div>
-              <div class="note">Dining is over target</div>
+        <div class="row-list">
+          <a href="#" class="row-item">
+            <div class="row-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M4 7h16"/>
+                <path d="M4 12h16"/>
+                <path d="M4 17h10"/>
+              </svg>
             </div>
-            <div class="snapshot-card">
-              <div class="label">Savings</div>
-              <div class="value">$6,800</div>
-              <div class="note">Cash reserves</div>
+            <div class="row-text">
+              <strong>Storage Mode</strong>
+              <span>Manual entry, local-first, and optional connected-account paths.</span>
             </div>
-            <div class="snapshot-card">
-              <div class="label">Emergency Fund</div>
-              <div class="value">1.5 months</div>
-              <div class="note">Below target range</div>
+            <div class="row-chevron">›</div>
+          </a>
+          <a href="#" class="row-item">
+            <div class="row-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M12 3v12"/>
+                <path d="m7 10 5 5 5-5"/>
+                <path d="M5 21h14"/>
+              </svg>
             </div>
-            <div class="snapshot-card">
-              <div class="label">Net Worth</div>
-              <div class="value">$2,155</div>
-              <div class="note">Assets minus debt</div>
+            <div class="row-text">
+              <strong>Export Data</strong>
+              <span>CSV, spreadsheet, and future backup/export tools.</span>
             </div>
-          </div>
+            <div class="row-chevron">›</div>
+          </a>
         </div>
       </section>
 
-      <section class="card">
+      <section class="section">
         <div class="section-head">
-          <div>
-            <h3 class="section-title">Recent Activity</h3>
-            <div class="section-sub">Short event feed for the Overview tab</div>
-          </div>
-          <button class="toggle" aria-expanded="false" aria-controls="activity-content">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="m6 9 6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
+          <h2 class="section-title">About</h2>
+          <div class="section-sub">Simple support and app details.</div>
         </div>
-        <div class="content collapsible" id="activity-content" hidden>
-          <div class="activity-list">
-            <div class="activity">
-              <div>
-                <div class="title">You are saving below your peers</div>
-                <div class="desc">Save $300/month more to reach average.</div>
-              </div>
-              <div class="time">Today, 11:45 AM</div>
+        <div class="row-list">
+          <a href="#" class="row-item">
+            <div class="row-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+              </svg>
             </div>
-            <div class="activity">
-              <div>
-                <div class="title">Monthly savings target is behind</div>
-                <div class="desc">Increase savings to reach your $1,000 goal.</div>
-              </div>
-              <div class="time">Today, 09:15 AM</div>
+            <div class="row-text">
+              <strong>About This App</strong>
+              <span>Mission, version, and support details.</span>
             </div>
-          </div>
+            <div class="row-chevron">›</div>
+          </a>
         </div>
       </section>
     </main>
+
+    <div class="save-bar">
+      <div class="save-status" id="save-status">Changes saved to <strong>localStorage</strong> ready profile object.</div>
+      <div class="actions" style="margin-top:0">
+        <button class="btn btn-ghost" id="clear-storage" type="button">Clear Saved Profile</button>
+      </div>
+    </div>
   </div>
 
   <script>
-    document.querySelectorAll('.toggle').forEach((button) => {
-      button.addEventListener('click', () => {
-        const id = button.getAttribute('aria-controls');
-        const panel = document.getElementById(id);
-        const expanded = button.getAttribute('aria-expanded') === 'true';
-        button.setAttribute('aria-expanded', String(!expanded));
-        panel.hidden = expanded;
-      });
-    });
+    const STORAGE_KEY = 'budgetAppUser';
 
-    const modeButtons = document.querySelectorAll('.mode-switch button');
-    const periodLabel = document.getElementById('period-label');
-    const periodModeLabel = document.getElementById('period-mode-label');
-    const periodHint = document.getElementById('period-hint');
-    const prevBtn = document.getElementById('prev-period');
-    const nextBtn = document.getElementById('next-period');
+    const defaultUser = {
+      profile: {
+        firstName: 'Gabriel',
+        lastName: 'Lopez',
+        email: 'gabriel.lopez1311@yahoo.com',
+        profileMode: 'Individual',
+        entryPreference: 'Manual Entry'
+      },
+      preferences: {},
+      security: {}
+    };
 
-    let currentMode = 'monthly';
-    let currentDate = new Date(2026, 3, 1);
-
-    // Change this one date later to match the user's real paycheck anchor.
-    const biweeklyAnchor = new Date(2026, 3, 10);
-
-    function startOfDay(date) {
-      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    }
-
-    function addDays(date, days) {
-      const copy = new Date(date);
-      copy.setDate(copy.getDate() + days);
-      return copy;
-    }
-
-    function formatMonth(date) {
-      return date.toLocaleDateString('en-US', {
-        month: 'long',
-        year: 'numeric'
-      });
-    }
-
-    function formatShort(date) {
-      return date.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    }
-
-    function daysBetween(a, b) {
-      const ms = startOfDay(a) - startOfDay(b);
-      return Math.floor(ms / 86400000);
-    }
-
-    function getAnchoredBiweeklyRange(date) {
-      const diff = daysBetween(date, biweeklyAnchor);
-      const cycleIndex = Math.floor(diff / 14);
-      const start = addDays(biweeklyAnchor, cycleIndex * 14);
-      const end = addDays(start, 13);
-      return { start, end };
-    }
-
-    function shiftPeriod(direction) {
-      if (currentMode === 'monthly') {
-        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + direction, 1);
-      } else if (currentMode === 'biweekly') {
-        currentDate = addDays(currentDate, 14 * direction);
-      } else {
-        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + direction, 1);
-      }
-      renderPeriod();
-    }
-
-    function renderPeriod() {
-      if (currentMode === 'monthly') {
-        periodModeLabel.textContent = 'Selected Month';
-        periodLabel.textContent = formatMonth(currentDate);
-        periodHint.textContent = 'Switch to Biweekly for paycheck-based periods.';
-      } else if (currentMode === 'biweekly') {
-        periodModeLabel.textContent = 'Selected Pay Period';
-        const range = getAnchoredBiweeklyRange(currentDate);
-        periodLabel.textContent = formatShort(range.start) + ' – ' + formatShort(range.end);
-        periodHint.textContent = 'Biweekly cycle anchored to ' + formatShort(biweeklyAnchor) + '.';
-      } else {
-        periodModeLabel.textContent = 'Selected View';
-        const range = getAnchoredBiweeklyRange(currentDate);
-        periodLabel.textContent = formatMonth(currentDate) + ' · ' + formatShort(range.start) + ' – ' + formatShort(range.end);
-        periodHint.textContent = 'Shows month plus the active anchored pay period.';
+    function getStoredUser() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : defaultUser;
+      } catch (error) {
+        return defaultUser;
       }
     }
 
-    modeButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        modeButtons.forEach((b) => {
-          b.classList.remove('active');
-          b.setAttribute('aria-selected', 'false');
-        });
-        button.classList.add('active');
-        button.setAttribute('aria-selected', 'true');
-        currentMode = button.dataset.mode;
-        renderPeriod();
-      });
+    function saveStoredUser(user) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(user, null, 2));
+    }
+
+    function getInitials(firstName, lastName) {
+      return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase();
+    }
+
+    const fields = {
+      firstName: document.getElementById('firstName'),
+      lastName: document.getElementById('lastName'),
+      email: document.getElementById('email'),
+      profileMode: document.getElementById('profileMode'),
+      entryPreference: document.getElementById('entryPreference')
+    };
+
+    const displayName = document.getElementById('display-name');
+    const displayEmail = document.getElementById('display-email');
+    const avatarInitials = document.getElementById('avatar-initials');
+    const saveStatus = document.getElementById('save-status');
+
+    function renderProfile(user) {
+      const profile = user.profile;
+      fields.firstName.value = profile.firstName || '';
+      fields.lastName.value = profile.lastName || '';
+      fields.email.value = profile.email || '';
+      fields.profileMode.value = profile.profileMode || 'Individual';
+      fields.entryPreference.value = profile.entryPreference || 'Manual Entry';
+
+      displayName.textContent = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || 'User';
+      displayEmail.textContent = profile.email || 'No email set';
+      avatarInitials.textContent = getInitials(profile.firstName, profile.lastName) || 'U';
+    }
+
+    function collectProfile() {
+      return {
+        profile: {
+          firstName: fields.firstName.value.trim(),
+          lastName: fields.lastName.value.trim(),
+          email: fields.email.value.trim(),
+          profileMode: fields.profileMode.value,
+          entryPreference: fields.entryPreference.value
+        },
+        preferences: {},
+        security: {}
+      };
+    }
+
+    document.getElementById('save-profile').addEventListener('click', () => {
+      const user = collectProfile();
+      saveStoredUser(user);
+      renderProfile(user);
+      saveStatus.innerHTML = 'Profile saved to <strong>localStorage</strong>.';
     });
 
-    prevBtn.addEventListener('click', () => shiftPeriod(-1));
-    nextBtn.addEventListener('click', () => shiftPeriod(1));
+    document.getElementById('reset-profile').addEventListener('click', () => {
+      renderProfile(getStoredUser());
+      saveStatus.innerHTML = 'Form reset to the last saved <strong>localStorage</strong> profile.';
+    });
 
-    renderPeriod();
+    document.getElementById('clear-storage').addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      renderProfile(defaultUser);
+      saveStatus.innerHTML = 'Saved profile cleared. Showing <strong>default values</strong>.';
+    });
+
+    renderProfile(getStoredUser());
   </script>
 </body>
 </html>
