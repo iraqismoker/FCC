@@ -3,70 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Budget App Dashboard</title>
+  <title>Budget OS - Overview</title>
   <style>
     :root {
-      --bg: #f5f7fb;
-      --panel: #ffffff;
-      --panel-2: #f8fafc;
-      --text: #162033;
+      --bg: #f6f8fb;
+      --surface: #ffffff;
+      --surface-soft: #f9fbfd;
+      --text: #172033;
       --muted: #667085;
-      --line: #e5e7eb;
-      --primary: #0f9d8a;
-      --primary-soft: #e7f8f5;
-      --warning: #f59e0b;
-      --warning-soft: #fff7e8;
-      --danger: #ef4444;
+      --line: #e6eaf0;
+      --primary: #14937f;
+      --primary-soft: #e9f8f4;
+      --warning: #d97706;
+      --warning-soft: #fff5e8;
+      --danger: #dc2626;
       --danger-soft: #fff1f2;
-      --shadow: 0 10px 30px rgba(17, 24, 39, 0.07);
-      --radius-lg: 22px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
-      --max: 1280px;
+      --shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+      --radius-xl: 22px;
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --max-width: 1180px;
     }
 
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; }
     body {
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, #f7fafc 0%, var(--bg) 100%);
+      background: linear-gradient(180deg, #fbfcfe 0%, var(--bg) 100%);
       color: var(--text);
     }
 
-    button, input, select {
+    button, input, select, summary {
       font: inherit;
     }
 
     .app-shell {
       min-height: 100vh;
       display: grid;
-      grid-template-columns: 280px 1fr;
+      grid-template-columns: 264px 1fr;
     }
 
     .sidebar {
-      background: #fbfcfe;
-      border-right: 1px solid var(--line);
-      padding: 24px 18px;
       position: sticky;
       top: 0;
       height: 100vh;
+      padding: 24px 18px;
+      background: #fbfcfe;
+      border-right: 1px solid var(--line);
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 10px 24px;
+      padding: 6px 10px 22px;
     }
 
     .brand-badge {
       width: 42px;
       height: 42px;
       border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary) 0%, #49c6b6 100%);
       display: grid;
       place-items: center;
-      color: white;
+      background: linear-gradient(135deg, var(--primary) 0%, #47bfad 100%);
+      color: #fff;
       font-weight: 800;
       box-shadow: var(--shadow);
     }
@@ -77,43 +77,46 @@
       letter-spacing: -0.02em;
     }
 
-    .brand-subtitle {
+    .brand-subtitle,
+    .nav-label,
+    .muted {
       color: var(--muted);
-      font-size: 0.86rem;
+    }
+
+    .brand-subtitle {
+      font-size: 0.88rem;
       margin-top: 2px;
+    }
+
+    .nav-label {
+      margin: 16px 10px 6px;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
     }
 
     .nav-group {
       display: grid;
       gap: 8px;
-      margin-top: 8px;
-    }
-
-    .nav-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      margin: 16px 10px 4px;
-      font-weight: 700;
     }
 
     .nav-link {
       display: flex;
       align-items: center;
       gap: 12px;
-      text-decoration: none;
-      color: var(--text);
       padding: 12px 14px;
       border-radius: 14px;
-      transition: 0.18s ease;
       border: 1px solid transparent;
+      color: var(--text);
+      text-decoration: none;
+      transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     }
 
     .nav-link:hover,
     .nav-link.active {
-      background: white;
-      border-color: #e9eef5;
+      background: #fff;
+      border-color: var(--line);
       box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
     }
 
@@ -125,199 +128,216 @@
       border-radius: 10px;
       background: var(--primary-soft);
       color: var(--primary);
-      font-size: 1rem;
       font-weight: 800;
-    }
-
-    .sidebar-footer {
-      position: absolute;
-      left: 18px;
-      right: 18px;
-      bottom: 20px;
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 14px;
-      box-shadow: var(--shadow);
     }
 
     .main {
       padding: 26px;
     }
 
-    .topbar {
-      max-width: var(--max);
-      margin: 0 auto 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .welcome h1 {
-      margin: 0;
-      font-size: clamp(1.5rem, 2vw, 2rem);
-      letter-spacing: -0.03em;
-    }
-
-    .welcome p {
-      margin: 6px 0 0;
-      color: var(--muted);
-    }
-
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .toolbar-chip,
-    .toolbar-btn {
-      border: 1px solid var(--line);
-      background: white;
-      border-radius: 999px;
-      padding: 10px 14px;
-      color: var(--text);
-      cursor: pointer;
-    }
-
-    .toolbar-btn.primary {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: white;
-      font-weight: 700;
-    }
-
-    .dashboard {
-      max-width: var(--max);
+    .page {
+      max-width: var(--max-width);
       margin: 0 auto;
       display: grid;
       gap: 18px;
     }
 
-    .hero {
-      background: linear-gradient(135deg, #ffffff 0%, #f6fffd 100%);
-      border: 1px solid #dff3ef;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      padding: 24px;
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 20px;
-      align-items: stretch;
-    }
-
-    .hero-left {
+    .topbar {
       display: flex;
-      flex-direction: column;
-      gap: 18px;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
     }
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--primary-soft);
-      color: var(--primary);
-      border-radius: 999px;
-      padding: 7px 12px;
-      font-size: 0.86rem;
-      font-weight: 700;
-      width: fit-content;
-    }
-
-    .hero-title {
+    .welcome h1 {
       margin: 0;
-      font-size: clamp(1.5rem, 2vw, 2.1rem);
+      font-size: clamp(1.65rem, 2.2vw, 2.15rem);
       letter-spacing: -0.04em;
-      line-height: 1.05;
     }
 
-    .hero-copy {
+    .welcome p {
+      margin: 6px 0 0;
       color: var(--muted);
       max-width: 60ch;
-      margin-top: -4px;
     }
 
-    .hero-stats {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .mini-stat {
-      background: white;
-      border: 1px solid #e7f1ef;
-      border-radius: var(--radius-md);
-      padding: 14px;
-    }
-
-    .mini-stat-label {
-      color: var(--muted);
-      font-size: 0.85rem;
-      margin-bottom: 6px;
-    }
-
-    .mini-stat-value {
-      font-size: 1.2rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-    }
-
-    .hero-actions {
+    .topbar-actions {
       display: flex;
-      gap: 12px;
+      align-items: center;
+      gap: 10px;
       flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
+    .chip,
+    .icon-btn,
     .btn {
       border: 1px solid var(--line);
-      background: white;
+      background: #fff;
       color: var(--text);
-      border-radius: 14px;
-      padding: 12px 16px;
+      border-radius: 999px;
+      padding: 10px 14px;
       cursor: pointer;
+    }
+
+    .chip.active {
+      background: var(--primary-soft);
+      border-color: #cfeee7;
+      color: var(--primary);
       font-weight: 700;
     }
 
     .btn.primary {
       background: var(--primary);
       border-color: var(--primary);
-      color: white;
+      color: #fff;
+      font-weight: 700;
     }
 
-    .hero-right {
-      background: white;
-      border-radius: 20px;
-      border: 1px solid #e7f1ef;
-      padding: 18px;
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      padding: 0;
       display: grid;
-      gap: 16px;
-      align-content: start;
+      place-items: center;
+      border-radius: 14px;
+      font-size: 1.1rem;
     }
 
-    .score-header {
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 18px 20px 0;
       display: flex;
       justify-content: space-between;
       gap: 12px;
       align-items: flex-start;
     }
 
+    .card-body {
+      padding: 18px 20px 20px;
+    }
+
     .section-label {
-      font-size: 0.8rem;
+      margin: 0 0 6px;
       color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+      font-size: 0.78rem;
       font-weight: 800;
-      margin-bottom: 6px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 1.12rem;
+      letter-spacing: -0.02em;
+    }
+
+    .card-copy {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .text-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      padding: 20px;
+      background: linear-gradient(135deg, #ffffff 0%, #f5fffd 100%);
+      border: 1px solid #dcefe9;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-left {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: clamp(1.45rem, 2vw, 2rem);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-copy {
+      margin: 0;
+      color: var(--muted);
+      max-width: 58ch;
+    }
+
+    .quick-number {
+      display: grid;
+      gap: 8px;
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: #fff;
+      border: 1px solid #dcefe9;
+      width: min(320px, 100%);
+    }
+
+    .quick-number .value {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .score-panel {
+      display: grid;
+      gap: 16px;
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid #dcefe9;
+      padding: 18px;
+    }
+
+    .score-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
     }
 
     .score-layout {
       display: flex;
-      align-items: center;
       gap: 18px;
+      align-items: center;
       flex-wrap: wrap;
     }
 
@@ -328,7 +348,7 @@
       width: var(--size);
       height: var(--size);
       border-radius: 50%;
-      background: conic-gradient(var(--primary) calc(var(--progress) * 1%), #eaf2f2 0);
+      background: conic-gradient(var(--primary) calc(var(--progress) * 1%), #e9f0f3 0);
       display: grid;
       place-items: center;
       position: relative;
@@ -339,7 +359,7 @@
       content: "";
       position: absolute;
       inset: var(--thickness);
-      background: white;
+      background: #fff;
       border-radius: inherit;
     }
 
@@ -364,7 +384,7 @@
 
     .score-meta h3 {
       margin: 0 0 6px;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
     }
 
     .score-meta p {
@@ -374,21 +394,21 @@
 
     .score-tags {
       display: flex;
-      flex-wrap: wrap;
       gap: 8px;
+      flex-wrap: wrap;
       margin-top: 10px;
     }
 
     .tag {
-      border-radius: 999px;
       padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
       font-size: 0.82rem;
       font-weight: 700;
-      background: var(--panel-2);
-      border: 1px solid var(--line);
     }
 
-    .score-breakdown {
+    .meter-list {
       display: grid;
       gap: 10px;
     }
@@ -401,21 +421,21 @@
     .meter-top {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       font-size: 0.92rem;
     }
 
     .meter-bar {
       height: 10px;
-      background: #eef2f6;
       border-radius: 999px;
+      background: #edf2f6;
       overflow: hidden;
     }
 
     .meter-fill {
       height: 100%;
       border-radius: inherit;
-      background: linear-gradient(90deg, var(--primary) 0%, #64d6c6 100%);
+      background: linear-gradient(90deg, var(--primary) 0%, #5fd0c0 100%);
     }
 
     .grid-two {
@@ -424,46 +444,8 @@
       gap: 18px;
     }
 
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .card-header {
-      padding: 18px 20px 0;
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: start;
-    }
-
-    .card-body {
-      padding: 18px 20px 20px;
-    }
-
-    .card-title {
-      margin: 0;
-      font-size: 1.1rem;
-      letter-spacing: -0.02em;
-    }
-
-    .card-copy {
-      color: var(--muted);
-      margin: 6px 0 0;
-      font-size: 0.95rem;
-    }
-
-    .text-link {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .insight-list {
+    .insight-list,
+    .activity-list {
       display: grid;
       gap: 12px;
     }
@@ -472,36 +454,30 @@
       display: grid;
       grid-template-columns: auto 1fr auto;
       gap: 12px;
-      padding: 14px;
-      border-radius: 16px;
-      border: 1px solid var(--line);
-      background: #fcfefe;
       align-items: start;
+      padding: 14px;
+      background: #fcfefe;
+      border: 1px solid var(--line);
+      border-radius: 16px;
     }
 
     .insight-icon {
       width: 42px;
       height: 42px;
+      border-radius: 12px;
       display: grid;
       place-items: center;
-      border-radius: 12px;
       font-weight: 800;
-      flex-shrink: 0;
     }
 
-    .insight-item.warning .insight-icon {
+    .warning .insight-icon {
       background: var(--warning-soft);
       color: var(--warning);
     }
 
-    .insight-item.danger .insight-icon {
+    .danger .insight-icon {
       background: var(--danger-soft);
       color: var(--danger);
-    }
-
-    .insight-item.success .insight-icon {
-      background: var(--primary-soft);
-      color: var(--primary);
     }
 
     .insight-title {
@@ -516,70 +492,28 @@
       line-height: 1.45;
     }
 
-    .insight-action {
-      background: white;
+    .action-btn {
       border: 1px solid var(--line);
-      color: var(--text);
+      background: #fff;
       border-radius: 12px;
       padding: 10px 12px;
-      cursor: pointer;
       font-weight: 700;
-    }
-
-    .snapshot-grid {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .snapshot-card {
-      background: linear-gradient(180deg, white 0%, #fbfcfe 100%);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 16px;
-      min-height: 122px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .snapshot-card.primary {
-      border-color: #cceee7;
-      background: linear-gradient(180deg, #ffffff 0%, #f3fffc 100%);
-    }
-
-    .snapshot-label {
-      color: var(--muted);
-      font-size: 0.84rem;
-      margin-bottom: 8px;
-    }
-
-    .snapshot-value {
-      font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin: 0;
-    }
-
-    .snapshot-note {
-      color: var(--muted);
-      font-size: 0.82rem;
-      margin-top: 8px;
+      cursor: pointer;
     }
 
     .upcoming-strip {
       display: grid;
       grid-template-columns: 1.1fr 0.9fr 0.9fr auto;
-      gap: 14px;
+      gap: 12px;
       align-items: center;
       padding: 18px 20px;
     }
 
     .impact-box {
       padding: 12px 14px;
-      background: var(--panel-2);
-      border: 1px solid var(--line);
       border-radius: 16px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
     }
 
     .impact-label {
@@ -589,13 +523,98 @@
     }
 
     .impact-value {
-      font-weight: 800;
       font-size: 1.08rem;
+      font-weight: 800;
     }
 
-    .activity-list {
-      display: grid;
+    details.collapsible {
+      overflow: hidden;
+    }
+
+    details.collapsible > summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
       gap: 12px;
+      align-items: center;
+      padding: 18px 20px;
+    }
+
+    details.collapsible > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .summary-meta {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .summary-copy {
+      color: var(--muted);
+      font-size: 0.93rem;
+      margin-top: 4px;
+    }
+
+    .summary-toggle {
+      color: var(--primary);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    details[open] .summary-toggle::after {
+      content: "Hide";
+    }
+
+    details:not([open]) .summary-toggle::after {
+      content: "Show";
+    }
+
+    .details-body {
+      padding: 0 20px 20px;
+    }
+
+    .snapshot-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .snapshot-card {
+      min-height: 120px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .snapshot-card.primary {
+      border-color: #cdeee7;
+      background: linear-gradient(180deg, #ffffff 0%, #f2fffb 100%);
+    }
+
+    .snapshot-label {
+      color: var(--muted);
+      font-size: 0.84rem;
+      margin-bottom: 8px;
+    }
+
+    .snapshot-value {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .snapshot-note {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 8px;
     }
 
     .activity-item {
@@ -617,15 +636,22 @@
       height: 12px;
       border-radius: 50%;
       background: var(--primary);
-      box-shadow: 0 0 0 4px rgba(15, 157, 138, 0.12);
+      box-shadow: 0 0 0 4px rgba(20, 147, 127, 0.12);
     }
 
-    .activity-dot.warning { background: var(--warning); box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12); }
-    .activity-dot.danger { background: var(--danger); box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12); }
+    .activity-dot.warning {
+      background: var(--warning);
+      box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.12);
+    }
+
+    .activity-dot.danger {
+      background: var(--danger);
+      box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.12);
+    }
 
     .activity-main {
-      font-weight: 700;
       margin: 0;
+      font-weight: 700;
     }
 
     .activity-sub {
@@ -640,39 +666,50 @@
       white-space: nowrap;
     }
 
-    .profile-panel {
-      display: grid;
-      gap: 12px;
-    }
-
-    .toggle-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .toggle-pill {
+    .settings-panel {
+      display: none;
+      margin-top: 10px;
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: #fff;
       border: 1px solid var(--line);
-      background: white;
+      box-shadow: var(--shadow);
+    }
+
+    .settings-panel:target {
+      display: grid;
+      gap: 14px;
+    }
+
+    .settings-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill {
       padding: 10px 12px;
       border-radius: 999px;
-      cursor: pointer;
+      border: 1px solid var(--line);
+      background: #fff;
       font-weight: 700;
     }
 
-    .toggle-pill.active {
+    .pill.active {
       background: var(--primary-soft);
-      border-color: #caefe8;
+      border-color: #cfeee7;
       color: var(--primary);
     }
 
-    .footer-note {
-      color: var(--muted);
-      font-size: 0.84rem;
-      line-height: 1.45;
+    .settings-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
     }
 
-    @media (max-width: 1180px) {
+    @media (max-width: 1160px) {
       .hero,
       .grid-two {
         grid-template-columns: 1fr;
@@ -700,7 +737,15 @@
         padding: 18px;
       }
 
-      .hero-stats,
+      .topbar {
+        flex-direction: column;
+      }
+
+      .topbar-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
       .snapshot-grid,
       .upcoming-strip {
         grid-template-columns: 1fr 1fr;
@@ -710,36 +755,27 @@
     @media (max-width: 640px) {
       .hero,
       .card,
-      .hero-right {
+      .score-panel {
         border-radius: 18px;
       }
 
-      .hero-stats,
       .snapshot-grid,
       .upcoming-strip,
       .grid-two {
         grid-template-columns: 1fr;
       }
 
-      .score-layout,
-      .topbar,
-      .toolbar,
-      .hero-actions,
-      .score-header,
-      .card-header,
       .insight-item,
       .activity-item {
-        grid-template-columns: none;
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .insight-item {
         grid-template-columns: auto 1fr;
       }
 
-      .insight-action {
+      .action-btn {
         grid-column: 1 / -1;
+      }
+
+      .activity-time {
+        grid-column: 2;
       }
     }
   </style>
@@ -757,10 +793,10 @@
 
       <div class="nav-label">Main</div>
       <nav class="nav-group">
-        <a class="nav-link active" href="#"><span class="nav-icon">⌂</span><span>Dashboard</span></a>
+        <a class="nav-link active" href="#"><span class="nav-icon">⌂</span><span>Overview</span></a>
         <a class="nav-link" href="#"><span class="nav-icon">↔</span><span>Transactions</span></a>
         <a class="nav-link" href="#"><span class="nav-icon">◎</span><span>Budget</span></a>
-        <a class="nav-link" href="#"><span class="nav-icon">◔</span><span>Bills & Recurring</span></a>
+        <a class="nav-link" href="#"><span class="nav-icon">◔</span><span>Bills &amp; Recurring</span></a>
         <a class="nav-link" href="#"><span class="nav-icon">★</span><span>Goals</span></a>
       </nav>
 
@@ -770,67 +806,90 @@
         <a class="nav-link" href="#"><span class="nav-icon">⚑</span><span>Insights</span></a>
         <a class="nav-link" href="#"><span class="nav-icon">↗</span><span>Forecast</span></a>
       </nav>
-
-      <div class="sidebar-footer">
-        <div class="section-label">Profile mode</div>
-        <strong>Military / Gov / Civilian ready</strong>
-        <p class="footer-note">Use onboarding later to switch income logic, allowances, TSP, reimbursements, and profile-specific insights.</p>
-      </div>
     </aside>
 
     <main class="main">
-      <div class="topbar">
-        <div class="welcome">
-          <h1>Good afternoon, Gabriel</h1>
-          <p>Here’s your financial command center. Clean, editable, and ready to grow tab by tab.</p>
-        </div>
+      <div class="page">
+        <header class="topbar">
+          <div class="welcome">
+            <h1>Good afternoon, Gabriel</h1>
+            <p>This overview is built to be a quick daily check-in: where you stand, what needs attention, and what happens next.</p>
+          </div>
 
-        <div class="toolbar">
-          <button class="toolbar-chip">Monthly</button>
-          <button class="toolbar-chip">Biweekly</button>
-          <button class="toolbar-chip">April 2026</button>
-          <button class="toolbar-btn">Customize cards</button>
-          <button class="toolbar-btn primary">Add transaction</button>
-        </div>
-      </div>
+          <div class="topbar-actions">
+            <button class="chip active">Monthly</button>
+            <button class="chip">Biweekly</button>
+            <button class="btn primary">Add transaction</button>
+            <a class="icon-btn" href="#settings" aria-label="Open settings">⚙</a>
+          </div>
+        </header>
 
-      <section class="dashboard">
+        <section id="settings" class="settings-panel" aria-label="Profile and dashboard settings">
+          <div>
+            <p class="section-label">Settings</p>
+            <h2 class="card-title">Profile and dashboard settings</h2>
+            <p class="card-copy">Keep settings centralized here so profile mode and dashboard controls do not get duplicated across tabs.</p>
+          </div>
+
+          <div>
+            <p class="section-label">Profile mode</p>
+            <div class="settings-row">
+              <button class="pill active">Civilian</button>
+              <button class="pill">Military</button>
+              <button class="pill">Government</button>
+            </div>
+          </div>
+
+          <div>
+            <p class="section-label">Dashboard cards</p>
+            <div class="settings-row">
+              <button class="pill active">Health score</button>
+              <button class="pill active">Insights</button>
+              <button class="pill active">Upcoming impact</button>
+              <button class="pill active">Money snapshot</button>
+              <button class="pill">Recent activity</button>
+            </div>
+          </div>
+
+          <div>
+            <p class="section-label">Notifications</p>
+            <div class="settings-row">
+              <button class="pill active">Warnings on</button>
+              <button class="pill">Email reports</button>
+              <button class="pill">Auto-invest alerts</button>
+            </div>
+          </div>
+
+          <div class="settings-actions">
+            <span class="muted">Later this can open as a real drawer or modal.</span>
+            <a class="text-link" href="#">Close settings</a>
+          </div>
+        </section>
+
         <section class="hero">
           <div class="hero-left">
-            <div class="eyebrow">Overview dashboard</div>
-            <h2 class="hero-title">See where you stand, what needs attention, and what happens next.</h2>
-            <p class="hero-copy">
-              This homepage is intentionally simple: score, guidance, available money, and upcoming impact.
-              The deeper details belong in the later tabs so this screen stays clean.
-            </p>
+            <div class="eyebrow">Overview tab</div>
+            <h2 class="hero-title">A shorter homepage that stays useful every day.</h2>
+            <p class="hero-copy">This first tab stays focused on four things: your score, top actions, available money, and upcoming impact. Deeper details stay tucked away so the screen never feels crowded.</p>
 
-            <div class="hero-stats">
-              <div class="mini-stat">
-                <div class="mini-stat-label">Available to spend</div>
-                <div class="mini-stat-value">$1,284</div>
-              </div>
-              <div class="mini-stat">
-                <div class="mini-stat-label">Budget left</div>
-                <div class="mini-stat-value">$842</div>
-              </div>
-              <div class="mini-stat">
-                <div class="mini-stat-label">Net worth</div>
-                <div class="mini-stat-value">$48,220</div>
-              </div>
+            <div class="quick-number">
+              <span class="section-label">Available to spend</span>
+              <p class="value">$1,284</p>
+              <span class="muted">After planned bills and current budget commitments.</span>
             </div>
 
             <div class="hero-actions">
               <button class="btn primary">View full insights</button>
-              <button class="btn">Edit dashboard</button>
+              <button class="btn">Edit overview</button>
             </div>
           </div>
 
-          <div class="hero-right">
-            <div class="score-header">
+          <div class="score-panel">
+            <div class="score-top">
               <div>
-                <div class="section-label">Financial health score</div>
+                <p class="section-label">Financial health score</p>
                 <h3 class="card-title">Needs improvement</h3>
-                <p class="card-copy">Your plan is moving, but your emergency savings and spending consistency need work.</p>
+                <p class="card-copy">Your plan is moving, but emergency savings and spending consistency still need attention.</p>
               </div>
               <a href="#" class="text-link">See breakdown</a>
             </div>
@@ -852,7 +911,7 @@
               </div>
             </div>
 
-            <div class="score-breakdown">
+            <div class="meter-list">
               <div class="meter-row">
                 <div class="meter-top"><span>Savings rate</span><strong>59%</strong></div>
                 <div class="meter-bar"><div class="meter-fill" style="width:59%"></div></div>
@@ -871,11 +930,11 @@
 
         <section class="grid-two">
           <article class="card">
-            <div class="card-header">
+            <div class="card-head">
               <div>
-                <div class="section-label">Top insights</div>
+                <p class="section-label">Top insights</p>
                 <h3 class="card-title">Actionable insights</h3>
-                <p class="card-copy">Only the top 2 show here to keep the dashboard clean.</p>
+                <p class="card-copy">Only the top 2 show here to keep the overview tab short.</p>
               </div>
               <a href="#" class="text-link">View all</a>
             </div>
@@ -887,7 +946,7 @@
                     <h4 class="insight-title">Emergency fund below 3-month target</h4>
                     <p class="insight-desc">You currently cover <strong>1.8 months</strong> of essentials. Add <strong>$220/month</strong> to reach 3 months by October.</p>
                   </div>
-                  <button class="insight-action">Adjust goal</button>
+                  <button class="action-btn">Adjust goal</button>
                 </div>
 
                 <div class="insight-item danger">
@@ -896,64 +955,44 @@
                     <h4 class="insight-title">Dining out is above your benchmark</h4>
                     <p class="insight-desc">You are spending <strong>14%</strong> of income here vs a target of <strong>8%</strong>. Cutting <strong>$75/week</strong> frees cash for savings or investing.</p>
                   </div>
-                  <button class="insight-action">See plan</button>
+                  <button class="action-btn">See plan</button>
                 </div>
               </div>
             </div>
           </article>
 
           <article class="card">
-            <div class="card-header">
+            <div class="upcoming-strip">
               <div>
-                <div class="section-label">Profile settings</div>
-                <h3 class="card-title">Editable dashboard behavior</h3>
-                <p class="card-copy">Built for customization so users can make the app fit how they budget.</p>
+                <p class="section-label">Upcoming impact</p>
+                <h3 class="card-title">Know what is about to hit before it does</h3>
+                <p class="card-copy">A fast future glance without opening your bills tab.</p>
               </div>
-            </div>
-            <div class="card-body profile-panel">
+              <div class="impact-box">
+                <div class="impact-label">Bills in next 14 days</div>
+                <div class="impact-value">$1,200</div>
+              </div>
+              <div class="impact-box">
+                <div class="impact-label">Projected balance</div>
+                <div class="impact-value">$900</div>
+              </div>
               <div>
-                <div class="section-label">Cycle view</div>
-                <div class="toggle-row">
-                  <button class="toggle-pill active">Monthly</button>
-                  <button class="toggle-pill">Biweekly</button>
-                  <button class="toggle-pill">Show both</button>
-                </div>
+                <button class="btn">View bills</button>
               </div>
-
-              <div>
-                <div class="section-label">Profile mode</div>
-                <div class="toggle-row">
-                  <button class="toggle-pill active">Civilian</button>
-                  <button class="toggle-pill">Military</button>
-                  <button class="toggle-pill">Government</button>
-                </div>
-              </div>
-
-              <div>
-                <div class="section-label">Visible cards</div>
-                <div class="toggle-row">
-                  <button class="toggle-pill active">Health score</button>
-                  <button class="toggle-pill active">Emergency fund</button>
-                  <button class="toggle-pill active">Net worth</button>
-                  <button class="toggle-pill">Investing</button>
-                </div>
-              </div>
-
-              <p class="footer-note">Keep this logic centralized. Later tabs should feed these settings instead of creating separate duplicate toggles.</p>
             </div>
           </article>
         </section>
 
-        <article class="card">
-          <div class="card-header">
+        <details class="card collapsible" open>
+          <summary>
             <div>
-              <div class="section-label">Money snapshot</div>
+              <p class="section-label">Money snapshot</p>
               <h3 class="card-title">Your daily-use numbers</h3>
-              <p class="card-copy">These should always be fast to read and accurate.</p>
+              <div class="summary-copy">Keep the card, hide the details when you want a shorter screen.</div>
             </div>
-            <a href="#" class="text-link">Edit cards</a>
-          </div>
-          <div class="card-body">
+            <span class="summary-toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="details-body">
             <div class="snapshot-grid">
               <div class="snapshot-card primary">
                 <div>
@@ -962,7 +1001,6 @@
                 </div>
                 <div class="snapshot-note">After planned bills and current budget commitments.</div>
               </div>
-
               <div class="snapshot-card">
                 <div>
                   <div class="snapshot-label">Budget left</div>
@@ -970,7 +1008,6 @@
                 </div>
                 <div class="snapshot-note">37% of this month’s plan remains.</div>
               </div>
-
               <div class="snapshot-card">
                 <div>
                   <div class="snapshot-label">Savings</div>
@@ -978,7 +1015,6 @@
                 </div>
                 <div class="snapshot-note">Up $240 from last month.</div>
               </div>
-
               <div class="snapshot-card">
                 <div>
                   <div class="snapshot-label">Emergency fund</div>
@@ -986,7 +1022,6 @@
                 </div>
                 <div class="snapshot-note">Target: 3 to 6 months of essentials.</div>
               </div>
-
               <div class="snapshot-card">
                 <div>
                   <div class="snapshot-label">Net worth</div>
@@ -996,104 +1031,47 @@
               </div>
             </div>
           </div>
-        </article>
+        </details>
 
-        <article class="card">
-          <div class="upcoming-strip">
+        <details class="card collapsible">
+          <summary>
             <div>
-              <div class="section-label">Upcoming impact</div>
-              <h3 class="card-title" style="margin-top:0;">Know what’s about to hit before it does</h3>
+              <p class="section-label">Recent activity</p>
+              <h3 class="card-title">Latest updates</h3>
+              <div class="summary-copy">Useful, but not important enough to stay expanded on the first tab.</div>
             </div>
-            <div class="impact-box">
-              <div class="impact-label">Bills in next 14 days</div>
-              <div class="impact-value">$1,200</div>
-            </div>
-            <div class="impact-box">
-              <div class="impact-label">Projected balance</div>
-              <div class="impact-value">$900</div>
-            </div>
-            <div>
-              <button class="btn">View bills</button>
+            <span class="summary-toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="details-body">
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="activity-dot"></div>
+                <div>
+                  <p class="activity-main">Paycheck added to April plan</p>
+                  <p class="activity-sub">$2,400 allocated across bills, savings, and goals.</p>
+                </div>
+                <div class="activity-time">Today</div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot warning"></div>
+                <div>
+                  <p class="activity-main">Dining out alert triggered</p>
+                  <p class="activity-sub">You crossed 80% of the monthly dining target.</p>
+                </div>
+                <div class="activity-time">Yesterday</div>
+              </div>
+              <div class="activity-item">
+                <div class="activity-dot danger"></div>
+                <div>
+                  <p class="activity-main">Emergency fund goal behind pace</p>
+                  <p class="activity-sub">At current speed, 3 months coverage lands in November instead of October.</p>
+                </div>
+                <div class="activity-time">2 days ago</div>
+              </div>
             </div>
           </div>
-        </article>
-
-        <section class="grid-two">
-          <article class="card">
-            <div class="card-header">
-              <div>
-                <div class="section-label">Recent activity</div>
-                <h3 class="card-title">Latest updates</h3>
-                <p class="card-copy">Keep this short on the dashboard. Full history can live elsewhere.</p>
-              </div>
-              <a href="#" class="text-link">View history</a>
-            </div>
-            <div class="card-body">
-              <div class="activity-list">
-                <div class="activity-item">
-                  <div class="activity-dot"></div>
-                  <div>
-                    <p class="activity-main">Paycheck added to April plan</p>
-                    <p class="activity-sub">$2,400 allocated across bills, savings, and goals.</p>
-                  </div>
-                  <div class="activity-time">Today</div>
-                </div>
-                <div class="activity-item">
-                  <div class="activity-dot warning"></div>
-                  <div>
-                    <p class="activity-main">Dining out alert triggered</p>
-                    <p class="activity-sub">You crossed 80% of the monthly dining target.</p>
-                  </div>
-                  <div class="activity-time">Yesterday</div>
-                </div>
-                <div class="activity-item">
-                  <div class="activity-dot danger"></div>
-                  <div>
-                    <p class="activity-main">Emergency fund goal behind pace</p>
-                    <p class="activity-sub">At current speed, 3 months coverage lands in November instead of October.</p>
-                  </div>
-                  <div class="activity-time">2 days ago</div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <article class="card">
-            <div class="card-header">
-              <div>
-                <div class="section-label">Build note</div>
-                <h3 class="card-title">What this file is designed to do</h3>
-                <p class="card-copy">This is a clean foundation for GitHub Pages while you build the app tab by tab.</p>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="activity-list">
-                <div class="activity-item">
-                  <div class="activity-dot"></div>
-                  <div>
-                    <p class="activity-main">Single-file starter</p>
-                    <p class="activity-sub">Easy to paste into your project and expand without carrying broken legacy sections.</p>
-                  </div>
-                </div>
-                <div class="activity-item">
-                  <div class="activity-dot"></div>
-                  <div>
-                    <p class="activity-main">Card-first system</p>
-                    <p class="activity-sub">Lets you add, remove, or reorder modules later without redesigning the whole screen.</p>
-                  </div>
-                </div>
-                <div class="activity-item">
-                  <div class="activity-dot"></div>
-                  <div>
-                    <p class="activity-main">Built for future tabs</p>
-                    <p class="activity-sub">Transactions, budget, bills, goals, net worth, insights, and forecast can all inherit this styling.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-        </section>
-      </section>
+        </details>
+      </div>
     </main>
   </div>
 </body>
