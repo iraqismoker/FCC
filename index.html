@@ -21,7 +21,6 @@
       --radius-xl:28px;
       --radius-lg:22px;
       --radius-md:16px;
-      --radius-sm:12px;
     }
 
     *{box-sizing:border-box}
@@ -33,9 +32,9 @@
     }
 
     .app{
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px 16px 36px;
+      max-width:900px;
+      margin:0 auto;
+      padding:20px 16px 36px;
     }
 
     .topbar{
@@ -68,7 +67,7 @@
 
     h1{
       margin:0;
-      font-size: clamp(32px, 7vw, 52px);
+      font-size:clamp(32px, 7vw, 52px);
       line-height:1;
       letter-spacing:-0.03em;
     }
@@ -78,19 +77,19 @@
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      width:52px;
-      height:52px;
+      width:50px;
+      height:50px;
       border:1px solid var(--line);
-      border-radius:18px;
-      background:rgba(255,255,255,.82);
+      border-radius:16px;
+      background:#fff;
       color:var(--text);
       box-shadow:var(--shadow);
       cursor:pointer;
       transition:.18s ease;
       text-decoration:none;
     }
-    .settings-btn:hover{transform:translateY(-1px); background:#fff;}
-    .settings-btn svg{width:22px;height:22px;stroke-width:1.8}
+    .settings-btn:hover{transform:translateY(-1px)}
+    .settings-btn svg{width:21px;height:21px;stroke-width:1.8}
 
     .period-panel{
       margin-top:12px;
@@ -105,7 +104,7 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
+      gap:12px;
       background:var(--card);
       border:1px solid var(--line);
       border-radius:20px;
@@ -165,7 +164,7 @@
       padding:6px;
       border:1px solid var(--line);
       border-radius:18px;
-      background:rgba(255,255,255,.7);
+      background:#fff;
       box-shadow:var(--shadow);
     }
 
@@ -202,7 +201,7 @@
 
     .hero{
       display:grid;
-      grid-template-columns: 1.1fr .95fr;
+      grid-template-columns:1.1fr .95fr;
       gap:18px;
       align-items:center;
     }
@@ -275,6 +274,7 @@
         conic-gradient(from 220deg, var(--good) 0 24%, #6dc8c0 24% 38%, var(--warn) 38% 70%, var(--bad) 70% 100%);
       position:relative;
     }
+
     .score-ring::after{
       content:"";
       position:absolute;
@@ -308,7 +308,7 @@
 
     .quick-income{
       display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
+      grid-template-columns:repeat(2, minmax(0,1fr));
       gap:14px;
       margin-top:18px;
     }
@@ -374,27 +374,40 @@
       align-items:center;
       justify-content:center;
     }
-    .toggle svg{width:18px;height:18px;transition:.18s ease}
-    .toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
 
+    .toggle svg{
+      width:18px;
+      height:18px;
+      transition:.18s ease;
+    }
+
+    .toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
     .content{padding:0 22px 22px}
     .insight-list{display:grid; gap:14px}
+
     .insight{
       padding:16px 0;
       border-bottom:1px solid #edf1f5;
     }
-    .insight:last-child{border-bottom:0;padding-bottom:0}
+
+    .insight:last-child{
+      border-bottom:0;
+      padding-bottom:0;
+    }
+
     .insight strong{
       display:block;
       font-size:18px;
       margin-bottom:6px;
       letter-spacing:-0.02em;
     }
+
     .insight .meta{
       color:#46556e;
       font-size:15px;
       margin-bottom:8px;
     }
+
     .insight .action{
       color:var(--muted);
       font-size:15px;
@@ -402,7 +415,7 @@
 
     .upcoming-row{
       display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
+      grid-template-columns:repeat(3, minmax(0,1fr));
       gap:14px;
     }
 
@@ -412,6 +425,7 @@
       border-radius:18px;
       padding:16px;
     }
+
     .mini .label{
       color:var(--muted);
       font-size:12px;
@@ -420,12 +434,14 @@
       letter-spacing:.08em;
       margin-bottom:8px;
     }
+
     .mini .value{
       font-size:28px;
       font-weight:800;
       line-height:1.05;
       letter-spacing:-0.03em;
     }
+
     .mini .foot{
       color:var(--muted);
       font-size:13px;
@@ -437,7 +453,7 @@
 
     .snapshot-grid{
       display:grid;
-      grid-template-columns: repeat(5, minmax(0,1fr));
+      grid-template-columns:repeat(4, minmax(0,1fr));
       gap:12px;
     }
 
@@ -448,6 +464,7 @@
       padding:16px;
       min-height:116px;
     }
+
     .snapshot-card .label{
       color:var(--muted);
       font-size:12px;
@@ -456,12 +473,14 @@
       letter-spacing:.08em;
       margin-bottom:10px;
     }
+
     .snapshot-card .value{
       font-size:22px;
       font-weight:800;
       line-height:1.1;
       letter-spacing:-0.03em;
     }
+
     .snapshot-card .note{
       color:var(--muted);
       font-size:13px;
@@ -473,26 +492,34 @@
       display:grid;
       gap:12px;
     }
+
     .activity{
       display:grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns:1fr auto;
       gap:14px;
       align-items:start;
       padding:14px 0;
       border-bottom:1px solid #edf1f5;
     }
-    .activity:last-child{border-bottom:0;padding-bottom:0}
+
+    .activity:last-child{
+      border-bottom:0;
+      padding-bottom:0;
+    }
+
     .activity .title{
       font-size:17px;
       font-weight:800;
       letter-spacing:-0.02em;
       margin-bottom:4px;
     }
+
     .activity .desc{
       color:var(--muted);
       font-size:14px;
       font-weight:600;
     }
+
     .activity .time{
       color:var(--muted);
       font-size:14px;
@@ -500,17 +527,16 @@
       white-space:nowrap;
     }
 
-    @media (max-width: 760px){
+    @media (max-width:760px){
       .app{padding:16px 12px 28px}
-      .topbar{align-items:flex-start}
       .hero{grid-template-columns:1fr}
       .quick-income{grid-template-columns:1fr}
       .upcoming-row{grid-template-columns:1fr}
-      .snapshot-grid{grid-template-columns: repeat(2, minmax(0,1fr))}
+      .snapshot-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
       .date-card{flex-basis:100%}
       .mode-switch{width:100%; justify-content:space-between}
       .mode-switch button{flex:1}
-      .settings-btn{width:48px;height:48px;border-radius:16px}
+      .settings-btn{width:48px;height:48px}
       .score-number{font-size:58px}
     }
   </style>
@@ -534,15 +560,15 @@
           <div class="date-card" aria-label="Date selector">
             <div class="date-left">
               <span class="date-label">Selected Period</span>
-              <span class="date-value">April 2026</span>
+              <span class="date-value" id="period-label">April 2026</span>
             </div>
             <div class="date-controls">
-              <button class="icon-btn" aria-label="Previous period">
+              <button class="icon-btn" id="prev-period" aria-label="Previous period">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="m15 18-6-6 6-6"/>
                 </svg>
               </button>
-              <button class="icon-btn" aria-label="Next period">
+              <button class="icon-btn" id="next-period" aria-label="Next period">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="m9 18 6-6-6-6"/>
                 </svg>
@@ -667,11 +693,6 @@
         <div class="content collapsible" id="snapshot-content" hidden>
           <div class="snapshot-grid">
             <div class="snapshot-card">
-              <div class="label">Available</div>
-              <div class="value">$1,240</div>
-              <div class="note">Safe to spend now</div>
-            </div>
-            <div class="snapshot-card">
               <div class="label">Budget Left</div>
               <div class="value">-$215</div>
               <div class="note">Dining is over target</div>
@@ -750,6 +771,30 @@
         button.setAttribute('aria-selected', 'true');
       });
     });
+
+    const periodLabel = document.getElementById('period-label');
+    const prevBtn = document.getElementById('prev-period');
+    const nextBtn = document.getElementById('next-period');
+    let currentDate = new Date(2026, 3, 1);
+
+    function renderPeriod() {
+      periodLabel.textContent = currentDate.toLocaleDateString('en-US', {
+        month: 'long',
+        year: 'numeric'
+      });
+    }
+
+    prevBtn.addEventListener('click', () => {
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+      renderPeriod();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+      renderPeriod();
+    });
+
+    renderPeriod();
   </script>
 </body>
 </html>
