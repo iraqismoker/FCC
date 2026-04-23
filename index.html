@@ -149,6 +149,47 @@
       align-items: flex-start;
     }
 
+    .identity-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .identity-row h1 {
+      margin: 0;
+    }
+
+    .header-tools {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sub-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .date-select,
+    .view-select {
+      height: 44px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 14px;
+      padding: 0 14px;
+      min-width: 190px;
+    }
+
+    .view-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
     .welcome h1 {
       margin: 0;
       font-size: clamp(1.65rem, 2.2vw, 2.15rem);
@@ -746,6 +787,15 @@
         justify-content: flex-start;
       }
 
+      .sub-controls {
+        width: 100%;
+      }
+
+      .date-select,
+      .view-select {
+        width: 100%;
+      }
+
       .snapshot-grid,
       .upcoming-strip {
         grid-template-columns: 1fr 1fr;
@@ -812,19 +862,31 @@
       <div class="page">
         <header class="topbar">
           <div class="welcome">
-            <h1>Good afternoon, Gabriel</h1>
+            <div class="identity-row">
+              <h1>Good afternoon, Gabriel</h1>
+              <div class="header-tools">
+                <a class="icon-btn" href="#settings" aria-label="Open settings">⚙</a>
+              </div>
+            </div>
+            <div class="sub-controls" aria-label="Overview date and period controls">
+              <select class="date-select" aria-label="Select overview month">
+                <option>April 2026</option>
+                <option>March 2026</option>
+                <option>February 2026</option>
+              </select>
+              <select class="view-select" aria-label="Select planning cadence">
+                <option>Monthly view</option>
+                <option>Biweekly view</option>
+                <option>Show both</option>
+              </select>
+            </div>
             <p>This overview is built to be a quick daily check-in: where you stand, what needs attention, and what happens next.</p>
           </div>
 
-          <div class="topbar-actions">
-            <button class="chip active">Monthly</button>
-            <button class="chip">Biweekly</button>
-            <button class="btn primary">Add transaction</button>
-            <a class="icon-btn" href="#settings" aria-label="Open settings">⚙</a>
-          </div>
+          <div class="topbar-actions"></div>
         </header>
 
-        <section id="settings" class="settings-panel" aria-label="Profile and dashboard settings">
+        <section id="settings" class="settings-panel" aria-label="Profile settings and dashboard controls">
           <div>
             <p class="section-label">Settings</p>
             <h2 class="card-title">Profile and dashboard settings</h2>
