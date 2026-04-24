@@ -119,6 +119,20 @@
       font-weight:600;
     }
 
+    .joined-date{
+      margin-top:8px !important;
+      color:#7b8ca4 !important;
+      font-size:14px !important;
+      font-weight:700 !important;
+    }
+
+    .last-saved{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+    }
+
     .profile-stats{
       margin-top:18px;
       display:flex;
@@ -570,7 +584,7 @@
           <p id="display-email">gabriel.lopez1311@yahoo.com</p>
           <div class="profile-stats">
             <span class="pill" id="display-mode-pill">Profile Mode: Individual</span>
-            <span class="pill">Local Storage Ready</span>
+            <span class="pill" id="display-storage-pill">Local-first storage</span>
             <span class="pill" id="display-entry-pill">Manual Entry</span>
           </div>
         </div>
@@ -1108,7 +1122,9 @@
         lastName: 'Lopez',
         email: 'gabriel.lopez1311@yahoo.com',
         profileMode: 'Individual',
-        entryPreference: 'Manual Entry'
+        entryPreference: 'Manual Entry',
+        joinedDate: 'April 2026',
+        lastSaved: ''
       },
       preferences: {
         notifications: {
@@ -1198,6 +1214,9 @@
     const avatarInitials = document.getElementById('avatar-initials');
     const displayModePill = document.getElementById('display-mode-pill');
     const displayEntryPill = document.getElementById('display-entry-pill');
+    const displayStoragePill = document.getElementById('display-storage-pill');
+    const displayJoinedDate = document.getElementById('display-joined-date');
+    const displayLastSaved = document.getElementById('display-last-saved');
     const profileFeedback = document.getElementById('profile-feedback');
     const dataFeedback = document.getElementById('data-feedback');
     const passwordFeedback = document.getElementById('password-feedback');
@@ -1306,8 +1325,11 @@
       displayName.textContent = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || 'User';
       displayEmail.textContent = profile.email || 'No email set';
       avatarInitials.textContent = getInitials(profile.firstName, profile.lastName) || 'U';
-      displayModePill.textContent = `Profile Mode: ${profile.profileMode || 'Individual'}`;
+      displayModePill.textContent = `App Mode: ${profile.profileMode || 'Individual'}`;
       displayEntryPill.textContent = profile.entryPreference || 'Manual Entry';
+      displayStoragePill.textContent = user.preferences?.privacyData?.storageMode || 'Local-first storage';
+      displayJoinedDate.textContent = `Member since ${profile.joinedDate || 'April 2026'}`;
+      displayLastSaved.textContent = profile.lastSaved ? `Last saved: ${profile.lastSaved}` : 'Last saved: Not yet';
     }
 
     function collectProfile() {
@@ -1319,7 +1341,15 @@
           lastName: fields.lastName.value.trim(),
           email: fields.email.value.trim(),
           profileMode: fields.profileMode.value,
-          entryPreference: fields.entryPreference.value
+          entryPreference: fields.entryPreference.value,
+          joinedDate: existing.profile?.joinedDate || 'April 2026',
+          lastSaved: new Date().toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit'
+          })
         }
       };
     }
@@ -1536,6 +1566,7 @@
         }
       };
       saveStoredUser(updatedUser);
+      renderProfile(updatedUser);
       showFeedback(dataFeedback, 'Storage preference saved.', 'success');
       goToSettings();
     });
