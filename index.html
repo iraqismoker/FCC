@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Budget App – Overview</title>
+  <title>Budget App – Settings</title>
   <style>
     :root{
       --bg:#f4f6f9;
@@ -15,18 +14,21 @@
       --line:#d7dee8;
       --primary:#2b7fff;
       --primary-soft:#e9f1ff;
-      --good:#2bb5a8;
-      --warn:#f0b24d;
-      --bad:#e26b5b;
+      --success:#2bb5a8;
+      --success-soft:#e8fbf8;
+      --danger:#e26b5b;
+      --danger-soft:#fff0ee;
       --shadow:0 10px 30px rgba(16,33,60,.08);
       --radius-xl:28px;
       --radius-lg:22px;
+      --radius-md:16px;
+      --radius-sm:12px;
     }
 
     *{box-sizing:border-box}
     body{
       margin:0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:linear-gradient(180deg,#f7f8fb 0%, #eef2f7 100%);
       color:var(--text);
     }
@@ -39,247 +41,157 @@
 
     .topbar{
       display:flex;
-      align-items:flex-start;
+      align-items:center;
       justify-content:space-between;
       gap:16px;
       margin-bottom:18px;
     }
 
-    .identity{
-      min-width:0;
-      flex:1;
-    }
-
-    .name-row{
-      justify-content:space-between;
-
-      display:flex;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .hello{
-      font-size:15px;
-      color:var(--muted);
-      margin:0 0 4px;
-      font-weight:600;
-      letter-spacing:.02em;
-    }
-
-    h1{
-      margin:0;
-      font-size:clamp(32px, 7vw, 52px);
-      line-height:1;
-      letter-spacing:-0.03em;
-    }
-
-    .settings-btn{
-      flex:0 0 auto;
+    .back-link{
       display:inline-flex;
       align-items:center;
-      justify-content:center;
-      width:50px;
-      height:50px;
-      border:1px solid var(--line);
-      border-radius:16px;
-      background:#fff;
-      color:var(--text);
-      box-shadow:var(--shadow);
-      cursor:pointer;
-      transition:.18s ease;
-      text-decoration:none;
-    }
-
-    .settings-btn:hover{transform:translateY(-1px)}
-    .settings-btn svg{width:21px;height:21px;stroke-width:1.8}
-
-    .period-panel{
-      margin-top:12px;
-      display:flex;
-      flex-wrap:wrap;
       gap:10px;
-      align-items:center;
-    }
-
-    .date-card{
-      flex:1 1 360px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:20px;
-      padding:12px 14px;
-      box-shadow:var(--shadow);
-    }
-
-    .date-left{
-      display:flex;
-      flex-direction:column;
-      gap:3px;
-      min-width:0;
-    }
-
-    .date-label{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-
-    .date-value{
-      font-size:18px;
-      font-weight:700;
-      line-height:1.25;
-    }
-
-    .date-hint{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:600;
-      margin-top:2px;
-    }
-
-    .date-controls{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      flex:0 0 auto;
-    }
-
-    .icon-btn{
-      width:38px;
-      height:38px;
-      border-radius:12px;
-      border:1px solid var(--line);
-      background:var(--card-2);
+      text-decoration:none;
       color:var(--text);
+      font-weight:700;
+      font-size:15px;
+    }
+
+    .back-icon{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow:var(--shadow);
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      cursor:pointer;
-      transition:.16s ease;
     }
 
-    .icon-btn:hover{background:#fff; transform:translateY(-1px);}
-    .icon-btn svg{width:18px;height:18px;stroke-width:2}
-
-    .mode-switch{
-      display:inline-flex;
-      gap:6px;
-      padding:6px;
-      border:1px solid var(--line);
-      border-radius:18px;
-      background:#fff;
-      box-shadow:var(--shadow);
+    .back-icon svg{
+      width:18px;
+      height:18px;
+      stroke-width:2.2;
     }
 
-    .mode-switch button{
-      border:0;
-      background:transparent;
-      color:var(--muted);
-      font-weight:700;
-      padding:10px 14px;
-      border-radius:12px;
-      cursor:pointer;
-      transition:.16s ease;
-    }
-
-    .mode-switch .active{
-      background:var(--primary-soft);
-      color:var(--primary);
-    }
-
-    .onboarding-card{
+    .header-card{
       background:linear-gradient(135deg, #eef5ff 0%, #ffffff 100%);
       border:1px solid var(--line);
       border-radius:var(--radius-xl);
       box-shadow:var(--shadow);
-      padding:20px 22px;
+      padding:26px 22px;
       display:grid;
-      gap:12px;
+      grid-template-columns:1fr;
+      gap:18px;
+      align-items:center;
+      justify-items:center;
+      text-align:center;
       margin-bottom:18px;
     }
 
-    .onboarding-top{
+    .avatar{
+      width:96px;
+      height:96px;
+      border-radius:50%;
+      background:var(--primary-soft);
+      color:var(--primary);
       display:flex;
       align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .onboarding-pill{
-      display:inline-flex;
-      align-items:center;
-      width:max-content;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:999px;
-      padding:8px 12px;
-      color:var(--primary);
-      font-size:13px;
+      justify-content:center;
+      font-size:34px;
       font-weight:800;
-      box-shadow:0 8px 20px rgba(16,33,60,.05);
+      letter-spacing:-0.03em;
+      border:1px solid #d7e7ff;
+      overflow:hidden;
+      position:relative;
     }
 
-    .onboarding-card h2{
-      margin:0;
-      font-size:22px;
-      letter-spacing:-0.025em;
+    .avatar img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
     }
 
-    .onboarding-card p{
+    .avatar-upload-preview{
+      width:110px;
+      height:110px;
+      border-radius:50%;
+      background:var(--primary-soft);
+      border:1px solid #d7e7ff;
+      color:var(--primary);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:36px;
+      font-weight:800;
+      overflow:hidden;
+      margin-bottom:12px;
+    }
+
+    .avatar-upload-preview img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .profile-meta h1{
+      margin:0 0 6px;
+      font-size:32px;
+      line-height:1;
+      letter-spacing:-0.03em;
+    }
+
+    .profile-meta p{
       margin:0;
       color:var(--muted);
-      font-size:15px;
-      font-weight:650;
-      line-height:1.45;
+      font-size:16px;
+      font-weight:600;
     }
 
-    .onboarding-actions{
+    .joined-date{
+      margin-top:8px !important;
+      color:#7b8ca4 !important;
+      font-size:14px !important;
+      font-weight:700 !important;
+    }
+
+    .last-saved{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .profile-stats{
+      margin-top:18px;
       display:flex;
       flex-wrap:wrap;
       gap:10px;
-      margin-top:2px;
+      justify-content:center;
     }
 
-    .onboarding-link{
+    .pill{
       display:inline-flex;
       align-items:center;
-      justify-content:center;
-      text-decoration:none;
-      border-radius:14px;
-      padding:11px 14px;
-      font-size:14px;
-      font-weight:800;
-      transition:.16s ease;
-    }
-
-    .onboarding-link:hover{
-      transform:translateY(-1px);
-    }
-
-    .onboarding-link.primary{
-      background:var(--primary);
-      color:#fff;
-    }
-
-    .onboarding-link.secondary{
+      gap:8px;
       background:#fff;
-      color:var(--text);
       border:1px solid var(--line);
+      border-radius:999px;
+      padding:9px 12px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
     }
 
-    .overview-grid{
+    .stack{
       display:grid;
       gap:18px;
     }
 
-    .card{
+    .section{
       background:var(--card);
       border:1px solid var(--line);
       border-radius:var(--radius-xl);
@@ -287,688 +199,1847 @@
       overflow:hidden;
     }
 
-    .card-pad{padding:22px}
-
-    .hero{
-      display:grid;
-      grid-template-columns:1.1fr .95fr;
-      gap:18px;
-      align-items:center;
-    }
-
-    .eyebrow{
-      margin:0 0 8px;
-      font-size:14px;
-      color:var(--muted);
-      font-weight:700;
-      letter-spacing:.02em;
-    }
-
-    .hero h2{
-      margin:0 0 8px;
-      font-size:24px;
-      letter-spacing:-0.02em;
-    }
-
-    .status{
-      font-size:18px;
-      color:#33435d;
-      margin-bottom:22px;
-    }
-
-    .score-strip{
-      height:14px;
-      border-radius:999px;
-      background:linear-gradient(90deg, var(--good), #8ecfb4, #f3c86b, var(--bad));
-      position:relative;
-      overflow:hidden;
-    }
-
-    .score-marker{
-      position:absolute;
-      top:50%;
-      left:68%;
-      transform:translate(-50%,-50%);
-      width:18px;
-      height:18px;
-      background:#fff;
-      border:3px solid var(--text);
-      border-radius:50%;
-      box-shadow:0 2px 8px rgba(0,0,0,.15);
-    }
-
-    .legend{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      margin-top:10px;
-      color:var(--muted);
-      font-size:13px;
-      font-weight:600;
-    }
-
-    .score-ring-wrap{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-    }
-
-    .score-ring{
-      width:min(240px,100%);
-      aspect-ratio:1/1;
-      border-radius:50%;
-      background:
-        radial-gradient(closest-side, #fff 77%, transparent 78% 100%),
-        conic-gradient(from 220deg, var(--good) 0 24%, #6dc8c0 24% 38%, var(--warn) 38% 70%, var(--bad) 70% 100%);
-      position:relative;
-    }
-
-    .score-ring::after{
-      content:"";
-      position:absolute;
-      inset:18px;
-      border-radius:50%;
-      border:1px solid #eef2f7;
-    }
-
-    .score-center{
-      position:absolute;
-      inset:0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-    }
-
-    .score-number{
-      font-size:72px;
-      line-height:1;
-      letter-spacing:-0.04em;
-      font-weight:800;
-    }
-
-    .hero-link{
-      color:#1d5c9f;
-      text-decoration:none;
-      font-weight:700;
-      font-size:17px;
-    }
-
-    .quick-income{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:14px;
-      margin-top:18px;
-    }
-
-    .quick-stat{
-      background:var(--card-2);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .quick-stat .label{
-      color:var(--muted);
-      font-size:13px;
-      font-weight:700;
-      margin-bottom:6px;
-    }
-
-    .quick-stat .value{
-      font-size:32px;
-      line-height:1.05;
-      font-weight:800;
-      letter-spacing:-0.03em;
-    }
-
-    .quick-stat .sub{
-      margin-top:6px;
-      color:var(--muted);
-      font-size:13px;
-      font-weight:600;
-    }
-
     .section-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
       padding:20px 22px;
       border-bottom:1px solid #edf1f5;
     }
 
     .section-title{
       margin:0;
-      font-size:18px;
+      font-size:20px;
       letter-spacing:-0.02em;
     }
 
     .section-sub{
+      margin-top:5px;
       color:var(--muted);
-      font-size:13px;
-      margin-top:4px;
+      font-size:14px;
       font-weight:600;
     }
 
-    .toggle{
-      border:1px solid var(--line);
-      background:var(--card-2);
-      border-radius:14px;
+    .row-list{
+      display:grid;
+    }
+
+    .row-item{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:14px;
+      align-items:center;
+      padding:18px 22px;
+      text-decoration:none;
+      color:inherit;
+      border-bottom:1px solid #edf1f5;
+      background:#fff;
+    }
+
+    .row-item:last-child{
+      border-bottom:0;
+    }
+
+    .row-icon{
       width:42px;
       height:42px;
-      cursor:pointer;
-      display:inline-flex;
+      border-radius:14px;
+      background:var(--primary-soft);
+      color:var(--primary);
+      display:flex;
       align-items:center;
       justify-content:center;
+      border:1px solid #d7e7ff;
     }
 
-    .toggle svg{
-      width:18px;
-      height:18px;
-      transition:.18s ease;
+    .row-icon svg{
+      width:20px;
+      height:20px;
+      stroke-width:2;
     }
 
-    .toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
-    .content{padding:0 22px 22px}
-    .insight-list{display:grid; gap:14px}
-
-    .insight{
-      padding:16px 0;
-      border-bottom:1px solid #edf1f5;
-    }
-
-    .insight:last-child{
-      border-bottom:0;
-      padding-bottom:0;
-    }
-
-    .insight strong{
+    .row-text strong{
       display:block;
       font-size:18px;
-      margin-bottom:6px;
-      letter-spacing:-0.02em;
-    }
-
-    .insight .meta{
-      color:#46556e;
-      font-size:15px;
-      margin-bottom:8px;
-    }
-
-    .insight .action{
-      color:var(--muted);
-      font-size:15px;
-    }
-
-    .upcoming-row{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0,1fr));
-      gap:14px;
-    }
-
-    .mini{
-      background:var(--card-2);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .mini .label{
-      color:var(--muted);
-      font-size:12px;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-bottom:8px;
-    }
-
-    .mini .value{
-      font-size:28px;
-      font-weight:800;
-      line-height:1.05;
-      letter-spacing:-0.03em;
-    }
-
-    .mini .foot{
-      color:var(--muted);
-      font-size:13px;
-      margin-top:8px;
-      font-weight:600;
-    }
-
-    .collapsible[hidden]{display:none}
-
-    .snapshot-grid{
-      display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
-      gap:12px;
-    }
-
-    .snapshot-card{
-      border:1px solid var(--line);
-      background:var(--card-2);
-      border-radius:18px;
-      padding:16px;
-      min-height:116px;
-    }
-
-    .snapshot-card .label{
-      color:var(--muted);
-      font-size:12px;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-bottom:10px;
-    }
-
-    .snapshot-card .value{
-      font-size:22px;
-      font-weight:800;
-      line-height:1.1;
-      letter-spacing:-0.03em;
-    }
-
-    .snapshot-card .note{
-      color:var(--muted);
-      font-size:13px;
-      margin-top:8px;
-      font-weight:600;
-    }
-
-    .activity-list{
-      display:grid;
-      gap:12px;
-    }
-
-    .activity{
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:14px;
-      align-items:start;
-      padding:14px 0;
-      border-bottom:1px solid #edf1f5;
-    }
-
-    .activity:last-child{
-      border-bottom:0;
-      padding-bottom:0;
-    }
-
-    .activity .title{
-      font-size:17px;
-      font-weight:800;
       letter-spacing:-0.02em;
       margin-bottom:4px;
     }
 
-    .activity .desc{
+    .row-text span{
       color:var(--muted);
       font-size:14px;
       font-weight:600;
     }
 
-    .activity .time{
+    .row-chevron{
+      color:#7a8ba4;
+      font-size:26px;
+      line-height:1;
+    }
+
+    .editor-wrap{
+      padding:20px 22px 22px;
+      border-top:1px solid #edf1f5;
+      background:linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:14px;
+    }
+
+    .field{
+      display:grid;
+      gap:8px;
+    }
+
+    .field.full{
+      grid-column:1 / -1;
+    }
+
+    label{
+      font-size:13px;
       color:var(--muted);
+      font-weight:700;
+      letter-spacing:.02em;
+    }
+
+    input, select{
+      width:100%;
+      border:1px solid var(--line);
+      background:var(--card-2);
+      color:var(--text);
+      border-radius:14px;
+      padding:14px 14px;
+      font-size:15px;
+      font-weight:600;
+      outline:none;
+    }
+
+    input:focus, select:focus{
+      border-color:#b8d3ff;
+      background:#fff;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:13px 16px;
+      font-size:14px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.16s ease;
+    }
+
+    .btn:hover{transform:translateY(-1px)}
+
+    .btn-primary{
+      background:var(--primary);
+      color:#fff;
+    }
+
+    .btn-secondary{
+      background:var(--primary-soft);
+      color:var(--primary);
+    }
+
+    .btn-danger{
+      background:var(--danger-soft);
+      color:var(--danger);
+      border:1px solid #f6cdc7;
+    }
+
+    .feedback{
+      margin-top:14px;
+      border-radius:14px;
+      padding:12px 14px;
       font-size:14px;
       font-weight:700;
-      white-space:nowrap;
+      display:none;
+    }
+
+    .feedback.show{display:block}
+    .feedback.success{
+      background:var(--success-soft);
+      color:#1c7c73;
+      border:1px solid #bdebe4;
+    }
+
+    .feedback.neutral{
+      background:#f4f7fb;
+      color:#5c6c84;
+      border:1px solid #dde6f0;
+    }
+
+    .section-body{
+      padding:20px 22px 22px;
+    }
+
+    .note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:600;
+    }
+
+
+    .preference-list{
+      display:grid;
+      gap:14px;
+    }
+
+    .preference-card{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:16px;
+      align-items:center;
+      border:1px solid var(--line);
+      background:var(--card-2);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .preference-card strong{
+      display:block;
+      font-size:16px;
+      letter-spacing:-0.02em;
+      margin-bottom:4px;
+    }
+
+    .preference-card span{
+      display:block;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .switch{
+      position:relative;
+      width:52px;
+      height:30px;
+      display:inline-block;
+      flex:0 0 auto;
+    }
+
+    .switch input{
+      opacity:0;
+      width:0;
+      height:0;
+    }
+
+    .slider{
+      position:absolute;
+      cursor:pointer;
+      inset:0;
+      background:#d9e1ec;
+      border-radius:999px;
+      transition:.2s ease;
+    }
+
+    .slider:before{
+      content:"";
+      position:absolute;
+      width:24px;
+      height:24px;
+      left:3px;
+      top:3px;
+      background:#fff;
+      border-radius:50%;
+      box-shadow:0 2px 8px rgba(16,33,60,.18);
+      transition:.2s ease;
+    }
+
+    .switch input:checked + .slider{
+      background:var(--primary);
+    }
+
+    .switch input:checked + .slider:before{
+      transform:translateX(22px);
+    }
+
+    .dashboard-card-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .dashboard-card-option{
+      border:1px solid var(--line);
+      background:var(--card-2);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .dashboard-card-option .option-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .dashboard-card-option strong{
+      display:block;
+      font-size:16px;
+      margin-bottom:4px;
+      letter-spacing:-0.02em;
+    }
+
+    .dashboard-card-option span{
+      color:var(--muted);
+      font-size:14px;
+      font-weight:600;
+    }
+
+
+    .info-grid{
+      display:grid;
+      gap:14px;
+    }
+
+    .info-card{
+      border:1px solid var(--line);
+      background:var(--card-2);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .info-card strong{
+      display:block;
+      font-size:16px;
+      letter-spacing:-0.02em;
+      margin-bottom:6px;
+    }
+
+    .info-card span{
+      color:var(--muted);
+      font-size:14px;
+      font-weight:600;
+      line-height:1.45;
+    }
+
+    .danger-zone{
+      border:1px solid #f6cdc7;
+      background:var(--danger-soft);
+      border-radius:18px;
+      padding:16px;
+      margin-top:14px;
+    }
+
+    .danger-zone strong{
+      display:block;
+      color:var(--danger);
+      margin-bottom:6px;
+      font-size:16px;
+    }
+
+    .danger-zone span{
+      color:#8f554d;
+      font-size:14px;
+      font-weight:600;
+      line-height:1.45;
+    }
+
+    .version-badge{
+      display:inline-flex;
+      align-items:center;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+      margin-top:10px;
+    }
+
+
+    .avatar-editor{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      margin-bottom:18px;
+    }
+
+    .avatar-editor label{
+      align-self:center;
+      margin-bottom:14px;
+    }
+
+    .avatar-editor .actions{
+      justify-content:center;
+      width:100%;
+    }
+
+
+    .info-card.clickable{
+      cursor:pointer;
+      transition:.16s ease;
+    }
+
+    .info-card.clickable:hover{
+      transform:translateY(-1px);
+      background:#ffffff;
+    }
+
+    .info-card .mini-link{
+      display:inline-flex;
+      margin-top:12px;
+      color:var(--primary);
+      font-weight:800;
+      font-size:14px;
+    }
+
+    .help-list{
+      display:grid;
+      gap:14px;
+    }
+
+    .help-step{
+      border:1px solid var(--line);
+      background:var(--card-2);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .help-step strong{
+      display:block;
+      font-size:17px;
+      margin-bottom:6px;
+      letter-spacing:-0.02em;
+    }
+
+    .help-step span{
+      display:block;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:600;
+      line-height:1.45;
+    }
+
+    .faq-item{
+      border:1px solid var(--line);
+      background:var(--card-2);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .faq-item strong{
+      display:block;
+      font-size:16px;
+      margin-bottom:6px;
+    }
+
+    .faq-item span{
+      color:var(--muted);
+      font-size:14px;
+      font-weight:600;
+      line-height:1.45;
+    }
+
+    [hidden]{display:none !important}
+
+    .view-panel{display:none}
+    .view-panel.active{display:block}
+
+    .page-title-card{
+      background:linear-gradient(135deg, #eef5ff 0%, #ffffff 100%);
+      border:1px solid var(--line);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      padding:22px;
+      margin-bottom:18px;
+    }
+
+    .page-title-card h1{
+      margin:0 0 8px;
+      font-size:32px;
+      line-height:1;
+      letter-spacing:-0.03em;
+    }
+
+    .page-title-card p{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      font-weight:600;
     }
 
     @media (max-width:760px){
       .app{padding:16px 12px 28px}
-      .hero{grid-template-columns:1fr}
-      .quick-income{grid-template-columns:1fr}
-      .upcoming-row{grid-template-columns:1fr}
-      .snapshot-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
-      .date-card{flex-basis:100%}
-      .mode-switch{width:100%; justify-content:space-between}
-      .mode-switch button{flex:1}
-      .settings-btn{width:48px;height:48px}
-      .score-number{font-size:58px}
-      .date-value{font-size:16px}
-      .onboarding-actions{display:grid}
-      .onboarding-link{width:100%}
+      .header-card{grid-template-columns:1fr}
+      .form-grid{grid-template-columns:1fr}
+      .dashboard-card-grid{grid-template-columns:1fr}
+      .profile-meta h1{font-size:28px}
     }
   </style>
 </head>
+
 <body>
   <div class="app">
-    <header class="topbar">
-      <div class="identity">
-        <p class="hello">Good morning</p>
-        <div class="name-row">
-          <h1>Gabriel</h1>
-          <span style="flex:1"></span>
-          <a href="#" class="settings-btn" aria-label="Open settings">
+    <div id="settings-view" class="view-panel active">
+      <header class="topbar">
+        <a href="overview.html" class="back-link">
+          <span class="back-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/>
-              <path d="M19.4 15a1.6 1.6 0 0 0 .32 1.76l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.76-.32 1.6 1.6 0 0 0-.97 1.46V21a2 2 0 1 1-4 0v-.09a1.6 1.6 0 0 0-.97-1.46 1.6 1.6 0 0 0-1.76.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.6 1.6 0 0 0 4.6 15a1.6 1.6 0 0 0-1.46-.97H3a2 2 0 1 1 0-4h.14A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.32-1.76l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.6 1.6 0 0 0 8.87 4.1a1.6 1.6 0 0 0 .97-1.46V2.5a2 2 0 1 1 4 0v.14a1.6 1.6 0 0 0 .97 1.46 1.6 1.6 0 0 0 1.76-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.6 1.6 0 0 0 19.4 9c.65.24 1.1.87 1.1 1.57V10a2 2 0 1 1 0 4v.14c0 .7-.45 1.33-1.1 1.57Z"/>
+              <path d="m15 18-6-6 6-6"/>
             </svg>
-          </a>
-        </div>
+          </span>
+          Back to Overview
+        </a>
+      </header>
 
-        <div class="period-panel">
-          <div class="date-card" aria-label="Date selector">
-            <div class="date-left">
-              <span class="date-label" id="period-mode-label">Selected Month</span>
-              <span class="date-value" id="period-label">April 2026</span>
-              <span class="date-hint" id="period-hint">Biweekly is anchored to Apr 10, 2026.</span>
-            </div>
-            <div class="date-controls">
-              <button class="icon-btn" id="prev-period" aria-label="Previous period">
+      <section class="header-card">
+        <div class="avatar" id="avatar-initials">GL</div>
+        <div class="profile-meta">
+          <h1 id="display-name">Gabriel Lopez</h1>
+          <p id="display-email">gabriel.lopez1311@yahoo.com</p>
+          <p class="joined-date" id="display-joined-date">Member since April 2026</p>
+          <div class="profile-stats">
+            <span class="pill" id="display-mode-pill">Profile Mode: Individual</span>
+            <span class="pill" id="display-storage-pill">Local-first storage</span>
+            <span class="pill" id="display-entry-pill">Manual Entry</span>
+          </div>
+          <div class="last-saved" id="display-last-saved">Last saved: Not yet</div>
+        </div>
+      </section>
+
+      <main class="stack">
+        <section class="section">
+          <div class="section-head">
+            <h2 class="section-title">Personal Information</h2>
+            <div class="section-sub">Open a focused editor instead of keeping the main settings page crowded.</div>
+          </div>
+
+          <div class="row-list">
+            <a href="#" class="row-item" id="open-personal-view">
+              <div class="row-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="m15 18-6-6 6-6"/>
+                  <path d="M20 21a8 8 0 1 0-16 0"/>
+                  <circle cx="12" cy="8" r="4"/>
                 </svg>
-              </button>
-              <button class="icon-btn" id="next-period" aria-label="Next period">
+              </div>
+              <div class="row-text">
+                <strong>Update Personal Information</strong>
+                <span>Edit your name, email, profile mode, and account display details.</span>
+              </div>
+              <div class="row-chevron">›</div>
+            </a>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <h2 class="section-title">Security</h2>
+            <div class="section-sub">Keep password and account-access tools separate from money setup.</div>
+          </div>
+          <div class="row-list">
+            <a href="#" class="row-item" id="open-password-view">
+              <div class="row-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="m9 18 6-6-6-6"/>
+                  <path d="M6 10V8a6 6 0 1 1 12 0v2"/>
+                  <rect x="4" y="10" width="16" height="10" rx="2"/>
+                  <path d="M12 14v2"/>
                 </svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="mode-switch" role="tablist" aria-label="View mode">
-            <button class="active" role="tab" aria-selected="true" data-mode="monthly">Monthly</button>
-            <button role="tab" aria-selected="false" data-mode="biweekly">Biweekly</button>
-            <button role="tab" aria-selected="false" data-mode="both">Both</button>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <section class="onboarding-card" id="onboarding-complete">
-      <div class="onboarding-top">
-        <span class="onboarding-pill">Step 3 of 3 • Dashboard Ready</span>
-      </div>
-      <div>
-        <h2>Your budget foundation is saved.</h2>
-        <p>
-          Your profile and starting budget rules are ready. Use this Overview to track your current status, then continue building the full Budget tab when you are ready.
-        </p>
-      </div>
-      <div class="onboarding-actions">
-        <a href="budget-setup.html" class="onboarding-link secondary">Review Budget Setup</a>
-        <a href="settings.html" class="onboarding-link primary">Customize Settings</a>
-      </div>
-    </section>
-
-    <main class="overview-grid">
-      <section class="card">
-        <div class="card-pad hero">
-          <div>
-            <p class="eyebrow">Overview</p>
-            <h2>Financial Health Score</h2>
-            <div class="status">Needs Improvement</div>
-
-            <div class="score-strip" aria-hidden="true">
-              <div class="score-marker"></div>
-            </div>
-            <div class="legend">
-              <span>Good</span>
-              <span>Fair</span>
-              <span>Needs Improvement</span>
-            </div>
-
-            <div class="quick-income">
-              <div class="quick-stat">
-                <div class="label">Total Monthly Income</div>
-                <div class="value">$6,800</div>
-                <div class="sub">After recurring paycheck inputs</div>
               </div>
-              <div class="quick-stat">
-                <div class="label">Available to Spend</div>
-                <div class="value">$1,240</div>
-                <div class="sub">After bills, goals, and planned spending</div>
+              <div class="row-text">
+                <strong>Change Password</strong>
+                <span>Open a deeper view for password updates when auth is wired up.</span>
               </div>
-            </div>
-          </div>
+              <div class="row-chevron">›</div>
+            </a>
 
-          <div class="score-ring-wrap">
-            <div class="score-ring">
-              <div class="score-center">
-                <div class="score-number">68</div>
+            <a href="#" class="row-item">
+              <div class="row-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+                </svg>
               </div>
-            </div>
-            <a href="#" class="hero-link">See how to improve →</a>
+              <div class="row-text">
+                <strong>Two-Factor Authentication</strong>
+                <span>Optional later if you want stronger account protection.</span>
+              </div>
+              <div class="row-chevron">›</div>
+            </a>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="card">
-        <div class="section-head">
-          <div>
-            <h3 class="section-title">Actionable Insights</h3>
-            <div class="section-sub">Top 2 insights only for the Overview tab</div>
+        <section class="section">
+          <div class="section-head">
+            <h2 class="section-title">Preferences</h2>
+            <div class="section-sub">Notifications and display preferences belong here. Budget rules do not.</div>
           </div>
-        </div>
-        <div class="content">
-          <div class="insight-list">
-            <article class="insight">
-              <strong>You are saving $6,800 (10% of income)</strong>
-              <div class="meta">Benchmark: 15%</div>
-              <div class="action">Increase by $300/month to match peers in Colorado, age 35–44.</div>
-            </article>
-            <article class="insight">
-              <strong>You have 1.5 months of emergency fund</strong>
-              <div class="meta">Goal: 3–6 months · Benchmark: 4.0 months</div>
-              <div class="action">Add to your emergency fund to improve security and your health score.</div>
-            </article>
-          </div>
-        </div>
-      </section>
+          <div class="row-list">
+            <a href="#" class="row-item" id="open-notifications-view">
+              <div class="row-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"/>
+                  <path d="M10 17a2 2 0 0 0 4 0"/>
+                </svg>
+              </div>
+              <div class="row-text">
+                <strong>Notifications</strong>
+                <span>Bill reminders, insight alerts, and goal updates.</span>
+              </div>
+              <div class="row-chevron">›</div>
+            </a>
 
-      <section class="card">
-        <div class="section-head">
-          <div>
-            <h3 class="section-title">Upcoming Impact</h3>
-            <div class="section-sub">What is about to hit your money next</div>
+            <a href="#" class="row-item" id="open-dashboard-display-view">
+              <div class="row-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M3 6h18"/>
+                  <path d="M7 12h10"/>
+                  <path d="M10 18h4"/>
+                </svg>
+              </div>
+              <div class="row-text">
+                <strong>Dashboard Display</strong>
+                <span>Choose what appears on Overview and what stays collapsed.</span>
+              </div>
+              <div class="row-chevron">›</div>
+            </a>
           </div>
-        </div>
-        <div class="content">
-          <div class="upcoming-row">
-            <div class="mini">
-              <div class="label">Bills in Next 14 Days</div>
-              <div class="value">$1,200</div>
-              <div class="foot">Mortgage, utilities, insurance</div>
-            </div>
-            <div class="mini">
-              <div class="label">Expected Balance</div>
-              <div class="value">$900</div>
-              <div class="foot">After scheduled outflows</div>
-            </div>
-            <div class="mini">
-              <div class="label">Next Paycheck</div>
-              <div class="value">Apr 26, 2026</div>
-              <div class="foot">Estimated deposit: $2,400</div>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="card">
-        <div class="section-head">
-          <div>
-            <h3 class="section-title">Money Snapshot</h3>
-            <div class="section-sub">Expandable daily metrics</div>
+        <section class="section">
+          <div class="section-head">
+            <h2 class="section-title">Privacy & Data</h2>
+            <div class="section-sub">Control how your data is stored and exported.</div>
           </div>
-          <button class="toggle" aria-expanded="false" aria-controls="snapshot-content">
+          <div class="row-list">
+            <a href="#" class="row-item" id="open-storage-view">
+              <div class="row-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M4 7h16"/>
+                  <path d="M4 12h16"/>
+                  <path d="M4 17h10"/>
+                </svg>
+              </div>
+              <div class="row-text">
+                <strong>Storage Mode</strong>
+                <span>Manual entry, local-first, and optional connected-account paths.</span>
+              </div>
+              <div class="row-chevron">›</div>
+            </a>
+            <a href="#" class="row-item" id="open-export-view">
+              <div class="row-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M12 3v12"/>
+                  <path d="m7 10 5 5 5-5"/>
+                  <path d="M5 21h14"/>
+                </svg>
+              </div>
+              <div class="row-text">
+                <strong>Export Data</strong>
+                <span>CSV, spreadsheet, and future backup/export tools.</span>
+              </div>
+              <div class="row-chevron">›</div>
+            </a>
+
+            <a href="#" class="row-item" id="open-delete-account-view">
+              <div class="row-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M3 6h18"/>
+                  <path d="M8 6V4h8v2"/>
+                  <path d="M19 6l-1 14H6L5 6"/>
+                  <path d="M10 11v5"/>
+                  <path d="M14 11v5"/>
+                </svg>
+              </div>
+              <div class="row-text">
+                <strong>Delete / Reset Account</strong>
+                <span>Clear local prototype data with a confirmation step.</span>
+              </div>
+              <div class="row-chevron">›</div>
+            </a>
+
+            <a href="#" class="row-item" id="reset-onboarding-button">
+              <div class="row-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M4 4v6h6"/>
+                  <path d="M20 20v-6h-6"/>
+                  <path d="M20 9A8 8 0 0 0 6.3 5.3L4 10"/>
+                  <path d="M4 15a8 8 0 0 0 13.7 3.7L20 14"/>
+                </svg>
+              </div>
+              <div class="row-text">
+                <strong>Reset Onboarding</strong>
+                <span>Show the Step 3 dashboard setup banner again.</span>
+              </div>
+              <div class="row-chevron">›</div>
+            </a>
+          </div>
+          <div class="section-body">
+            <div class="feedback neutral" id="data-feedback">Privacy and data changes will appear here after saving.</div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <h2 class="section-title">About</h2>
+            <div class="section-sub">Simple support and app details.</div>
+          </div>
+          <div class="row-list">
+            <a href="#" class="row-item" id="open-about-view">
+              <div class="row-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 16v-4"/>
+                  <path d="M12 8h.01"/>
+                </svg>
+              </div>
+              <div class="row-text">
+                <strong>About This App</strong>
+                <span>Mission, version, and support details.</span>
+              </div>
+              <div class="row-chevron">›</div>
+            </a>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="personal-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="personal-back">
+          <span class="back-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="m6 9 6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="m15 18-6-6 6-6"/>
             </svg>
-          </button>
-        </div>
-        <div class="content collapsible" id="snapshot-content" hidden>
-          <div class="snapshot-grid">
-            <div class="snapshot-card">
-              <div class="label">Budget Left</div>
-              <div class="value">-$215</div>
-              <div class="note">Dining is over target</div>
-            </div>
-            <div class="snapshot-card">
-              <div class="label">Savings</div>
-              <div class="value">$6,800</div>
-              <div class="note">Cash reserves</div>
-            </div>
-            <div class="snapshot-card">
-              <div class="label">Emergency Fund</div>
-              <div class="value">1.5 months</div>
-              <div class="note">Below target range</div>
-            </div>
-            <div class="snapshot-card">
-              <div class="label">Net Worth</div>
-              <div class="value">$2,155</div>
-              <div class="note">Assets minus debt</div>
-            </div>
-          </div>
-        </div>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>Personal Information</h1>
+        <p>Update your name, email, profile mode, and account display details.</p>
       </section>
 
-      <section class="card">
+      <section class="section">
         <div class="section-head">
-          <div>
-            <h3 class="section-title">Recent Activity</h3>
-            <div class="section-sub">Short event feed for the Overview tab</div>
-          </div>
-          <button class="toggle" aria-expanded="false" aria-controls="activity-content">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="m6 9 6 6 6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
+          <h2 class="section-title">Profile Details</h2>
+          <div class="section-sub">These details update the settings header and save locally.</div>
         </div>
-        <div class="content collapsible" id="activity-content" hidden>
-          <div class="activity-list">
-            <div class="activity">
-              <div>
-                <div class="title">You are saving below your peers</div>
-                <div class="desc">Save $300/month more to reach average.</div>
-              </div>
-              <div class="time">Today, 11:45 AM</div>
-            </div>
-            <div class="activity">
-              <div>
-                <div class="title">Monthly savings target is behind</div>
-                <div class="desc">Increase savings to reach your $1,000 goal.</div>
-              </div>
-              <div class="time">Today, 09:15 AM</div>
+        <div class="section-body">
+          <div class="field full avatar-editor">
+            <label>Profile photo / avatar</label>
+            <div class="avatar-upload-preview" id="avatar-preview">GL</div>
+            <div class="actions">
+              <button class="btn btn-secondary" id="choose-avatar" type="button">Choose Photo</button>
+              <button class="btn btn-secondary" id="remove-avatar" type="button">Remove Photo</button>
+              <input id="avatar-file" type="file" accept="image/*" hidden>
             </div>
           </div>
+
+          <form id="profile-form" class="form-grid">
+            <div class="field">
+              <label for="firstName">First name</label>
+              <input id="firstName" name="firstName" type="text" value="Gabriel" />
+            </div>
+            <div class="field">
+              <label for="lastName">Last name</label>
+              <input id="lastName" name="lastName" type="text" value="Lopez" />
+            </div>
+            <div class="field full">
+              <label for="email">Email address</label>
+              <input id="email" name="email" type="email" value="gabriel.lopez1311@yahoo.com" />
+            </div>
+            <div class="field">
+              <label for="profileMode">Profile mode</label>
+              <select id="profileMode" name="profileMode">
+                <option selected>Individual</option>
+                <option>Couple</option>
+                <option>Military / Veteran</option>
+                <option>Government Employee</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="entryPreference">Data style</label>
+              <select id="entryPreference" name="entryPreference">
+                <option selected>Manual Entry</option>
+                <option>Manual + Import</option>
+                <option>Connected Accounts</option>
+              </select>
+            </div>
+          </form>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="save-profile" type="button">Save Profile</button>
+            <button class="btn btn-secondary" id="reset-profile" type="button">Reset</button>
+            <button class="btn btn-secondary" id="cancel-profile" type="button">Cancel</button>
+          </div>
+
+          <div class="feedback neutral" id="profile-feedback">Edit your information and save when ready.</div>
+          <div class="note">Pay frequency and budget cycle setup will belong in the Budget tab.</div>
         </div>
       </section>
-    </main>
+    </div>
+
+    <div id="password-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="password-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>Change Password</h1>
+        <p>This view validates the form now and can connect to authentication later.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Password Update</h2>
+          <div class="section-sub">Do not save passwords to localStorage. This is validation only for now.</div>
+        </div>
+        <div class="section-body">
+          <form class="form-grid">
+            <div class="field full">
+              <label for="currentPassword">Current password</label>
+              <input id="currentPassword" type="password" autocomplete="current-password" />
+            </div>
+            <div class="field">
+              <label for="newPassword">New password</label>
+              <input id="newPassword" type="password" autocomplete="new-password" />
+            </div>
+            <div class="field">
+              <label for="confirmPassword">Confirm new password</label>
+              <input id="confirmPassword" type="password" autocomplete="new-password" />
+            </div>
+          </form>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="update-password" type="button">Update Password</button>
+            <button class="btn btn-secondary" id="clear-password-form" type="button">Clear</button>
+            <button class="btn btn-secondary" id="cancel-password" type="button">Cancel</button>
+          </div>
+
+          <div class="feedback neutral" id="password-feedback">Password changes will connect to authentication later.</div>
+        </div>
+      </section>
+    </div>
   </div>
 
+
+    <div id="notifications-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="notifications-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>Notifications</h1>
+        <p>Control reminders and alerts without changing your budget rules.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Alert Preferences</h2>
+          <div class="section-sub">Turn alerts on or off by category so notifications stay useful, not spammy.</div>
+        </div>
+        <div class="section-body">
+          <div class="preference-list">
+            <div class="preference-card"><div><strong>Bill Reminders</strong><span>Notify me before upcoming bills are due.</span></div><label class="switch"><input type="checkbox" id="billReminders" checked><span class="slider"></span></label></div>
+            <div class="preference-card"><div><strong>Overspending Alerts</strong><span>Warn me when a category is close to or over budget.</span></div><label class="switch"><input type="checkbox" id="overspendingAlerts" checked><span class="slider"></span></label></div>
+            <div class="preference-card"><div><strong>Smart Insight Alerts</strong><span>Send useful suggestions when the app detects a pattern.</span></div><label class="switch"><input type="checkbox" id="smartInsightAlerts" checked><span class="slider"></span></label></div>
+            <div class="preference-card"><div><strong>Goal Progress Updates</strong><span>Notify me when I hit milestones or fall behind.</span></div><label class="switch"><input type="checkbox" id="goalUpdates"><span class="slider"></span></label></div>
+            <div class="preference-card"><div><strong>Weekly Recap</strong><span>Show a weekly summary of spending, savings, and upcoming bills.</span></div><label class="switch"><input type="checkbox" id="weeklyRecap" checked><span class="slider"></span></label></div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="save-notifications" type="button">Save Notifications</button>
+            <button class="btn btn-secondary" id="cancel-notifications" type="button">Cancel</button>
+          </div>
+
+          <div class="feedback neutral" id="notifications-feedback">Choose which alerts matter to you.</div>
+          <div class="note">Future push notifications can read from <code>user.preferences.notifications</code>.</div>
+        </div>
+      </section>
+    </div>
+
+    <div id="dashboard-display-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="dashboard-display-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>Dashboard Display</h1>
+        <p>Choose what appears on Overview and what stays tucked away.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Overview Cards</h2>
+          <div class="section-sub">These settings control visibility only. Money logic belongs in each tab.</div>
+        </div>
+        <div class="section-body">
+          <div class="dashboard-card-grid">
+            <div class="dashboard-card-option"><div class="option-top"><div><strong>Financial Health Score</strong><span>Main score card at the top of Overview.</span></div><label class="switch"><input type="checkbox" id="showHealthScore" checked><span class="slider"></span></label></div></div>
+            <div class="dashboard-card-option"><div class="option-top"><div><strong>Actionable Insights</strong><span>Top 2 insight cards on Overview.</span></div><label class="switch"><input type="checkbox" id="showInsights" checked><span class="slider"></span></label></div></div>
+            <div class="dashboard-card-option"><div class="option-top"><div><strong>Upcoming Impact</strong><span>Bills, expected balance, and next paycheck.</span></div><label class="switch"><input type="checkbox" id="showUpcomingImpact" checked><span class="slider"></span></label></div></div>
+            <div class="dashboard-card-option"><div class="option-top"><div><strong>Money Snapshot</strong><span>Budget left, savings, emergency fund, and net worth.</span></div><label class="switch"><input type="checkbox" id="showMoneySnapshot" checked><span class="slider"></span></label></div></div>
+            <div class="dashboard-card-option"><div class="option-top"><div><strong>Recent Activity</strong><span>Short event feed for recent changes and alerts.</span></div><label class="switch"><input type="checkbox" id="showRecentActivity"><span class="slider"></span></label></div></div>
+            <div class="dashboard-card-option"><div class="option-top"><div><strong>Collapse Optional Cards</strong><span>Keep optional sections collapsed by default.</span></div><label class="switch"><input type="checkbox" id="collapseOptionalCards" checked><span class="slider"></span></label></div></div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="save-dashboard-display" type="button">Save Display</button>
+            <button class="btn btn-secondary" id="cancel-dashboard-display" type="button">Cancel</button>
+          </div>
+
+          <div class="feedback neutral" id="dashboard-display-feedback">Pick what should show on Overview.</div>
+          <div class="note">Future Overview rendering can read from <code>user.preferences.dashboardDisplay</code>.</div>
+        </div>
+      </section>
+    </div>
+
+
+    <div id="storage-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="storage-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>Storage Mode</h1>
+        <p>Choose how this app should treat your financial data as the product grows.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Data Storage Preference</h2>
+          <div class="section-sub">This is preference-only for now. The app currently uses localStorage.</div>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+            <div class="field full">
+              <label for="storageMode">Preferred storage mode</label>
+              <select id="storageMode">
+                <option>Local Only</option>
+                <option>Manual + Import</option>
+                <option>Optional Cloud Sync Later</option>
+                <option>Connected Accounts Later</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="dataEntryDefault">Default entry method</label>
+              <select id="dataEntryDefault">
+                <option>Manual Entry</option>
+                <option>Spreadsheet Import</option>
+                <option>Bank Sync Later</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="info-grid" style="margin-top:14px">
+            <div class="info-card">
+              <strong>Privacy-first direction</strong>
+              <span>Users can start manually and keep data local. Sync, imports, and connected accounts should stay optional instead of required.</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="save-storage" type="button">Save Storage Preference</button>
+            <button class="btn btn-secondary" id="cancel-storage" type="button">Cancel</button>
+          </div>
+
+          <div class="feedback neutral" id="storage-feedback">Choose your preferred storage behavior.</div>
+        </div>
+      </section>
+    </div>
+
+    <div id="export-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="export-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>Export Data</h1>
+        <p>Prepare backup and export tools without connecting them to a backend yet.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Export Options</h2>
+          <div class="section-sub">These buttons are placeholders until real transaction and budget data are connected.</div>
+        </div>
+        <div class="section-body">
+          <div class="info-grid">
+            <div class="info-card">
+              <strong>Export Profile JSON</strong>
+              <span>Downloads the current localStorage user object so you can test how saved settings are structured.</span>
+              <div class="actions">
+                <button class="btn btn-primary" id="download-profile-json" type="button">Download Profile JSON</button>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <strong>Future exports</strong>
+              <span>Later this section can include CSV exports for transactions, budget categories, net worth, goals, and reports.</span>
+            </div>
+          </div>
+
+          <div class="danger-zone">
+            <strong>Clear saved profile</strong>
+            <span>This only clears the saved profile/preferences object currently stored in this browser.</span>
+            <div class="actions">
+              <button class="btn btn-danger" id="clear-storage-export" type="button">Clear Saved Profile</button>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" id="cancel-export" type="button">Back to Settings</button>
+          </div>
+
+          <div class="feedback neutral" id="export-feedback">Export tools will expand as more tabs are connected.</div>
+        </div>
+      </section>
+    </div>
+
+    <div id="about-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="about-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>About This App</h1>
+        <p>A future-focused budgeting tool built around clarity, guidance, and financial confidence.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">App Information</h2>
+          <div class="section-sub">Simple mission, version, and support details.</div>
+        </div>
+        <div class="section-body">
+          <div class="info-grid">
+            <div class="info-card">
+              <strong>Mission</strong>
+              <span>Help users understand what is happening with their money now, what is coming next, and what they can do to improve their financial future instead of only reviewing the past.</span>
+            </div>
+
+            <div class="info-card clickable" id="open-how-to-use-view">
+              <strong>How to Use This App</strong>
+              <span>
+                1. Sign up and create your profile<br>
+                2. Complete Budget Setup<br>
+                3. Finish setup on Overview<br>
+                4. Add income, bills, and categories later<br>
+                5. Track progress through dashboard insights<br>
+                6. Review your financial health score + benchmarks
+              </span>
+              <span class="mini-link">Open guide →</span>
+            </div>
+
+            <div class="info-card">
+              <strong>Product Direction</strong>
+              <span>Budgeting, forecasting, investing, net worth tracking, retirement planning, military/TSP support, shared couple budgeting, and AI financial coaching.</span>
+            </div>
+
+            <div class="info-card">
+              <strong>Privacy Direction</strong>
+              <span>Start local-first and manual-entry friendly. Sync, imports, and connected accounts should stay optional features later—not required.</span>
+            </div>
+
+            <div class="info-card clickable" id="open-support-help-view">
+              <strong>Support & Help</strong>
+              <span>FAQ, troubleshooting, export/import help, privacy policy, terms, and support contact options will live here as the app moves beyond prototype stage.</span>
+              <span class="mini-link">Open help center →</span>
+            </div>
+
+            <div class="info-card">
+              <strong>Feature Roadmap</strong>
+              <span>
+                Coming Soon:<br>
+                • Receipt scanning<br>
+                • AI coaching insights<br>
+                • Retirement / FIRE calculator<br>
+                • Spouse & shared budgeting<br>
+                • Investment automation<br>
+                • Subscription optimization<br>
+                • Excel import + export improvements
+              </span>
+            </div>
+          </div>
+
+          <div class="version-badge">Prototype version: Onboarding v1</div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" id="cancel-about" type="button">Back to Settings</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+
+    <div id="delete-account-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="delete-account-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>Delete / Reset Account</h1>
+        <p>Prototype-safe reset controls for local data stored in this browser.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Reset Local Prototype Data</h2>
+          <div class="section-sub">This clears localStorage for this prototype. It does not delete a real server account.</div>
+        </div>
+        <div class="section-body">
+          <div class="danger-zone">
+            <strong>Confirm reset</strong>
+            <span>Type <b>DELETE</b> below to clear saved profile and preference data from this browser.</span>
+            <div class="form-grid" style="margin-top:14px">
+              <div class="field full">
+                <label for="deleteConfirm">Type DELETE</label>
+                <input id="deleteConfirm" type="text" placeholder="DELETE">
+              </div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-danger" id="confirm-delete-account" type="button">Clear Saved Profile</button>
+              <button class="btn btn-secondary" id="cancel-delete-account" type="button">Cancel</button>
+            </div>
+            <div class="feedback neutral" id="delete-account-feedback">This is protected so users do not reset by accident.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+
+    <div id="how-to-use-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="how-to-use-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to About
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>How to Use This App</h1>
+        <p>A simple guide for getting value from the app as each tab is built.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Quick Start Guide</h2>
+          <div class="section-sub">Follow this order so the dashboard and insights have the right data.</div>
+        </div>
+        <div class="section-body">
+          <div class="help-list">
+            <div class="help-step"><strong>Step 1: Sign up</strong><span>Create your local profile with name, email, profile mode, data style, and optional avatar.</span></div>
+            <div class="help-step"><strong>Step 2: Budget Setup</strong><span>Add income, pay frequency, paycheck anchor date, default budget view, and emergency fund target.</span></div>
+            <div class="help-step"><strong>Step 3: Overview Dashboard</strong><span>Finish setup on Overview, review your financial snapshot, then dismiss the onboarding banner when ready.</span></div>
+            <div class="help-step"><strong>After onboarding: Build the full Budget tab</strong><span>Add recurring bills, variable categories, sinking funds, reimbursements, and future forecasting rules.</span></div>
+            <div class="help-step"><strong>Use Settings anytime</strong><span>Update profile, privacy preferences, notifications, dashboard display, export data, or reset onboarding.</span></div>
+            <div class="help-step"><strong>Improve over time</strong><span>Use insights, benchmarks, emergency savings, and financial health scoring to see what to improve next.</span></div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" id="close-how-to-use" type="button">Back to About</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="support-help-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="support-help-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to About
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>Support & Help</h1>
+        <p>Help topics, troubleshooting, and future support links.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Help Center</h2>
+          <div class="section-sub">This will grow as the app moves beyond prototype stage.</div>
+        </div>
+        <div class="section-body">
+          <div class="help-list">
+            <div class="faq-item"><strong>FAQ</strong><span>Questions about setup, dashboard cards, local storage, budget cycles, and profile modes can live here.</span></div>
+            <div class="faq-item"><strong>Troubleshooting</strong><span>Help users fix issues like saved data not appearing, browser storage being cleared, or imported files not loading.</span></div>
+            <div class="faq-item"><strong>Import / Export Help</strong><span>Explain how to export a JSON backup, restore a backup, and later export CSV or spreadsheet reports.</span></div>
+            <div class="faq-item"><strong>Privacy Policy</strong><span>Future legal page explaining what is stored locally, what is optional, and what happens if sync is enabled later.</span></div>
+            <div class="faq-item"><strong>Terms</strong><span>Future terms page explaining that the app provides guidance and education, not personalized financial advice.</span></div>
+            <div class="faq-item"><strong>Contact Support</strong><span>Support email, feedback form, or bug report link can be added once the app is ready for testers.</span></div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" id="close-support-help" type="button">Back to About</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
   <script>
-    document.querySelectorAll('.toggle').forEach((button) => {
-      button.addEventListener('click', () => {
-        const id = button.getAttribute('aria-controls');
-        const panel = document.getElementById(id);
-        const expanded = button.getAttribute('aria-expanded') === 'true';
-        button.setAttribute('aria-expanded', String(!expanded));
-        panel.hidden = expanded;
-      });
-    });
+    const STORAGE_KEY = 'budgetAppUser';
 
-    const modeButtons = document.querySelectorAll('.mode-switch button');
-    const periodLabel = document.getElementById('period-label');
-    const periodModeLabel = document.getElementById('period-mode-label');
-    const periodHint = document.getElementById('period-hint');
-    const prevBtn = document.getElementById('prev-period');
-    const nextBtn = document.getElementById('next-period');
+    const defaultUser = {
+      profile: {
+        firstName: 'Gabriel',
+        lastName: 'Lopez',
+        email: 'gabriel.lopez1311@yahoo.com',
+        profileMode: 'Individual',
+        entryPreference: 'Manual Entry',
+        joinedDate: 'April 2026',
+        lastSaved: '',
+        avatarUrl: ''
+      },
+      preferences: {
+        notifications: {
+          billReminders: true,
+          overspendingAlerts: true,
+          smartInsightAlerts: true,
+          goalUpdates: false,
+          weeklyRecap: true
+        },
+        dashboardDisplay: {
+          showHealthScore: true,
+          showInsights: true,
+          showUpcomingImpact: true,
+          showMoneySnapshot: true,
+          showRecentActivity: false,
+          collapseOptionalCards: true
+        },
+        privacyData: {
+          storageMode: 'Local Only',
+          dataEntryDefault: 'Manual Entry'
+        }
+      },
+      security: {}
+    };
 
-    let currentMode = 'monthly';
-    let currentDate = new Date(2026, 3, 1);
-
-    // Change this one date later to match the user's real paycheck anchor.
-    const biweeklyAnchor = new Date(2026, 3, 10);
-
-    function startOfDay(date) {
-      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    }
-
-    function addDays(date, days) {
-      const copy = new Date(date);
-      copy.setDate(copy.getDate() + days);
-      return copy;
-    }
-
-    function formatMonth(date) {
-      return date.toLocaleDateString('en-US', {
-        month: 'long',
-        year: 'numeric'
-      });
-    }
-
-    function formatShort(date) {
-      return date.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      });
-    }
-
-    function daysBetween(a, b) {
-      const ms = startOfDay(a) - startOfDay(b);
-      return Math.floor(ms / 86400000);
-    }
-
-    function getAnchoredBiweeklyRange(date) {
-      const diff = daysBetween(date, biweeklyAnchor);
-      const cycleIndex = Math.floor(diff / 14);
-      const start = addDays(biweeklyAnchor, cycleIndex * 14);
-      const end = addDays(start, 13);
-      return { start, end };
-    }
-
-    function shiftPeriod(direction) {
-      if (currentMode === 'monthly') {
-        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + direction, 1);
-      } else if (currentMode === 'biweekly') {
-        currentDate = addDays(currentDate, 14 * direction);
-      } else {
-        currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + direction, 1);
-      }
-      renderPeriod();
-    }
-
-    function renderPeriod() {
-      if (currentMode === 'monthly') {
-        periodModeLabel.textContent = 'Selected Month';
-        periodLabel.textContent = formatMonth(currentDate);
-        periodHint.textContent = 'Switch to Biweekly for paycheck-based periods.';
-      } else if (currentMode === 'biweekly') {
-        periodModeLabel.textContent = 'Selected Pay Period';
-        const range = getAnchoredBiweeklyRange(currentDate);
-        periodLabel.textContent = formatShort(range.start) + ' – ' + formatShort(range.end);
-        periodHint.textContent = 'Biweekly cycle anchored to ' + formatShort(biweeklyAnchor) + '.';
-      } else {
-        periodModeLabel.textContent = 'Selected View';
-        const range = getAnchoredBiweeklyRange(currentDate);
-        periodLabel.textContent = formatMonth(currentDate) + ' · ' + formatShort(range.start) + ' – ' + formatShort(range.end);
-        periodHint.textContent = 'Shows month plus the active anchored pay period.';
+    function getStoredUser() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : structuredClone(defaultUser);
+      } catch (error) {
+        return structuredClone(defaultUser);
       }
     }
 
-    modeButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        modeButtons.forEach((b) => {
-          b.classList.remove('active');
-          b.setAttribute('aria-selected', 'false');
-        });
-        button.classList.add('active');
-        button.setAttribute('aria-selected', 'true');
-        currentMode = button.dataset.mode;
-        renderPeriod();
+    function saveStoredUser(user) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(user, null, 2));
+    }
+
+    function getInitials(firstName, lastName) {
+      return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase();
+    }
+
+    function showFeedback(element, text, type) {
+      element.textContent = text;
+      element.className = `feedback show ${type}`;
+    }
+
+    let settingsScrollPosition = 0;
+
+    function showView(viewId, options = {}) {
+      const currentSettingsView = document.getElementById('settings-view');
+
+      if (viewId !== 'settings-view' && currentSettingsView.classList.contains('active')) {
+        settingsScrollPosition = window.scrollY;
+      }
+
+      document.querySelectorAll('.view-panel').forEach((view) => view.classList.remove('active'));
+      document.getElementById(viewId).classList.add('active');
+
+      if (options.restoreScroll) {
+        window.scrollTo({ top: settingsScrollPosition, behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function goToSettings() {
+      showView('settings-view', { restoreScroll: true });
+    }
+
+    function clearPasswordFields() {
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+    }
+
+    const fields = {
+      firstName: document.getElementById('firstName'),
+      lastName: document.getElementById('lastName'),
+      email: document.getElementById('email'),
+      profileMode: document.getElementById('profileMode'),
+      entryPreference: document.getElementById('entryPreference')
+    };
+
+    const displayName = document.getElementById('display-name');
+    const displayEmail = document.getElementById('display-email');
+    const avatarInitials = document.getElementById('avatar-initials');
+    const displayModePill = document.getElementById('display-mode-pill');
+    const displayEntryPill = document.getElementById('display-entry-pill');
+    const displayStoragePill = document.getElementById('display-storage-pill');
+    const displayJoinedDate = document.getElementById('display-joined-date');
+    const displayLastSaved = document.getElementById('display-last-saved');
+    const avatarPreview = document.getElementById('avatar-preview');
+    const avatarFile = document.getElementById('avatar-file');
+    const deleteAccountFeedback = document.getElementById('delete-account-feedback');
+    const profileFeedback = document.getElementById('profile-feedback');
+    const dataFeedback = document.getElementById('data-feedback');
+    const passwordFeedback = document.getElementById('password-feedback');
+    const notificationsFeedback = document.getElementById('notifications-feedback');
+    const dashboardDisplayFeedback = document.getElementById('dashboard-display-feedback');
+
+    const notificationFields = {
+      billReminders: document.getElementById('billReminders'),
+      overspendingAlerts: document.getElementById('overspendingAlerts'),
+      smartInsightAlerts: document.getElementById('smartInsightAlerts'),
+      goalUpdates: document.getElementById('goalUpdates'),
+      weeklyRecap: document.getElementById('weeklyRecap')
+    };
+
+    const dashboardDisplayFields = {
+      showHealthScore: document.getElementById('showHealthScore'),
+      showInsights: document.getElementById('showInsights'),
+      showUpcomingImpact: document.getElementById('showUpcomingImpact'),
+      showMoneySnapshot: document.getElementById('showMoneySnapshot'),
+      showRecentActivity: document.getElementById('showRecentActivity'),
+      collapseOptionalCards: document.getElementById('collapseOptionalCards')
+    };
+
+    const privacyDataFields = {
+      storageMode: document.getElementById('storageMode'),
+      dataEntryDefault: document.getElementById('dataEntryDefault')
+    };
+
+    const storageFeedback = document.getElementById('storage-feedback');
+    const exportFeedback = document.getElementById('export-feedback');
+
+    function getPreferences(user) {
+      return {
+        notifications: {
+          ...defaultUser.preferences.notifications,
+          ...(user.preferences?.notifications || {})
+        },
+        dashboardDisplay: {
+          ...defaultUser.preferences.dashboardDisplay,
+          ...(user.preferences?.dashboardDisplay || {})
+        },
+        privacyData: {
+          ...defaultUser.preferences.privacyData,
+          ...(user.preferences?.privacyData || {})
+        }
+      };
+    }
+
+    function renderNotifications(user) {
+      const preferences = getPreferences(user);
+      Object.entries(notificationFields).forEach(([key, input]) => {
+        input.checked = Boolean(preferences.notifications[key]);
       });
+    }
+
+    function renderDashboardDisplay(user) {
+      const preferences = getPreferences(user);
+      Object.entries(dashboardDisplayFields).forEach(([key, input]) => {
+        input.checked = Boolean(preferences.dashboardDisplay[key]);
+      });
+    }
+
+    function collectCheckboxValues(fieldMap) {
+      const values = {};
+      Object.entries(fieldMap).forEach(([key, input]) => {
+        values[key] = input.checked;
+      });
+      return values;
+    }
+
+    function renderPrivacyData(user) {
+      const preferences = getPreferences(user);
+      privacyDataFields.storageMode.value = preferences.privacyData.storageMode;
+      privacyDataFields.dataEntryDefault.value = preferences.privacyData.dataEntryDefault;
+    }
+
+    function collectPrivacyData() {
+      return {
+        storageMode: privacyDataFields.storageMode.value,
+        dataEntryDefault: privacyDataFields.dataEntryDefault.value
+      };
+    }
+
+    function downloadProfileJson() {
+      const user = getStoredUser();
+      const blob = new Blob([JSON.stringify(user, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'budget-app-profile.json';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    let selectedAvatarUrl = '';
+
+    function renderAvatar(target, profile) {
+      const initials = getInitials(profile.firstName, profile.lastName) || 'U';
+      const avatarUrl = profile.avatarUrl || '';
+
+      if (!target) return;
+
+      if (avatarUrl) {
+        target.innerHTML = `<img src="${avatarUrl}" alt="Profile photo">`;
+      } else {
+        target.textContent = initials;
+      }
+    }
+
+    function renderProfile(user) {
+      const profile = user.profile || defaultUser.profile;
+
+      fields.firstName.value = profile.firstName || '';
+      fields.lastName.value = profile.lastName || '';
+      fields.email.value = profile.email || '';
+      fields.profileMode.value = profile.profileMode || 'Individual';
+      fields.entryPreference.value = profile.entryPreference || 'Manual Entry';
+
+      displayName.textContent = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || 'User';
+      displayEmail.textContent = profile.email || 'No email set';
+      selectedAvatarUrl = profile.avatarUrl || '';
+      renderAvatar(avatarInitials, profile);
+      renderAvatar(avatarPreview, profile);
+      displayModePill.textContent = `App Mode: ${profile.profileMode || 'Individual'}`;
+      displayEntryPill.textContent = profile.entryPreference || 'Manual Entry';
+      if (displayStoragePill) {
+        displayStoragePill.textContent = user.preferences?.privacyData?.storageMode || 'Local-first storage';
+      }
+      if (displayJoinedDate) {
+        displayJoinedDate.textContent = `Member since ${profile.joinedDate || 'April 2026'}`;
+      }
+      if (displayLastSaved) {
+        displayLastSaved.textContent = profile.lastSaved ? `Last saved: ${profile.lastSaved}` : 'Last saved: Not yet';
+      }
+    }
+
+    function collectProfile() {
+      const existing = getStoredUser();
+      return {
+        ...existing,
+        profile: {
+          firstName: fields.firstName.value.trim(),
+          lastName: fields.lastName.value.trim(),
+          email: fields.email.value.trim(),
+          profileMode: fields.profileMode.value,
+          entryPreference: fields.entryPreference.value,
+          joinedDate: existing.profile?.joinedDate || 'April 2026',
+          lastSaved: new Date().toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit'
+          }),
+          avatarUrl: selectedAvatarUrl || ''
+        }
+      };
+    }
+
+    document.getElementById('open-personal-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderProfile(getStoredUser());
+      showFeedback(profileFeedback, 'Edit your information and save when ready.', 'neutral');
+      showView('personal-view');
     });
 
-    prevBtn.addEventListener('click', () => shiftPeriod(-1));
-    nextBtn.addEventListener('click', () => shiftPeriod(1));
+    document.getElementById('choose-avatar').addEventListener('click', () => {
+      avatarFile.click();
+    });
 
-    renderPeriod();
+    avatarFile.addEventListener('change', () => {
+      const file = avatarFile.files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        selectedAvatarUrl = reader.result;
+        const previewProfile = {
+          firstName: fields.firstName.value,
+          lastName: fields.lastName.value,
+          avatarUrl: selectedAvatarUrl
+        };
+        renderAvatar(avatarPreview, previewProfile);
+        showFeedback(profileFeedback, 'Photo selected. Save profile to keep it.', 'neutral');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById('remove-avatar').addEventListener('click', () => {
+      selectedAvatarUrl = '';
+      const previewProfile = {
+        firstName: fields.firstName.value,
+        lastName: fields.lastName.value,
+        avatarUrl: ''
+      };
+      renderAvatar(avatarPreview, previewProfile);
+      showFeedback(profileFeedback, 'Photo removed. Save profile to keep this change.', 'neutral');
+    });
+
+    document.getElementById('open-password-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      clearPasswordFields();
+      showFeedback(passwordFeedback, 'Password changes will connect to authentication later.', 'neutral');
+      showView('password-view');
+    });
+
+    document.getElementById('open-notifications-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderNotifications(getStoredUser());
+      showFeedback(notificationsFeedback, 'Choose which alerts matter to you.', 'neutral');
+      showView('notifications-view');
+    });
+
+    document.getElementById('open-dashboard-display-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderDashboardDisplay(getStoredUser());
+      showFeedback(dashboardDisplayFeedback, 'Pick what should show on Overview.', 'neutral');
+      showView('dashboard-display-view');
+    });
+
+    document.getElementById('open-storage-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderPrivacyData(getStoredUser());
+      showFeedback(storageFeedback, 'Choose your preferred storage behavior.', 'neutral');
+      showView('storage-view');
+    });
+
+    document.getElementById('open-export-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      showFeedback(exportFeedback, 'Export tools will expand as more tabs are connected.', 'neutral');
+      showView('export-view');
+    });
+
+    document.getElementById('open-about-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      showView('about-view');
+    });
+
+    document.getElementById('open-how-to-use-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      showView('how-to-use-view');
+    });
+
+    document.getElementById('open-support-help-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      showView('support-help-view');
+    });
+
+    document.getElementById('open-delete-account-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      document.getElementById('deleteConfirm').value = '';
+      showFeedback(deleteAccountFeedback, 'This is protected so users do not reset by accident.', 'neutral');
+      showView('delete-account-view');
+    });
+
+    document.getElementById('personal-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderProfile(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('password-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      clearPasswordFields();
+      goToSettings();
+    });
+
+    document.getElementById('cancel-profile').addEventListener('click', () => {
+      renderProfile(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('cancel-password').addEventListener('click', () => {
+      clearPasswordFields();
+      goToSettings();
+    });
+
+    document.getElementById('save-profile').addEventListener('click', () => {
+      const user = collectProfile();
+      saveStoredUser(user);
+      renderProfile(user);
+      showFeedback(dataFeedback, 'Profile saved.', 'success');
+      goToSettings();
+    });
+
+    document.getElementById('reset-profile').addEventListener('click', () => {
+      renderProfile(getStoredUser());
+      showFeedback(profileFeedback, 'Form reset to last saved values.', 'neutral');
+    });
+
+    document.getElementById('update-password').addEventListener('click', () => {
+      const currentPassword = document.getElementById('currentPassword');
+      const newPassword = document.getElementById('newPassword');
+      const confirmPassword = document.getElementById('confirmPassword');
+
+      if (!currentPassword.value || !newPassword.value || !confirmPassword.value) {
+        showFeedback(passwordFeedback, 'Fill out all password fields first or use Cancel to return.', 'neutral');
+        return;
+      }
+
+      if (newPassword.value.length < 8) {
+        showFeedback(passwordFeedback, 'New password should be at least 8 characters.', 'neutral');
+        return;
+      }
+
+      if (newPassword.value !== confirmPassword.value) {
+        showFeedback(passwordFeedback, 'New password and confirmation do not match.', 'neutral');
+        return;
+      }
+
+      clearPasswordFields();
+      showFeedback(dataFeedback, 'Password form validated. Authentication wiring comes later.', 'success');
+      goToSettings();
+    });
+
+    document.getElementById('clear-password-form').addEventListener('click', () => {
+      clearPasswordFields();
+      showFeedback(passwordFeedback, 'Password form cleared.', 'neutral');
+    });
+
+    document.getElementById('notifications-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderNotifications(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('dashboard-display-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderDashboardDisplay(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('cancel-notifications').addEventListener('click', () => {
+      renderNotifications(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('cancel-dashboard-display').addEventListener('click', () => {
+      renderDashboardDisplay(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('save-notifications').addEventListener('click', () => {
+      const user = getStoredUser();
+      const preferences = getPreferences(user);
+      const updatedUser = {
+        ...user,
+        preferences: {
+          ...user.preferences,
+          ...preferences,
+          notifications: collectCheckboxValues(notificationFields)
+        }
+      };
+      saveStoredUser(updatedUser);
+      showFeedback(dataFeedback, 'Notification preferences saved.', 'success');
+      goToSettings();
+    });
+
+    document.getElementById('save-dashboard-display').addEventListener('click', () => {
+      const user = getStoredUser();
+      const preferences = getPreferences(user);
+      const updatedUser = {
+        ...user,
+        preferences: {
+          ...user.preferences,
+          ...preferences,
+          dashboardDisplay: collectCheckboxValues(dashboardDisplayFields)
+        }
+      };
+      saveStoredUser(updatedUser);
+      showFeedback(dataFeedback, 'Dashboard display preferences saved.', 'success');
+      goToSettings();
+    });
+
+    document.getElementById('storage-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderPrivacyData(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('export-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      goToSettings();
+    });
+
+    document.getElementById('about-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      goToSettings();
+    });
+
+    document.getElementById('cancel-storage').addEventListener('click', () => {
+      renderPrivacyData(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('cancel-export').addEventListener('click', () => {
+      goToSettings();
+    });
+
+    document.getElementById('cancel-about').addEventListener('click', () => {
+      goToSettings();
+    });
+
+    document.getElementById('save-storage').addEventListener('click', () => {
+      const user = getStoredUser();
+      const preferences = getPreferences(user);
+      const updatedUser = {
+        ...user,
+        preferences: {
+          ...user.preferences,
+          ...preferences,
+          privacyData: collectPrivacyData()
+        }
+      };
+      saveStoredUser(updatedUser);
+      renderProfile(updatedUser);
+      showFeedback(dataFeedback, 'Storage preference saved.', 'success');
+      goToSettings();
+    });
+
+    document.getElementById('download-profile-json').addEventListener('click', () => {
+      downloadProfileJson();
+      showFeedback(exportFeedback, 'Profile JSON downloaded.', 'success');
+    });
+
+    document.getElementById('clear-storage-export').addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      const defaultCopy = structuredClone(defaultUser);
+      renderProfile(defaultCopy);
+      renderNotifications(defaultCopy);
+      renderDashboardDisplay(defaultCopy);
+      renderPrivacyData(defaultCopy);
+      showFeedback(exportFeedback, 'Saved profile cleared. Default values restored.', 'neutral');
+    });
+
+    document.getElementById('delete-account-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      document.getElementById('deleteConfirm').value = '';
+      goToSettings();
+    });
+
+    document.getElementById('cancel-delete-account').addEventListener('click', () => {
+      document.getElementById('deleteConfirm').value = '';
+      goToSettings();
+    });
+
+    document.getElementById('confirm-delete-account').addEventListener('click', () => {
+      const confirmation = document.getElementById('deleteConfirm').value.trim();
+      if (confirmation !== 'DELETE') {
+        showFeedback(deleteAccountFeedback, 'Type DELETE to confirm reset.', 'neutral');
+        return;
+      }
+
+      localStorage.removeItem(STORAGE_KEY);
+      const defaultCopy = structuredClone(defaultUser);
+      selectedAvatarUrl = '';
+      renderProfile(defaultCopy);
+      renderNotifications(defaultCopy);
+      renderDashboardDisplay(defaultCopy);
+      renderPrivacyData(defaultCopy);
+      showFeedback(dataFeedback, 'Local prototype data cleared.', 'neutral');
+      goToSettings();
+    });
+
+    document.getElementById('how-to-use-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      showView('about-view');
+    });
+
+    document.getElementById('close-how-to-use').addEventListener('click', () => {
+      showView('about-view');
+    });
+
+    document.getElementById('support-help-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      showView('about-view');
+    });
+
+    document.getElementById('close-support-help').addEventListener('click', () => {
+      showView('about-view');
+    });
+
+    document.getElementById('reset-onboarding-button').addEventListener('click', (event) => {
+      event.preventDefault();
+      localStorage.removeItem('budgetAppOnboardingComplete');
+      showFeedback(dataFeedback, 'Onboarding reset. The Step 3 banner will show again on Overview.', 'success');
+    });
+
+    const initialUser = getStoredUser();
+    renderProfile(initialUser);
+    renderNotifications(initialUser);
+    renderDashboardDisplay(initialUser);
+    renderPrivacyData(initialUser);
   </script>
 </body>
 </html>
