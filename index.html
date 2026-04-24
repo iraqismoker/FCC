@@ -95,6 +95,31 @@
   }
 }
 
+
+.budget-row.compact-row .row-left strong{
+  font-size:16px !important;
+  font-weight:650 !important;
+}
+.budget-row.compact-row .row-amount{
+  font-size:16px !important;
+  font-weight:650 !important;
+}
+.budget-row.compact-row.add-row div:first-child{
+  font-size:16px !important;
+  font-weight:700 !important;
+}
+@media(max-width:520px){
+  .budget-row.compact-row .row-left strong{
+    font-size:18px !important;
+  }
+  .budget-row.compact-row .row-amount{
+    font-size:18px !important;
+  }
+  .budget-row.compact-row.add-row div:first-child{
+    font-size:18px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -145,7 +170,7 @@
 
   <div id="billEditView" class="view">
     <header class="topbar"><a href="#" class="back" id="billEditBack"><span>‹</span>Back</a></header>
-    <section class="section"><div class="section-head"><div><h2 class="section-title" id="billEditTitle">Add Fixed Bill</h2><div class="section-sub">Add or update a recurring bill.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Bill name</label><input id="billName" placeholder="Mortgage"></div><div class="field"><label>Planned amount</label><input id="billAmount" type="number" inputmode="decimal" placeholder="1200"></div><div class="field"><label>Paid this month</label><input id="billPaid" type="number" inputmode="decimal" placeholder="0"></div><div class="field"><label>Due day</label><input id="billDueDay" type="number" min="1" max="31" placeholder="1"></div><div class="field"><label>Category</label><select id="billCategory"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Debt Payment</option><option>Subscription</option><option>Phone / Internet</option><option>Transportation</option><option>Childcare</option><option>Medical</option><option>Other</option></select></div><div class="field"><label>Frequency</label><select id="billFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Quarterly</option><option>Semiannual</option><option>Annual</option></select></div></form><div class="actions"><button class="btn primary" id="saveBill">Save Bill</button><button class="btn secondary" id="cancelBill">Cancel</button></div><div class="feedback neutral" id="billFeedback">Fixed bills save locally in this browser.</div></div></section>
+    <section class="section"><div class="section-head"><div><h2 class="section-title" id="billEditTitle">Add Bills</h2><div class="section-sub">Add or update a recurring bill.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Bill name</label><input id="billName" placeholder="Mortgage"></div><div class="field"><label>Planned amount</label><input id="billAmount" type="number" inputmode="decimal" placeholder="1200"></div><div class="field"><label>Paid this month</label><input id="billPaid" type="number" inputmode="decimal" placeholder="0"></div><div class="field"><label>Due day</label><input id="billDueDay" type="number" min="1" max="31" placeholder="1"></div><div class="field"><label>Category</label><select id="billCategory"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Debt Payment</option><option>Subscription</option><option>Phone / Internet</option><option>Transportation</option><option>Childcare</option><option>Medical</option><option>Other</option></select></div><div class="field"><label>Frequency</label><select id="billFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Quarterly</option><option>Semiannual</option><option>Annual</option></select></div></form><div class="actions"><button class="btn primary" id="saveBill">Save Bill</button><button class="btn secondary" id="cancelBill">Cancel</button></div><div class="feedback neutral" id="billFeedback">Fixed bills save locally in this browser.</div></div></section>
   </div>
 </div>
 
@@ -195,7 +220,7 @@ function render(){
  const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), left=inc-bills, load=inc?Math.round(bills/inc*100):0;
  summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';updateMeter(inc,bills);incomeModeLabel.textContent=modeLabel();billModeLabel.textContent=modeLabel();
  incomeList.innerHTML=b.incomeSources.map(i=>`<a href="#" class="budget-row compact-row" data-income="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type} · ${i.frequency}</span></div><div class="row-amount">${money(itemModeAmount(i,'income'))}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addIncomeRow"><div>Add Income</div><div class="chev">›</div></a>`;
- billList.innerHTML=b.fixedBills.map(i=>`<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span></div><div class="row-amount">${money(itemModeAmount(i,'bill'))}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Fixed Bill</div><div class="chev">›</div></a>`;
+ billList.innerHTML=b.fixedBills.map(i=>`<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span></div><div class="row-amount">${money(itemModeAmount(i,'bill'))}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Bills</div><div class="chev">›</div></a>`;
  document.querySelectorAll('[data-income]').forEach(r=>r.onclick=e=>{e.preventDefault();openIncomeDetail(r.dataset.income)});
  document.querySelectorAll('[data-bill]').forEach(r=>r.onclick=e=>{e.preventDefault();openBillDetail(r.dataset.bill)});
  addIncomeRow.onclick=e=>{e.preventDefault();openIncomeEditor(null)};
@@ -208,7 +233,7 @@ function openIncomeDetail(i){const item=getIncome(i);if(!item)return;selectedInc
 function openBillDetail(i){const item=getBill(i);if(!item)return;selectedBillId=i;let planned=Number(item.monthlyAmount||0),paid=Number(item.paid||0),left=Math.max(planned-paid,0);billAvatar.textContent=initials(item.name);billNameDetail.textContent=item.name;billPaidDetail.textContent=money(paid);billPlannedDetail.textContent=money(planned);billLeftDetail.textContent=money(left);billCategoryDetail.textContent=item.category;billDueDayDetail.textContent=item.dueDay;billFrequencyDetail.textContent=item.frequency;billMonthlyDetail.textContent=money(planned);billActivityName.textContent=item.name;show('billDetailView')}
 
 function openIncomeEditor(i){selectedIncomeId=i;const item=i?getIncome(i):null;incomeEditTitle.textContent=item?'Edit Income':'Add Income';fIncome.name.value=item?.name||'';fIncome.amount.value=item?.amount||'';fIncome.received.value=item?.received||'';fIncome.type.value=item?.type||'Paycheck';fIncome.frequency.value=item?.frequency||'Monthly';show('incomeEditView')}
-function openBillEditor(i){selectedBillId=i;const item=i?getBill(i):null;billEditTitle.textContent=item?'Edit Fixed Bill':'Add Fixed Bill';fBill.name.value=item?.name||'';fBill.amount.value=item?.amount||'';fBill.paid.value=item?.paid||'';fBill.dueDay.value=item?.dueDay||'';fBill.category.value=item?.category||'Housing';fBill.frequency.value=item?.frequency||'Monthly';show('billEditView')}
+function openBillEditor(i){selectedBillId=i;const item=i?getBill(i):null;billEditTitle.textContent=item?'Edit Fixed Bill':'Add Bills';fBill.name.value=item?.name||'';fBill.amount.value=item?.amount||'';fBill.paid.value=item?.paid||'';fBill.dueDay.value=item?.dueDay||'';fBill.category.value=item?.category||'Housing';fBill.frequency.value=item?.frequency||'Monthly';show('billEditView')}
 
 function saveIncomeFn(){const name=fIncome.name.value.trim(),amount=Number(fIncome.amount.value||0);if(!name||amount<=0){feedback('incomeFeedback','Add an income name and planned amount first.');return}const u=getUser(),b=budget(u),item={id:selectedIncomeId||id('income'),name,amount,received:Number(fIncome.received.value||0),type:fIncome.type.value,frequency:fIncome.frequency.value,monthlyAmount:monthly(amount,fIncome.frequency.value)};const incomeSources=selectedIncomeId?b.incomeSources.map(x=>x.id===selectedIncomeId?item:x):[...b.incomeSources,item];const updated={...u,budget:{...b,incomeSources}};saveUser(updated);render();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')}
 function saveBillFn(){const name=fBill.name.value.trim(),amount=Number(fBill.amount.value||0),due=Number(fBill.dueDay.value||0);if(!name||amount<=0){feedback('billFeedback','Add a bill name and planned amount first.');return}if(due<1||due>31){feedback('billFeedback','Enter a due day between 1 and 31.');return}const u=getUser(),b=budget(u),item={id:selectedBillId||id('bill'),name,amount,paid:Number(fBill.paid.value||0),dueDay:due,category:fBill.category.value,frequency:fBill.frequency.value,monthlyAmount:monthly(amount,fBill.frequency.value)};const fixedBills=selectedBillId?b.fixedBills.map(x=>x.id===selectedBillId?item:x):[...b.fixedBills,item];const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();selectedBillId?openBillDetail(selectedBillId):show('budgetView')}
