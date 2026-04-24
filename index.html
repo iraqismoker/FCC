@@ -43,13 +43,13 @@
     <section class="budget-meter">
       <div class="segmented" role="tablist" aria-label="Budget amount view">
         <button class="active" type="button" data-budget-mode="planned">Planned</button>
-        <button type="button" data-budget-mode="spent">Spent</button>
+        <button type="button" data-budget-mode="spent">Bills Paid</button>
         <button type="button" data-budget-mode="remaining">Remaining</button>
       </div>
       <div class="meter-result">
         <strong id="meterAmount">$0</strong>
         <span id="meterLabel">planned monthly income</span>
-        <span class="meter-info">i</span>
+        <span class="meter-info" title="Shows planned income, bills paid, and what remains after bills.">i</span>
       </div>
     </section>
 
@@ -102,8 +102,8 @@ function updateMeter(inc,bills){
  const spent=bills;
  const planned=inc;
  let amount=planned,label='planned monthly income';
- if(currentBudgetMode==='spent'){amount=spent;label='planned fixed bills'}
- if(currentBudgetMode==='remaining'){amount=remaining;label='remaining after fixed bills'}
+ if(currentBudgetMode==='spent'){amount=spent;label='fixed bills paid'}
+ if(currentBudgetMode==='remaining'){amount=remaining;label='after paid bills'}
  meterAmount.textContent=money(amount);
  meterLabel.textContent=label;
 }
