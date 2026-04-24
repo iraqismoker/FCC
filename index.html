@@ -338,6 +338,114 @@
       font-weight:600;
     }
 
+
+    .preference-list{
+      display:grid;
+      gap:14px;
+    }
+
+    .preference-card{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:16px;
+      align-items:center;
+      border:1px solid var(--line);
+      background:var(--card-2);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .preference-card strong{
+      display:block;
+      font-size:16px;
+      letter-spacing:-0.02em;
+      margin-bottom:4px;
+    }
+
+    .preference-card span{
+      display:block;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .switch{
+      position:relative;
+      width:52px;
+      height:30px;
+      display:inline-block;
+      flex:0 0 auto;
+    }
+
+    .switch input{
+      opacity:0;
+      width:0;
+      height:0;
+    }
+
+    .slider{
+      position:absolute;
+      cursor:pointer;
+      inset:0;
+      background:#d9e1ec;
+      border-radius:999px;
+      transition:.2s ease;
+    }
+
+    .slider:before{
+      content:"";
+      position:absolute;
+      width:24px;
+      height:24px;
+      left:3px;
+      top:3px;
+      background:#fff;
+      border-radius:50%;
+      box-shadow:0 2px 8px rgba(16,33,60,.18);
+      transition:.2s ease;
+    }
+
+    .switch input:checked + .slider{
+      background:var(--primary);
+    }
+
+    .switch input:checked + .slider:before{
+      transform:translateX(22px);
+    }
+
+    .dashboard-card-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .dashboard-card-option{
+      border:1px solid var(--line);
+      background:var(--card-2);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .dashboard-card-option .option-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .dashboard-card-option strong{
+      display:block;
+      font-size:16px;
+      margin-bottom:4px;
+      letter-spacing:-0.02em;
+    }
+
+    .dashboard-card-option span{
+      color:var(--muted);
+      font-size:14px;
+      font-weight:600;
+    }
+
     [hidden]{display:none !important}
 
     .view-panel{display:none}
@@ -370,6 +478,7 @@
       .app{padding:16px 12px 28px}
       .header-card{grid-template-columns:1fr}
       .form-grid{grid-template-columns:1fr}
+      .dashboard-card-grid{grid-template-columns:1fr}
       .profile-meta h1{font-size:28px}
     }
   </style>
@@ -682,6 +791,92 @@
     </div>
   </div>
 
+
+    <div id="notifications-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="notifications-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>Notifications</h1>
+        <p>Control reminders and alerts without changing your budget rules.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Alert Preferences</h2>
+          <div class="section-sub">Turn alerts on or off by category so notifications stay useful, not spammy.</div>
+        </div>
+        <div class="section-body">
+          <div class="preference-list">
+            <div class="preference-card"><div><strong>Bill Reminders</strong><span>Notify me before upcoming bills are due.</span></div><label class="switch"><input type="checkbox" id="billReminders" checked><span class="slider"></span></label></div>
+            <div class="preference-card"><div><strong>Overspending Alerts</strong><span>Warn me when a category is close to or over budget.</span></div><label class="switch"><input type="checkbox" id="overspendingAlerts" checked><span class="slider"></span></label></div>
+            <div class="preference-card"><div><strong>Smart Insight Alerts</strong><span>Send useful suggestions when the app detects a pattern.</span></div><label class="switch"><input type="checkbox" id="smartInsightAlerts" checked><span class="slider"></span></label></div>
+            <div class="preference-card"><div><strong>Goal Progress Updates</strong><span>Notify me when I hit milestones or fall behind.</span></div><label class="switch"><input type="checkbox" id="goalUpdates"><span class="slider"></span></label></div>
+            <div class="preference-card"><div><strong>Weekly Recap</strong><span>Show a weekly summary of spending, savings, and upcoming bills.</span></div><label class="switch"><input type="checkbox" id="weeklyRecap" checked><span class="slider"></span></label></div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="save-notifications" type="button">Save Notifications</button>
+            <button class="btn btn-secondary" id="cancel-notifications" type="button">Cancel</button>
+          </div>
+
+          <div class="feedback neutral" id="notifications-feedback">Choose which alerts matter to you.</div>
+          <div class="note">Future push notifications can read from <code>user.preferences.notifications</code>.</div>
+        </div>
+      </section>
+    </div>
+
+    <div id="dashboard-display-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="dashboard-display-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>Dashboard Display</h1>
+        <p>Choose what appears on Overview and what stays tucked away.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Overview Cards</h2>
+          <div class="section-sub">These settings control visibility only. Money logic belongs in each tab.</div>
+        </div>
+        <div class="section-body">
+          <div class="dashboard-card-grid">
+            <div class="dashboard-card-option"><div class="option-top"><div><strong>Financial Health Score</strong><span>Main score card at the top of Overview.</span></div><label class="switch"><input type="checkbox" id="showHealthScore" checked><span class="slider"></span></label></div></div>
+            <div class="dashboard-card-option"><div class="option-top"><div><strong>Actionable Insights</strong><span>Top 2 insight cards on Overview.</span></div><label class="switch"><input type="checkbox" id="showInsights" checked><span class="slider"></span></label></div></div>
+            <div class="dashboard-card-option"><div class="option-top"><div><strong>Upcoming Impact</strong><span>Bills, expected balance, and next paycheck.</span></div><label class="switch"><input type="checkbox" id="showUpcomingImpact" checked><span class="slider"></span></label></div></div>
+            <div class="dashboard-card-option"><div class="option-top"><div><strong>Money Snapshot</strong><span>Budget left, savings, emergency fund, and net worth.</span></div><label class="switch"><input type="checkbox" id="showMoneySnapshot" checked><span class="slider"></span></label></div></div>
+            <div class="dashboard-card-option"><div class="option-top"><div><strong>Recent Activity</strong><span>Short event feed for recent changes and alerts.</span></div><label class="switch"><input type="checkbox" id="showRecentActivity"><span class="slider"></span></label></div></div>
+            <div class="dashboard-card-option"><div class="option-top"><div><strong>Collapse Optional Cards</strong><span>Keep optional sections collapsed by default.</span></div><label class="switch"><input type="checkbox" id="collapseOptionalCards" checked><span class="slider"></span></label></div></div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="save-dashboard-display" type="button">Save Display</button>
+            <button class="btn btn-secondary" id="cancel-dashboard-display" type="button">Cancel</button>
+          </div>
+
+          <div class="feedback neutral" id="dashboard-display-feedback">Pick what should show on Overview.</div>
+          <div class="note">Future Overview rendering can read from <code>user.preferences.dashboardDisplay</code>.</div>
+        </div>
+      </section>
+    </div>
+
   <script>
     const STORAGE_KEY = 'budgetAppUser';
 
@@ -693,7 +888,23 @@
         profileMode: 'Individual',
         entryPreference: 'Manual Entry'
       },
-      preferences: {},
+      preferences: {
+        notifications: {
+          billReminders: true,
+          overspendingAlerts: true,
+          smartInsightAlerts: true,
+          goalUpdates: false,
+          weeklyRecap: true
+        },
+        dashboardDisplay: {
+          showHealthScore: true,
+          showInsights: true,
+          showUpcomingImpact: true,
+          showMoneySnapshot: true,
+          showRecentActivity: false,
+          collapseOptionalCards: true
+        }
+      },
       security: {}
     };
 
@@ -751,6 +962,60 @@
     const profileFeedback = document.getElementById('profile-feedback');
     const dataFeedback = document.getElementById('data-feedback');
     const passwordFeedback = document.getElementById('password-feedback');
+    const notificationsFeedback = document.getElementById('notifications-feedback');
+    const dashboardDisplayFeedback = document.getElementById('dashboard-display-feedback');
+
+    const notificationFields = {
+      billReminders: document.getElementById('billReminders'),
+      overspendingAlerts: document.getElementById('overspendingAlerts'),
+      smartInsightAlerts: document.getElementById('smartInsightAlerts'),
+      goalUpdates: document.getElementById('goalUpdates'),
+      weeklyRecap: document.getElementById('weeklyRecap')
+    };
+
+    const dashboardDisplayFields = {
+      showHealthScore: document.getElementById('showHealthScore'),
+      showInsights: document.getElementById('showInsights'),
+      showUpcomingImpact: document.getElementById('showUpcomingImpact'),
+      showMoneySnapshot: document.getElementById('showMoneySnapshot'),
+      showRecentActivity: document.getElementById('showRecentActivity'),
+      collapseOptionalCards: document.getElementById('collapseOptionalCards')
+    };
+
+    function getPreferences(user) {
+      return {
+        notifications: {
+          ...defaultUser.preferences.notifications,
+          ...(user.preferences?.notifications || {})
+        },
+        dashboardDisplay: {
+          ...defaultUser.preferences.dashboardDisplay,
+          ...(user.preferences?.dashboardDisplay || {})
+        }
+      };
+    }
+
+    function renderNotifications(user) {
+      const preferences = getPreferences(user);
+      Object.entries(notificationFields).forEach(([key, input]) => {
+        input.checked = Boolean(preferences.notifications[key]);
+      });
+    }
+
+    function renderDashboardDisplay(user) {
+      const preferences = getPreferences(user);
+      Object.entries(dashboardDisplayFields).forEach(([key, input]) => {
+        input.checked = Boolean(preferences.dashboardDisplay[key]);
+      });
+    }
+
+    function collectCheckboxValues(fieldMap) {
+      const values = {};
+      Object.entries(fieldMap).forEach(([key, input]) => {
+        values[key] = input.checked;
+      });
+      return values;
+    }
 
     function renderProfile(user) {
       const profile = user.profile || defaultUser.profile;
@@ -794,6 +1059,20 @@
       clearPasswordFields();
       showFeedback(passwordFeedback, 'Password changes will connect to authentication later.', 'neutral');
       showView('password-view');
+    });
+
+    document.getElementById('open-notifications-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderNotifications(getStoredUser());
+      showFeedback(notificationsFeedback, 'Choose which alerts matter to you.', 'neutral');
+      showView('notifications-view');
+    });
+
+    document.getElementById('open-dashboard-display-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderDashboardDisplay(getStoredUser());
+      showFeedback(dashboardDisplayFeedback, 'Pick what should show on Overview.', 'neutral');
+      showView('dashboard-display-view');
     });
 
     document.getElementById('personal-back').addEventListener('click', (event) => {
@@ -867,7 +1146,64 @@
       showFeedback(passwordFeedback, 'Password form cleared.', 'neutral');
     });
 
-    renderProfile(getStoredUser());
+    document.getElementById('notifications-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderNotifications(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('dashboard-display-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderDashboardDisplay(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('cancel-notifications').addEventListener('click', () => {
+      renderNotifications(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('cancel-dashboard-display').addEventListener('click', () => {
+      renderDashboardDisplay(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('save-notifications').addEventListener('click', () => {
+      const user = getStoredUser();
+      const preferences = getPreferences(user);
+      const updatedUser = {
+        ...user,
+        preferences: {
+          ...user.preferences,
+          ...preferences,
+          notifications: collectCheckboxValues(notificationFields)
+        }
+      };
+      saveStoredUser(updatedUser);
+      showFeedback(dataFeedback, 'Notification preferences saved.', 'success');
+      goToSettings();
+    });
+
+    document.getElementById('save-dashboard-display').addEventListener('click', () => {
+      const user = getStoredUser();
+      const preferences = getPreferences(user);
+      const updatedUser = {
+        ...user,
+        preferences: {
+          ...user.preferences,
+          ...preferences,
+          dashboardDisplay: collectCheckboxValues(dashboardDisplayFields)
+        }
+      };
+      saveStoredUser(updatedUser);
+      showFeedback(dataFeedback, 'Dashboard display preferences saved.', 'success');
+      goToSettings();
+    });
+
+    const initialUser = getStoredUser();
+    renderProfile(initialUser);
+    renderNotifications(initialUser);
+    renderDashboardDisplay(initialUser);
   </script>
 </body>
 </html>
