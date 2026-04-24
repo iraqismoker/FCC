@@ -80,17 +80,19 @@
       border:1px solid var(--line);
       border-radius:var(--radius-xl);
       box-shadow:var(--shadow);
-      padding:22px;
+      padding:26px 22px;
       display:grid;
-      grid-template-columns:auto 1fr;
+      grid-template-columns:1fr;
       gap:18px;
       align-items:center;
+      justify-items:center;
+      text-align:center;
       margin-bottom:18px;
     }
 
     .avatar{
-      width:84px;
-      height:84px;
+      width:96px;
+      height:96px;
       border-radius:50%;
       background:var(--primary-soft);
       color:var(--primary);
@@ -118,10 +120,11 @@
     }
 
     .profile-stats{
-      margin-top:14px;
+      margin-top:18px;
       display:flex;
       flex-wrap:wrap;
       gap:10px;
+      justify-content:center;
     }
 
     .pill{
@@ -1153,14 +1156,27 @@
       element.className = `feedback show ${type}`;
     }
 
-    function showView(viewId) {
+    let settingsScrollPosition = 0;
+
+    function showView(viewId, options = {}) {
+      const currentSettingsView = document.getElementById('settings-view');
+
+      if (viewId !== 'settings-view' && currentSettingsView.classList.contains('active')) {
+        settingsScrollPosition = window.scrollY;
+      }
+
       document.querySelectorAll('.view-panel').forEach((view) => view.classList.remove('active'));
       document.getElementById(viewId).classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (options.restoreScroll) {
+        window.scrollTo({ top: settingsScrollPosition, behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
 
     function goToSettings() {
-      showView('settings-view');
+      showView('settings-view', { restoreScroll: true });
     }
 
     function clearPasswordFields() {
