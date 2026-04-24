@@ -446,6 +446,68 @@
       font-weight:600;
     }
 
+
+    .info-grid{
+      display:grid;
+      gap:14px;
+    }
+
+    .info-card{
+      border:1px solid var(--line);
+      background:var(--card-2);
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .info-card strong{
+      display:block;
+      font-size:16px;
+      letter-spacing:-0.02em;
+      margin-bottom:6px;
+    }
+
+    .info-card span{
+      color:var(--muted);
+      font-size:14px;
+      font-weight:600;
+      line-height:1.45;
+    }
+
+    .danger-zone{
+      border:1px solid #f6cdc7;
+      background:var(--danger-soft);
+      border-radius:18px;
+      padding:16px;
+      margin-top:14px;
+    }
+
+    .danger-zone strong{
+      display:block;
+      color:var(--danger);
+      margin-bottom:6px;
+      font-size:16px;
+    }
+
+    .danger-zone span{
+      color:#8f554d;
+      font-size:14px;
+      font-weight:600;
+      line-height:1.45;
+    }
+
+    .version-badge{
+      display:inline-flex;
+      align-items:center;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:8px 12px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:700;
+      margin-top:10px;
+    }
+
     [hidden]{display:none !important}
 
     .view-panel{display:none}
@@ -614,7 +676,7 @@
             <div class="section-sub">Control how your data is stored and exported.</div>
           </div>
           <div class="row-list">
-            <a href="#" class="row-item">
+            <a href="#" class="row-item" id="open-storage-view">
               <div class="row-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M4 7h16"/>
@@ -628,7 +690,7 @@
               </div>
               <div class="row-chevron">›</div>
             </a>
-            <a href="#" class="row-item">
+            <a href="#" class="row-item" id="open-export-view">
               <div class="row-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M12 3v12"/>
@@ -657,7 +719,7 @@
             <div class="section-sub">Simple support and app details.</div>
           </div>
           <div class="row-list">
-            <a href="#" class="row-item">
+            <a href="#" class="row-item" id="open-about-view">
               <div class="row-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <circle cx="12" cy="12" r="10"/>
@@ -879,6 +941,161 @@
       </section>
     </div>
 
+
+    <div id="storage-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="storage-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>Storage Mode</h1>
+        <p>Choose how this app should treat your financial data as the product grows.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Data Storage Preference</h2>
+          <div class="section-sub">This is preference-only for now. The app currently uses localStorage.</div>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+            <div class="field full">
+              <label for="storageMode">Preferred storage mode</label>
+              <select id="storageMode">
+                <option>Local Only</option>
+                <option>Manual + Import</option>
+                <option>Optional Cloud Sync Later</option>
+                <option>Connected Accounts Later</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="dataEntryDefault">Default entry method</label>
+              <select id="dataEntryDefault">
+                <option>Manual Entry</option>
+                <option>Spreadsheet Import</option>
+                <option>Bank Sync Later</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="info-grid" style="margin-top:14px">
+            <div class="info-card">
+              <strong>Privacy-first direction</strong>
+              <span>Users can start manually and keep data local. Sync, imports, and connected accounts should stay optional instead of required.</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="save-storage" type="button">Save Storage Preference</button>
+            <button class="btn btn-secondary" id="cancel-storage" type="button">Cancel</button>
+          </div>
+
+          <div class="feedback neutral" id="storage-feedback">Choose your preferred storage behavior.</div>
+        </div>
+      </section>
+    </div>
+
+    <div id="export-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="export-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>Export Data</h1>
+        <p>Prepare backup and export tools without connecting them to a backend yet.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Export Options</h2>
+          <div class="section-sub">These buttons are placeholders until real transaction and budget data are connected.</div>
+        </div>
+        <div class="section-body">
+          <div class="info-grid">
+            <div class="info-card">
+              <strong>Export Profile JSON</strong>
+              <span>Downloads the current localStorage user object so you can test how saved settings are structured.</span>
+              <div class="actions">
+                <button class="btn btn-primary" id="download-profile-json" type="button">Download Profile JSON</button>
+              </div>
+            </div>
+
+            <div class="info-card">
+              <strong>Future exports</strong>
+              <span>Later this section can include CSV exports for transactions, budget categories, net worth, goals, and reports.</span>
+            </div>
+          </div>
+
+          <div class="danger-zone">
+            <strong>Clear saved profile</strong>
+            <span>This only clears the saved profile/preferences object currently stored in this browser.</span>
+            <div class="actions">
+              <button class="btn btn-danger" id="clear-storage-export" type="button">Clear Saved Profile</button>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" id="cancel-export" type="button">Back to Settings</button>
+          </div>
+
+          <div class="feedback neutral" id="export-feedback">Export tools will expand as more tabs are connected.</div>
+        </div>
+      </section>
+    </div>
+
+    <div id="about-view" class="view-panel">
+      <header class="topbar">
+        <a href="#" class="back-link" id="about-back">
+          <span class="back-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </span>
+          Back to Settings
+        </a>
+      </header>
+
+      <section class="page-title-card">
+        <h1>About This App</h1>
+        <p>A future-focused budgeting tool built around clarity, guidance, and financial confidence.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">App Information</h2>
+          <div class="section-sub">Simple mission, version, and support details.</div>
+        </div>
+        <div class="section-body">
+          <div class="info-grid">
+            <div class="info-card"><strong>Mission</strong><span>Help users understand what is happening with their money now, what is coming next, and what they can do to improve their financial future.</span></div>
+            <div class="info-card"><strong>Product direction</strong><span>Budgeting, financial health scoring, insights, emergency planning, net worth tracking, and future-focused forecasting.</span></div>
+            <div class="info-card"><strong>Privacy direction</strong><span>Start local-first and manual-entry friendly. Sync, imports, and connected accounts should be optional features later.</span></div>
+            <div class="info-card"><strong>Support</strong><span>Support links, contact information, and legal/privacy pages can be added here once the app moves beyond prototype stage.</span></div>
+          </div>
+
+          <div class="version-badge">Prototype version: Settings v6</div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" id="cancel-about" type="button">Back to Settings</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
   <script>
     const STORAGE_KEY = 'budgetAppUser';
 
@@ -905,6 +1122,10 @@
           showMoneySnapshot: true,
           showRecentActivity: false,
           collapseOptionalCards: true
+        },
+        privacyData: {
+          storageMode: 'Local Only',
+          dataEntryDefault: 'Manual Entry'
         }
       },
       security: {}
@@ -984,6 +1205,14 @@
       collapseOptionalCards: document.getElementById('collapseOptionalCards')
     };
 
+    const privacyDataFields = {
+      storageMode: document.getElementById('storageMode'),
+      dataEntryDefault: document.getElementById('dataEntryDefault')
+    };
+
+    const storageFeedback = document.getElementById('storage-feedback');
+    const exportFeedback = document.getElementById('export-feedback');
+
     function getPreferences(user) {
       return {
         notifications: {
@@ -993,6 +1222,10 @@
         dashboardDisplay: {
           ...defaultUser.preferences.dashboardDisplay,
           ...(user.preferences?.dashboardDisplay || {})
+        },
+        privacyData: {
+          ...defaultUser.preferences.privacyData,
+          ...(user.preferences?.privacyData || {})
         }
       };
     }
@@ -1017,6 +1250,32 @@
         values[key] = input.checked;
       });
       return values;
+    }
+
+    function renderPrivacyData(user) {
+      const preferences = getPreferences(user);
+      privacyDataFields.storageMode.value = preferences.privacyData.storageMode;
+      privacyDataFields.dataEntryDefault.value = preferences.privacyData.dataEntryDefault;
+    }
+
+    function collectPrivacyData() {
+      return {
+        storageMode: privacyDataFields.storageMode.value,
+        dataEntryDefault: privacyDataFields.dataEntryDefault.value
+      };
+    }
+
+    function downloadProfileJson() {
+      const user = getStoredUser();
+      const blob = new Blob([JSON.stringify(user, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'budget-app-profile.json';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
     }
 
     function renderProfile(user) {
@@ -1075,6 +1334,24 @@
       renderDashboardDisplay(getStoredUser());
       showFeedback(dashboardDisplayFeedback, 'Pick what should show on Overview.', 'neutral');
       showView('dashboard-display-view');
+    });
+
+    document.getElementById('open-storage-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderPrivacyData(getStoredUser());
+      showFeedback(storageFeedback, 'Choose your preferred storage behavior.', 'neutral');
+      showView('storage-view');
+    });
+
+    document.getElementById('open-export-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      showFeedback(exportFeedback, 'Export tools will expand as more tabs are connected.', 'neutral');
+      showView('export-view');
+    });
+
+    document.getElementById('open-about-view').addEventListener('click', (event) => {
+      event.preventDefault();
+      showView('about-view');
     });
 
     document.getElementById('personal-back').addEventListener('click', (event) => {
@@ -1202,10 +1479,71 @@
       goToSettings();
     });
 
+    document.getElementById('storage-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      renderPrivacyData(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('export-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      goToSettings();
+    });
+
+    document.getElementById('about-back').addEventListener('click', (event) => {
+      event.preventDefault();
+      goToSettings();
+    });
+
+    document.getElementById('cancel-storage').addEventListener('click', () => {
+      renderPrivacyData(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('cancel-export').addEventListener('click', () => {
+      goToSettings();
+    });
+
+    document.getElementById('cancel-about').addEventListener('click', () => {
+      goToSettings();
+    });
+
+    document.getElementById('save-storage').addEventListener('click', () => {
+      const user = getStoredUser();
+      const preferences = getPreferences(user);
+      const updatedUser = {
+        ...user,
+        preferences: {
+          ...user.preferences,
+          ...preferences,
+          privacyData: collectPrivacyData()
+        }
+      };
+      saveStoredUser(updatedUser);
+      showFeedback(dataFeedback, 'Storage preference saved.', 'success');
+      goToSettings();
+    });
+
+    document.getElementById('download-profile-json').addEventListener('click', () => {
+      downloadProfileJson();
+      showFeedback(exportFeedback, 'Profile JSON downloaded.', 'success');
+    });
+
+    document.getElementById('clear-storage-export').addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      const defaultCopy = structuredClone(defaultUser);
+      renderProfile(defaultCopy);
+      renderNotifications(defaultCopy);
+      renderDashboardDisplay(defaultCopy);
+      renderPrivacyData(defaultCopy);
+      showFeedback(exportFeedback, 'Saved profile cleared. Default values restored.', 'neutral');
+    });
+
     const initialUser = getStoredUser();
     renderProfile(initialUser);
     renderNotifications(initialUser);
     renderDashboardDisplay(initialUser);
+    renderPrivacyData(initialUser);
   </script>
 </body>
 </html>
