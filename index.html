@@ -623,6 +623,7 @@
           <div class="actions">
             <button class="btn btn-primary" id="save-profile" type="button">Save Profile</button>
             <button class="btn btn-secondary" id="reset-profile" type="button">Reset</button>
+            <button class="btn btn-secondary" id="cancel-profile" type="button">Cancel</button>
           </div>
 
           <div class="feedback neutral" id="profile-feedback">Edit your information and save when ready.</div>
@@ -672,6 +673,7 @@
           <div class="actions">
             <button class="btn btn-primary" id="update-password" type="button">Update Password</button>
             <button class="btn btn-secondary" id="clear-password-form" type="button">Clear</button>
+            <button class="btn btn-secondary" id="cancel-password" type="button">Cancel</button>
           </div>
 
           <div class="feedback neutral" id="password-feedback">Password changes will connect to authentication later.</div>
@@ -698,9 +700,9 @@
     function getStoredUser() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : defaultUser;
+        return raw ? JSON.parse(raw) : structuredClone(defaultUser);
       } catch (error) {
-        return defaultUser;
+        return structuredClone(defaultUser);
       }
     }
 
@@ -723,6 +725,16 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function goToSettings() {
+      showView('settings-view');
+    }
+
+    function clearPasswordFields() {
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+    }
+
     const fields = {
       firstName: document.getElementById('firstName'),
       lastName: document.getElementById('lastName'),
@@ -742,6 +754,7 @@
 
     function renderProfile(user) {
       const profile = user.profile || defaultUser.profile;
+
       fields.firstName.value = profile.firstName || '';
       fields.lastName.value = profile.lastName || '';
       fields.email.value = profile.email || '';
@@ -778,25 +791,39 @@
 
     document.getElementById('open-password-view').addEventListener('click', (event) => {
       event.preventDefault();
+      clearPasswordFields();
       showFeedback(passwordFeedback, 'Password changes will connect to authentication later.', 'neutral');
       showView('password-view');
     });
 
     document.getElementById('personal-back').addEventListener('click', (event) => {
       event.preventDefault();
-      showView('settings-view');
+      renderProfile(getStoredUser());
+      goToSettings();
     });
 
     document.getElementById('password-back').addEventListener('click', (event) => {
       event.preventDefault();
-      showView('settings-view');
+      clearPasswordFields();
+      goToSettings();
+    });
+
+    document.getElementById('cancel-profile').addEventListener('click', () => {
+      renderProfile(getStoredUser());
+      goToSettings();
+    });
+
+    document.getElementById('cancel-password').addEventListener('click', () => {
+      clearPasswordFields();
+      goToSettings();
     });
 
     document.getElementById('save-profile').addEventListener('click', () => {
       const user = collectProfile();
       saveStoredUser(user);
       renderProfile(user);
-      showFeedback(profileFeedback, 'Profile saved.', 'success');
+      showFeedback(dataFeedback, 'Profile saved.', 'success');
+      goToSettings();
     });
 
     document.getElementById('reset-profile').addEventListener('click', () => {
@@ -816,7 +843,7 @@
       const confirmPassword = document.getElementById('confirmPassword');
 
       if (!currentPassword.value || !newPassword.value || !confirmPassword.value) {
-        showFeedback(passwordFeedback, 'Fill out all password fields first.', 'neutral');
+        showFeedback(passwordFeedback, 'Fill out all password fields first or use Cancel to return.', 'neutral');
         return;
       }
 
@@ -830,13 +857,13 @@
         return;
       }
 
-      showFeedback(passwordFeedback, 'Password form validated. Authentication wiring comes later.', 'success');
+      clearPasswordFields();
+      showFeedback(dataFeedback, 'Password form validated. Authentication wiring comes later.', 'success');
+      goToSettings();
     });
 
     document.getElementById('clear-password-form').addEventListener('click', () => {
-      document.getElementById('currentPassword').value = '';
-      document.getElementById('newPassword').value = '';
-      document.getElementById('confirmPassword').value = '';
+      clearPasswordFields();
       showFeedback(passwordFeedback, 'Password form cleared.', 'neutral');
     });
 
