@@ -582,11 +582,13 @@
         <div class="profile-meta">
           <h1 id="display-name">Gabriel Lopez</h1>
           <p id="display-email">gabriel.lopez1311@yahoo.com</p>
+          <p class="joined-date" id="display-joined-date">Member since April 2026</p>
           <div class="profile-stats">
             <span class="pill" id="display-mode-pill">Profile Mode: Individual</span>
             <span class="pill" id="display-storage-pill">Local-first storage</span>
             <span class="pill" id="display-entry-pill">Manual Entry</span>
           </div>
+          <div class="last-saved" id="display-last-saved">Last saved: Not yet</div>
         </div>
       </section>
 
@@ -1327,9 +1329,15 @@
       avatarInitials.textContent = getInitials(profile.firstName, profile.lastName) || 'U';
       displayModePill.textContent = `App Mode: ${profile.profileMode || 'Individual'}`;
       displayEntryPill.textContent = profile.entryPreference || 'Manual Entry';
-      displayStoragePill.textContent = user.preferences?.privacyData?.storageMode || 'Local-first storage';
-      displayJoinedDate.textContent = `Member since ${profile.joinedDate || 'April 2026'}`;
-      displayLastSaved.textContent = profile.lastSaved ? `Last saved: ${profile.lastSaved}` : 'Last saved: Not yet';
+      if (displayStoragePill) {
+        displayStoragePill.textContent = user.preferences?.privacyData?.storageMode || 'Local-first storage';
+      }
+      if (displayJoinedDate) {
+        displayJoinedDate.textContent = `Member since ${profile.joinedDate || 'April 2026'}`;
+      }
+      if (displayLastSaved) {
+        displayLastSaved.textContent = profile.lastSaved ? `Last saved: ${profile.lastSaved}` : 'Last saved: Not yet';
+      }
     }
 
     function collectProfile() {
