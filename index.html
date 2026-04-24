@@ -46,6 +46,25 @@
  .budget-row.compact-row.add-row div:first-child{font-size:24px}
 }
 
+
+/* Detail view refresh */
+.accent{height:66px;background:var(--primary)!important}
+.accent.bill{background:var(--primary)!important}
+.avatar{width:88px!important;height:88px!important;bottom:-38px!important;border-width:8px!important;font-size:28px!important}
+.detail-body{padding:52px 22px 22px!important}
+.detail-main{grid-template-columns:1fr!important;gap:14px!important}
+.detail-name{font-size:36px!important}
+.detail-total{text-align:left!important;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+.detail-total span{font-size:16px!important;font-weight:800!important}
+.detail-total strong{font-size:34px!important}
+.detail-sub .green{color:var(--primary)!important}
+.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}
+.detail-mini{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px}
+.detail-mini span{display:block;color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.detail-mini strong{display:block;font-size:18px;letter-spacing:-.02em}
+.edit-main-btn{width:100%;margin-top:18px}
+@media(max-width:520px){.detail-grid{grid-template-columns:1fr 1fr}.detail-mini strong{font-size:16px}}
+
 </style>
 </head>
 <body>
@@ -81,12 +100,12 @@
 
   <div id="incomeDetailView" class="view">
     <header class="topbar"><a href="#" class="back" id="incomeDetailBack"><span>‹</span>Back to Budget</a></header>
-    <section class="detail"><div class="accent"><div class="avatar" id="incomeAvatar">$</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="incomeNameDetail">Income</div><div class="detail-sub"><span class="green" id="incomeReceivedDetail">$0</span> received of <span class="blue" id="incomePlannedDetail">$0</span></div></div><div class="detail-total"><span>Left to Receive</span><strong id="incomeLeftDetail">$0</strong></div></div><div class="detail-card"><a href="#" class="detail-link" id="editIncomeLink"><div class="icon">↻</div><div><strong>Schedule</strong><span id="incomeScheduleDetail">Monthly income schedule</span></div><div class="chev">›</div></a></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="incomeActivityName">this income</strong> yet.</p></div><button class="delete" id="deleteIncome">Delete Budget Item</button></div></section>
+    <section class="detail"><div class="accent"><div class="avatar" id="incomeAvatar">$</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="incomeNameDetail">Income</div><div class="detail-sub"><span class="green" id="incomeReceivedDetail">$0</span> received of <span class="blue" id="incomePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Left to Receive</span><strong id="incomeLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Type</span><strong id="incomeTypeDetail">Paycheck</strong></div><div class="detail-mini"><span>Frequency</span><strong id="incomeFrequencyDetail">Monthly</strong></div><div class="detail-mini"><span>Monthly Equivalent</span><strong id="incomeMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Status</span><strong id="incomeStatusDetail">Planned</strong></div></div><button class="btn primary edit-main-btn" id="editIncomeDetails" type="button">Edit Details</button><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="incomeActivityName">this income</strong> yet.</p></div><button class="delete" id="deleteIncome">Delete Budget Item</button></div></section>
   </div>
 
   <div id="billDetailView" class="view">
     <header class="topbar"><a href="#" class="back" id="billDetailBack"><span>‹</span>Back to Budget</a></header>
-    <section class="detail"><div class="accent bill"><div class="avatar" id="billAvatar">B</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="billNameDetail">Bill</div><div class="detail-sub"><span class="green" id="billPaidDetail">$0</span> paid of <span class="blue" id="billPlannedDetail">$0</span></div></div><div class="detail-total"><span>Left to Pay</span><strong id="billLeftDetail">$0</strong></div></div><div class="detail-card"><a href="#" class="detail-link" id="editBillLink"><div class="icon">📅</div><div><strong>Schedule</strong><span id="billScheduleDetail">Monthly bill schedule</span></div><div class="chev">›</div></a></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this bill</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
+    <section class="detail"><div class="accent bill"><div class="avatar" id="billAvatar">B</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="billNameDetail">Bill</div><div class="detail-sub"><span class="green" id="billPaidDetail">$0</span> paid of <span class="blue" id="billPlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Left to Pay</span><strong id="billLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Category</span><strong id="billCategoryDetail">Housing</strong></div><div class="detail-mini"><span>Due Day</span><strong id="billDueDayDetail">1</strong></div><div class="detail-mini"><span>Frequency</span><strong id="billFrequencyDetail">Monthly</strong></div><div class="detail-mini"><span>Monthly Equivalent</span><strong id="billMonthlyDetail">$0</strong></div></div><button class="btn primary edit-main-btn" id="editBillDetails" type="button">Edit Details</button><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this bill</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
   </div>
 
   <div id="incomeEditView" class="view">
@@ -122,7 +141,7 @@ function updateMeter(inc,bills){
  const spent=bills;
  const planned=inc;
  let amount=planned,label='planned monthly income';
- if(currentBudgetMode==='spent'){amount=spent;label='fixed bills paid'}
+ if(currentBudgetMode==='spent'){amount=spent;label='bills paid'}
  if(currentBudgetMode==='remaining'){amount=remaining;label='after paid bills'}
  meterAmount.textContent=money(amount);
  meterLabel.textContent=label;
@@ -155,8 +174,8 @@ function render(){
 function getIncome(i){return budget(getUser()).incomeSources.find(x=>x.id===i)}
 function getBill(i){return budget(getUser()).fixedBills.find(x=>x.id===i)}
 
-function openIncomeDetail(i){const item=getIncome(i);if(!item)return;selectedIncomeId=i;let planned=Number(item.monthlyAmount||0),received=Number(item.received||0),left=Math.max(planned-received,0);incomeAvatar.textContent=initials(item.name);incomeNameDetail.textContent=item.name;incomeReceivedDetail.textContent=money(received);incomePlannedDetail.textContent=money(planned);incomeLeftDetail.textContent=money(left);incomeScheduleDetail.textContent=`${item.frequency} · ${item.type}`;incomeActivityName.textContent=item.name;show('incomeDetailView')}
-function openBillDetail(i){const item=getBill(i);if(!item)return;selectedBillId=i;let planned=Number(item.monthlyAmount||0),paid=Number(item.paid||0),left=Math.max(planned-paid,0);billAvatar.textContent=initials(item.name);billNameDetail.textContent=item.name;billPaidDetail.textContent=money(paid);billPlannedDetail.textContent=money(planned);billLeftDetail.textContent=money(left);billScheduleDetail.textContent=`${item.frequency} · Due day ${item.dueDay}`;billActivityName.textContent=item.name;show('billDetailView')}
+function openIncomeDetail(i){const item=getIncome(i);if(!item)return;selectedIncomeId=i;let planned=Number(item.monthlyAmount||0),received=Number(item.received||0),left=Math.max(planned-received,0);incomeAvatar.textContent=initials(item.name);incomeNameDetail.textContent=item.name;incomeReceivedDetail.textContent=money(received);incomePlannedDetail.textContent=money(planned);incomeLeftDetail.textContent=money(left);incomeTypeDetail.textContent=item.type;incomeFrequencyDetail.textContent=item.frequency;incomeMonthlyDetail.textContent=money(planned);incomeStatusDetail.textContent=left>0?'In Progress':'Complete';incomeActivityName.textContent=item.name;show('incomeDetailView')}
+function openBillDetail(i){const item=getBill(i);if(!item)return;selectedBillId=i;let planned=Number(item.monthlyAmount||0),paid=Number(item.paid||0),left=Math.max(planned-paid,0);billAvatar.textContent=initials(item.name);billNameDetail.textContent=item.name;billPaidDetail.textContent=money(paid);billPlannedDetail.textContent=money(planned);billLeftDetail.textContent=money(left);billCategoryDetail.textContent=item.category;billDueDayDetail.textContent=item.dueDay;billFrequencyDetail.textContent=item.frequency;billMonthlyDetail.textContent=money(planned);billActivityName.textContent=item.name;show('billDetailView')}
 
 function openIncomeEditor(i){selectedIncomeId=i;const item=i?getIncome(i):null;incomeEditTitle.textContent=item?'Edit Income':'Add Income';fIncome.name.value=item?.name||'';fIncome.amount.value=item?.amount||'';fIncome.received.value=item?.received||'';fIncome.type.value=item?.type||'Paycheck';fIncome.frequency.value=item?.frequency||'Monthly';show('incomeEditView')}
 function openBillEditor(i){selectedBillId=i;const item=i?getBill(i):null;billEditTitle.textContent=item?'Edit Fixed Bill':'Add Fixed Bill';fBill.name.value=item?.name||'';fBill.amount.value=item?.amount||'';fBill.paid.value=item?.paid||'';fBill.dueDay.value=item?.dueDay||'';fBill.category.value=item?.category||'Housing';fBill.frequency.value=item?.frequency||'Monthly';show('billEditView')}
@@ -166,7 +185,7 @@ function saveBillFn(){const name=fBill.name.value.trim(),amount=Number(fBill.amo
 function deleteIncomeFn(){if(!selectedIncomeId)return;const u=getUser(),b=budget(u);saveUser({...u,budget:{...b,incomeSources:b.incomeSources.filter(x=>x.id!==selectedIncomeId)}});selectedIncomeId=null;render();show('budgetView')}
 function deleteBillFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);saveUser({...u,budget:{...b,fixedBills:b.fixedBills.filter(x=>x.id!==selectedBillId)}});selectedBillId=null;render();show('budgetView')}
 
-incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeLink.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillLink.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};
+incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeDetails.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillDetails.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};
 incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');
 saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;
 document.querySelectorAll('[data-budget-mode]').forEach(btn=>{
