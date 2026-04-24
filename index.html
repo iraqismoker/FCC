@@ -576,72 +576,6 @@
       width:100%;
     }
 
-
-    .info-card.clickable{
-      cursor:pointer;
-      transition:.16s ease;
-    }
-
-    .info-card.clickable:hover{
-      transform:translateY(-1px);
-      background:#ffffff;
-    }
-
-    .info-card .mini-link{
-      display:inline-flex;
-      margin-top:12px;
-      color:var(--primary);
-      font-weight:800;
-      font-size:14px;
-    }
-
-    .help-list{
-      display:grid;
-      gap:14px;
-    }
-
-    .help-step{
-      border:1px solid var(--line);
-      background:var(--card-2);
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .help-step strong{
-      display:block;
-      font-size:17px;
-      margin-bottom:6px;
-      letter-spacing:-0.02em;
-    }
-
-    .help-step span{
-      display:block;
-      color:var(--muted);
-      font-size:14px;
-      font-weight:600;
-      line-height:1.45;
-    }
-
-    .faq-item{
-      border:1px solid var(--line);
-      background:var(--card-2);
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .faq-item strong{
-      display:block;
-      font-size:16px;
-      margin-bottom:6px;
-    }
-
-    .faq-item span{
-      color:var(--muted);
-      font-size:14px;
-      font-weight:600;
-      line-height:1.45;
-    }
-
     [hidden]{display:none !important}
 
     .view-panel{display:none}
@@ -684,7 +618,7 @@
   <div class="app">
     <div id="settings-view" class="view-panel active">
       <header class="topbar">
-        <a href="overview.html" class="back-link">
+        <a href="dashboard_overview_v8.html" class="back-link">
           <span class="back-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="m15 18-6-6 6-6"/>
@@ -854,22 +788,6 @@
               <div class="row-text">
                 <strong>Delete / Reset Account</strong>
                 <span>Clear local prototype data with a confirmation step.</span>
-              </div>
-              <div class="row-chevron">›</div>
-            </a>
-
-            <a href="#" class="row-item" id="reset-onboarding-button">
-              <div class="row-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M4 4v6h6"/>
-                  <path d="M20 20v-6h-6"/>
-                  <path d="M20 9A8 8 0 0 0 6.3 5.3L4 10"/>
-                  <path d="M4 15a8 8 0 0 0 13.7 3.7L20 14"/>
-                </svg>
-              </div>
-              <div class="row-text">
-                <strong>Reset Onboarding</strong>
-                <span>Show the Step 3 dashboard setup banner again.</span>
               </div>
               <div class="row-chevron">›</div>
             </a>
@@ -1262,17 +1180,17 @@
               <span>Help users understand what is happening with their money now, what is coming next, and what they can do to improve their financial future instead of only reviewing the past.</span>
             </div>
 
-            <div class="info-card clickable" id="open-how-to-use-view">
+            <div class="info-card">
               <strong>How to Use This App</strong>
               <span>
-                1. Sign up and create your profile<br>
-                2. Complete Budget Setup<br>
-                3. Finish setup on Overview<br>
-                4. Add income, bills, and categories later<br>
-                5. Track progress through dashboard insights<br>
-                6. Review your financial health score + benchmarks
+                1. Set up your profile<br>
+                2. Add income + paycheck schedule<br>
+                3. Enter recurring bills + expenses<br>
+                4. Build your monthly / biweekly budget<br>
+                5. Set emergency fund + savings goals<br>
+                6. Track progress through dashboard insights<br>
+                7. Review your financial health score + benchmarks
               </span>
-              <span class="mini-link">Open guide →</span>
             </div>
 
             <div class="info-card">
@@ -1285,10 +1203,9 @@
               <span>Start local-first and manual-entry friendly. Sync, imports, and connected accounts should stay optional features later—not required.</span>
             </div>
 
-            <div class="info-card clickable" id="open-support-help-view">
+            <div class="info-card">
               <strong>Support & Help</strong>
               <span>FAQ, troubleshooting, export/import help, privacy policy, terms, and support contact options will live here as the app moves beyond prototype stage.</span>
-              <span class="mini-link">Open help center →</span>
             </div>
 
             <div class="info-card">
@@ -1306,7 +1223,7 @@
             </div>
           </div>
 
-          <div class="version-badge">Prototype version: Onboarding v1</div>
+          <div class="version-badge">Prototype version: Settings v7</div>
 
           <div class="actions">
             <button class="btn btn-secondary" id="cancel-about" type="button">Back to Settings</button>
@@ -1353,85 +1270,6 @@
               <button class="btn btn-secondary" id="cancel-delete-account" type="button">Cancel</button>
             </div>
             <div class="feedback neutral" id="delete-account-feedback">This is protected so users do not reset by accident.</div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-
-    <div id="how-to-use-view" class="view-panel">
-      <header class="topbar">
-        <a href="#" class="back-link" id="how-to-use-back">
-          <span class="back-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="m15 18-6-6 6-6"/>
-            </svg>
-          </span>
-          Back to About
-        </a>
-      </header>
-
-      <section class="page-title-card">
-        <h1>How to Use This App</h1>
-        <p>A simple guide for getting value from the app as each tab is built.</p>
-      </section>
-
-      <section class="section">
-        <div class="section-head">
-          <h2 class="section-title">Quick Start Guide</h2>
-          <div class="section-sub">Follow this order so the dashboard and insights have the right data.</div>
-        </div>
-        <div class="section-body">
-          <div class="help-list">
-            <div class="help-step"><strong>Step 1: Sign up</strong><span>Create your local profile with name, email, profile mode, data style, and optional avatar.</span></div>
-            <div class="help-step"><strong>Step 2: Budget Setup</strong><span>Add income, pay frequency, paycheck anchor date, default budget view, and emergency fund target.</span></div>
-            <div class="help-step"><strong>Step 3: Overview Dashboard</strong><span>Finish setup on Overview, review your financial snapshot, then dismiss the onboarding banner when ready.</span></div>
-            <div class="help-step"><strong>After onboarding: Build the full Budget tab</strong><span>Add recurring bills, variable categories, sinking funds, reimbursements, and future forecasting rules.</span></div>
-            <div class="help-step"><strong>Use Settings anytime</strong><span>Update profile, privacy preferences, notifications, dashboard display, export data, or reset onboarding.</span></div>
-            <div class="help-step"><strong>Improve over time</strong><span>Use insights, benchmarks, emergency savings, and financial health scoring to see what to improve next.</span></div>
-          </div>
-
-          <div class="actions">
-            <button class="btn btn-secondary" id="close-how-to-use" type="button">Back to About</button>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <div id="support-help-view" class="view-panel">
-      <header class="topbar">
-        <a href="#" class="back-link" id="support-help-back">
-          <span class="back-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="m15 18-6-6 6-6"/>
-            </svg>
-          </span>
-          Back to About
-        </a>
-      </header>
-
-      <section class="page-title-card">
-        <h1>Support & Help</h1>
-        <p>Help topics, troubleshooting, and future support links.</p>
-      </section>
-
-      <section class="section">
-        <div class="section-head">
-          <h2 class="section-title">Help Center</h2>
-          <div class="section-sub">This will grow as the app moves beyond prototype stage.</div>
-        </div>
-        <div class="section-body">
-          <div class="help-list">
-            <div class="faq-item"><strong>FAQ</strong><span>Questions about setup, dashboard cards, local storage, budget cycles, and profile modes can live here.</span></div>
-            <div class="faq-item"><strong>Troubleshooting</strong><span>Help users fix issues like saved data not appearing, browser storage being cleared, or imported files not loading.</span></div>
-            <div class="faq-item"><strong>Import / Export Help</strong><span>Explain how to export a JSON backup, restore a backup, and later export CSV or spreadsheet reports.</span></div>
-            <div class="faq-item"><strong>Privacy Policy</strong><span>Future legal page explaining what is stored locally, what is optional, and what happens if sync is enabled later.</span></div>
-            <div class="faq-item"><strong>Terms</strong><span>Future terms page explaining that the app provides guidance and education, not personalized financial advice.</span></div>
-            <div class="faq-item"><strong>Contact Support</strong><span>Support email, feedback form, or bug report link can be added once the app is ready for testers.</span></div>
-          </div>
-
-          <div class="actions">
-            <button class="btn btn-secondary" id="close-support-help" type="button">Back to About</button>
           </div>
         </div>
       </section>
@@ -1785,16 +1623,6 @@
       showView('about-view');
     });
 
-    document.getElementById('open-how-to-use-view').addEventListener('click', (event) => {
-      event.preventDefault();
-      showView('how-to-use-view');
-    });
-
-    document.getElementById('open-support-help-view').addEventListener('click', (event) => {
-      event.preventDefault();
-      showView('support-help-view');
-    });
-
     document.getElementById('open-delete-account-view').addEventListener('click', (event) => {
       event.preventDefault();
       document.getElementById('deleteConfirm').value = '';
@@ -2009,30 +1837,6 @@
       renderPrivacyData(defaultCopy);
       showFeedback(dataFeedback, 'Local prototype data cleared.', 'neutral');
       goToSettings();
-    });
-
-    document.getElementById('how-to-use-back').addEventListener('click', (event) => {
-      event.preventDefault();
-      showView('about-view');
-    });
-
-    document.getElementById('close-how-to-use').addEventListener('click', () => {
-      showView('about-view');
-    });
-
-    document.getElementById('support-help-back').addEventListener('click', (event) => {
-      event.preventDefault();
-      showView('about-view');
-    });
-
-    document.getElementById('close-support-help').addEventListener('click', () => {
-      showView('about-view');
-    });
-
-    document.getElementById('reset-onboarding-button').addEventListener('click', (event) => {
-      event.preventDefault();
-      localStorage.removeItem('budgetAppOnboardingComplete');
-      showFeedback(dataFeedback, 'Onboarding reset. The Step 3 banner will show again on Overview.', 'success');
     });
 
     const initialUser = getStoredUser();
