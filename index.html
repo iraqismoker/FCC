@@ -65,6 +65,17 @@
 .edit-main-btn{width:100%;margin-top:18px}
 @media(max-width:520px){.detail-grid{grid-template-columns:1fr 1fr}.detail-mini strong{font-size:16px}}
 
+
+.list-mode-label{
+  font-size:16px !important;
+  font-weight:700 !important;
+}
+@media(max-width:520px){
+  .list-mode-label{
+    font-size:15px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -88,7 +99,7 @@
       <div class="meter-result">
         <strong id="meterAmount">$0</strong>
         <span id="meterLabel">planned monthly income</span>
-        <span class="meter-info" title="Shows planned income, bills paid, and what remains after bills.">i</span>
+        <span class="meter-info" title="Planned shows your full monthly income and bills. After Bills Paid shows what remains after fixed bills are paid. Remaining helps forecast what is left before variable spending, savings goals, and future planning.">i</span>
       </div>
     </section>
 
@@ -141,7 +152,7 @@ function updateMeter(inc,bills){
  const spent=bills;
  const planned=inc;
  let amount=planned,label='planned monthly income';
- if(currentBudgetMode==='spent'){amount=spent;label='bills paid'}
+ if(currentBudgetMode==='spent'){amount=spent;label='after bills paid'}
  if(currentBudgetMode==='remaining'){amount=remaining;label='after paid bills'}
  meterAmount.textContent=money(amount);
  meterLabel.textContent=label;
