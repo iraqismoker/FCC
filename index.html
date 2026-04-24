@@ -684,7 +684,7 @@
   <div class="app">
     <div id="settings-view" class="view-panel active">
       <header class="topbar">
-        <a href="dashboard_overview_v8.html" class="back-link">
+        <a href="overview.html" class="back-link">
           <span class="back-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="m15 18-6-6 6-6"/>
@@ -854,6 +854,22 @@
               <div class="row-text">
                 <strong>Delete / Reset Account</strong>
                 <span>Clear local prototype data with a confirmation step.</span>
+              </div>
+              <div class="row-chevron">›</div>
+            </a>
+
+            <a href="#" class="row-item" id="reset-onboarding-button">
+              <div class="row-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M4 4v6h6"/>
+                  <path d="M20 20v-6h-6"/>
+                  <path d="M20 9A8 8 0 0 0 6.3 5.3L4 10"/>
+                  <path d="M4 15a8 8 0 0 0 13.7 3.7L20 14"/>
+                </svg>
+              </div>
+              <div class="row-text">
+                <strong>Reset Onboarding</strong>
+                <span>Show the Step 3 dashboard setup banner again.</span>
               </div>
               <div class="row-chevron">›</div>
             </a>
@@ -1249,13 +1265,12 @@
             <div class="info-card clickable" id="open-how-to-use-view">
               <strong>How to Use This App</strong>
               <span>
-                1. Set up your profile<br>
-                2. Add income + paycheck schedule<br>
-                3. Enter recurring bills + expenses<br>
-                4. Build your monthly / biweekly budget<br>
-                5. Set emergency fund + savings goals<br>
-                6. Track progress through dashboard insights<br>
-                7. Review your financial health score + benchmarks
+                1. Sign up and create your profile<br>
+                2. Complete Budget Setup<br>
+                3. Finish setup on Overview<br>
+                4. Add income, bills, and categories later<br>
+                5. Track progress through dashboard insights<br>
+                6. Review your financial health score + benchmarks
               </span>
               <span class="mini-link">Open guide →</span>
             </div>
@@ -1291,7 +1306,7 @@
             </div>
           </div>
 
-          <div class="version-badge">Prototype version: Settings v7</div>
+          <div class="version-badge">Prototype version: Onboarding v1</div>
 
           <div class="actions">
             <button class="btn btn-secondary" id="cancel-about" type="button">Back to Settings</button>
@@ -1368,13 +1383,12 @@
         </div>
         <div class="section-body">
           <div class="help-list">
-            <div class="help-step"><strong>1. Set up your profile</strong><span>Add your name, email, profile mode, data style, and optional avatar.</span></div>
-            <div class="help-step"><strong>2. Add income + paycheck schedule</strong><span>In the Budget tab, add income, pay frequency, and paycheck anchor date so monthly and biweekly views work correctly.</span></div>
-            <div class="help-step"><strong>3. Enter recurring bills + expenses</strong><span>Add fixed bills, irregular bills, subscriptions, and known expenses so the app can forecast what is coming.</span></div>
-            <div class="help-step"><strong>4. Build your budget</strong><span>Use monthly, biweekly, or both views to assign income, track categories, and see what is safe to spend.</span></div>
-            <div class="help-step"><strong>5. Set emergency fund + savings goals</strong><span>Add 3–6 months of emergency savings, sinking funds, and future goals.</span></div>
-            <div class="help-step"><strong>6. Review dashboard insights</strong><span>Use Overview to check income, available spending, upcoming impact, money snapshot, and recent activity.</span></div>
-            <div class="help-step"><strong>7. Improve your financial health score</strong><span>Use insights, benchmarks, and education prompts to understand what to improve next.</span></div>
+            <div class="help-step"><strong>Step 1: Sign up</strong><span>Create your local profile with name, email, profile mode, data style, and optional avatar.</span></div>
+            <div class="help-step"><strong>Step 2: Budget Setup</strong><span>Add income, pay frequency, paycheck anchor date, default budget view, and emergency fund target.</span></div>
+            <div class="help-step"><strong>Step 3: Overview Dashboard</strong><span>Finish setup on Overview, review your financial snapshot, then dismiss the onboarding banner when ready.</span></div>
+            <div class="help-step"><strong>After onboarding: Build the full Budget tab</strong><span>Add recurring bills, variable categories, sinking funds, reimbursements, and future forecasting rules.</span></div>
+            <div class="help-step"><strong>Use Settings anytime</strong><span>Update profile, privacy preferences, notifications, dashboard display, export data, or reset onboarding.</span></div>
+            <div class="help-step"><strong>Improve over time</strong><span>Use insights, benchmarks, emergency savings, and financial health scoring to see what to improve next.</span></div>
           </div>
 
           <div class="actions">
@@ -2013,6 +2027,12 @@
 
     document.getElementById('close-support-help').addEventListener('click', () => {
       showView('about-view');
+    });
+
+    document.getElementById('reset-onboarding-button').addEventListener('click', (event) => {
+      event.preventDefault();
+      localStorage.removeItem('budgetAppOnboardingComplete');
+      showFeedback(dataFeedback, 'Onboarding reset. The Step 3 banner will show again on Overview.', 'success');
     });
 
     const initialUser = getStoredUser();
