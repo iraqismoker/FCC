@@ -26,6 +26,26 @@
 .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.btn{border:0;border-radius:14px;padding:13px 16px;font-size:14px;font-weight:900;cursor:pointer;transition:.16s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.btn:hover{transform:translateY(-1px)}.primary{background:var(--primary);color:#fff}.secondary{background:var(--primarySoft);color:var(--primary)}.danger{background:var(--badSoft);color:var(--bad);border:1px solid #f6cdc7}.delete{width:100%;margin-top:24px;text-align:center;color:var(--bad);font-size:20px;font-weight:900;background:none;border:0;cursor:pointer;padding:14px}
 .feedback{display:none;margin-top:14px;border-radius:14px;padding:12px 14px;font-size:14px;font-weight:800}.show{display:block}.success{background:#e8fbf8;color:#1c7c73;border:1px solid #bdebe4}.neutral{background:#f4f7fb;color:#5c6c84;border:1px solid #dde6f0}
 @media(max-width:760px){.app{padding:16px 12px 28px}.summary{grid-template-columns:repeat(2,1fr)}.detail-main{grid-template-columns:1fr}.detail-total{text-align:left}.detail-total strong{font-size:38px}.form{grid-template-columns:1fr}.detail-name{font-size:38px}.head{padding:20px}.head h1{font-size:38px}.head p{font-size:15px}.section-head{padding:18px 20px}}@media(max-width:520px){.summary{grid-template-columns:repeat(2,1fr);gap:10px;padding:12px}.sum{padding:12px;border-radius:16px}.sum .label{font-size:10px;letter-spacing:.06em}.sum .value{font-size:22px}.sum .note{font-size:11px;line-height:1.25}.budget-meter{padding:14px}.segmented button{font-size:14px;padding:11px 6px}.meter-result{font-size:15px}.meter-result strong{font-size:20px}.budget-row{grid-template-columns:1fr}.row-amount{text-align:left}.row-right{justify-content:space-between}}
+
+.section-head.compact-head{align-items:center}
+.section-head.compact-head .section-sub{display:none}
+.list-mode-label{color:var(--muted);font-size:20px;font-weight:750}
+.budget-row.compact-row{grid-template-columns:1fr auto auto;padding:16px 22px;gap:12px}
+.budget-row.compact-row .row-left strong{font-size:20px;font-weight:650;letter-spacing:-.02em;margin:0}
+.budget-row.compact-row .row-left span{display:none}
+.budget-row.compact-row .row-amount{font-size:20px;font-weight:650;color:#3f4a4d}
+.budget-row.compact-row.add-row{grid-template-columns:1fr auto;padding:18px 22px}
+.budget-row.compact-row.add-row div:first-child{font-size:20px;font-weight:750;color:#1474b8}
+@media(max-width:520px){
+ .section-head.compact-head{padding:18px 22px}
+ .section-head.compact-head .section-title{font-size:24px}
+ .list-mode-label{font-size:22px}
+ .budget-row.compact-row{grid-template-columns:1fr auto auto;padding:18px 22px}
+ .budget-row.compact-row .row-left strong{font-size:23px}
+ .budget-row.compact-row .row-amount{font-size:22px}
+ .budget-row.compact-row.add-row div:first-child{font-size:24px}
+}
+
 </style>
 </head>
 <body>
@@ -54,8 +74,8 @@
     </section>
 
     <main class="stack">
-      <section class="section"><div class="section-head"><div><h2 class="section-title">Income</h2><div class="section-sub">Planned money coming in each month.</div></div><strong id="incomeTotal">$0</strong></div><div class="budget-list" id="incomeList"></div></section>
-      <section class="section"><div class="section-head"><div><h2 class="section-title">Fixed Bills</h2><div class="section-sub">Bills and recurring expenses you can plan for.</div></div><strong id="billTotal">$0</strong></div><div class="budget-list" id="billList"></div></section>
+      <section class="section"><div class="section-head compact-head"><h2 class="section-title">Income</h2><span class="list-mode-label" id="incomeModeLabel">Planned</span></div><div class="budget-list" id="incomeList"></div></section>
+      <section class="section"><div class="section-head compact-head"><h2 class="section-title">Fixed Bills</h2><span class="list-mode-label" id="billModeLabel">Planned</span></div><div class="budget-list" id="billList"></div></section>
     </main>
   </div>
 
@@ -108,12 +128,25 @@ function updateMeter(inc,bills){
  meterLabel.textContent=label;
 }
 
+function modeLabel(){
+ if(currentBudgetMode==='spent')return 'Bills Paid';
+ if(currentBudgetMode==='remaining')return 'Remaining';
+ return 'Planned';
+}
+function itemModeAmount(item,type){
+ const planned=Number(item.monthlyAmount||0);
+ const actual=type==='income'?Number(item.received||0):Number(item.paid||0);
+ if(currentBudgetMode==='spent')return actual;
+ if(currentBudgetMode==='remaining')return Math.max(planned-actual,0);
+ return planned;
+}
+
 function render(){
  const u=getUser(),b=budget(u);
  const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), left=inc-bills, load=inc?Math.round(bills/inc*100):0;
- summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';incomeTotal.textContent=money(inc);billTotal.textContent=money(bills);updateMeter(inc,bills);
- incomeList.innerHTML=b.incomeSources.map(i=>`<a href="#" class="budget-row" data-income="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type} · ${i.frequency}</span></div><div class="row-right"><div class="row-amount">${money(i.monthlyAmount)}</div><div class="chev">›</div></div></a>`).join('')+`<a href="#" class="budget-row add-row" id="addIncomeRow"><div>Add Income</div><div class="chev">›</div></a>`;
- billList.innerHTML=b.fixedBills.map(i=>`<a href="#" class="budget-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span></div><div class="row-right"><div class="row-amount">${money(i.monthlyAmount)}</div><div class="chev">›</div></div></a>`).join('')+`<a href="#" class="budget-row add-row" id="addBillRow"><div>Add Fixed Bill</div><div class="chev">›</div></a>`;
+ summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';updateMeter(inc,bills);incomeModeLabel.textContent=modeLabel();billModeLabel.textContent=modeLabel();
+ incomeList.innerHTML=b.incomeSources.map(i=>`<a href="#" class="budget-row compact-row" data-income="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type} · ${i.frequency}</span></div><div class="row-amount">${money(itemModeAmount(i,'income'))}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addIncomeRow"><div>Add Income</div><div class="chev">›</div></a>`;
+ billList.innerHTML=b.fixedBills.map(i=>`<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span></div><div class="row-amount">${money(itemModeAmount(i,'bill'))}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Fixed Bill</div><div class="chev">›</div></a>`;
  document.querySelectorAll('[data-income]').forEach(r=>r.onclick=e=>{e.preventDefault();openIncomeDetail(r.dataset.income)});
  document.querySelectorAll('[data-bill]').forEach(r=>r.onclick=e=>{e.preventDefault();openBillDetail(r.dataset.bill)});
  addIncomeRow.onclick=e=>{e.preventDefault();openIncomeEditor(null)};
