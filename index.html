@@ -10,6 +10,14 @@
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.back{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:800}.back span{width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:#fff;box-shadow:var(--shadow);display:grid;place-items:center}
 .head{background:linear-gradient(135deg,#eef5ff,#fff);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:24px;margin-bottom:18px}.eyebrow{margin:0 0 8px;color:var(--muted);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.head h1{margin:0;font-size:clamp(34px,7vw,52px);line-height:.98;letter-spacing:-.045em}.head p{margin:12px 0 0;color:#43536d;font-size:16px;line-height:1.45;font-weight:700}
 .summary{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;margin-bottom:18px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.sum{background:var(--card2);border:1px solid var(--line);border-radius:18px;padding:14px}.sum .label{color:var(--muted);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}.sum .value{font-size:26px;font-weight:900;letter-spacing:-.035em;line-height:1}.sum .note{color:var(--muted);font-size:12px;font-weight:700;margin-top:7px}
+.budget-meter{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;margin-bottom:18px}
+.segmented{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #b8d3ff;border-radius:16px;overflow:hidden;background:#fff}
+.segmented button{border:0;border-right:1px solid var(--line);background:#fff;color:var(--primary);padding:13px 8px;font-size:16px;font-weight:900;cursor:pointer}
+.segmented button:last-child{border-right:0}
+.segmented button.active{background:var(--primary);color:#fff;box-shadow:0 8px 18px rgba(43,127,255,.18)}
+.meter-result{text-align:center;margin-top:16px;color:var(--muted);font-size:18px;font-weight:750}
+.meter-result strong{color:var(--text);font-size:24px;font-weight:950;letter-spacing:-.03em}
+.meter-info{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:2px solid var(--primary);color:var(--primary);font-size:13px;font-weight:900;margin-left:6px}
 .stack{display:grid;gap:18px}.section{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:20px 22px;border-bottom:1px solid #edf1f5}.section-title{margin:0;font-size:22px;letter-spacing:-.03em}.section-sub{margin-top:5px;color:var(--muted);font-size:14px;font-weight:650}.section-body{padding:20px 22px 22px}
 .budget-list{display:grid}.budget-row{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;padding:22px;border-bottom:1px solid #edf1f5;text-decoration:none;color:inherit;background:#fff;cursor:pointer}.budget-row:last-child{border-bottom:0}.budget-row:hover{background:#fbfcfe}.row-left strong{display:block;font-size:22px;letter-spacing:-.03em;margin-bottom:5px}.row-left span{display:block;color:var(--muted);font-size:14px;font-weight:650}.row-right{display:flex;align-items:center;gap:8px}.row-amount{text-align:right;font-size:24px;font-weight:800;letter-spacing:-.03em;white-space:nowrap}.chev{color:#7a8ba4;font-size:28px}.add-row{color:#1474b8;font-size:20px;font-weight:800}
 .detail{background:#eef3f6;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px}.accent{height:88px;background:var(--good);position:relative}.accent.bill{background:var(--primary)}.avatar{position:absolute;left:24px;bottom:-48px;width:112px;height:112px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:32px;font-weight:900;border:10px solid #eef3f6;box-shadow:0 8px 20px rgba(16,33,60,.08)}.detail-body{padding:70px 24px 24px}.detail-main{display:grid;grid-template-columns:1fr auto;gap:18px}.detail-name{font-size:42px;line-height:1;letter-spacing:-.045em;font-weight:850;margin-bottom:12px}.detail-sub{color:var(--muted);font-size:20px;font-weight:750}.detail-sub .green{color:var(--good);font-weight:900}.detail-sub .blue{color:#1474b8;font-weight:900}.detail-total{text-align:right}.detail-total span{display:block;color:var(--muted);font-size:18px;font-weight:750;margin-bottom:8px}.detail-total strong{font-size:44px;letter-spacing:-.045em}
@@ -17,7 +25,7 @@
 .form{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field{display:grid;gap:8px}.full{grid-column:1/-1}label{color:var(--muted);font-size:13px;font-weight:800}input,select{width:100%;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:14px;padding:13px 14px;font-size:15px;font-weight:650;outline:none}input:focus,select:focus{border-color:#b8d3ff;background:#fff}
 .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.btn{border:0;border-radius:14px;padding:13px 16px;font-size:14px;font-weight:900;cursor:pointer;transition:.16s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.btn:hover{transform:translateY(-1px)}.primary{background:var(--primary);color:#fff}.secondary{background:var(--primarySoft);color:var(--primary)}.danger{background:var(--badSoft);color:var(--bad);border:1px solid #f6cdc7}.delete{width:100%;margin-top:24px;text-align:center;color:var(--bad);font-size:20px;font-weight:900;background:none;border:0;cursor:pointer;padding:14px}
 .feedback{display:none;margin-top:14px;border-radius:14px;padding:12px 14px;font-size:14px;font-weight:800}.show{display:block}.success{background:#e8fbf8;color:#1c7c73;border:1px solid #bdebe4}.neutral{background:#f4f7fb;color:#5c6c84;border:1px solid #dde6f0}
-@media(max-width:760px){.app{padding:16px 12px 28px}.summary{grid-template-columns:repeat(2,1fr)}.detail-main{grid-template-columns:1fr}.detail-total{text-align:left}.detail-total strong{font-size:38px}.form{grid-template-columns:1fr}.detail-name{font-size:38px}.head{padding:20px}.head h1{font-size:38px}.head p{font-size:15px}.section-head{padding:18px 20px}}@media(max-width:520px){.summary{grid-template-columns:repeat(2,1fr);gap:10px;padding:12px}.sum{padding:12px;border-radius:16px}.sum .label{font-size:10px;letter-spacing:.06em}.sum .value{font-size:22px}.sum .note{font-size:11px;line-height:1.25}.budget-row{grid-template-columns:1fr}.row-amount{text-align:left}.row-right{justify-content:space-between}}
+@media(max-width:760px){.app{padding:16px 12px 28px}.summary{grid-template-columns:repeat(2,1fr)}.detail-main{grid-template-columns:1fr}.detail-total{text-align:left}.detail-total strong{font-size:38px}.form{grid-template-columns:1fr}.detail-name{font-size:38px}.head{padding:20px}.head h1{font-size:38px}.head p{font-size:15px}.section-head{padding:18px 20px}}@media(max-width:520px){.summary{grid-template-columns:repeat(2,1fr);gap:10px;padding:12px}.sum{padding:12px;border-radius:16px}.sum .label{font-size:10px;letter-spacing:.06em}.sum .value{font-size:22px}.sum .note{font-size:11px;line-height:1.25}.budget-meter{padding:14px}.segmented button{font-size:14px;padding:11px 6px}.meter-result{font-size:15px}.meter-result strong{font-size:20px}.budget-row{grid-template-columns:1fr}.row-amount{text-align:left}.row-right{justify-content:space-between}}
 </style>
 </head>
 <body>
@@ -31,6 +39,20 @@
       <div class="sum"><div class="label">Left After Bills</div><div class="value" id="summaryLeft">$0</div><div class="note">Before variable spending</div></div>
       <div class="sum"><div class="label">Bill Load</div><div class="value" id="summaryLoad">0%</div><div class="note">Fixed bills / income</div></div>
     </section>
+
+    <section class="budget-meter">
+      <div class="segmented" role="tablist" aria-label="Budget amount view">
+        <button class="active" type="button" data-budget-mode="planned">Planned</button>
+        <button type="button" data-budget-mode="spent">Spent</button>
+        <button type="button" data-budget-mode="remaining">Remaining</button>
+      </div>
+      <div class="meter-result">
+        <strong id="meterAmount">$0</strong>
+        <span id="meterLabel">planned monthly income</span>
+        <span class="meter-info">i</span>
+      </div>
+    </section>
+
     <main class="stack">
       <section class="section"><div class="section-head"><div><h2 class="section-title">Income</h2><div class="section-sub">Planned money coming in each month.</div></div><strong id="incomeTotal">$0</strong></div><div class="budget-list" id="incomeList"></div></section>
       <section class="section"><div class="section-head"><div><h2 class="section-title">Fixed Bills</h2><div class="section-sub">Bills and recurring expenses you can plan for.</div></div><strong id="billTotal">$0</strong></div><div class="budget-list" id="billList"></div></section>
@@ -61,7 +83,7 @@
 <script>
 const KEY='budgetAppUser';
 const def={profile:{},preferences:{},security:{},budget:{incomeSources:[],fixedBills:[]}};
-let selectedIncomeId=null,selectedBillId=null;
+let selectedIncomeId=null,selectedBillId=null,currentBudgetMode='planned';
 const fIncome={name:incomeName,amount:incomeAmount,received:incomeReceived,type:incomeType,frequency:incomeFrequency};
 const fBill={name:billName,amount:billAmount,paid:billPaid,dueDay:billDueDay,category:billCategory,frequency:billFrequency};
 
@@ -75,10 +97,21 @@ function budget(u){return {incomeSources:u.budget?.incomeSources||[],fixedBills:
 function initials(n){return String(n||'?').split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase()}
 function feedback(el,t,cls='neutral'){document.getElementById(el).textContent=t;document.getElementById(el).className='feedback show '+cls}
 
+function updateMeter(inc,bills){
+ const remaining=inc-bills;
+ const spent=bills;
+ const planned=inc;
+ let amount=planned,label='planned monthly income';
+ if(currentBudgetMode==='spent'){amount=spent;label='planned fixed bills'}
+ if(currentBudgetMode==='remaining'){amount=remaining;label='remaining after fixed bills'}
+ meterAmount.textContent=money(amount);
+ meterLabel.textContent=label;
+}
+
 function render(){
  const u=getUser(),b=budget(u);
  const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), left=inc-bills, load=inc?Math.round(bills/inc*100):0;
- summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';incomeTotal.textContent=money(inc);billTotal.textContent=money(bills);
+ summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';incomeTotal.textContent=money(inc);billTotal.textContent=money(bills);updateMeter(inc,bills);
  incomeList.innerHTML=b.incomeSources.map(i=>`<a href="#" class="budget-row" data-income="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type} · ${i.frequency}</span></div><div class="row-right"><div class="row-amount">${money(i.monthlyAmount)}</div><div class="chev">›</div></div></a>`).join('')+`<a href="#" class="budget-row add-row" id="addIncomeRow"><div>Add Income</div><div class="chev">›</div></a>`;
  billList.innerHTML=b.fixedBills.map(i=>`<a href="#" class="budget-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span></div><div class="row-right"><div class="row-amount">${money(i.monthlyAmount)}</div><div class="chev">›</div></div></a>`).join('')+`<a href="#" class="budget-row add-row" id="addBillRow"><div>Add Fixed Bill</div><div class="chev">›</div></a>`;
  document.querySelectorAll('[data-income]').forEach(r=>r.onclick=e=>{e.preventDefault();openIncomeDetail(r.dataset.income)});
@@ -103,6 +136,14 @@ function deleteBillFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);
 incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeLink.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillLink.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};
 incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');
 saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;
+document.querySelectorAll('[data-budget-mode]').forEach(btn=>{
+ btn.onclick=()=>{
+  document.querySelectorAll('[data-budget-mode]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentBudgetMode=btn.dataset.budgetMode;
+  render();
+ };
+});
 render();
 </script>
 </body>
