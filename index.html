@@ -286,6 +286,63 @@
   max-width:220px !important;
 }
 
+
+/* Variable Spending */
+.variable-summary{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  box-shadow:var(--shadow);
+  padding:18px;
+  margin-top:18px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.variable-summary .mini{
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  text-align:center;
+}
+.variable-summary .mini span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:6px;
+}
+.variable-summary .mini strong{
+  display:block;
+  font-size:20px;
+  color:var(--text);
+}
+.variable-over{
+  color:var(--bad) !important;
+}
+.variable-ok{
+  color:var(--primary) !important;
+}
+.category-pill{
+  display:inline-flex;
+  width:max-content;
+  margin-top:6px;
+  border-radius:999px;
+  padding:4px 8px;
+  background:var(--primarySoft);
+  color:var(--primary);
+  font-size:11px;
+  font-weight:900;
+}
+@media(max-width:520px){
+  .variable-summary{
+    grid-template-columns:1fr;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -332,6 +389,19 @@
     <main class="stack">
       <section class="section"><div class="section-head compact-head"><h2 class="section-title">Income</h2><span class="list-mode-label" id="incomeModeLabel">Planned</span></div><div class="budget-list" id="incomeList"></div></section>
       <section class="section"><div class="section-head compact-head"><h2 class="section-title">Fixed Bills</h2><span class="list-mode-label" id="billModeLabel">Planned</span></div><div class="budget-list" id="billList"></div></section>
+
+      <section class="section">
+        <div class="section-head compact-head">
+          <h2 class="section-title">Variable Spending</h2>
+          <span class="list-mode-label" id="variableModeLabel">Planned</span>
+        </div>
+        <div class="variable-summary">
+          <div class="mini"><span>Planned</span><strong id="variablePlannedTotal">$0</strong></div>
+          <div class="mini"><span>Spent</span><strong id="variableSpentTotal">$0</strong></div>
+          <div class="mini"><span>Remaining</span><strong id="variableRemainingTotal">$0</strong></div>
+        </div>
+        <div class="budget-list" id="variableList"></div>
+      </section>
     </main>
   </div>
 
@@ -343,6 +413,16 @@
   <div id="billDetailView" class="view">
     <header class="topbar"><a href="#" class="back" id="billDetailBack"><span>‹</span>Back to Budget</a></header>
     <section class="detail"><div class="accent bill"><div class="avatar" id="billAvatar">B</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="billNameDetail">Bill</div><div class="detail-sub"><span class="green" id="billPaidDetail">$0</span> paid of <span class="blue" id="billPlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Left to Pay</span><strong id="billLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Category</span><strong id="billCategoryDetail">Housing</strong></div><div class="detail-mini"><span>Due Date</span><strong id="billDueDayDetail">1st of month</strong></div><div class="detail-mini"><span>Priority</span><strong id="billPriorityDetail">Essential</strong></div><div class="detail-mini"><span>Monthly Equivalent</span><strong id="billMonthlyDetail">$0</strong></div></div><div class="bill-action-card"><button class="btn primary primary-action" id="markBillPaid" type="button">Mark Paid</button><div class="bill-secondary-actions"><button class="btn secondary" id="undoBillPaid" type="button">Undo Payment</button><button class="btn secondary" id="editBillDetails" type="button">Edit Details</button></div></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this bill</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
+  </div>
+
+  <div id="variableDetailView" class="view">
+    <header class="topbar"><a href="#" class="back" id="variableDetailBack"><span>‹</span>Back to Budget</a></header>
+    <section class="detail"><div class="accent"><div class="avatar" id="variableAvatar">V</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="variableNameDetail">Category</div><div class="detail-sub"><span class="green" id="variableSpentDetail">$0</span> spent of <span class="blue" id="variablePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Remaining</span><strong id="variableLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Type</span><strong id="variableTypeDetail">Variable</strong></div><div class="detail-mini"><span>Status</span><strong id="variableStatusDetail">On Track</strong></div><div class="detail-mini"><span>Monthly Planned</span><strong id="variableMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Spent</span><strong id="variableSpentMiniDetail">$0</strong></div></div><button class="btn primary edit-main-btn" id="editVariableDetails" type="button">Edit Details</button><div class="info-card"><h3>Activity This Month</h3><p>Transactions will be tracked here later for <strong id="variableActivityName">this category</strong>.</p></div><button class="delete" id="deleteVariable">Delete Budget Item</button></div></section>
+  </div>
+
+  <div id="variableEditView" class="view">
+    <header class="topbar"><a href="#" class="back" id="variableEditBack"><span>‹</span>Back</a></header>
+    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="variableEditTitle">Add Variable Category</h2><div class="section-sub">Update flexible spending.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Category name</label><input id="variableName" placeholder="Groceries"></div><div class="field"><label>Planned</label><input id="variablePlanned" type="number" inputmode="decimal" placeholder="600"></div><div class="field"><label>Spent</label><input id="variableSpent" type="number" inputmode="decimal" placeholder="0"></div><div class="field full"><label>Type</label><select id="variableType"><option>Groceries</option><option>Gas</option><option>Dining Out</option><option>Entertainment</option><option>Shopping</option><option>Household</option><option>Kids / Pets</option><option>Miscellaneous</option><option>Custom</option></select></div></form><div class="actions"><button class="btn primary" id="saveVariable" type="button">Save Category</button><button class="btn secondary" id="cancelVariable" type="button">Cancel</button></div><div class="feedback neutral" id="variableFeedback">Variable spending saves locally in this browser.</div></div></section>
   </div>
 
   <div id="incomeEditView" class="view">
@@ -358,10 +438,11 @@
 
 <script>
 const KEY='budgetAppUser';
-const def={profile:{},preferences:{},security:{},budget:{incomeSources:[],fixedBills:[]}};
-let selectedIncomeId=null,selectedBillId=null,currentBudgetMode='planned';
+const def={profile:{},preferences:{},security:{},budget:{incomeSources:[],fixedBills:[],variableSpending:[]}};
+let selectedIncomeId=null,selectedBillId=null,selectedVariableId=null,currentBudgetMode='planned';
 const fIncome={name:incomeName,amount:incomeAmount,received:incomeReceived,type:incomeType,frequency:incomeFrequency};
 const fBill={name:billName,amount:billAmount,paid:billPaid,dueDay:billDueDay,category:billCategory,priority:billPriority,frequency:billFrequency};
+const fVariable={name:variableName,planned:variablePlanned,spent:variableSpent,type:variableType};
 
 function getUser(){try{const raw=localStorage.getItem(KEY);const u=raw?JSON.parse(raw):structuredClone(def);return {...def,...u,budget:{...def.budget,...(u.budget||{})}}}catch(e){return structuredClone(def)}}
 function saveUser(u){localStorage.setItem(KEY,JSON.stringify(u,null,2))}
@@ -369,7 +450,7 @@ function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remo
 function money(v,cents=true){return Number(v||0).toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:cents?2:0,maximumFractionDigits:cents?2:0})}
 function monthly(v,f){v=Number(v||0);if(f==='Weekly')return v*52/12;if(f==='Biweekly')return v*26/12;if(f==='Twice Monthly')return v*2;if(f==='Quarterly')return v/3;if(f==='Semiannual')return v/6;if(f==='Annual')return v/12;return v}
 function id(p){return p+'-'+Date.now()+'-'+Math.random().toString(16).slice(2)}
-function budget(u){return {incomeSources:u.budget?.incomeSources||[],fixedBills:u.budget?.fixedBills||[]}}
+function budget(u){return {incomeSources:u.budget?.incomeSources||[],fixedBills:u.budget?.fixedBills||[],variableSpending:u.budget?.variableSpending||[]}}
 function initials(n){return String(n||'?').split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase()}
 function feedback(el,t,cls='neutral'){document.getElementById(el).textContent=t;document.getElementById(el).className='feedback show '+cls}
 
@@ -405,6 +486,41 @@ function progressText(paid,planned){return money(paid||0)+' of '+money(planned||
 function groupBills(items){const order=['Housing','Utilities','Insurance','Debt Payment','Subscription','Phone / Internet','Transportation','Childcare','Medical','Other'];const groups={};items.forEach(i=>{const key=i.category||'Other';groups[key]=groups[key]||[];groups[key].push(i)});return order.filter(k=>groups[k]).map(k=>[k,groups[k]])}
 function renderNextIncome(items){if(!window.nextIncomePreview)return;if(!items.length){nextIncomePreview.textContent='Add income to estimate your next deposit.';return}const item=[...items].sort((a,b)=>Number(b.monthlyAmount||0)-Number(a.monthlyAmount||0))[0];nextIncomePreview.textContent=`${item.name} · ${money(item.monthlyAmount)} planned monthly`}
 
+
+function variableModeAmount(item){
+ const planned=Number(item.planned||0);
+ const spent=Number(item.spent||0);
+ if(currentBudgetMode==='spent')return spent;
+ if(currentBudgetMode==='remaining')return planned-spent;
+ return planned;
+}
+function variableStatus(item){
+ const planned=Number(item.planned||0),spent=Number(item.spent||0);
+ if(spent>planned)return {text:'Over Budget',cls:'status-overdue'};
+ if(planned>0 && spent/planned>=0.85)return {text:'Close to Limit',cls:'status-due'};
+ return {text:'On Track',cls:'status-paid'};
+}
+function renderVariableList(items){
+ const planned=items.reduce((s,i)=>s+Number(i.planned||0),0);
+ const spent=items.reduce((s,i)=>s+Number(i.spent||0),0);
+ const remaining=planned-spent;
+
+ variablePlannedTotal.textContent=money(planned);
+ variableSpentTotal.textContent=money(spent);
+ variableRemainingTotal.textContent=money(remaining);
+ variableRemainingTotal.className=remaining<0?'variable-over':'variable-ok';
+ variableModeLabel.textContent=modeLabel();
+
+ variableList.innerHTML=items.map(i=>{
+  const st=variableStatus(i);
+  const pct=progressPct(i.spent,i.planned);
+  return `<a href="#" class="budget-row compact-row" data-variable="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${Math.min(pct,100)}%"></div></div><div class="progress-text">${money(i.spent||0)} of ${money(i.planned||0)} spent</div><div class="category-pill">${i.type}</div></div><div class="row-amount">${money(variableModeAmount(i))}</div><div class="chev">›</div></a>`;
+ }).join('')+`<a href="#" class="budget-row compact-row add-row" id="addVariableRow"><div>Add Category</div><div class="chev">›</div></a>`;
+
+ document.querySelectorAll('[data-variable]').forEach(r=>r.onclick=e=>{e.preventDefault();openVariableDetail(r.dataset.variable)});
+ addVariableRow.onclick=e=>{e.preventDefault();openVariableEditor(null)};
+}
+
 function render(){
  const u=getUser(),b=budget(u);
  const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), left=inc-bills, load=inc?Math.round(bills/inc*100):0;
@@ -415,9 +531,11 @@ function render(){
  document.querySelectorAll('[data-bill]').forEach(r=>r.onclick=e=>{e.preventDefault();openBillDetail(r.dataset.bill)});
  addIncomeRow.onclick=e=>{e.preventDefault();openIncomeEditor(null)};
  addBillRow.onclick=e=>{e.preventDefault();openBillEditor(null)};
+ renderVariableList(b.variableSpending);
 }
 function getIncome(i){return budget(getUser()).incomeSources.find(x=>x.id===i)}
 function getBill(i){return budget(getUser()).fixedBills.find(x=>x.id===i)}
+function getVariable(i){return budget(getUser()).variableSpending.find(x=>x.id===i)}
 
 function formatDueDate(day){
  day=Number(day||0);
@@ -437,12 +555,54 @@ function saveBillFn(){const name=fBill.name.value.trim(),amount=Number(fBill.amo
 function markBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:Number(x.amount||x.monthlyAmount||0)}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
 function undoBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:0}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
 
+
+function openVariableDetail(i){
+ const item=getVariable(i);if(!item)return;
+ selectedVariableId=i;
+ const planned=Number(item.planned||0),spent=Number(item.spent||0),left=planned-spent,st=variableStatus(item);
+ variableAvatar.textContent=initials(item.name);
+ variableNameDetail.textContent=item.name;
+ variableSpentDetail.textContent=money(spent);
+ variablePlannedDetail.textContent=money(planned);
+ variableLeftDetail.textContent=money(left);
+ variableTypeDetail.textContent=item.type;
+ variableStatusDetail.textContent=st.text;
+ variableMonthlyDetail.textContent=money(planned);
+ variableSpentMiniDetail.textContent=money(spent);
+ variableActivityName.textContent=item.name;
+ show('variableDetailView');
+}
+function openVariableEditor(i){
+ selectedVariableId=i;
+ const item=i?getVariable(i):null;
+ variableEditTitle.textContent=item?'Edit Variable Category':'Add Variable Category';
+ fVariable.name.value=item?.name||'';
+ fVariable.planned.value=item?.planned||'';
+ fVariable.spent.value=item?.spent||'';
+ fVariable.type.value=item?.type||'Groceries';
+ show('variableEditView');
+}
+function saveVariableFn(){
+ const name=fVariable.name.value.trim(),planned=Number(fVariable.planned.value||0);
+ if(!name||planned<=0){feedback('variableFeedback','Add a category name and planned amount first.');return}
+ const u=getUser(),b=budget(u),item={id:selectedVariableId||id('variable'),name,planned,spent:Number(fVariable.spent.value||0),type:fVariable.type.value};
+ const variableSpending=selectedVariableId?b.variableSpending.map(x=>x.id===selectedVariableId?item:x):[...b.variableSpending,item];
+ const updated={...u,budget:{...b,variableSpending}};
+ saveUser(updated);render();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
+}
+function deleteVariableFn(){
+ if(!selectedVariableId)return;
+ const u=getUser(),b=budget(u);
+ saveUser({...u,budget:{...b,variableSpending:b.variableSpending.filter(x=>x.id!==selectedVariableId)}});
+ selectedVariableId=null;render();show('budgetView');
+}
+
 function deleteIncomeFn(){if(!selectedIncomeId)return;const u=getUser(),b=budget(u);saveUser({...u,budget:{...b,incomeSources:b.incomeSources.filter(x=>x.id!==selectedIncomeId)}});selectedIncomeId=null;render();show('budgetView')}
 function deleteBillFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);saveUser({...u,budget:{...b,fixedBills:b.fixedBills.filter(x=>x.id!==selectedBillId)}});selectedBillId=null;render();show('budgetView')}
 
-incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeDetails.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillDetails.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};
-incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');
-saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;if(window.markBillPaid)markBillPaid.onclick=markBillPaidFn;if(window.undoBillPaid)undoBillPaid.onclick=undoBillPaidFn;setupInfo(window.meterInfoBtn,window.meterInfoPop);setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
+incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};variableDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeDetails.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillDetails.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};editVariableDetails.onclick=e=>{e.preventDefault();openVariableEditor(selectedVariableId)};
+incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};variableEditBack.onclick=e=>{e.preventDefault();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');cancelVariable.onclick=()=>selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
+saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;saveVariable.onclick=saveVariableFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;deleteVariable.onclick=deleteVariableFn;if(window.markBillPaid)markBillPaid.onclick=markBillPaidFn;if(window.undoBillPaid)undoBillPaid.onclick=undoBillPaidFn;setupInfo(window.meterInfoBtn,window.meterInfoPop);setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
 document.querySelectorAll('[data-budget-mode]').forEach(btn=>{
  btn.onclick=()=>{
   document.querySelectorAll('[data-budget-mode]').forEach(b=>b.classList.remove('active'));
