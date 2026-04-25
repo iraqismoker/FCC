@@ -343,6 +343,44 @@
   }
 }
 
+
+.available-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  box-shadow:var(--shadow);
+  padding:18px 20px;
+  margin-bottom:18px;
+  text-align:center;
+}
+.available-card span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:8px;
+}
+.available-card strong{
+  display:block;
+  color:var(--text);
+  font-size:30px;
+  font-weight:950;
+  letter-spacing:-.04em;
+}
+.available-card p{
+  margin:8px auto 0;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:750;
+  line-height:1.35;
+  max-width:420px;
+}
+@media(max-width:520px){
+  .available-card strong{font-size:26px}
+}
+
 </style>
 </head>
 <body>
@@ -357,20 +395,13 @@
       <div class="sum"><div class="label">Bill Load</div><div class="value" id="summaryLoad">0%</div><div class="note">Fixed bills / income</div></div>
     </section>
 
-    <section class="budget-meter">
-      <div class="segmented" role="tablist" aria-label="Budget amount view">
-        <button class="active" type="button" data-budget-mode="planned">Planned</button>
-        <button type="button" data-budget-mode="spent">Bills Paid</button>
-        <button type="button" data-budget-mode="remaining">Remaining</button>
-      </div>
-      <div class="meter-result">
-        <strong id="meterAmount">$0</strong>
-        <span id="meterLabel">planned monthly income</span>
-        <span class="info-wrap"><button class="meter-info" id="meterInfoBtn" type="button">i</button><span class="info-pop" id="meterInfoPop">Planned shows your full monthly income and planned bills. Bills Paid shows what has already been paid or received this month. Remaining shows what is left after paid bills before variable spending, savings goals, and forecasting.</span></span>
-      </div>
+    <section class="available-card">
+      <span>Available to Budget</span>
+      <strong id="availableToBudget">$0</strong>
+      <p>Income left after fixed bills, before variable spending and savings goals.</p>
     </section>
 
-    <section class="next-income-preview">
+<section class="next-income-preview">
       <div>
         <div class="preview-label">Next Income Preview</div>
         <strong id="nextIncomePreview">Add income to estimate your next deposit.</strong>
@@ -439,7 +470,7 @@
 <script>
 const KEY='budgetAppUser';
 const def={profile:{},preferences:{},security:{},budget:{incomeSources:[],fixedBills:[],variableSpending:[]}};
-let selectedIncomeId=null,selectedBillId=null,selectedVariableId=null,currentBudgetMode='planned';
+let selectedIncomeId=null,selectedBillId=null,selectedVariableId=null;
 const fIncome={name:incomeName,amount:incomeAmount,received:incomeReceived,type:incomeType,frequency:incomeFrequency};
 const fBill={name:billName,amount:billAmount,paid:billPaid,dueDay:billDueDay,category:billCategory,priority:billPriority,frequency:billFrequency};
 const fVariable={name:variableName,planned:variablePlanned,spent:variableSpent,type:variableType};
@@ -454,77 +485,20 @@ function budget(u){return {incomeSources:u.budget?.incomeSources||[],fixedBills:
 function initials(n){return String(n||'?').split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase()}
 function feedback(el,t,cls='neutral'){document.getElementById(el).textContent=t;document.getElementById(el).className='feedback show '+cls}
 
-function updateMeter(inc,bills){
- const remaining=inc-bills;
- const spent=bills;
- const planned=inc;
- let amount=planned,label='planned monthly income';
- if(currentBudgetMode==='spent'){amount=spent;label='after bills paid'}
- if(currentBudgetMode==='remaining'){amount=remaining;label='after paid bills'}
- meterAmount.textContent=money(amount);
- meterLabel.textContent=label;
-}
-
 function modeLabel(){
- if(currentBudgetMode==='spent')return 'Bills Paid';
- if(currentBudgetMode==='remaining')return 'Remaining';
  return 'Planned';
 }
 function itemModeAmount(item,type){
- const planned=Number(item.monthlyAmount||0);
- const actual=type==='income'?Number(item.received||0):Number(item.paid||0);
- if(currentBudgetMode==='spent')return actual;
- if(currentBudgetMode==='remaining')return Math.max(planned-actual,0);
- return planned;
+ return Number(item.monthlyAmount||0);
 }
-
-function setupInfo(btn,pop){if(!btn||!pop)return;btn.onclick=e=>{e.preventDefault();e.stopPropagation();document.querySelectorAll('.info-pop').forEach(p=>{if(p!==pop)p.classList.remove('show')});pop.classList.toggle('show')}}document.addEventListener('click',()=>document.querySelectorAll('.info-pop').forEach(p=>p.classList.remove('show')));
-function billStatus(item){const planned=Number(item.monthlyAmount||0),paid=Number(item.paid||0),due=Number(item.dueDay||0),today=new Date().getDate();if(planned>0&&paid>=planned)return {text:'Paid',cls:'status-paid'};if(due&&today>due)return {text:'Overdue by '+(today-due)+' day'+((today-due)===1?'':'s'),cls:'status-overdue'};if(due){const days=due-today;if(days===0)return {text:'Due today',cls:'status-due'};if(days===1)return {text:'Due tomorrow',cls:'status-due'};if(days>1)return {text:'Due in '+days+' days',cls:'status-due'}}return {text:'Upcoming',cls:''}}
-function progressPct(paid,planned){planned=Number(planned||0);paid=Number(paid||0);if(planned<=0)return 0;return Math.min(100,Math.round(paid/planned*100))}
-function priorityClass(priority){if(priority==='Flexible')return 'priority-flexible';if(priority==='Can Delay')return 'priority-delay';return ''}
-function progressText(paid,planned){return money(paid||0)+' of '+money(planned||0)+' paid'}
-function groupBills(items){const order=['Housing','Utilities','Insurance','Debt Payment','Subscription','Phone / Internet','Transportation','Childcare','Medical','Other'];const groups={};items.forEach(i=>{const key=i.category||'Other';groups[key]=groups[key]||[];groups[key].push(i)});return order.filter(k=>groups[k]).map(k=>[k,groups[k]])}
-function renderNextIncome(items){if(!window.nextIncomePreview)return;if(!items.length){nextIncomePreview.textContent='Add income to estimate your next deposit.';return}const item=[...items].sort((a,b)=>Number(b.monthlyAmount||0)-Number(a.monthlyAmount||0))[0];nextIncomePreview.textContent=`${item.name} · ${money(item.monthlyAmount)} planned monthly`}
-
-
 function variableModeAmount(item){
- const planned=Number(item.planned||0);
- const spent=Number(item.spent||0);
- if(currentBudgetMode==='spent')return spent;
- if(currentBudgetMode==='remaining')return planned-spent;
- return planned;
-}
-function variableStatus(item){
- const planned=Number(item.planned||0),spent=Number(item.spent||0);
- if(spent>planned)return {text:'Over Budget',cls:'status-overdue'};
- if(planned>0 && spent/planned>=0.85)return {text:'Close to Limit',cls:'status-due'};
- return {text:'On Track',cls:'status-paid'};
-}
-function renderVariableList(items){
- const planned=items.reduce((s,i)=>s+Number(i.planned||0),0);
- const spent=items.reduce((s,i)=>s+Number(i.spent||0),0);
- const remaining=planned-spent;
-
- variablePlannedTotal.textContent=money(planned);
- variableSpentTotal.textContent=money(spent);
- variableRemainingTotal.textContent=money(remaining);
- variableRemainingTotal.className=remaining<0?'variable-over':'variable-ok';
- variableModeLabel.textContent=modeLabel();
-
- variableList.innerHTML=items.map(i=>{
-  const st=variableStatus(i);
-  const pct=progressPct(i.spent,i.planned);
-  return `<a href="#" class="budget-row compact-row" data-variable="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${Math.min(pct,100)}%"></div></div><div class="progress-text">${money(i.spent||0)} of ${money(i.planned||0)} spent</div><div class="category-pill">${i.type}</div></div><div class="row-amount">${money(variableModeAmount(i))}</div><div class="chev">›</div></a>`;
- }).join('')+`<a href="#" class="budget-row compact-row add-row" id="addVariableRow"><div>Add Category</div><div class="chev">›</div></a>`;
-
- document.querySelectorAll('[data-variable]').forEach(r=>r.onclick=e=>{e.preventDefault();openVariableDetail(r.dataset.variable)});
- addVariableRow.onclick=e=>{e.preventDefault();openVariableEditor(null)};
+ return Number(item.planned||0);
 }
 
 function render(){
  const u=getUser(),b=budget(u);
  const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), left=inc-bills, load=inc?Math.round(bills/inc*100):0;
- summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';updateMeter(inc,bills);incomeModeLabel.textContent=modeLabel();billModeLabel.textContent=modeLabel();renderNextIncome(b.incomeSources);
+ summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';availableToBudget.textContent=money(left);incomeModeLabel.textContent=modeLabel();billModeLabel.textContent=modeLabel();renderNextIncome(b.incomeSources);
  incomeList.innerHTML=b.incomeSources.map(i=>`<a href="#" class="budget-row compact-row" data-income="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type} · ${i.frequency}</span></div><div class="row-amount">${money(itemModeAmount(i,'income'))}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addIncomeRow"><div>Add Income</div><div class="chev">›</div></a>`;
  billList.innerHTML=groupBills(b.fixedBills).map(([group,items])=>`<div class="bill-group"><div class="bill-group-title">${group}</div>${items.map(i=>{const st=billStatus(i);const pct=progressPct(i.paid,i.monthlyAmount);return `<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">${progressText(i.paid,i.monthlyAmount)}</div><div class="priority-pill ${priorityClass(i.priority)}">${i.priority||'Essential'}</div></div><div class="row-amount">${money(itemModeAmount(i,'bill'))}</div><div class="chev">›</div></a>`}).join('')}</div>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Bills</div><div class="chev">›</div></a>`;
  document.querySelectorAll('[data-income]').forEach(r=>r.onclick=e=>{e.preventDefault();openIncomeDetail(r.dataset.income)});
@@ -603,14 +577,6 @@ function deleteBillFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);
 incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};variableDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeDetails.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillDetails.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};editVariableDetails.onclick=e=>{e.preventDefault();openVariableEditor(selectedVariableId)};
 incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};variableEditBack.onclick=e=>{e.preventDefault();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');cancelVariable.onclick=()=>selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
 saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;saveVariable.onclick=saveVariableFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;deleteVariable.onclick=deleteVariableFn;if(window.markBillPaid)markBillPaid.onclick=markBillPaidFn;if(window.undoBillPaid)undoBillPaid.onclick=undoBillPaidFn;setupInfo(window.meterInfoBtn,window.meterInfoPop);setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
-document.querySelectorAll('[data-budget-mode]').forEach(btn=>{
- btn.onclick=()=>{
-  document.querySelectorAll('[data-budget-mode]').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  currentBudgetMode=btn.dataset.budgetMode;
-  render();
- };
-});
 render();
 </script>
 </body>
