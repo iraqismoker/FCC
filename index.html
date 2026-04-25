@@ -381,24 +381,60 @@
   .available-card strong{font-size:26px}
 }
 
+
+/* Restore Variable Spending compact layout */
+.variable-summary{
+  display:grid !important;
+  grid-template-columns:repeat(3,1fr) !important;
+  gap:14px !important;
+  padding:18px !important;
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-radius:var(--r) !important;
+}
+.variable-summary .mini{
+  min-height:110px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:center !important;
+  text-align:center !important;
+  padding:14px !important;
+  border-radius:18px !important;
+}
+.variable-summary .mini span{
+  margin-bottom:8px !important;
+}
+.variable-summary .mini strong{
+  font-size:28px !important;
+}
+@media(max-width:520px){
+  .variable-summary{
+    grid-template-columns:1fr !important;
+  }
+  .variable-summary .mini{
+    min-height:90px !important;
+  }
+}
+
 </style>
 </head>
 <body>
 <div class="app">
   <div id="budgetView" class="view active">
     <header class="topbar"><a href="overview.html" class="back"><span>‹</span>Back to Overview</a></header>
-    <section class="head"><p class="eyebrow">Budget Tab • Phase 1</p><h1>Income & Fixed Bills</h1><p>Start with predictable money first. Income and fixed bills power your available-to-spend and forecast.</p></section>
+    <section class="head"><p class="eyebrow">Budget Tab • Phase 1</p><h1>Income & Debt</h1><p>Start with predictable money first. Income and debt power your available-to-spend and forecast.</p></section>
     <section class="summary">
       <div class="sum"><div class="label">Monthly Income</div><div class="value" id="summaryIncome">$0</div><div class="note">All active income sources</div></div>
-      <div class="sum"><div class="label">Fixed Bills</div><div class="value" id="summaryBills">$0</div><div class="note">Recurring obligations</div></div>
-      <div class="sum"><div class="label">Left After Bills</div><div class="value" id="summaryLeft">$0</div><div class="note">Before variable spending</div></div>
-      <div class="sum"><div class="label">Bill Load</div><div class="value" id="summaryLoad">0%</div><div class="note">Fixed bills / income</div></div>
+      <div class="sum"><div class="label">Debt</div><div class="value" id="summaryBills">$0</div><div class="note">Recurring debt obligations</div></div>
+      <div class="sum"><div class="label">Left After Debt</div><div class="value" id="summaryLeft">$0</div><div class="note">Before variable spending</div></div>
+      <div class="sum"><div class="label">Bill Load</div><div class="value" id="summaryLoad">0%</div><div class="note">Debt / income</div></div>
     </section>
 
     <section class="available-card">
-      <span>Available to Budget</span>
+      <span>Available After Debt</span>
       <strong id="availableToBudget">$0</strong>
-      <p>Income left after fixed bills, before variable spending and savings goals.</p>
+      <p>Income left after debt, before variable spending and savings goals.</p>
     </section>
 
 <section class="next-income-preview">
@@ -419,7 +455,7 @@
 
     <main class="stack">
       <section class="section"><div class="section-head compact-head"><h2 class="section-title">Income</h2><span class="list-mode-label" id="incomeModeLabel">Planned</span></div><div class="budget-list" id="incomeList"></div></section>
-      <section class="section"><div class="section-head compact-head"><h2 class="section-title">Fixed Bills</h2><span class="list-mode-label" id="billModeLabel">Planned</span></div><div class="budget-list" id="billList"></div></section>
+      <section class="section"><div class="section-head compact-head"><h2 class="section-title">Debt</h2><span class="list-mode-label" id="billModeLabel">Planned</span></div><div class="budget-list" id="billList"></div></section>
 
       <section class="section">
         <div class="section-head compact-head">
