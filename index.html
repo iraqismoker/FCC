@@ -171,6 +171,85 @@
  .bill-secondary-actions{grid-template-columns:1fr}
 }
 
+
+/* Compact Edit Income form + centered summary/preview cards */
+.income-edit-card .section-head{
+  padding:14px 18px !important;
+}
+.income-edit-card .section-title{
+  font-size:24px !important;
+}
+.income-edit-card .section-sub{
+  font-size:13px !important;
+}
+.income-edit-card .section-body{
+  padding:16px 18px 18px !important;
+}
+.income-edit-card .form{
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.income-edit-card .field.full{
+  grid-column:1/-1;
+}
+.income-edit-card label{
+  font-size:12px;
+}
+.income-edit-card input,
+.income-edit-card select{
+  padding:11px 12px;
+  border-radius:13px;
+  font-size:14px;
+}
+.income-edit-card .actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:14px;
+}
+.income-edit-card .actions .btn{
+  width:100%;
+}
+.summary{
+  justify-items:stretch;
+}
+.summary .sum{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-height:138px;
+}
+.next-income-preview{
+  text-align:center;
+  justify-content:center !important;
+  display:grid !important;
+}
+.next-income-preview .info-wrap{
+  justify-content:center;
+}
+.next-income-preview .info-pop{
+  left:50%;
+  right:auto;
+  transform:translateX(-50%);
+}
+@media(max-width:520px){
+  .income-edit-card .form{
+    grid-template-columns:1fr 1fr;
+  }
+  .income-edit-card .field.full{
+    grid-column:1/-1;
+  }
+  .income-edit-card .section-title{
+    font-size:22px !important;
+  }
+  .income-edit-card .section-body{
+    padding:14px !important;
+  }
+  .summary .sum{
+    min-height:128px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -232,7 +311,7 @@
 
   <div id="incomeEditView" class="view">
     <header class="topbar"><a href="#" class="back" id="incomeEditBack"><span>‹</span>Back</a></header>
-    <section class="section"><div class="section-head"><div><h2 class="section-title" id="incomeEditTitle">Add Income</h2><div class="section-sub">Add or update planned income.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Income name</label><input id="incomeName" placeholder="VA"></div><div class="field"><label>Planned</label><input id="incomeAmount" type="number" inputmode="decimal" placeholder="5198.37"></div><div class="field"><label>Received this month</label><input id="incomeReceived" type="number" inputmode="decimal" placeholder="0"></div><div class="field"><label>Type</label><select id="incomeType"><option>Paycheck</option><option>Spouse / Partner</option><option>Side Income</option><option>VA / Disability</option><option>SSDI</option><option>Pension</option><option>Military BAH</option><option>Military BAS</option><option>Government Pay</option><option>Other</option></select></div><div class="field"><label>Frequency</label><select id="incomeFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Twice Monthly</option><option>Annual</option></select></div></form><div class="actions"><button class="btn primary" id="saveIncome">Save Income</button><button class="btn secondary" id="cancelIncome">Cancel</button></div><div class="feedback neutral" id="incomeFeedback">Income saves locally in this browser.</div></div></section>
+    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="incomeEditTitle">Add Income</h2><div class="section-sub">Add or update planned income.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Income name</label><input id="incomeName" placeholder="VA"></div><div class="field"><label>Planned</label><input id="incomeAmount" type="number" inputmode="decimal" placeholder="5198.37"></div><div class="field"><label>Received</label><input id="incomeReceived" type="number" inputmode="decimal" placeholder="0"></div><div class="field"><label>Type</label><select id="incomeType"><option>Paycheck</option><option>Spouse / Partner</option><option>Side Income</option><option>VA / Disability</option><option>SSDI</option><option>Pension</option><option>Military BAH</option><option>Military BAS</option><option>Government Pay</option><option>Other</option></select></div><div class="field"><label>Frequency</label><select id="incomeFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Twice Monthly</option><option>Annual</option></select></div></form><div class="actions"><button class="btn primary" id="saveIncome">Save Income</button><button class="btn secondary" id="cancelIncome">Cancel</button></div><div class="feedback neutral" id="incomeFeedback">Income saves locally in this browser.</div></div></section>
   </div>
 
   <div id="billEditView" class="view">
