@@ -453,6 +453,58 @@ cursor:pointer;
   }
 }
 
+
+.collapsible-panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  margin-top:18px;
+  overflow:hidden;
+}
+.collapse-toggle{
+  width:100%;
+  border:0;
+  background:#fff;
+  color:var(--text);
+  padding:18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:-.03em;
+  cursor:pointer;
+}
+.collapse-toggle .chev-small{
+  color:#7a8ba4;
+  font-size:26px;
+  transition:.18s;
+}
+.collapsible-panel.open .chev-small{
+  transform:rotate(90deg);
+}
+.collapse-content{
+  display:none;
+  padding:0 18px 18px;
+}
+.collapsible-panel.open .collapse-content{
+  display:block;
+}
+.collapsible-panel .loan-details,
+.collapsible-panel .payoff-impact{
+  margin-top:0;
+  border:0;
+  padding:0;
+  box-shadow:none;
+}
+
+
+.collapsible-panel .loan-details > h3,
+.collapsible-panel .payoff-impact > h3{
+  display:none;
+}
+
 </style>
 </head>
 <body>
@@ -519,7 +571,12 @@ cursor:pointer;
 </div>
 
 
-<div class="loan-details">
+<div class="collapsible-panel" id="loanDetailsPanel">
+  <button class="collapse-toggle" type="button" data-collapse="loanDetailsPanel">
+    <span>Loan Details</span><span class="chev-small">›</span>
+  </button>
+  <div class="collapse-content">
+    <div class="loan-details">
   <h3>Loan Details</h3>
   <div class="loan-details-grid">
     <div class="loan-detail-card"><span>Original Loan</span><strong id="billOriginalLoanDetail">$0</strong></div>
@@ -534,13 +591,22 @@ cursor:pointer;
     <div class="loan-detail-card"><span>Account Status</span><strong id="billLoanStatusDetail">Current</strong></div>
   </div>
 </div>
-<div class="payoff-impact">
+  </div>
+</div>
+<div class="collapsible-panel" id="payoffImpactPanel">
+  <button class="collapse-toggle" type="button" data-collapse="payoffImpactPanel">
+    <span>Payoff Impact</span><span class="chev-small">›</span>
+  </button>
+  <div class="collapse-content">
+    <div class="payoff-impact">
   <h3>Payoff Impact</h3>
   <div class="payoff-impact-grid">
     <div class="payoff-card"><span>Current Payoff</span><strong id="billCurrentPayoffDetail">Not enough data</strong></div>
     <div class="payoff-card"><span>With Additional Principal</span><strong id="billExtraPayoffDetail">Not enough data</strong></div>
     <div class="payoff-card"><span>Time Saved</span><strong id="billTimeSavedDetail">0 months</strong></div>
     <div class="payoff-card"><span>Interest Saved</span><strong id="billInterestSavedDetail">$0</strong></div>
+  </div>
+</div>
   </div>
 </div>
 <div class="bill-action-card"><button class="btn primary primary-action" id="markBillPaid" type="button">Mark Paid</button><div class="bill-secondary-actions"><button class="btn secondary" id="undoBillPaid" type="button">Undo Payment</button><button class="btn secondary" id="editBillDetails" type="button">Edit Details</button></div></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this debt</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
@@ -932,6 +998,13 @@ if(window.openAdvancedLoanDetails)openAdvancedLoanDetails.onclick=e=>{e.preventD
 if(window.advancedLoanBack)advancedLoanBack.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};
 if(window.cancelAdvancedLoanDetails)cancelAdvancedLoanDetails.onclick=()=>openBillEditor(selectedBillId);
 if(window.saveAdvancedLoanDetails)saveAdvancedLoanDetails.onclick=saveAdvancedLoanDetailsFn;
+
+document.querySelectorAll('[data-collapse]').forEach(btn=>{
+ btn.onclick=()=>{
+  const panel=document.getElementById(btn.dataset.collapse);
+  if(panel) panel.classList.toggle('open');
+ };
+});
 render();
 </script>
 </body>
