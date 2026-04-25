@@ -602,6 +602,13 @@ function deleteBillFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);
 incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};variableDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeDetails.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillDetails.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};editVariableDetails.onclick=e=>{e.preventDefault();openVariableEditor(selectedVariableId)};
 incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};variableEditBack.onclick=e=>{e.preventDefault();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');cancelVariable.onclick=()=>selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
 saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;saveVariable.onclick=saveVariableFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;deleteVariable.onclick=deleteVariableFn;if(window.markBillPaid)markBillPaid.onclick=markBillPaidFn;if(window.undoBillPaid)undoBillPaid.onclick=undoBillPaidFn;setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
+
+document.addEventListener('click', function(e){
+ const debtRow=e.target.closest('[data-bill]');
+ if(!debtRow)return;
+ e.preventDefault();
+ openBillDetail(debtRow.dataset.bill);
+});
 render();
 </script>
 </body>
