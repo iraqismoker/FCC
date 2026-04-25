@@ -525,11 +525,11 @@ function render(){
  const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), debts=b.fixedBill.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), left=inc-debts, load=inc?Math.round(debts/inc*100):0;
  summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(debts,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';incomeModeLabel.textContent=modeLabel();billModeLabel.textContent=modeLabel();renderNextIncome(b.incomeSources);
  incomeList.innerHTML=b.incomeSources.map(i=>`<a href="#" class="budget-row compact-row" data-income="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type} · ${i.frequency}</span></div><div class="row-amount">${money(itemModeAmount(i,'income'))}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addIncomeRow"><div>Add Income</div><div class="chev">›</div></a>`;
- billList.innerHTML=groupBills(b.fixedBill).map(([group,items])=>`<div class="debt-group"><div class="debt-group-title">${group}</div>${items.map(i=>{const st=billStatus(i);const pct=progressPct(i.paid,i.monthlyAmount);return `<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">${progressText(i.paid,i.monthlyAmount)}</div><div class="priority-pill ${priorityClass(i.priority)}">${i.priority||'Essential'}</div></div><div class="row-amount">${money(itemModeAmount(i,'debt'))}</div><div class="chev">›</div></a>`}).join('')}</div>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Debt</div><div class="chev">›</div></a>`;
+ billList.innerHTML=groupBills(b.fixedBills).map(([group,items])=>`<div class="bill-group"><div class="bill-group-title">${group}</div>${items.map(i=>{const st=billStatus(i);const pct=progressPct(i.paid,i.monthlyAmount);return `<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due date ${i.dueDay} · ${i.frequency}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">${progressText(i.paid,i.monthlyAmount)}</div><div class="priority-pill ${priorityClass(i.priority)}">${i.priority||'Essential'}</div></div><div class="row-amount">${money(itemModeAmount(i,'bill'))}</div><div class="chev">›</div></a>`}).join('')}</div>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Debt</div><div class="chev">›</div></a>`;
  document.querySelectorAll('[data-income]').forEach(r=>r.onclick=e=>{e.preventDefault();openIncomeDetail(r.dataset.income)});
- document.querySelectorAll('[data-bill]').forEach(r=>r.onclick=e=>{e.preventDefault();openBillDetail(r.dataset.bill)});
+ document.querySelectorAll('[data-bill]').forEach(r=>r.onclick=e=>{e.preventDefault();const itemId=r.getAttribute('data-bill');openBillDetail(itemId)});
  addIncomeRow.onclick=e=>{e.preventDefault();openIncomeEditor(null)};
- addBillRow.onclick=e=>{e.preventDefault();openBillEditor(null)};
+ if(window.addBillRow){addBillRow.onclick=e=>{e.preventDefault();openBillEditor(null)}};
  renderVariableList(b.variableSpending);
 }
 function getIncome(i){return budget(getUser()).incomeSources.find(x=>x.id===i)}
@@ -603,12 +603,6 @@ incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};bil
 incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};variableEditBack.onclick=e=>{e.preventDefault();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');cancelVariable.onclick=()=>selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
 saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;saveVariable.onclick=saveVariableFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;deleteVariable.onclick=deleteVariableFn;if(window.markBillPaid)markBillPaid.onclick=markBillPaidFn;if(window.undoBillPaid)undoBillPaid.onclick=undoBillPaidFn;setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
 
-document.addEventListener('click', function(e){
- const debtRow=e.target.closest('[data-bill]');
- if(!debtRow)return;
- e.preventDefault();
- openBillDetail(debtRow.dataset.bill);
-});
 render();
 </script>
 </body>
