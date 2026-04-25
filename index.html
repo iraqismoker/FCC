@@ -394,6 +394,15 @@
   .payoff-card strong{font-size:15px}
 }
 
+
+.loan-details{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;margin-top:18px}
+.loan-details h3{margin:0 0 12px;font-size:22px;letter-spacing:-.03em}
+.loan-details-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.loan-detail-card{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:14px}
+.loan-detail-card span{display:block;color:var(--muted);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.loan-detail-card strong{display:block;color:var(--text);font-size:16px;letter-spacing:-.02em}
+@media(max-width:520px){.loan-details-grid{grid-template-columns:1fr 1fr}.loan-detail-card strong{font-size:14px}}
+
 </style>
 </head>
 <body>
@@ -459,6 +468,22 @@
   <div class="debt-extra-card"><span>Status</span><strong id="billDebtStatusDetail">Current</strong></div>
 </div>
 
+
+<div class="loan-details">
+  <h3>Loan Details</h3>
+  <div class="loan-details-grid">
+    <div class="loan-detail-card"><span>Original Loan</span><strong id="billOriginalLoanDetail">$0</strong></div>
+    <div class="loan-detail-card"><span>Remaining Balance</span><strong id="billRemainingBalanceDetail">$0</strong></div>
+    <div class="loan-detail-card"><span>Escrow Balance</span><strong id="billEscrowBalanceDetail">$0</strong></div>
+    <div class="loan-detail-card"><span>Interest Rate</span><strong id="billLoanRateDetail">0%</strong></div>
+    <div class="loan-detail-card"><span>Origination Date</span><strong id="billOriginationDateDetail">Not set</strong></div>
+    <div class="loan-detail-card"><span>Maturity Date</span><strong id="billMaturityDateDetail">Not set</strong></div>
+    <div class="loan-detail-card"><span>Term</span><strong id="billLoanTermDetail">Not set</strong></div>
+    <div class="loan-detail-card"><span>Payment Frequency</span><strong id="billPaymentFrequencyDetail">Monthly</strong></div>
+    <div class="loan-detail-card"><span>Lender / Account</span><strong id="billLoanLenderDetail">Not set</strong></div>
+    <div class="loan-detail-card"><span>Account Status</span><strong id="billLoanStatusDetail">Current</strong></div>
+  </div>
+</div>
 <div class="payoff-impact">
   <h3>Payoff Impact</h3>
   <div class="payoff-impact-grid">
@@ -495,6 +520,12 @@
 <div class="field"><label>Payoff / Maturity Date</label><input id="billPayoffDate" type="date"></div>
 <div class="field"><label>Lender / Account</label><input id="billLender" type="text" placeholder="Chase Mortgage"></div>
 <div class="field"><label>Interest Type</label><select id="billInterestType"><option>Fixed</option><option>Variable</option></select></div>
+
+<div class="field"><label>Original Loan Amount</label><input id="billOriginalLoanAmount" type="number" inputmode="decimal" step="0.01" placeholder="170000"></div>
+<div class="field"><label>Escrow Balance</label><input id="billEscrowBalance" type="number" inputmode="decimal" step="0.01" placeholder="1094.62"></div>
+<div class="field"><label>Origination Date</label><input id="billOriginationDate" type="date"></div>
+<div class="field"><label>Loan Term</label><input id="billLoanTerm" type="text" placeholder="180 months"></div>
+<div class="field full"><label>Property Address / Account Note</label><input id="billPropertyAddress" type="text" placeholder="12752 Fairfax St"></div>
 </form><div class="actions"><button class="btn primary" id="saveBill">Save Debt</button><button class="btn secondary" id="cancelBill">Cancel</button></div><div class="feedback neutral" id="billFeedback">Debt save locally in this browser.</div></div></section>
   </div>
 </div>
@@ -504,7 +535,7 @@ const KEY='budgetAppUser';
 const def={profile:{},preferences:{},security:{},budget:{incomeSources:[],fixedBills:[],variableSpending:[]}};
 let selectedIncomeId=null,selectedBillId=null,selectedVariableId=null;
 const fIncome={name:incomeName,amount:incomeAmount,received:incomeReceived,type:incomeType,frequency:incomeFrequency};
-const fBill={name:billName,amount:billAmount,paid:billPaid,dueDay:billDueDay,category:billCategory,priority:billPriority,frequency:billFrequency,apr:billApr,minimumPayment:billMinimumPayment,balanceOwed:billBalanceOwed,payoffDate:billPayoffDate,lender:billLender,interestType:billInterestType,additionalPrincipal:billAdditionalPrincipal};
+const fBill={name:billName,amount:billAmount,paid:billPaid,dueDay:billDueDay,category:billCategory,priority:billPriority,frequency:billFrequency,apr:billApr,minimumPayment:billMinimumPayment,balanceOwed:billBalanceOwed,payoffDate:billPayoffDate,lender:billLender,interestType:billInterestType,additionalPrincipal:billAdditionalPrincipal,originalLoanAmount:billOriginalLoanAmount,escrowBalance:billEscrowBalance,originationDate:billOriginationDate,loanTerm:billLoanTerm,propertyAddress:billPropertyAddress};
 const fVariable={name:variableName,planned:variablePlanned,spent:variableSpent,type:variableType};
 
 function getUser(){try{const raw=localStorage.getItem(KEY);const u=raw?JSON.parse(raw):structuredClone(def);return {...def,...u,budget:{...def.budget,...(u.budget||{})}}}catch(e){return structuredClone(def)}}
@@ -580,6 +611,13 @@ function getBill(i){return budget(getUser()).fixedBills.find(x=>x.id===i)}
 function getVariable(i){return budget(getUser()).variableSpending.find(x=>x.id===i)}
 
 
+
+function displayDate(value){
+ if(!value)return 'Not set';
+ const d=new Date(value+'T00:00:00');
+ if(isNaN(d.getTime()))return value;
+ return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
 function estimateDebtPayoff(balance, apr, payment){
  balance=Number(balance||0);
  apr=Number(apr||0);
@@ -668,13 +706,23 @@ function formatDueDate(day){
 }
 
 function openIncomeDetail(i){const item=getIncome(i);if(!item)return;selectedIncomeId=i;let planned=Number(item.monthlyAmount||0),received=Number(item.received||0),left=Math.max(planned-received,0);incomeAvatar.textContent=initials(item.name);incomeNameDetail.textContent=item.name;incomeReceivedDetail.textContent=money(received);incomePlannedDetail.textContent=money(planned);incomeLeftDetail.textContent=money(left);incomeTypeDetail.textContent=item.type;incomeFrequencyDetail.textContent=item.frequency;incomeMonthlyDetail.textContent=money(planned);incomeStatusDetail.textContent=left>0?'In Progress':'Complete';incomeActivityName.textContent=item.name;show('incomeDetailView')}
-function openBillDetail(i){const item=getBill(i);if(!item)return;selectedBillId=i;let planned=Number(item.monthlyAmount||0),paid=Number(item.paid||0),left=Math.max(planned-paid,0);billAvatar.textContent=initials(item.name);billNameDetail.textContent=item.name;billPaidDetail.textContent=money(paid);billPlannedDetail.textContent=money(planned);billLeftDetail.textContent=money(left);billCategoryDetail.textContent=item.category;billDueDayDetail.textContent=formatDueDate(item.dueDay);billPriorityDetail.textContent=item.priority||'Essential';billMonthlyDetail.textContent=money(item.minimumPayment||planned);if(window.billBalanceOwedDetail)billBalanceOwedDetail.textContent=money(item.balanceOwed||0);if(window.billAprDetail)billAprDetail.textContent=(item.apr||0)+'%';if(window.billPayoffDateDetail)billPayoffDateDetail.textContent=item.payoffDate||'Not set';if(window.billLenderDetail)billLenderDetail.textContent=item.lender||'Not set';if(window.billInterestTypeDetail)billInterestTypeDetail.textContent=item.interestType||'Fixed';if(window.billDebtStatusDetail)billDebtStatusDetail.textContent=item.status||'Current';renderPayoffImpact(item);billActivityName.textContent=item.name;show('billDetailView')}
+function openBillDetail(i){const item=getBill(i);if(!item)return;selectedBillId=i;let planned=Number(item.monthlyAmount||0),paid=Number(item.paid||0),left=Math.max(planned-paid,0);billAvatar.textContent=initials(item.name);billNameDetail.textContent=item.name;billPaidDetail.textContent=money(paid);billPlannedDetail.textContent=money(planned);billLeftDetail.textContent=money(left);billCategoryDetail.textContent=item.category;billDueDayDetail.textContent=formatDueDate(item.dueDay);billPriorityDetail.textContent=item.priority||'Essential';billMonthlyDetail.textContent=money(item.minimumPayment||planned);if(window.billBalanceOwedDetail)billBalanceOwedDetail.textContent=money(item.balanceOwed||0);if(window.billAprDetail)billAprDetail.textContent=(item.apr||0)+'%';if(window.billPayoffDateDetail)billPayoffDateDetail.textContent=item.payoffDate||'Not set';if(window.billLenderDetail)billLenderDetail.textContent=item.lender||'Not set';if(window.billInterestTypeDetail)billInterestTypeDetail.textContent=item.interestType||'Fixed';if(window.billDebtStatusDetail)billDebtStatusDetail.textContent=item.status||'Current';if(window.billOriginalLoanDetail)billOriginalLoanDetail.textContent=money(item.originalLoanAmount||0);
+if(window.billRemainingBalanceDetail)billRemainingBalanceDetail.textContent=money(item.balanceOwed||0);
+if(window.billEscrowBalanceDetail)billEscrowBalanceDetail.textContent=money(item.escrowBalance||0);
+if(window.billLoanRateDetail)billLoanRateDetail.textContent=(item.apr||0)+'%';
+if(window.billOriginationDateDetail)billOriginationDateDetail.textContent=displayDate(item.originationDate);
+if(window.billMaturityDateDetail)billMaturityDateDetail.textContent=displayDate(item.payoffDate);
+if(window.billLoanTermDetail)billLoanTermDetail.textContent=item.loanTerm||'Not set';
+if(window.billPaymentFrequencyDetail)billPaymentFrequencyDetail.textContent=item.frequency||'Monthly';
+if(window.billLoanLenderDetail)billLoanLenderDetail.textContent=item.lender||item.propertyAddress||'Not set';
+if(window.billLoanStatusDetail)billLoanStatusDetail.textContent=item.status||'Current';
+renderPayoffImpact(item);billActivityName.textContent=item.name;show('billDetailView')}
 
 function openIncomeEditor(i){selectedIncomeId=i;const item=i?getIncome(i):null;incomeEditTitle.textContent=item?'Edit Income':'Add Income';fIncome.name.value=item?.name||'';fIncome.amount.value=item?.amount||'';fIncome.received.value=item?.received||'';fIncome.type.value=item?.type||'Paycheck';fIncome.frequency.value=item?.frequency||'Monthly';show('incomeEditView')}
-function openBillEditor(i){selectedBillId=i;const item=i?getBill(i):null;billEditTitle.textContent=item?'Edit Debt':'Add Debt';fBill.name.value=item?.name||'';fBill.amount.value=item?.amount||'';fBill.paid.value=item?.paid||'';fBill.dueDay.value=item?.dueDay||'';fBill.category.value=item?.category||'Housing';fBill.priority.value=item?.priority||'Essential';fBill.frequency.value=item?.frequency||'Monthly';fBill.apr.value=item?.apr||'';fBill.minimumPayment.value=item?.minimumPayment||'';fBill.balanceOwed.value=item?.balanceOwed||'';fBill.payoffDate.value=item?.payoffDate||'';fBill.lender.value=item?.lender||'';fBill.interestType.value=item?.interestType||'Fixed';fBill.additionalPrincipal.value=item?.additionalPrincipal||'';show('billEditView')}
+function openBillEditor(i){selectedBillId=i;const item=i?getBill(i):null;billEditTitle.textContent=item?'Edit Debt':'Add Debt';fBill.name.value=item?.name||'';fBill.amount.value=item?.amount||'';fBill.paid.value=item?.paid||'';fBill.dueDay.value=item?.dueDay||'';fBill.category.value=item?.category||'Housing';fBill.priority.value=item?.priority||'Essential';fBill.frequency.value=item?.frequency||'Monthly';fBill.apr.value=item?.apr||'';fBill.minimumPayment.value=item?.minimumPayment||'';fBill.balanceOwed.value=item?.balanceOwed||'';fBill.payoffDate.value=item?.payoffDate||'';fBill.lender.value=item?.lender||'';fBill.interestType.value=item?.interestType||'Fixed';fBill.additionalPrincipal.value=item?.additionalPrincipal||'';fBill.originalLoanAmount.value=item?.originalLoanAmount||'';fBill.escrowBalance.value=item?.escrowBalance||'';fBill.originationDate.value=item?.originationDate||'';fBill.loanTerm.value=item?.loanTerm||'';fBill.propertyAddress.value=item?.propertyAddress||'';show('billEditView')}
 
 function saveIncomeFn(){const name=fIncome.name.value.trim(),amount=Number(fIncome.amount.value||0);if(!name||amount<=0){feedback('incomeFeedback','Add an income name and planned amount first.');return}const u=getUser(),b=budget(u),item={id:selectedIncomeId||id('income'),name,amount,received:Number(fIncome.received.value||0),type:fIncome.type.value,frequency:fIncome.frequency.value,monthlyAmount:monthly(amount,fIncome.frequency.value)};const incomeSources=selectedIncomeId?b.incomeSources.map(x=>x.id===selectedIncomeId?item:x):[...b.incomeSources,item];const updated={...u,budget:{...b,incomeSources}};saveUser(updated);render();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')}
-function saveBillFn(){const name=fBill.name.value.trim(),amount=Number(fBill.amount.value||0),due=Number(fBill.dueDay.value||0);if(!name||amount<=0){feedback('billFeedback','Add a debt name and planned amount first.');return}if(due<1||due>31){feedback('billFeedback','Enter a due date day between 1 and 31.');return}const u=getUser(),b=budget(u),item={id:selectedBillId||id('bill'),name,amount,paid:Number(fBill.paid.value||0),dueDay:due,category:fBill.category.value,priority:fBill.priority.value,frequency:fBill.frequency.value,apr:Number(fBill.apr.value||0),minimumPayment:Number(fBill.minimumPayment.value||0),balanceOwed:Number(fBill.balanceOwed.value||0),payoffDate:fBill.payoffDate.value,lender:fBill.lender.value,interestType:fBill.interestType.value,additionalPrincipal:Number(fBill.additionalPrincipal.value||0),monthlyAmount:monthly(amount,fBill.frequency.value)};const fixedBills=selectedBillId?b.fixedBills.map(x=>x.id===selectedBillId?item:x):[...b.fixedBills,item];const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();selectedBillId?openBillDetail(selectedBillId):show('budgetView')}
+function saveBillFn(){const name=fBill.name.value.trim(),amount=Number(fBill.amount.value||0),due=Number(fBill.dueDay.value||0);if(!name||amount<=0){feedback('billFeedback','Add a debt name and planned amount first.');return}if(due<1||due>31){feedback('billFeedback','Enter a due date day between 1 and 31.');return}const u=getUser(),b=budget(u),item={id:selectedBillId||id('bill'),name,amount,paid:Number(fBill.paid.value||0),dueDay:due,category:fBill.category.value,priority:fBill.priority.value,frequency:fBill.frequency.value,apr:Number(fBill.apr.value||0),minimumPayment:Number(fBill.minimumPayment.value||0),balanceOwed:Number(fBill.balanceOwed.value||0),payoffDate:fBill.payoffDate.value,lender:fBill.lender.value,interestType:fBill.interestType.value,additionalPrincipal:Number(fBill.additionalPrincipal.value||0),originalLoanAmount:Number(fBill.originalLoanAmount.value||0),escrowBalance:Number(fBill.escrowBalance.value||0),originationDate:fBill.originationDate.value,loanTerm:fBill.loanTerm.value,propertyAddress:fBill.propertyAddress.value,monthlyAmount:monthly(amount,fBill.frequency.value)};const fixedBills=selectedBillId?b.fixedBills.map(x=>x.id===selectedBillId?item:x):[...b.fixedBills,item];const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();selectedBillId?openBillDetail(selectedBillId):show('budgetView')}
 function markBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:Number(x.amount||x.monthlyAmount||0)}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
 function undoBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:0}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
 
