@@ -415,6 +415,44 @@ font-size:16px;
 cursor:pointer;
 }
 
+
+.advanced-loan-card .section-head{
+  padding:14px 18px !important;
+}
+.advanced-loan-card .section-title{
+  font-size:24px !important;
+}
+.advanced-loan-card .section-sub{
+  font-size:13px !important;
+}
+.advanced-loan-card .section-body{
+  padding:16px 18px 18px !important;
+}
+.advanced-loan-card .form{
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.advanced-loan-card .field.full{
+  grid-column:1/-1;
+}
+.advanced-loan-card label{
+  font-size:12px;
+}
+.advanced-loan-card input,
+.advanced-loan-card select{
+  padding:11px 12px;
+  border-radius:13px;
+  font-size:14px;
+}
+@media(max-width:520px){
+  .advanced-loan-card .form{
+    grid-template-columns:1fr 1fr;
+  }
+  .advanced-loan-card .field.full{
+    grid-column:1/-1;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -518,6 +556,40 @@ cursor:pointer;
     <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="variableEditTitle">Add Variable Category</h2><div class="section-sub">Update flexible spending.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Category name</label><input id="variableName" placeholder="Groceries"></div><div class="field"><label>Planned</label><input id="variablePlanned" type="number" inputmode="decimal" placeholder="600"></div><div class="field"><label>Spent</label><input id="variableSpent" type="number" inputmode="decimal" placeholder="0"></div><div class="field full"><label>Type</label><select id="variableType"><option>Groceries</option><option>Gas</option><option>Dining Out</option><option>Entertainment</option><option>Shopping</option><option>Household</option><option>Kids / Pets</option><option>Miscellaneous</option><option>Custom</option></select></div></form><div class="actions"><button class="btn primary" id="saveVariable" type="button">Save Category</button><button class="btn secondary" id="cancelVariable" type="button">Cancel</button></div><div class="feedback neutral" id="variableFeedback">Variable spending saves locally in this browser.</div></div></section>
   </div>
 
+
+  <div id="advancedLoanEditView" class="view">
+    <header class="topbar"><a href="#" class="back" id="advancedLoanBack"><span>‹</span>Back to Edit Debt</a></header>
+    <section class="section advanced-loan-card">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Advanced Loan Details</h2>
+          <div class="section-sub">Optional loan, payoff, and account information.</div>
+        </div>
+      </div>
+      <div class="section-body">
+        <form class="form">
+          <div class="field"><label>APR %</label><input id="billApr" type="number" inputmode="decimal" step="0.01" placeholder="6.25"></div>
+          <div class="field"><label>Minimum Payment</label><input id="billMinimumPayment" type="number" inputmode="decimal" step="0.01" placeholder="250"></div>
+          <div class="field"><label>Additional Principal Payment</label><input id="billAdditionalPrincipal" type="number" inputmode="decimal" step="0.01" placeholder="100"></div>
+          <div class="field"><label>Total Balance Owed</label><input id="billBalanceOwed" type="number" inputmode="decimal" step="0.01" placeholder="185000"></div>
+          <div class="field"><label>Payoff / Maturity Date</label><input id="billPayoffDate" type="date"></div>
+          <div class="field"><label>Lender / Account</label><input id="billLender" type="text" placeholder="Chase Mortgage"></div>
+          <div class="field"><label>Interest Type</label><select id="billInterestType"><option>Fixed</option><option>Variable</option></select></div>
+          <div class="field"><label>Original Loan Amount</label><input id="billOriginalLoanAmount" type="number" inputmode="decimal" step="0.01" placeholder="170000"></div>
+          <div class="field"><label>Escrow Balance</label><input id="billEscrowBalance" type="number" inputmode="decimal" step="0.01" placeholder="1094.62"></div>
+          <div class="field"><label>Origination Date</label><input id="billOriginationDate" type="date"></div>
+          <div class="field"><label>Loan Term</label><input id="billLoanTerm" type="text" placeholder="180 months"></div>
+          <div class="field full"><label>Property Address / Account Note</label><input id="billPropertyAddress" type="text" placeholder="12752 Fairfax St"></div>
+        </form>
+        <div class="actions">
+          <button class="btn primary" id="saveAdvancedLoanDetails" type="button">Save Loan Details</button>
+          <button class="btn secondary" id="cancelAdvancedLoanDetails" type="button">Cancel</button>
+        </div>
+        <div class="feedback neutral" id="advancedLoanFeedback">Advanced loan details save with this debt item.</div>
+      </div>
+    </section>
+  </div>
+
   <div id="incomeEditView" class="view">
     <header class="topbar"><a href="#" class="back" id="incomeEditBack"><span>‹</span>Back</a></header>
     <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="incomeEditTitle">Add Income</h2><div class="section-sub">Add or update planned income.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Income name</label><input id="incomeName" placeholder="VA"></div><div class="field"><label>Planned</label><input id="incomeAmount" type="number" inputmode="decimal" placeholder="5198.37"></div><div class="field"><label>Received</label><input id="incomeReceived" type="number" inputmode="decimal" placeholder="0"></div><div class="field"><label>Type</label><select id="incomeType"><option>Paycheck</option><option>Spouse / Partner</option><option>Side Income</option><option>VA / Disability</option><option>SSDI</option><option>Pension</option><option>Military BAH</option><option>Military BAS</option><option>Government Pay</option><option>Other</option></select></div><div class="field"><label>Frequency</label><select id="incomeFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Twice Monthly</option><option>Annual</option></select></div></form><div class="actions"><button class="btn primary" id="saveIncome">Save Income</button><button class="btn secondary" id="cancelIncome">Cancel</button></div><div class="feedback neutral" id="incomeFeedback">Income saves locally in this browser.</div></div></section>
@@ -560,19 +632,6 @@ cursor:pointer;
 Advanced Loan Details →
 </button>
 </div>
-
-<div class="field"><label>APR %</label><input id="billApr" type="number" inputmode="decimal" step="0.01" placeholder="6.25"></div>
-<div class="field"><label>Minimum Payment</label><input id="billMinimumPayment" type="number" inputmode="decimal" step="0.01" placeholder="250"></div><div class="field"><label>Additional Principal Payment</label><input id="billAdditionalPrincipal" type="number" inputmode="decimal" step="0.01" placeholder="100"></div>
-<div class="field"><label>Total Balance Owed</label><input id="billBalanceOwed" type="number" inputmode="decimal" step="0.01" placeholder="185000"></div>
-<div class="field"><label>Payoff / Maturity Date</label><input id="billPayoffDate" type="date"></div>
-<div class="field"><label>Lender / Account</label><input id="billLender" type="text" placeholder="Chase Mortgage"></div>
-<div class="field"><label>Interest Type</label><select id="billInterestType"><option>Fixed</option><option>Variable</option></select></div>
-
-<div class="field"><label>Original Loan Amount</label><input id="billOriginalLoanAmount" type="number" inputmode="decimal" step="0.01" placeholder="170000"></div>
-<div class="field"><label>Escrow Balance</label><input id="billEscrowBalance" type="number" inputmode="decimal" step="0.01" placeholder="1094.62"></div>
-<div class="field"><label>Origination Date</label><input id="billOriginationDate" type="date"></div>
-<div class="field"><label>Loan Term</label><input id="billLoanTerm" type="text" placeholder="180 months"></div>
-<div class="field full"><label>Property Address / Account Note</label><input id="billPropertyAddress" type="text" placeholder="12752 Fairfax St"></div>
 </form><div class="actions"><button class="btn primary" id="saveBill">Save Debt</button><button class="btn secondary" id="cancelBill">Cancel</button></div><div class="feedback neutral" id="billFeedback">Debt save locally in this browser.</div></div></section>
   </div>
 </div>
@@ -766,10 +825,10 @@ if(window.billLoanStatusDetail)billLoanStatusDetail.textContent=item.status||'Cu
 renderPayoffImpact(item);billActivityName.textContent=item.name;show('billDetailView')}
 
 function openIncomeEditor(i){selectedIncomeId=i;const item=i?getIncome(i):null;incomeEditTitle.textContent=item?'Edit Income':'Add Income';fIncome.name.value=item?.name||'';fIncome.amount.value=item?.amount||'';fIncome.received.value=item?.received||'';fIncome.type.value=item?.type||'Paycheck';fIncome.frequency.value=item?.frequency||'Monthly';show('incomeEditView')}
-function openBillEditor(i){selectedBillId=i;const item=i?getBill(i):null;billEditTitle.textContent=item?'Edit Debt':'Add Debt';fBill.name.value=item?.name||'';fBill.amount.value=item?.amount||'';fBill.paid.value=item?.paid||'';fBill.dueDay.value=item?.dueDay||'';fBill.category.value=item?.category||'Housing';fBill.priority.value=item?.priority||'Essential';fBill.frequency.value=item?.frequency||'Monthly';fBill.apr.value=item?.apr||'';fBill.minimumPayment.value=item?.minimumPayment||'';fBill.balanceOwed.value=item?.balanceOwed||'';fBill.payoffDate.value=item?.payoffDate||'';fBill.lender.value=item?.lender||'';fBill.interestType.value=item?.interestType||'Fixed';fBill.additionalPrincipal.value=item?.additionalPrincipal||'';fBill.originalLoanAmount.value=item?.originalLoanAmount||'';fBill.escrowBalance.value=item?.escrowBalance||'';fBill.originationDate.value=item?.originationDate||'';fBill.loanTerm.value=item?.loanTerm||'';fBill.propertyAddress.value=item?.propertyAddress||'';show('billEditView')}
+function openBillEditor(i){selectedBillId=i;const item=i?getBill(i):null;billEditTitle.textContent=item?'Edit Debt':'Add Debt';fBill.name.value=item?.name||'';fBill.amount.value=item?.amount||'';fBill.paid.value=item?.paid||'';fBill.dueDay.value=item?.dueDay||'';fBill.category.value=item?.category||'Housing';fBill.priority.value=item?.priority||'Essential';fBill.frequency.value=item?.frequency||'Monthly';show('billEditView')}
 
 function saveIncomeFn(){const name=fIncome.name.value.trim(),amount=Number(fIncome.amount.value||0);if(!name||amount<=0){feedback('incomeFeedback','Add an income name and planned amount first.');return}const u=getUser(),b=budget(u),item={id:selectedIncomeId||id('income'),name,amount,received:Number(fIncome.received.value||0),type:fIncome.type.value,frequency:fIncome.frequency.value,monthlyAmount:monthly(amount,fIncome.frequency.value)};const incomeSources=selectedIncomeId?b.incomeSources.map(x=>x.id===selectedIncomeId?item:x):[...b.incomeSources,item];const updated={...u,budget:{...b,incomeSources}};saveUser(updated);render();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')}
-function saveBillFn(){const name=fBill.name.value.trim(),amount=Number(fBill.amount.value||0),due=Number(fBill.dueDay.value||0);if(!name||amount<=0){feedback('billFeedback','Add a debt name and planned amount first.');return}if(due<1||due>31){feedback('billFeedback','Enter a due date day between 1 and 31.');return}const u=getUser(),b=budget(u),item={id:selectedBillId||id('bill'),name,amount,paid:Number(fBill.paid.value||0),dueDay:due,category:fBill.category.value,priority:fBill.priority.value,frequency:fBill.frequency.value,apr:Number(fBill.apr.value||0),minimumPayment:Number(fBill.minimumPayment.value||0),balanceOwed:Number(fBill.balanceOwed.value||0),payoffDate:fBill.payoffDate.value,lender:fBill.lender.value,interestType:fBill.interestType.value,additionalPrincipal:Number(fBill.additionalPrincipal.value||0),originalLoanAmount:Number(fBill.originalLoanAmount.value||0),escrowBalance:Number(fBill.escrowBalance.value||0),originationDate:fBill.originationDate.value,loanTerm:fBill.loanTerm.value,propertyAddress:fBill.propertyAddress.value,monthlyAmount:monthly(amount,fBill.frequency.value)};const fixedBills=selectedBillId?b.fixedBills.map(x=>x.id===selectedBillId?item:x):[...b.fixedBills,item];const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();selectedBillId?openBillDetail(selectedBillId):show('budgetView')}
+function saveBillFn(){const name=fBill.name.value.trim(),amount=Number(fBill.amount.value||0),due=Number(fBill.dueDay.value||0);if(!name||amount<=0){feedback('billFeedback','Add a debt name and planned amount first.');return}if(due<1||due>31){feedback('billFeedback','Enter a due date day between 1 and 31.');return}const u=getUser(),b=budget(u),existing=selectedBillId?getBill(selectedBillId):{};const item={...existing,id:selectedBillId||id('bill'),name,amount,paid:Number(fBill.paid.value||0),dueDay:due,category:fBill.category.value,priority:fBill.priority.value,frequency:fBill.frequency.value,monthlyAmount:monthly(amount,fBill.frequency.value)};const fixedBills=selectedBillId?b.fixedBills.map(x=>x.id===selectedBillId?item:x):[...b.fixedBills,item];const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();selectedBillId?openBillDetail(selectedBillId):show('budgetView')}
 function markBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:Number(x.amount||x.monthlyAmount||0)}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
 function undoBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:0}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
 
@@ -815,12 +874,64 @@ function deleteVariableFn(){
  selectedVariableId=null;render();show('budgetView');
 }
 
+
+function loadAdvancedLoanFields(item){
+ if(!item)item={};
+ fBill.apr.value=item.apr||'';
+ fBill.minimumPayment.value=item.minimumPayment||'';
+ fBill.balanceOwed.value=item.balanceOwed||'';
+ fBill.payoffDate.value=item.payoffDate||'';
+ fBill.lender.value=item.lender||'';
+ fBill.interestType.value=item.interestType||'Fixed';
+ fBill.additionalPrincipal.value=item.additionalPrincipal||'';
+ fBill.originalLoanAmount.value=item.originalLoanAmount||'';
+ fBill.escrowBalance.value=item.escrowBalance||'';
+ fBill.originationDate.value=item.originationDate||'';
+ fBill.loanTerm.value=item.loanTerm||'';
+ fBill.propertyAddress.value=item.propertyAddress||'';
+}
+function openAdvancedLoanEditor(){
+ const item=selectedBillId?getBill(selectedBillId):null;
+ loadAdvancedLoanFields(item);
+ show('advancedLoanEditView');
+}
+function saveAdvancedLoanDetailsFn(){
+ if(!selectedBillId){
+  feedback('advancedLoanFeedback','Save the debt first, then add advanced loan details.');
+  return;
+ }
+ const u=getUser(),b=budget(u);
+ const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{
+  ...x,
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  propertyAddress:fBill.propertyAddress.value
+ }:x);
+ saveUser({...u,budget:{...b,fixedBills}});
+ render();
+ openBillEditor(selectedBillId);
+}
+
 function deleteIncomeFn(){if(!selectedIncomeId)return;const u=getUser(),b=budget(u);saveUser({...u,budget:{...b,incomeSources:b.incomeSources.filter(x=>x.id!==selectedIncomeId)}});selectedIncomeId=null;render();show('budgetView')}
 function deleteBillFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);saveUser({...u,budget:{...b,fixedBills:b.fixedBills.filter(x=>x.id!==selectedBillId)}});selectedBillId=null;render();show('budgetView')}
 
 incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};variableDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeDetails.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillDetails.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};editVariableDetails.onclick=e=>{e.preventDefault();openVariableEditor(selectedVariableId)};
 incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};variableEditBack.onclick=e=>{e.preventDefault();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');cancelVariable.onclick=()=>selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
 saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;saveVariable.onclick=saveVariableFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;deleteVariable.onclick=deleteVariableFn;if(window.markBillPaid)markBillPaid.onclick=markBillPaidFn;if(window.undoBillPaid)undoBillPaid.onclick=undoBillPaidFn;setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
+
+if(window.openAdvancedLoanDetails)openAdvancedLoanDetails.onclick=e=>{e.preventDefault();openAdvancedLoanEditor()};
+if(window.advancedLoanBack)advancedLoanBack.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};
+if(window.cancelAdvancedLoanDetails)cancelAdvancedLoanDetails.onclick=()=>openBillEditor(selectedBillId);
+if(window.saveAdvancedLoanDetails)saveAdvancedLoanDetails.onclick=saveAdvancedLoanDetailsFn;
 render();
 </script>
 </body>
