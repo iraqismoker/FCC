@@ -403,6 +403,18 @@
 .loan-detail-card strong{display:block;color:var(--text);font-size:16px;letter-spacing:-.02em}
 @media(max-width:520px){.loan-details-grid{grid-template-columns:1fr 1fr}.loan-detail-card strong{font-size:14px}}
 
+
+.ghost-btn{
+width:100%;
+padding:16px;
+border-radius:16px;
+border:1px solid var(--line);
+background:#fff;
+font-weight:700;
+font-size:16px;
+cursor:pointer;
+}
+
 </style>
 </head>
 <body>
@@ -513,7 +525,42 @@
 
   <div id="billEditView" class="view">
     <header class="topbar"><a href="#" class="back" id="billEditBack"><span>‹</span>Back</a></header>
-    <section class="section bill-edit-card"><div class="section-head"><div><h2 class="section-title" id="billEditTitle">Add Debt</h2><div class="section-sub">Update bill details.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Debt name</label><input id="billName" placeholder="Mortgage"></div><div class="field"><label>Planned</label><input id="billAmount" type="number" inputmode="decimal" placeholder="1200"></div><div class="field"><label>Paid</label><input id="billPaid" type="number" inputmode="decimal" placeholder="0"></div><div class="field"><label>Due Date</label><input id="billDueDay" type="number" min="1" max="31" placeholder="Day of month, e.g. 1"></div><div class="field"><label>Category</label><select id="billCategory"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Debt Payment</option><option>Subscription</option><option>Phone / Internet</option><option>Transportation</option><option>Childcare</option><option>Medical</option><option>Other</option></select></div><div class="field"><label>Priority</label><select id="billPriority"><option>Essential</option><option>Flexible</option><option>Can Delay</option></select></div><div class="field"><label>Frequency</label><select id="billFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Quarterly</option><option>Semiannual</option><option>Annual</option></select></div>
+    <section class="section bill-edit-card"><div class="section-head"><div><h2 class="section-title" id="billEditTitle">Add Debt</h2><div class="section-sub">Update bill details.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Debt name</label><input id="billName" placeholder="Mortgage"></div><div class="field"><label>Planned</label><input id="billAmount" type="number" inputmode="decimal" placeholder="1200"></div><div class="field"><label>Paid</label><input id="billPaid" type="number" inputmode="decimal" placeholder="0"></div><div class="field"><label>Due Date</label><input id="billDueDay" type="number" min="1" max="31" placeholder="Day of month, e.g. 1"></div>
+<div class="field">
+<label>Debt Type</label>
+<select id="billDebtType">
+<option>Mortgage</option>
+<option>Auto Loan</option>
+<option>Credit Card</option>
+<option>Personal Loan</option>
+<option>Student Loan</option>
+<option>HELOC</option>
+<option>Medical Debt</option>
+<option>IRS / Tax Debt</option>
+<option>Buy Now Pay Later</option>
+<option>Other</option>
+</select>
+</div>
+
+<div class="field">
+<label>Strategy Tag</label>
+<select id="billStrategyTag">
+<option>Aggressive Payoff</option>
+<option>Avalanche</option>
+<option>Snowball</option>
+<option>Minimum Only</option>
+<option>Promotional APR Focus</option>
+</select>
+</div>
+
+<div class="field"><label>Category</label><select id="billCategory"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Debt Payment</option><option>Subscription</option><option>Phone / Internet</option><option>Transportation</option><option>Childcare</option><option>Medical</option><option>Other</option></select></div><div class="field"><label>Priority</label><select id="billPriority"><option>Essential</option><option>Flexible</option><option>Can Delay</option></select></div><div class="field"><label>Frequency</label><select id="billFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Quarterly</option><option>Semiannual</option><option>Annual</option></select></div>
+
+<div class="field full">
+<button type="button" class="ghost-btn" id="openAdvancedLoanDetails">
+Advanced Loan Details →
+</button>
+</div>
+
 <div class="field"><label>APR %</label><input id="billApr" type="number" inputmode="decimal" step="0.01" placeholder="6.25"></div>
 <div class="field"><label>Minimum Payment</label><input id="billMinimumPayment" type="number" inputmode="decimal" step="0.01" placeholder="250"></div><div class="field"><label>Additional Principal Payment</label><input id="billAdditionalPrincipal" type="number" inputmode="decimal" step="0.01" placeholder="100"></div>
 <div class="field"><label>Total Balance Owed</label><input id="billBalanceOwed" type="number" inputmode="decimal" step="0.01" placeholder="185000"></div>
