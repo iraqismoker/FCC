@@ -343,6 +343,38 @@
   }
 }
 
+
+.debt-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-top:18px;
+}
+.debt-mini{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+}
+.debt-mini span{
+  display:block;
+  font-size:12px;
+  font-weight:900;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:8px;
+}
+.debt-mini strong{
+  display:block;
+  font-size:20px;
+  font-weight:900;
+  color:var(--text);
+}
+@media(max-width:520px){
+  .debt-grid{grid-template-columns:1fr;}
+}
+
 </style>
 </head>
 <body>
@@ -393,17 +425,17 @@
 
   <div id="incomeDetailView" class="view">
     <header class="topbar"><a href="#" class="back" id="incomeDetailBack"><span>‹</span>Back to Budget</a></header>
-    <section class="detail"><div class="accent"><div class="avatar" id="incomeAvatar">$</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="incomeNameDetail">Income</div><div class="detail-sub"><span class="green" id="incomeReceivedDetail">$0</span> received of <span class="blue" id="incomePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Left to Receive</span><strong id="incomeLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Type</span><strong id="incomeTypeDetail">Paycheck</strong></div><div class="detail-mini"><span>Frequency</span><strong id="incomeFrequencyDetail">Monthly</strong></div><div class="detail-mini"><span>Monthly Equivalent</span><strong id="incomeMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Status</span><strong id="incomeStatusDetail">Planned</strong></div></div><button class="btn primary edit-main-btn" id="editIncomeDetails" type="button">Edit Details</button><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="incomeActivityName">this income</strong> yet.</p></div><button class="delete" id="deleteIncome">Delete Budget Item</button></div></section>
+    <section class="detail"><div class="accent"><div class="avatar" id="incomeAvatar">$</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="incomeNameDetail">Income</div><div class="detail-sub"><span class="green" id="incomeReceivedDetail">$0</span> received of <span class="blue" id="incomePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Left to Receive</span><strong id="incomeLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Type</span><strong id="incomeTypeDetail">Paycheck</strong></div><div class="detail-mini"><span>Frequency</span><strong id="incomeFrequencyDetail">Monthly</strong></div><div class="detail-mini"><span>Minimum Payment</span><strong id="incomeMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Status</span><strong id="incomeStatusDetail">Planned</strong></div></div><button class="btn primary edit-main-btn" id="editIncomeDetails" type="button">Edit Details</button><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="incomeActivityName">this income</strong> yet.</p></div><button class="delete" id="deleteIncome">Delete Budget Item</button></div></section>
   </div>
 
   <div id="billDetailView" class="view">
     <header class="topbar"><a href="#" class="back" id="billDetailBack"><span>‹</span>Back to Budget</a></header>
-    <section class="detail"><div class="accent debt"><div class="avatar" id="billAvatar">B</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="billNameDetail">Debt</div><div class="detail-sub"><span class="green" id="billPaidDetail">$0</span> paid of <span class="blue" id="billPlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Left to Pay</span><strong id="billLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Category</span><strong id="billCategoryDetail">Housing</strong></div><div class="detail-mini"><span>Due Date</span><strong id="billDueDayDetail">1st of month</strong></div><div class="detail-mini"><span>Priority</span><strong id="billPriorityDetail">Essential</strong></div><div class="detail-mini"><span>Monthly Equivalent</span><strong id="billMonthlyDetail">$0</strong></div></div><div class="bill-action-card"><button class="btn primary primary-action" id="markBillPaid" type="button">Mark Paid</button><div class="bill-secondary-actions"><button class="btn secondary" id="undoBillPaid" type="button">Undo Payment</button><button class="btn secondary" id="editBillDetails" type="button">Edit Details</button></div></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this debt</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
+    <section class="detail"><div class="accent debt"><div class="avatar" id="billAvatar">B</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="billNameDetail">Debt</div><div class="detail-sub"><span class="green" id="billPaidDetail">$0</span> paid of <span class="blue" id="billPlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Left to Pay</span><strong id="billLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Debt Type</span><strong id="billCategoryDetail">Housing</strong></div><div class="detail-mini"><span>Payment Due Date</span><strong id="billDueDayDetail">1st of month</strong></div><div class="detail-mini"><span>Priority</span><strong id="billPriorityDetail">Essential</strong></div><div class="detail-mini"><span>Minimum Payment</span><strong id="billMonthlyDetail">$0</strong></div></div><div class="bill-action-card"><button class="btn primary primary-action" id="markBillPaid" type="button">Mark Paid</button><div class="bill-secondary-actions"><button class="btn secondary" id="undoBillPaid" type="button">Undo Payment</button><button class="btn secondary" id="editBillDetails" type="button">Edit Details</button></div></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this debt</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
   </div>
 
   <div id="variableDetailView" class="view">
     <header class="topbar"><a href="#" class="back" id="variableDetailBack"><span>‹</span>Back to Budget</a></header>
-    <section class="detail"><div class="accent"><div class="avatar" id="variableAvatar">V</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="variableNameDetail">Category</div><div class="detail-sub"><span class="green" id="variableSpentDetail">$0</span> spent of <span class="blue" id="variablePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Remaining</span><strong id="variableLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Type</span><strong id="variableTypeDetail">Variable</strong></div><div class="detail-mini"><span>Status</span><strong id="variableStatusDetail">On Track</strong></div><div class="detail-mini"><span>Monthly Planned</span><strong id="variableMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Spent</span><strong id="variableSpentMiniDetail">$0</strong></div></div><button class="btn primary edit-main-btn" id="editVariableDetails" type="button">Edit Details</button><div class="info-card"><h3>Activity This Month</h3><p>Transactions will be tracked here later for <strong id="variableActivityName">this category</strong>.</p></div><button class="delete" id="deleteVariable">Delete Budget Item</button></div></section>
+    <section class="detail"><div class="accent"><div class="avatar" id="variableAvatar">V</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="variableNameDetail">Debt Type</div><div class="detail-sub"><span class="green" id="variableSpentDetail">$0</span> spent of <span class="blue" id="variablePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Remaining</span><strong id="variableLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Type</span><strong id="variableTypeDetail">Variable</strong></div><div class="detail-mini"><span>Status</span><strong id="variableStatusDetail">On Track</strong></div><div class="detail-mini"><span>Monthly Planned</span><strong id="variableMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Spent</span><strong id="variableSpentMiniDetail">$0</strong></div></div><button class="btn primary edit-main-btn" id="editVariableDetails" type="button">Edit Details</button><div class="info-card"><h3>Activity This Month</h3><p>Transactions will be tracked here later for <strong id="variableActivityName">this category</strong>.</p></div><button class="delete" id="deleteVariable">Delete Budget Item</button></div></section>
   </div>
 
   <div id="variableEditView" class="view">
@@ -418,7 +450,7 @@
 
   <div id="billEditView" class="view">
     <header class="topbar"><a href="#" class="back" id="billEditBack"><span>‹</span>Back</a></header>
-    <section class="section bill-edit-card"><div class="section-head"><div><h2 class="section-title" id="billEditTitle">Add Debt</h2><div class="section-sub">Update debt details.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Debt name</label><input id="billName" placeholder="Mortgage"></div><div class="field"><label>Planned</label><input id="billAmount" type="number" inputmode="decimal" placeholder="1200"></div><div class="field"><label>Paid</label><input id="billPaid" type="number" inputmode="decimal" placeholder="0"></div><div class="field"><label>Due Date</label><input id="billDueDay" type="number" min="1" max="31" placeholder="Day of month, e.g. 1"></div><div class="field"><label>Category</label><select id="billCategory"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Debt Payment</option><option>Subscription</option><option>Phone / Internet</option><option>Transportation</option><option>Childcare</option><option>Medical</option><option>Other</option></select></div><div class="field"><label>Priority</label><select id="billPriority"><option>Essential</option><option>Flexible</option><option>Can Delay</option></select></div><div class="field"><label>Frequency</label><select id="billFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Quarterly</option><option>Semiannual</option><option>Annual</option></select></div></form><div class="actions"><button class="btn primary" id="saveBill">Save Debt</button><button class="btn secondary" id="cancelBill">Cancel</button></div><div class="feedback neutral" id="billFeedback">Debt save locally in this browser.</div></div></section>
+    <section class="section bill-edit-card"><div class="section-head"><div><h2 class="section-title" id="billEditTitle">Add Debt</h2><div class="section-sub">Update debt details.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Debt name</label><input id="billName" placeholder="Mortgage"></div><div class="field"><label>Planned</label><input id="billAmount" type="number" inputmode="decimal" placeholder="1200"></div><div class="field"><label>Paid This Month</label><input id="billPaid" type="number" inputmode="decimal" placeholder="0"></div><div class="field"><label>Payment Due Date</label><input id="billDueDay" type="number" min="1" max="31" placeholder="Day of month, e.g. 1"></div><div class="field"><label>Debt Type</label><select id="billCategory"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Debt Payment</option><option>Subscription</option><option>Phone / Internet</option><option>Transportation</option><option>Childcare</option><option>Medical</option><option>Other</option></select></div><div class="field"><label>Priority</label><select id="billPriority"><option>Essential</option><option>Flexible</option><option>Can Delay</option></select></div><div class="field"><label>Frequency</label><select id="billFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Quarterly</option><option>Semiannual</option><option>Annual</option></select></div></form><div class="actions"><button class="btn primary" id="saveBill">Save Debt</button><button class="btn secondary" id="cancelBill">Cancel</button></div><div class="feedback neutral" id="billFeedback">Debt save locally in this browser.</div></div></section>
   </div>
 </div>
 
