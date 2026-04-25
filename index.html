@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Budget App – Budget</title>
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--card2:#f8fafc;--text:#10213c;--muted:#66758b;--line:#d7dee8;--primary:#2b7fff;--primarySoft:#e9f1ff;--good:#2bb5a8;--bad:#e26b5b;--badSoft:#fff0ee;--shadow:0 10px 30px rgba(16,33,60,.08);--r:28px}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#f7f8fb,#eef2f7);color:var(--text)}.app{max-width:900px;margin:auto;padding:20px 16px 36px}.view{display:none}.active{display:block}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.back{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:800}.back span{width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:#fff;box-shadow:var(--shadow);display:grid;place-items:center}
+.head{background:linear-gradient(135deg,#eef5ff,#fff);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:24px;margin-bottom:18px}.eyebrow{margin:0 0 8px;color:var(--muted);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.head h1{margin:0;font-size:clamp(34px,7vw,52px);line-height:.98;letter-spacing:-.045em}.head p{margin:12px 0 0;color:#43536d;font-size:16px;line-height:1.45;font-weight:700}
+.summary{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;margin-bottom:18px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.sum{background:var(--card2);border:1px solid var(--line);border-radius:18px;padding:14px}.sum .label{color:var(--muted);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}.sum .value{font-size:26px;font-weight:900;letter-spacing:-.035em;line-height:1}.sum .note{color:var(--muted);font-size:12px;font-weight:700;margin-top:7px}
+
+
+
+
+
+
+
+.meter-info{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:2px solid var(--primary);color:var(--primary);font-size:13px;font-weight:900;margin-left:6px}
+.stack{display:grid;gap:18px}.section{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:20px 22px;border-bottom:1px solid #edf1f5}.section-title{margin:0;font-size:22px;letter-spacing:-.03em}.section-sub{margin-top:5px;color:var(--muted);font-size:14px;font-weight:650}.section-body{padding:20px 22px 22px}
+.budget-list{display:grid}.budget-row{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;padding:22px;border-bottom:1px solid #edf1f5;text-decoration:none;color:inherit;background:#fff;cursor:pointer}.budget-row:last-child{border-bottom:0}.budget-row:hover{background:#fbfcfe}.row-left strong{display:block;font-size:22px;letter-spacing:-.03em;margin-bottom:5px}.row-left span{display:block;color:var(--muted);font-size:14px;font-weight:650}.row-right{display:flex;align-items:center;gap:8px}.row-amount{text-align:right;font-size:24px;font-weight:800;letter-spacing:-.03em;white-space:nowrap}.chev{color:#7a8ba4;font-size:28px}.add-row{color:#1474b8;font-size:20px;font-weight:800}
+.detail{background:#eef3f6;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;margin-bottom:18px}.accent{height:88px;background:var(--good);position:relative}.accent.bill{background:var(--primary)}.avatar{position:absolute;left:24px;bottom:-48px;width:112px;height:112px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:32px;font-weight:900;border:10px solid #eef3f6;box-shadow:0 8px 20px rgba(16,33,60,.08)}.detail-body{padding:70px 24px 24px}.detail-main{display:grid;grid-template-columns:1fr auto;gap:18px}.detail-name{font-size:42px;line-height:1;letter-spacing:-.045em;font-weight:850;margin-bottom:12px}.detail-sub{color:var(--muted);font-size:20px;font-weight:750}.detail-sub .green{color:var(--good);font-weight:900}.detail-sub .blue{color:#1474b8;font-weight:900}.detail-total{text-align:right}.detail-total span{display:block;color:var(--muted);font-size:18px;font-weight:750;margin-bottom:8px}.detail-total strong{font-size:44px;letter-spacing:-.045em}
+.detail-card,.info-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;margin-top:18px;box-shadow:0 8px 20px rgba(16,33,60,.04)}.detail-link{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;text-decoration:none;color:inherit}.icon{width:54px;height:54px;border-radius:18px;background:var(--primarySoft);color:var(--primary);display:grid;place-items:center;font-weight:900;font-size:24px}.detail-link strong{display:block;font-size:22px;letter-spacing:-.03em}.detail-link span{color:var(--muted);font-size:14px;font-weight:650;margin-top:4px;display:block}.info-card h3{margin:0 0 12px;color:var(--muted);font-size:22px;letter-spacing:-.03em}.info-card p{margin:0;color:var(--muted);font-size:16px;font-weight:700;line-height:1.45;text-align:center}
+.form{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.field{display:grid;gap:8px}.full{grid-column:1/-1}label{color:var(--muted);font-size:13px;font-weight:800}input,select{width:100%;border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:14px;padding:13px 14px;font-size:15px;font-weight:650;outline:none}input:focus,select:focus{border-color:#b8d3ff;background:#fff}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.btn{border:0;border-radius:14px;padding:13px 16px;font-size:14px;font-weight:900;cursor:pointer;transition:.16s;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.btn:hover{transform:translateY(-1px)}.primary{background:var(--primary);color:#fff}.secondary{background:var(--primarySoft);color:var(--primary)}.danger{background:var(--badSoft);color:var(--bad);border:1px solid #f6cdc7}.delete{width:100%;margin-top:24px;text-align:center;color:var(--bad);font-size:20px;font-weight:900;background:none;border:0;cursor:pointer;padding:14px}
+.feedback{display:none;margin-top:14px;border-radius:14px;padding:12px 14px;font-size:14px;font-weight:800}.show{display:block}.success{background:#e8fbf8;color:#1c7c73;border:1px solid #bdebe4}.neutral{background:#f4f7fb;color:#5c6c84;border:1px solid #dde6f0}
+@media(max-width:760px){.app{padding:16px 12px 28px}.summary{grid-template-columns:repeat(2,1fr)}.detail-main{grid-template-columns:1fr}.detail-total{text-align:left}.detail-total strong{font-size:38px}.form{grid-template-columns:1fr}.detail-name{font-size:38px}.head{padding:20px}.head h1{font-size:38px}.head p{font-size:15px}.section-head{padding:18px 20px}}@media(max-width:520px){.summary{grid-template-columns:repeat(2,1fr);gap:10px;padding:12px}.sum{padding:12px;border-radius:16px}.sum .label{font-size:10px;letter-spacing:.06em}.sum .value{font-size:22px}.sum .note{font-size:11px;line-height:1.25}.budget-row{grid-template-columns:1fr}.row-amount{text-align:left}.row-right{justify-content:space-between}}
+
+.section-head.compact-head{align-items:center}
+.section-head.compact-head .section-sub{display:none}
+.list-mode-label{color:var(--muted);font-size:20px;font-weight:750}
+.budget-row.compact-row{grid-template-columns:1fr auto auto;padding:16px 22px;gap:12px}
+.budget-row.compact-row .row-left strong{font-size:20px;font-weight:650;letter-spacing:-.02em;margin:0}
+.budget-row.compact-row .row-left span{display:none}
+.budget-row.compact-row .row-amount{font-size:20px;font-weight:650;color:#3f4a4d}
+.budget-row.compact-row.add-row{grid-template-columns:1fr auto;padding:18px 22px}
+.budget-row.compact-row.add-row div:first-child{font-size:20px;font-weight:750;color:#1474b8}
+@media(max-width:520px){
+ .section-head.compact-head{padding:18px 22px}
+ .section-head.compact-head .section-title{font-size:24px}
+ .list-mode-label{font-size:22px}
+ .budget-row.compact-row{grid-template-columns:1fr auto auto;padding:18px 22px}
+ .budget-row.compact-row .row-left strong{font-size:23px}
+ .budget-row.compact-row .row-amount{font-size:22px}
+ .budget-row.compact-row.add-row div:first-child{font-size:24px}
+}
+
+
+/* Detail view refresh */
+.accent{height:66px;background:var(--primary)!important}
+.accent.bill{background:var(--primary)!important}
+.avatar{width:88px!important;height:88px!important;bottom:-38px!important;border-width:8px!important;font-size:28px!important}
+.detail-body{padding:52px 22px 22px!important}
+.detail-main{grid-template-columns:1fr!important;gap:14px!important}
+.detail-name{font-size:36px!important}
+.detail-total{text-align:left!important;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+.detail-total span{font-size:16px!important;font-weight:800!important}
+.detail-total strong{font-size:34px!important}
+.detail-sub .green{color:var(--primary)!important}
+.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}
+.detail-mini{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px}
+.detail-mini span{display:block;color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.detail-mini strong{display:block;font-size:18px;letter-spacing:-.02em}
+.edit-main-btn{width:100%;margin-top:18px}
+@media(max-width:520px){.detail-grid{grid-template-columns:1fr 1fr}.detail-mini strong{font-size:16px}}
+
+
+.list-mode-label{
+  font-size:16px !important;
+  font-weight:700 !important;
+}
+@media(max-width:520px){
+  .list-mode-label{
+    font-size:15px !important;
+  }
+}
+
+
+
+.budget-row.compact-row .row-left strong{
+  font-size:18px !important;
+  font-weight:650 !important;
+}
+.budget-row.compact-row .row-amount{
+  font-size:18px !important;
+  font-weight:650 !important;
+}
+@media(max-width:520px){
+  .budget-row.compact-row .row-left strong{
+    font-size:20px !important;
+  }
+  .budget-row.compact-row .row-amount{
+    font-size:20px !important;
+  }
+}
+
+
+.budget-row.compact-row .row-left strong{
+  font-size:16px !important;
+  font-weight:650 !important;
+}
+.budget-row.compact-row .row-amount{
+  font-size:16px !important;
+  font-weight:650 !important;
+}
+.budget-row.compact-row.add-row div:first-child{
+  font-size:16px !important;
+  font-weight:700 !important;
+}
+@media(max-width:520px){
+  .budget-row.compact-row .row-left strong{
+    font-size:18px !important;
+  }
+  .budget-row.compact-row .row-amount{
+    font-size:18px !important;
+  }
+  .budget-row.compact-row.add-row div:first-child{
+    font-size:18px !important;
+  }
+}
+
+
+.info-wrap{position:relative;display:inline-flex;align-items:center}
+.info-pop{display:none;position:absolute;z-index:50;right:0;top:30px;width:min(330px,82vw);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px;color:var(--muted);font-size:13px;font-weight:700;line-height:1.45;text-align:left}
+.info-pop.show{display:block}
+.meter-info{background:#fff;cursor:pointer}
+.next-income-preview{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.next-income-preview .preview-label{color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.next-income-preview strong{display:block;font-size:17px;margin-top:4px}
+.status-line{margin-top:5px;color:var(--muted);font-size:12px;font-weight:750}
+.status-paid{color:var(--good)}.status-overdue{color:var(--bad)}.status-due{color:var(--primary)}
+.progress{margin-top:7px;width:100%;height:6px;border-radius:999px;background:#e8edf4;overflow:hidden}
+.progress-fill{height:100%;background:var(--primary);border-radius:999px}
+.mark-paid-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+@media(max-width:520px){.next-income-preview{display:grid}.mark-paid-row{grid-template-columns:1fr}}
+
+
+.bill-group-title{padding:12px 22px 8px;color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;background:#fbfcfe;border-top:1px solid #edf1f5}
+.bill-group:first-child .bill-group-title{border-top:0}
+.progress-text{margin-top:5px;color:var(--muted);font-size:12px;font-weight:750}
+.priority-pill{display:inline-flex;width:max-content;margin-top:6px;border-radius:999px;padding:4px 8px;background:var(--primarySoft);color:var(--primary);font-size:11px;font-weight:900}
+.priority-flexible{background:#fff7e6;color:#a96b00}
+.priority-delay{background:var(--badSoft);color:var(--bad)}
+.setup-link-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.setup-link-card span{color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.setup-link-card strong{display:block;font-size:17px;margin-top:4px}
+.setup-link-card a{color:var(--primary);background:var(--primarySoft);border-radius:14px;padding:10px 12px;text-decoration:none;font-weight:900;white-space:nowrap}
+@media(max-width:520px){.setup-link-card{display:grid}.setup-link-card a{width:100%;text-align:center}}
+
+/* Compact Edit Debt form + cleaner detail actions */
+.bill-action-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;margin-top:18px}
+.bill-action-card .primary-action{width:100%;margin-bottom:10px}
+.bill-secondary-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bill-secondary-actions .btn{width:100%}
+.bill-edit-card .section-head{padding:14px 18px!important}
+.bill-edit-card .section-title{font-size:24px!important}
+.bill-edit-card .section-sub{font-size:13px!important}
+.bill-edit-card .section-body{padding:16px 18px 18px!important}
+.bill-edit-card .form{grid-template-columns:repeat(2,1fr);gap:12px}
+.bill-edit-card .field.full{grid-column:1/-1}
+.bill-edit-card label{font-size:12px}
+.bill-edit-card input,.bill-edit-card select{padding:11px 12px;border-radius:13px;font-size:14px}
+.bill-edit-card .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.bill-edit-card .actions .btn{width:100%}
+@media(max-width:520px){
+ .bill-edit-card .form{grid-template-columns:1fr 1fr}
+ .bill-edit-card .field.full{grid-column:1/-1}
+ .bill-edit-card .section-title{font-size:22px!important}
+ .bill-edit-card .section-body{padding:14px!important}
+ .bill-secondary-actions{grid-template-columns:1fr}
+}
+
+
+/* Compact Edit Income form + centered summary/preview cards */
+.income-edit-card .section-head{
+  padding:14px 18px !important;
+}
+.income-edit-card .section-title{
+  font-size:24px !important;
+}
+.income-edit-card .section-sub{
+  font-size:13px !important;
+}
+.income-edit-card .section-body{
+  padding:16px 18px 18px !important;
+}
+.income-edit-card .form{
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.income-edit-card .field.full{
+  grid-column:1/-1;
+}
+.income-edit-card label{
+  font-size:12px;
+}
+.income-edit-card input,
+.income-edit-card select{
+  padding:11px 12px;
+  border-radius:13px;
+  font-size:14px;
+}
+.income-edit-card .actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:14px;
+}
+.income-edit-card .actions .btn{
+  width:100%;
+}
+.summary{
+  justify-items:stretch;
+}
+.summary .sum{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-height:138px;
+}
+.next-income-preview{
+  text-align:center;
+  justify-content:center !important;
+  display:grid !important;
+}
+.next-income-preview .info-wrap{
+  justify-content:center;
+}
+.next-income-preview .info-pop{
+  left:50%;
+  right:auto;
+  transform:translateX(-50%);
+}
+@media(max-width:520px){
+  .income-edit-card .form{
+    grid-template-columns:1fr 1fr;
+  }
+  .income-edit-card .field.full{
+    grid-column:1/-1;
+  }
+  .income-edit-card .section-title{
+    font-size:22px !important;
+  }
+  .income-edit-card .section-body{
+    padding:14px !important;
+  }
+  .summary .sum{
+    min-height:128px;
+  }
+}
+
+
+/* True centered summary cards */
+.summary .sum{
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:center !important;
+  text-align:center !important;
+  min-height:220px !important;
+  padding:24px !important;
+}
+.summary .sum .eyebrow{
+  width:100%;
+  text-align:center !important;
+}
+.summary .sum .big{
+  width:100%;
+  text-align:center !important;
+}
+.summary .sum .muted{
+  width:100%;
+  text-align:center !important;
+  max-width:260px;
+  margin:0 auto;
+}
+
+
+/* Smaller centered summary tiles */
+.summary .sum{
+  min-height:150px !important;
+  padding:18px !important;
+}
+.summary .sum .muted{
+  max-width:220px !important;
+}
+
+
+/* Variable Spending */
+.variable-summary{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  box-shadow:var(--shadow);
+  padding:18px;
+  margin-top:18px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.variable-summary .mini{
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  text-align:center;
+}
+.variable-summary .mini span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:6px;
+}
+.variable-summary .mini strong{
+  display:block;
+  font-size:20px;
+  color:var(--text);
+}
+.variable-over{
+  color:var(--bad) !important;
+}
+.variable-ok{
+  color:var(--primary) !important;
+}
+.category-pill{
+  display:inline-flex;
+  width:max-content;
+  margin-top:6px;
+  border-radius:999px;
+  padding:4px 8px;
+  background:var(--primarySoft);
+  color:var(--primary);
+  font-size:11px;
+  font-weight:900;
+}
+@media(max-width:520px){
+  .variable-summary{
+    grid-template-columns:1fr;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="budgetView" class="view active">
+    <header class="topbar"><a href="overview.html" class="back"><span>‹</span>Back to Overview</a></header>
+    <section class="head"><p class="eyebrow">Budget Tab • Phase 1</p><h1>Income & Debt</h1><p>Start with predictable money first. Income and debt power your available-to-spend and forecast.</p></section>
+    <section class="summary">
+      <div class="sum"><div class="label">Monthly Income</div><div class="value" id="summaryIncome">$0</div><div class="note">All active income sources</div></div>
+      <div class="sum"><div class="label">Debt</div><div class="value" id="summaryBills">$0</div><div class="note">Recurring debt obligations</div></div>
+      <div class="sum"><div class="label">Left After Bills</div><div class="value" id="summaryLeft">$0</div><div class="note">Before variable spending</div></div>
+      <div class="sum"><div class="label">Debt Load</div><div class="value" id="summaryLoad">0%</div><div class="note">Debt / income</div></div>
+    </section>
+<section class="next-income-preview">
+      <div>
+        <div class="preview-label">Next Income Preview</div>
+        <strong id="nextIncomePreview">Add income to estimate your next deposit.</strong>
+      </div>
+      <span class="info-wrap"><button class="meter-info" id="nextIncomeInfoBtn" type="button">i</button><span class="info-pop" id="nextIncomeInfoPop">This preview uses the income items you add here. Later it can connect to the paycheck anchor date from Budget Setup for exact deposit forecasting.</span></span>
+    </section>
+
+    <section class="setup-link-card">
+      <div>
+        <span>Budget Setup Connection</span>
+        <strong>Pay frequency, paycheck anchor date, and budget cycle will connect here.</strong>
+      </div>
+      <a href="budget-setup.html">Review Setup</a>
+    </section>
+
+    <main class="stack">
+      <section class="section"><div class="section-head compact-head"><h2 class="section-title">Income</h2><span class="list-mode-label" id="incomeModeLabel">Planned</span></div><div class="budget-list" id="incomeList"></div></section>
+      <section class="section"><div class="section-head compact-head"><h2 class="section-title">Debt</h2><span class="list-mode-label" id="billModeLabel">Planned</span></div><div class="budget-list" id="billList"></div></section>
+
+      <section class="section">
+        <div class="section-head compact-head">
+          <h2 class="section-title">Variable Spending</h2>
+          <span class="list-mode-label" id="variableModeLabel">Planned</span>
+        </div>
+        <div class="variable-summary">
+          <div class="mini"><span>Planned</span><strong id="variablePlannedTotal">$0</strong></div>
+          <div class="mini"><span>Spent</span><strong id="variableSpentTotal">$0</strong></div>
+          <div class="mini"><span>Remaining</span><strong id="variableRemainingTotal">$0</strong></div>
+        </div>
+        <div class="budget-list" id="variableList"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="incomeDetailView" class="view">
+    <header class="topbar"><a href="#" class="back" id="incomeDetailBack"><span>‹</span>Back to Budget</a></header>
+    <section class="detail"><div class="accent"><div class="avatar" id="incomeAvatar">$</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="incomeNameDetail">Income</div><div class="detail-sub"><span class="green" id="incomeReceivedDetail">$0</span> received of <span class="blue" id="incomePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Left to Receive</span><strong id="incomeLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Type</span><strong id="incomeTypeDetail">Paycheck</strong></div><div class="detail-mini"><span>Frequency</span><strong id="incomeFrequencyDetail">Monthly</strong></div><div class="detail-mini"><span>Monthly Equivalent</span><strong id="incomeMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Status</span><strong id="incomeStatusDetail">Planned</strong></div></div><button class="btn primary edit-main-btn" id="editIncomeDetails" type="button">Edit Details</button><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="incomeActivityName">this income</strong> yet.</p></div><button class="delete" id="deleteIncome">Delete Budget Item</button></div></section>
+  </div>
+
+  <div id="billDetailView" class="view">
+    <header class="topbar"><a href="#" class="back" id="billDetailBack"><span>‹</span>Back to Budget</a></header>
+    <section class="detail"><div class="accent bill"><div class="avatar" id="billAvatar">B</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="billNameDetail">Debt</div><div class="detail-sub"><span class="green" id="billPaidDetail">$0</span> paid of <span class="blue" id="billPlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Left to Pay</span><strong id="billLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Category</span><strong id="billCategoryDetail">Housing</strong></div><div class="detail-mini"><span>Due Date</span><strong id="billDueDayDetail">1st of month</strong></div><div class="detail-mini"><span>Priority</span><strong id="billPriorityDetail">Essential</strong></div><div class="detail-mini"><span>Monthly Equivalent</span><strong id="billMonthlyDetail">$0</strong></div></div><div class="bill-action-card"><button class="btn primary primary-action" id="markBillPaid" type="button">Mark Paid</button><div class="bill-secondary-actions"><button class="btn secondary" id="undoBillPaid" type="button">Undo Payment</button><button class="btn secondary" id="editBillDetails" type="button">Edit Details</button></div></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this debt</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
+  </div>
+
+  <div id="variableDetailView" class="view">
+    <header class="topbar"><a href="#" class="back" id="variableDetailBack"><span>‹</span>Back to Budget</a></header>
+    <section class="detail"><div class="accent"><div class="avatar" id="variableAvatar">V</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="variableNameDetail">Category</div><div class="detail-sub"><span class="green" id="variableSpentDetail">$0</span> spent of <span class="blue" id="variablePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Remaining</span><strong id="variableLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Type</span><strong id="variableTypeDetail">Variable</strong></div><div class="detail-mini"><span>Status</span><strong id="variableStatusDetail">On Track</strong></div><div class="detail-mini"><span>Monthly Planned</span><strong id="variableMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Spent</span><strong id="variableSpentMiniDetail">$0</strong></div></div><button class="btn primary edit-main-btn" id="editVariableDetails" type="button">Edit Details</button><div class="info-card"><h3>Activity This Month</h3><p>Transactions will be tracked here later for <strong id="variableActivityName">this category</strong>.</p></div><button class="delete" id="deleteVariable">Delete Budget Item</button></div></section>
+  </div>
+
+  <div id="variableEditView" class="view">
+    <header class="topbar"><a href="#" class="back" id="variableEditBack"><span>‹</span>Back</a></header>
+    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="variableEditTitle">Add Variable Category</h2><div class="section-sub">Update flexible spending.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Category name</label><input id="variableName" placeholder="Groceries"></div><div class="field"><label>Planned</label><input id="variablePlanned" type="number" inputmode="decimal" placeholder="600"></div><div class="field"><label>Spent</label><input id="variableSpent" type="number" inputmode="decimal" placeholder="0"></div><div class="field full"><label>Type</label><select id="variableType"><option>Groceries</option><option>Gas</option><option>Dining Out</option><option>Entertainment</option><option>Shopping</option><option>Household</option><option>Kids / Pets</option><option>Miscellaneous</option><option>Custom</option></select></div></form><div class="actions"><button class="btn primary" id="saveVariable" type="button">Save Category</button><button class="btn secondary" id="cancelVariable" type="button">Cancel</button></div><div class="feedback neutral" id="variableFeedback">Variable spending saves locally in this browser.</div></div></section>
+  </div>
+
+  <div id="incomeEditView" class="view">
+    <header class="topbar"><a href="#" class="back" id="incomeEditBack"><span>‹</span>Back</a></header>
+    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="incomeEditTitle">Add Income</h2><div class="section-sub">Add or update planned income.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Income name</label><input id="incomeName" placeholder="VA"></div><div class="field"><label>Planned</label><input id="incomeAmount" type="number" inputmode="decimal" placeholder="5198.37"></div><div class="field"><label>Received</label><input id="incomeReceived" type="number" inputmode="decimal" placeholder="0"></div><div class="field"><label>Type</label><select id="incomeType"><option>Paycheck</option><option>Spouse / Partner</option><option>Side Income</option><option>VA / Disability</option><option>SSDI</option><option>Pension</option><option>Military BAH</option><option>Military BAS</option><option>Government Pay</option><option>Other</option></select></div><div class="field"><label>Frequency</label><select id="incomeFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Twice Monthly</option><option>Annual</option></select></div></form><div class="actions"><button class="btn primary" id="saveIncome">Save Income</button><button class="btn secondary" id="cancelIncome">Cancel</button></div><div class="feedback neutral" id="incomeFeedback">Income saves locally in this browser.</div></div></section>
+  </div>
+
+  <div id="billEditView" class="view">
+    <header class="topbar"><a href="#" class="back" id="billEditBack"><span>‹</span>Back</a></header>
+    <section class="section bill-edit-card"><div class="section-head"><div><h2 class="section-title" id="billEditTitle">Add Debt</h2><div class="section-sub">Update bill details.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Debt name</label><input id="billName" placeholder="Mortgage"></div><div class="field"><label>Planned</label><input id="billAmount" type="number" inputmode="decimal" placeholder="1200"></div><div class="field"><label>Paid</label><input id="billPaid" type="number" inputmode="decimal" placeholder="0"></div><div class="field"><label>Due Date</label><input id="billDueDay" type="number" min="1" max="31" placeholder="Day of month, e.g. 1"></div><div class="field"><label>Category</label><select id="billCategory"><option>Housing</option><option>Utilities</option><option>Insurance</option><option>Debt Payment</option><option>Subscription</option><option>Phone / Internet</option><option>Transportation</option><option>Childcare</option><option>Medical</option><option>Other</option></select></div><div class="field"><label>Priority</label><select id="billPriority"><option>Essential</option><option>Flexible</option><option>Can Delay</option></select></div><div class="field"><label>Frequency</label><select id="billFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Quarterly</option><option>Semiannual</option><option>Annual</option></select></div></form><div class="actions"><button class="btn primary" id="saveBill">Save Debt</button><button class="btn secondary" id="cancelBill">Cancel</button></div><div class="feedback neutral" id="billFeedback">Debt save locally in this browser.</div></div></section>
+  </div>
+</div>
+
+<script>
+const KEY='budgetAppUser';
+const def={profile:{},preferences:{},security:{},budget:{incomeSources:[],fixedBills:[],variableSpending:[]}};
+let selectedIncomeId=null,selectedBillId=null,selectedVariableId=null;
+const fIncome={name:incomeName,amount:incomeAmount,received:incomeReceived,type:incomeType,frequency:incomeFrequency};
+const fBill={name:billName,amount:billAmount,paid:billPaid,dueDay:billDueDay,category:billCategory,priority:billPriority,frequency:billFrequency};
+const fVariable={name:variableName,planned:variablePlanned,spent:variableSpent,type:variableType};
+
+function getUser(){try{const raw=localStorage.getItem(KEY);const u=raw?JSON.parse(raw):structuredClone(def);return {...def,...u,budget:{...def.budget,...(u.budget||{})}}}catch(e){return structuredClone(def)}}
+function saveUser(u){localStorage.setItem(KEY,JSON.stringify(u,null,2))}
+function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');scrollTo({top:0,behavior:'smooth'})}
+function money(v,cents=true){return Number(v||0).toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:cents?2:0,maximumFractionDigits:cents?2:0})}
+function monthly(v,f){v=Number(v||0);if(f==='Weekly')return v*52/12;if(f==='Biweekly')return v*26/12;if(f==='Twice Monthly')return v*2;if(f==='Quarterly')return v/3;if(f==='Semiannual')return v/6;if(f==='Annual')return v/12;return v}
+function id(p){return p+'-'+Date.now()+'-'+Math.random().toString(16).slice(2)}
+function budget(u){return {incomeSources:u.budget?.incomeSources||[],fixedBills:u.budget?.fixedBills||[],variableSpending:u.budget?.variableSpending||[]}}
+function initials(n){return String(n||'?').split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase()}
+function feedback(el,t,cls='neutral'){document.getElementById(el).textContent=t;document.getElementById(el).className='feedback show '+cls}
+
+function modeLabel(){
+ return 'Planned';
+}
+function itemModeAmount(item,type){
+ return Number(item.monthlyAmount||0);
+}
+
+function setupInfo(btn,pop){if(!btn||!pop)return;btn.onclick=e=>{e.preventDefault();e.stopPropagation();document.querySelectorAll('.info-pop').forEach(p=>{if(p!==pop)p.classList.remove('show')});pop.classList.toggle('show')}}document.addEventListener('click',()=>document.querySelectorAll('.info-pop').forEach(p=>p.classList.remove('show')));
+function billStatus(item){const planned=Number(item.monthlyAmount||0),paid=Number(item.paid||0),due=Number(item.dueDay||0),today=new Date().getDate();if(planned>0&&paid>=planned)return {text:'Paid',cls:'status-paid'};if(due&&today>due)return {text:'Overdue by '+(today-due)+' day'+((today-due)===1?'':'s'),cls:'status-overdue'};if(due){const days=due-today;if(days===0)return {text:'Due today',cls:'status-due'};if(days===1)return {text:'Due tomorrow',cls:'status-due'};if(days>1)return {text:'Due in '+days+' days',cls:'status-due'}}return {text:'Upcoming',cls:''}}
+function progressPct(paid,planned){planned=Number(planned||0);paid=Number(paid||0);if(planned<=0)return 0;return Math.min(100,Math.round(paid/planned*100))}
+function priorityClass(priority){if(priority==='Flexible')return 'priority-flexible';if(priority==='Can Delay')return 'priority-delay';return ''}
+function progressText(paid,planned){return money(paid||0)+' of '+money(planned||0)+' paid'}
+function groupBills(items){const order=['Housing','Utilities','Insurance','Debt Payment','Subscription','Phone / Internet','Transportation','Childcare','Medical','Other'];const groups={};items.forEach(i=>{const key=i.category||'Other';groups[key]=groups[key]||[];groups[key].push(i)});return order.filter(k=>groups[k]).map(k=>[k,groups[k]])}
+function renderNextIncome(items){if(!window.nextIncomePreview)return;if(!items.length){nextIncomePreview.textContent='Add income to estimate your next deposit.';return}const item=[...items].sort((a,b)=>Number(b.monthlyAmount||0)-Number(a.monthlyAmount||0))[0];nextIncomePreview.textContent=`${item.name} · ${money(item.monthlyAmount)} planned monthly`}
+
+
+function variableModeAmount(item){
+ return Number(item.planned||0);
+}
+function variableStatus(item){
+ const planned=Number(item.planned||0),spent=Number(item.spent||0);
+ if(spent>planned)return {text:'Over Budget',cls:'status-overdue'};
+ if(planned>0 && spent/planned>=0.85)return {text:'Close to Limit',cls:'status-due'};
+ return {text:'On Track',cls:'status-paid'};
+}
+function renderVariableList(items){
+ const planned=items.reduce((s,i)=>s+Number(i.planned||0),0);
+ const spent=items.reduce((s,i)=>s+Number(i.spent||0),0);
+ const remaining=planned-spent;
+
+ variablePlannedTotal.textContent=money(planned);
+ variableSpentTotal.textContent=money(spent);
+ variableRemainingTotal.textContent=money(remaining);
+ variableRemainingTotal.className=remaining<0?'variable-over':'variable-ok';
+ variableModeLabel.textContent=modeLabel();
+
+ variableList.innerHTML=items.map(i=>{
+  const st=variableStatus(i);
+  const pct=progressPct(i.spent,i.planned);
+  return `<a href="#" class="budget-row compact-row" data-variable="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${Math.min(pct,100)}%"></div></div><div class="progress-text">${money(i.spent||0)} of ${money(i.planned||0)} spent</div><div class="category-pill">${i.type}</div></div><div class="row-amount">${money(variableModeAmount(i))}</div><div class="chev">›</div></a>`;
+ }).join('')+`<a href="#" class="budget-row compact-row add-row" id="addVariableRow"><div>Add Category</div><div class="chev">›</div></a>`;
+
+ document.querySelectorAll('[data-variable]').forEach(r=>r.onclick=e=>{e.preventDefault();openVariableDetail(r.dataset.variable)});
+ addVariableRow.onclick=e=>{e.preventDefault();openVariableEditor(null)};
+}
+
+function render(){
+ const u=getUser(),b=budget(u);
+ const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), left=inc-bills, load=inc?Math.round(bills/inc*100):0;
+ summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';incomeModeLabel.textContent=modeLabel();billModeLabel.textContent=modeLabel();renderNextIncome(b.incomeSources);
+ incomeList.innerHTML=b.incomeSources.map(i=>`<a href="#" class="budget-row compact-row" data-income="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type} · ${i.frequency}</span></div><div class="row-amount">${money(itemModeAmount(i,'income'))}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addIncomeRow"><div>Add Income</div><div class="chev">›</div></a>`;
+ billList.innerHTML=groupBills(b.fixedBills).map(([group,items])=>`<div class="bill-group"><div class="bill-group-title">${group}</div>${items.map(i=>{const st=billStatus(i);const pct=progressPct(i.paid,i.monthlyAmount);return `<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">${progressText(i.paid,i.monthlyAmount)}</div><div class="priority-pill ${priorityClass(i.priority)}">${i.priority||'Essential'}</div></div><div class="row-amount">${money(itemModeAmount(i,'bill'))}</div><div class="chev">›</div></a>`}).join('')}</div>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Debt</div><div class="chev">›</div></a>`;
+ document.querySelectorAll('[data-income]').forEach(r=>r.onclick=e=>{e.preventDefault();openIncomeDetail(r.dataset.income)});
+ document.querySelectorAll('[data-bill]').forEach(r=>r.onclick=e=>{e.preventDefault();openBillDetail(r.dataset.bill)});
+ addIncomeRow.onclick=e=>{e.preventDefault();openIncomeEditor(null)};
+ addBillRow.onclick=e=>{e.preventDefault();openBillEditor(null)};
+ renderVariableList(b.variableSpending);
+}
+function getIncome(i){return budget(getUser()).incomeSources.find(x=>x.id===i)}
+function getBill(i){return budget(getUser()).fixedBills.find(x=>x.id===i)}
+function getVariable(i){return budget(getUser()).variableSpending.find(x=>x.id===i)}
+
+function formatDueDate(day){
+ day=Number(day||0);
+ if(!day)return 'Not set';
+ const suffix=(day%10===1&&day%100!==11)?'st':(day%10===2&&day%100!==12)?'nd':(day%10===3&&day%100!==13)?'rd':'th';
+ return day+suffix+' of month';
+}
+
+function openIncomeDetail(i){const item=getIncome(i);if(!item)return;selectedIncomeId=i;let planned=Number(item.monthlyAmount||0),received=Number(item.received||0),left=Math.max(planned-received,0);incomeAvatar.textContent=initials(item.name);incomeNameDetail.textContent=item.name;incomeReceivedDetail.textContent=money(received);incomePlannedDetail.textContent=money(planned);incomeLeftDetail.textContent=money(left);incomeTypeDetail.textContent=item.type;incomeFrequencyDetail.textContent=item.frequency;incomeMonthlyDetail.textContent=money(planned);incomeStatusDetail.textContent=left>0?'In Progress':'Complete';incomeActivityName.textContent=item.name;show('incomeDetailView')}
+function openBillDetail(i){const item=getBill(i);if(!item)return;selectedBillId=i;let planned=Number(item.monthlyAmount||0),paid=Number(item.paid||0),left=Math.max(planned-paid,0);billAvatar.textContent=initials(item.name);billNameDetail.textContent=item.name;billPaidDetail.textContent=money(paid);billPlannedDetail.textContent=money(planned);billLeftDetail.textContent=money(left);billCategoryDetail.textContent=item.category;billDueDayDetail.textContent=formatDueDate(item.dueDay);billPriorityDetail.textContent=item.priority||'Essential';billMonthlyDetail.textContent=money(planned);billActivityName.textContent=item.name;show('billDetailView')}
+
+function openIncomeEditor(i){selectedIncomeId=i;const item=i?getIncome(i):null;incomeEditTitle.textContent=item?'Edit Income':'Add Income';fIncome.name.value=item?.name||'';fIncome.amount.value=item?.amount||'';fIncome.received.value=item?.received||'';fIncome.type.value=item?.type||'Paycheck';fIncome.frequency.value=item?.frequency||'Monthly';show('incomeEditView')}
+function openBillEditor(i){selectedBillId=i;const item=i?getBill(i):null;billEditTitle.textContent=item?'Edit Debt':'Add Debt';fBill.name.value=item?.name||'';fBill.amount.value=item?.amount||'';fBill.paid.value=item?.paid||'';fBill.dueDay.value=item?.dueDay||'';fBill.category.value=item?.category||'Housing';fBill.priority.value=item?.priority||'Essential';fBill.frequency.value=item?.frequency||'Monthly';show('billEditView')}
+
+function saveIncomeFn(){const name=fIncome.name.value.trim(),amount=Number(fIncome.amount.value||0);if(!name||amount<=0){feedback('incomeFeedback','Add an income name and planned amount first.');return}const u=getUser(),b=budget(u),item={id:selectedIncomeId||id('income'),name,amount,received:Number(fIncome.received.value||0),type:fIncome.type.value,frequency:fIncome.frequency.value,monthlyAmount:monthly(amount,fIncome.frequency.value)};const incomeSources=selectedIncomeId?b.incomeSources.map(x=>x.id===selectedIncomeId?item:x):[...b.incomeSources,item];const updated={...u,budget:{...b,incomeSources}};saveUser(updated);render();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')}
+function saveBillFn(){const name=fBill.name.value.trim(),amount=Number(fBill.amount.value||0),due=Number(fBill.dueDay.value||0);if(!name||amount<=0){feedback('billFeedback','Add a debt name and planned amount first.');return}if(due<1||due>31){feedback('billFeedback','Enter a due date day between 1 and 31.');return}const u=getUser(),b=budget(u),item={id:selectedBillId||id('bill'),name,amount,paid:Number(fBill.paid.value||0),dueDay:due,category:fBill.category.value,priority:fBill.priority.value,frequency:fBill.frequency.value,monthlyAmount:monthly(amount,fBill.frequency.value)};const fixedBills=selectedBillId?b.fixedBills.map(x=>x.id===selectedBillId?item:x):[...b.fixedBills,item];const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();selectedBillId?openBillDetail(selectedBillId):show('budgetView')}
+function markBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:Number(x.amount||x.monthlyAmount||0)}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
+function undoBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:0}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
+
+
+function openVariableDetail(i){
+ const item=getVariable(i);if(!item)return;
+ selectedVariableId=i;
+ const planned=Number(item.planned||0),spent=Number(item.spent||0),left=planned-spent,st=variableStatus(item);
+ variableAvatar.textContent=initials(item.name);
+ variableNameDetail.textContent=item.name;
+ variableSpentDetail.textContent=money(spent);
+ variablePlannedDetail.textContent=money(planned);
+ variableLeftDetail.textContent=money(left);
+ variableTypeDetail.textContent=item.type;
+ variableStatusDetail.textContent=st.text;
+ variableMonthlyDetail.textContent=money(planned);
+ variableSpentMiniDetail.textContent=money(spent);
+ variableActivityName.textContent=item.name;
+ show('variableDetailView');
+}
+function openVariableEditor(i){
+ selectedVariableId=i;
+ const item=i?getVariable(i):null;
+ variableEditTitle.textContent=item?'Edit Variable Category':'Add Variable Category';
+ fVariable.name.value=item?.name||'';
+ fVariable.planned.value=item?.planned||'';
+ fVariable.spent.value=item?.spent||'';
+ fVariable.type.value=item?.type||'Groceries';
+ show('variableEditView');
+}
+function saveVariableFn(){
+ const name=fVariable.name.value.trim(),planned=Number(fVariable.planned.value||0);
+ if(!name||planned<=0){feedback('variableFeedback','Add a category name and planned amount first.');return}
+ const u=getUser(),b=budget(u),item={id:selectedVariableId||id('variable'),name,planned,spent:Number(fVariable.spent.value||0),type:fVariable.type.value};
+ const variableSpending=selectedVariableId?b.variableSpending.map(x=>x.id===selectedVariableId?item:x):[...b.variableSpending,item];
+ const updated={...u,budget:{...b,variableSpending}};
+ saveUser(updated);render();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
+}
+function deleteVariableFn(){
+ if(!selectedVariableId)return;
+ const u=getUser(),b=budget(u);
+ saveUser({...u,budget:{...b,variableSpending:b.variableSpending.filter(x=>x.id!==selectedVariableId)}});
+ selectedVariableId=null;render();show('budgetView');
+}
+
+function deleteIncomeFn(){if(!selectedIncomeId)return;const u=getUser(),b=budget(u);saveUser({...u,budget:{...b,incomeSources:b.incomeSources.filter(x=>x.id!==selectedIncomeId)}});selectedIncomeId=null;render();show('budgetView')}
+function deleteBillFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);saveUser({...u,budget:{...b,fixedBills:b.fixedBills.filter(x=>x.id!==selectedBillId)}});selectedBillId=null;render();show('budgetView')}
+
+incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};variableDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeDetails.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillDetails.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};editVariableDetails.onclick=e=>{e.preventDefault();openVariableEditor(selectedVariableId)};
+incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};variableEditBack.onclick=e=>{e.preventDefault();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');cancelVariable.onclick=()=>selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
+saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;saveVariable.onclick=saveVariableFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;deleteVariable.onclick=deleteVariableFn;if(window.markBillPaid)markBillPaid.onclick=markBillPaidFn;if(window.undoBillPaid)undoBillPaid.onclick=undoBillPaidFn;setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
+render();
+</script>
+</body>
+</html>
