@@ -417,6 +417,24 @@
   }
 }
 
+
+/* Restore clickable rows after removing global toggle */
+.section .budget-list{
+  display:grid !important;
+}
+.section .budget-list:empty::after{
+  content:'';
+}
+.budget-row.compact-row{
+  min-height:76px;
+}
+.variable-summary{
+  margin:16px 22px 12px !important;
+}
+#variableList{
+  border-top:1px solid #edf1f5;
+}
+
 </style>
 </head>
 <body>
@@ -541,7 +559,7 @@ function render(){
  document.querySelectorAll('[data-bill]').forEach(r=>r.onclick=e=>{e.preventDefault();openBillDetail(r.dataset.bill)});
  addIncomeRow.onclick=e=>{e.preventDefault();openIncomeEditor(null)};
  addBillRow.onclick=e=>{e.preventDefault();openBillEditor(null)};
- renderVariableList(b.variableSpending);
+renderVariableList(b.variableSpending);
 }
 function getIncome(i){return budget(getUser()).incomeSources.find(x=>x.id===i)}
 function getBill(i){return budget(getUser()).fixedBills.find(x=>x.id===i)}
