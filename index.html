@@ -855,6 +855,15 @@ cursor:pointer;
 .budget-setup-card .main-collapse-toggle{padding:0 0 14px}
 .budget-setup-card .main-collapse-toggle:hover{background:transparent}
 
+
+/* Header controls without Planned/Foundation labels */
+.main-collapse-right{
+  margin-left:auto;
+}
+.main-collapse-right .section-info-wrap{
+  margin-right:8px;
+}
+
 </style>
 </head>
 <body>
@@ -1343,7 +1352,7 @@ function renderSinkingList(items){
  sinkingSavedTotal.textContent=money(saved);
  sinkingRemainingTotal.textContent=money(remaining);
  sinkingRemainingTotal.className=remaining<0?'sinking-over':'sinking-ok';
- sinkingModeLabel.textContent=modeLabel();
+ 
 
  sinkingList.innerHTML=items.map(i=>{
   const st=sinkingStatus(i);
@@ -1423,7 +1432,7 @@ function renderVariableList(items){
  variableSpentTotal.textContent=money(spent);
  variableRemainingTotal.textContent=money(remaining);
  variableRemainingTotal.className=remaining<0?'variable-over':'variable-ok';
- variableModeLabel.textContent=modeLabel();
+ 
 
  variableList.innerHTML=items.map(i=>{
   const st=variableStatus(i);
@@ -1438,7 +1447,7 @@ function renderVariableList(items){
 function render(){
  const u=getUser(),b=budget(u);
  const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), left=inc-bills, load=inc?Math.round(bills/inc*100):0;
- summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';incomeModeLabel.textContent=modeLabel();billModeLabel.textContent=modeLabel();renderNextIncome(b.incomeSources);renderBudgetSetup(b.setup);renderSmartWarnings(b,inc,bills,left);
+ summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';renderNextIncome(b.incomeSources);renderBudgetSetup(b.setup);renderSmartWarnings(b,inc,bills,left);
  incomeList.innerHTML=b.incomeSources.map(i=>`<a href="#" class="budget-row compact-row" data-income="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type} · ${i.frequency}</span></div><div class="row-amount">${money(itemModeAmount(i,'income'))}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addIncomeRow"><div>Add Income</div><div class="chev">›</div></a>`;
  billList.innerHTML=groupBills(b.fixedBills).map(([group,items])=>`<div class="bill-group"><div class="bill-group-title">${group}</div>${items.map(i=>{const st=billStatus(i);const pct=progressPct(i.paid,i.monthlyAmount);return `<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">${progressText(i.paid,i.monthlyAmount)}</div><div class="priority-pill ${priorityClass(i.priority)}">${i.priority||'Essential'}</div></div><div class="row-amount">${money(itemModeAmount(i,'bill'))}</div><div class="chev">›</div></a>`}).join('')}</div>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Debt</div><div class="chev">›</div></a>`;
  document.querySelectorAll('[data-income]').forEach(r=>r.onclick=e=>{e.preventDefault();openIncomeDetail(r.dataset.income)});
