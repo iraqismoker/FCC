@@ -627,6 +627,90 @@ cursor:pointer;
   .sinking-summary{grid-template-columns:1fr}
 }
 
+
+/* Collapsible budget main sections */
+.main-collapse-toggle{
+  width:100%;
+  border:0;
+  background:#fff;
+  color:var(--text);
+  padding:20px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  cursor:pointer;
+  text-align:left;
+}
+.main-collapse-toggle .section-title{
+  pointer-events:none;
+}
+.main-collapse-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--muted);
+  font-size:16px;
+  font-weight:700;
+}
+.main-collapse-chev{
+  color:#7a8ba4;
+  font-size:26px;
+  transition:.18s;
+}
+.section.collapsed .main-collapse-chev{
+  transform:rotate(-90deg);
+}
+.section.collapsed .collapsible-section-body{
+  display:none;
+}
+.collapsible-section-body{
+  display:block;
+}
+.main-collapse-toggle:hover{
+  background:#fbfcfe;
+}
+
+
+/* Main Budget section collapse */
+.budget-main-section .section-head{
+  padding:0 !important;
+}
+.main-collapse-toggle{
+  width:100%;
+  border:0;
+  background:#fff;
+  color:var(--text);
+  padding:20px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  cursor:pointer;
+  text-align:left;
+}
+.main-collapse-toggle:hover{background:#fbfcfe}
+.main-collapse-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.main-collapse-chev{
+  color:#7a8ba4;
+  font-size:26px;
+  line-height:1;
+  transition:.18s;
+}
+.budget-main-section.collapsed .main-collapse-chev{
+  transform:rotate(-90deg);
+}
+.budget-main-section.collapsed .collapsible-section-body{
+  display:none;
+}
+.collapsible-section-body{
+  display:block;
+}
+
 </style>
 </head>
 <body>
@@ -656,37 +740,67 @@ cursor:pointer;
       <a href="budget-setup.html">Review Setup</a>
     </section>
 
-    <main class="stack">
-      <section class="section"><div class="section-head compact-head"><h2 class="section-title">Income</h2><span class="list-mode-label" id="incomeModeLabel">Planned</span></div><div class="budget-list" id="incomeList"></div></section>
-      <section class="section"><div class="section-head compact-head"><h2 class="section-title">Debt</h2><span class="list-mode-label" id="billModeLabel">Planned</span></div><div class="budget-list" id="billList"></div></section>
+    
+<main class="stack">
+  <section class="section budget-main-section" id="incomeSection">
+    <div class="section-head compact-head">
+      <button class="main-collapse-toggle" type="button" data-main-collapse="incomeSection">
+        <h2 class="section-title">Income</h2>
+        <span class="main-collapse-right"><span class="list-mode-label" id="incomeModeLabel">Planned</span><span class="main-collapse-chev">⌄</span></span>
+      </button>
+    </div>
+    <div class="collapsible-section-body">
+      <div class="budget-list" id="incomeList"></div>
+    </div>
+  </section>
 
+  <section class="section budget-main-section" id="debtSection">
+    <div class="section-head compact-head">
+      <button class="main-collapse-toggle" type="button" data-main-collapse="debtSection">
+        <h2 class="section-title">Debt</h2>
+        <span class="main-collapse-right"><span class="list-mode-label" id="billModeLabel">Planned</span><span class="main-collapse-chev">⌄</span></span>
+      </button>
+    </div>
+    <div class="collapsible-section-body">
+      <div class="budget-list" id="billList"></div>
+    </div>
+  </section>
 
-      <section class="section">
-        <div class="section-head compact-head">
-          <h2 class="section-title">Sinking Funds</h2>
-          <span class="list-mode-label" id="sinkingModeLabel">Planned</span>
-        </div>
-        <div class="sinking-summary">
-          <div class="mini"><span>Goal</span><strong id="sinkingGoalTotal">$0</strong></div>
-          <div class="mini"><span>Saved</span><strong id="sinkingSavedTotal">$0</strong></div>
-          <div class="mini"><span>Remaining</span><strong id="sinkingRemainingTotal">$0</strong></div>
-        </div>
-        <div class="budget-list" id="sinkingList"></div>
-      </section>
+  <section class="section budget-main-section" id="sinkingSection">
+    <div class="section-head compact-head">
+      <button class="main-collapse-toggle" type="button" data-main-collapse="sinkingSection">
+        <h2 class="section-title">Sinking Funds</h2>
+        <span class="main-collapse-right"><span class="list-mode-label" id="sinkingModeLabel">Planned</span><span class="main-collapse-chev">⌄</span></span>
+      </button>
+    </div>
+    <div class="collapsible-section-body">
+      <div class="sinking-summary">
+        <div class="mini"><span>Goal</span><strong id="sinkingGoalTotal">$0</strong></div>
+        <div class="mini"><span>Saved</span><strong id="sinkingSavedTotal">$0</strong></div>
+        <div class="mini"><span>Remaining</span><strong id="sinkingRemainingTotal">$0</strong></div>
+      </div>
+      <div class="budget-list" id="sinkingList"></div>
+    </div>
+  </section>
 
-      <section class="section">
-        <div class="section-head compact-head">
-          <h2 class="section-title">Variable Spending</h2>
-          <span class="list-mode-label" id="variableModeLabel">Planned</span>
-        </div>
-        <div class="variable-summary">
-          <div class="mini"><span>Planned</span><strong id="variablePlannedTotal">$0</strong></div>
-          <div class="mini"><span>Spent</span><strong id="variableSpentTotal">$0</strong></div>
-          <div class="mini"><span>Remaining</span><strong id="variableRemainingTotal">$0</strong></div>
-        </div>
-        <div class="budget-list" id="variableList"></div>
-      </section>
-    </main>
+  <section class="section budget-main-section" id="variableSection">
+    <div class="section-head compact-head">
+      <button class="main-collapse-toggle" type="button" data-main-collapse="variableSection">
+        <h2 class="section-title">Variable Spending</h2>
+        <span class="main-collapse-right"><span class="list-mode-label" id="variableModeLabel">Planned</span><span class="main-collapse-chev">⌄</span></span>
+      </button>
+    </div>
+    <div class="collapsible-section-body">
+      <div class="variable-summary">
+        <div class="mini"><span>Planned</span><strong id="variablePlannedTotal">$0</strong></div>
+        <div class="mini"><span>Spent</span><strong id="variableSpentTotal">$0</strong></div>
+        <div class="mini"><span>Remaining</span><strong id="variableRemainingTotal">$0</strong></div>
+      </div>
+      <div class="budget-list" id="variableList"></div>
+    </div>
+  </section>
+</main>
+
   </div>
 
   <div id="incomeDetailView" class="view">
@@ -886,6 +1000,22 @@ function setMoneyFieldValue(el,value){
  const num=Number(value||0);
  el.value=num?num.toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}):'';
 }
+
+function setupMainSectionCollapse(){
+ document.querySelectorAll('[data-main-collapse]').forEach(btn=>{
+  if(btn.dataset.collapseReady==='1')return;
+  btn.dataset.collapseReady='1';
+  const section=document.getElementById(btn.dataset.mainCollapse);
+  const saved=localStorage.getItem('budgetCollapse:'+btn.dataset.mainCollapse);
+  if(section && saved==='collapsed')section.classList.add('collapsed');
+  btn.onclick=()=>{
+   if(!section)return;
+   section.classList.toggle('collapsed');
+   localStorage.setItem('budgetCollapse:'+btn.dataset.mainCollapse,section.classList.contains('collapsed')?'collapsed':'open');
+  };
+ });
+}
+
 function setupMoneyFields(){
  const ids=['incomeAmount','incomeReceived','billAmount','billPaid','sinkingGoal','sinkingSaved','sinkingMonthly','variablePlanned','variableSpent','billMinimumPayment','billAdditionalPrincipal','billBalanceOwed','billOriginalLoanAmount','billEscrowBalance'];
  ids.forEach(id=>{
@@ -1267,6 +1397,7 @@ document.querySelectorAll('[data-collapse]').forEach(btn=>{
  };
 });
 setupMoneyFields();
+setupMainSectionCollapse();
 render();
 </script>
 </body>
