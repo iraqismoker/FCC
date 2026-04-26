@@ -888,6 +888,22 @@ cursor:pointer;
   }
 }
 
+
+/* Force date rows to full width so dates never touch adjacent fields */
+.advanced-loan-card .field:has(input[type="date"]),
+#budgetSetupView .field:has(input[type="date"]){
+  grid-column: 1 / -1 !important;
+  width:100%;
+}
+
+.advanced-loan-card input[type="date"],
+#budgetSetupView input[type="date"]{
+  width:100% !important;
+  display:block;
+  box-sizing:border-box;
+  white-space:nowrap;
+}
+
 </style>
 </head>
 <body>
