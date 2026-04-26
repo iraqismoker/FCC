@@ -919,7 +919,7 @@ cursor:pointer;
     </section>
 <section class="next-income-preview">
       <div>
-        <div class="preview-label">Upcoming Paycheck</div>
+        <div class="preview-label">Next Income Preview</div>
         <strong id="nextIncomePreview">Add income to estimate your next deposit.</strong>
       </div>
       <span class="info-wrap"><button class="meter-info" id="nextIncomeInfoBtn" type="button">i</button><span class="info-pop" id="nextIncomeInfoPop">This preview uses the income items you add here. Later it can connect to the paycheck anchor date from Budget Rules for exact deposit forecasting.</span></span>
@@ -998,9 +998,9 @@ cursor:pointer;
     </div>
     <div class="collapsible-section-body">
       <div class="variable-summary">
-        <div class="mini"><span>Monthly Budget</span><strong id="variablePlannedTotal">$0</strong></div>
-        <div class="mini"><span>Spent This Month</span><strong id="variableSpentTotal">$0</strong></div>
-        <div class="mini"><span>Available to Spend</span><strong id="variableRemainingTotal">$0</strong></div>
+        <div class="mini"><span>Minimum Payment</span><strong id="variablePlannedTotal">$0</strong></div>
+        <div class="mini"><span>Spent</span><strong id="variableSpentTotal">$0</strong></div>
+        <div class="mini"><span>Remaining</span><strong id="variableRemainingTotal">$0</strong></div>
       </div>
       <div class="budget-list" id="variableList"></div>
     </div>
@@ -1022,10 +1022,10 @@ cursor:pointer;
       <div class="section-body">
         <form class="form">
           <div class="field"><label>Pay Frequency</label><select id="budgetPayFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Twice Monthly</option></select></div>
-          <div class="field"><label>Budget Start Cycle</label><select id="budgetCycle"><option>Monthly</option><option>Paycheck Based</option><option>Custom</option></select></div>
-          <div class="field"><label>Primary Paycheck Date</label><input id="budgetAnchorDate" type="date"></div>
+          <div class="field"><label>Budget Cycle</label><select id="budgetCycle"><option>Monthly</option><option>Paycheck Based</option><option>Custom</option></select></div>
+          <div class="field"><label>Next Paycheck Date</label><input id="budgetAnchorDate" type="date"></div>
           <div class="field"><label>Rollover Unused Money</label><select id="budgetRollover"><option>Off</option><option>On</option></select></div>
-          <div class="field"><label>Default Savings Rate</label><input id="budgetSavingsRate" type="number" inputmode="decimal" min="0" max="100" placeholder="10"></div>
+          <div class="field"><label>Default Savings %</label><input id="budgetSavingsRate" type="number" inputmode="decimal" min="0" max="100" placeholder="10"></div>
           <div class="field"><label>Rollover Destination</label><select id="budgetRolloverDestination"><option>Planned Savings</option><option>Debt</option><option>Monthly Expenses</option><option>Leave Unassigned</option></select></div>
         </form>
         <div class="actions">
@@ -1139,7 +1139,7 @@ cursor:pointer;
 
   <div id="variableEditView" class="view">
     <header class="topbar"><a href="#" class="back" id="variableEditBack"><span>‹</span>Back</a></header>
-    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="variableEditTitle">Add Variable Category</h2><div class="section-sub">Update flexible spending.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Category name</label><input id="variableName" placeholder="Groceries"></div><div class="field"><label>Monthly Budget</label><input id="variablePlanned" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Spent This Month</label><input id="variableSpent" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field full"><label>Type</label><select id="variableType"><option>Groceries</option><option>Gas</option><option>Dining Out</option><option>Entertainment</option><option>Shopping</option><option>Household</option><option>Kids / Pets</option><option>Miscellaneous</option><option>Custom</option></select></div><div class="field"><label>Last Month</label><input id="variableLastMonth" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Average Monthly</label><input id="variableAverage" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Spending Tag</label><select id="variableTag"><option>Flexible</option><option>Recurring</option><option>Optional</option><option>Essential</option></select></div><div class="field"><label>Notes</label><input id="variableNotes" type="text" placeholder="Optional note"></div></form><div class="actions"><button class="btn primary" id="saveVariable" type="button">Save Category</button><button class="btn secondary" id="cancelVariable" type="button">Cancel</button></div><div class="feedback neutral" id="variableFeedback">Variable spending saves locally in this browser.</div></div></section>
+    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="variableEditTitle">Add Variable Category</h2><div class="section-sub">Update flexible spending.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Category name</label><input id="variableName" placeholder="Groceries"></div><div class="field"><label>Minimum Payment</label><input id="variablePlanned" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Spent</label><input id="variableSpent" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field full"><label>Type</label><select id="variableType"><option>Groceries</option><option>Gas</option><option>Dining Out</option><option>Entertainment</option><option>Shopping</option><option>Household</option><option>Kids / Pets</option><option>Miscellaneous</option><option>Custom</option></select></div><div class="field"><label>Last Month</label><input id="variableLastMonth" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Average Monthly</label><input id="variableAverage" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Spending Tag</label><select id="variableTag"><option>Flexible</option><option>Recurring</option><option>Optional</option><option>Essential</option></select></div><div class="field"><label>Notes</label><input id="variableNotes" type="text" placeholder="Optional note"></div></form><div class="actions"><button class="btn primary" id="saveVariable" type="button">Save Category</button><button class="btn secondary" id="cancelVariable" type="button">Cancel</button></div><div class="feedback neutral" id="variableFeedback">Variable spending saves locally in this browser.</div></div></section>
   </div>
 
 
@@ -1155,10 +1155,10 @@ cursor:pointer;
       <div class="section-body">
         <form class="form">
           <div class="field"><label>APR %</label><input id="billApr" type="number" inputmode="decimal" step="0.01" placeholder="6.25"></div>
-          <div class="field"><label>Monthly Budget</label><input id="billMinimumPayment" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
-          <div class="field"><label>Extra Principal Payment</label><input id="billAdditionalPrincipal" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
+          <div class="field"><label>Minimum Payment</label><input id="billMinimumPayment" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
+          <div class="field"><label>Additional Principal Payment</label><input id="billAdditionalPrincipal" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
           <div class="field"><label>Total Balance Owed</label><input id="billBalanceOwed" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
-          <div class="field"><label>Estimated Payoff Date</label><input id="billPayoffDate" type="date"></div>
+          <div class="field"><label>Payoff / Maturity Date</label><input id="billPayoffDate" type="date"></div>
           <div class="field"><label>Lender / Account</label><input id="billLender" type="text" placeholder="Chase Mortgage"></div>
           <div class="field"><label>Interest Type</label><select id="billInterestType"><option>Fixed</option><option>Variable</option></select></div>
           <div class="field"><label>Original Loan Amount</label><input id="billOriginalLoanAmount" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
@@ -1178,12 +1178,12 @@ cursor:pointer;
 
   <div id="incomeEditView" class="view">
     <header class="topbar"><a href="#" class="back" id="incomeEditBack"><span>‹</span>Back</a></header>
-    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="incomeEditTitle">Add Income</h2><div class="section-sub">Add or update planned income.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Income name</label><input id="incomeName" placeholder="VA"></div><div class="field"><label>Monthly Budget</label><input id="incomeAmount" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Received</label><input id="incomeReceived" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Type</label><select id="incomeType"><option>Paycheck</option><option>Spouse / Partner</option><option>Side Income</option><option>VA / Disability</option><option>SSDI</option><option>Pension</option><option>Military BAH</option><option>Military BAS</option><option>Government Pay</option><option>Other</option></select></div><div class="field"><label>Frequency</label><select id="incomeFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Twice Monthly</option><option>Annual</option></select></div></form><div class="actions"><button class="btn primary" id="saveIncome">Save Income</button><button class="btn secondary" id="cancelIncome">Cancel</button></div><div class="feedback neutral" id="incomeFeedback">Income saves locally in this browser.</div></div></section>
+    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="incomeEditTitle">Add Income</h2><div class="section-sub">Add or update planned income.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Income name</label><input id="incomeName" placeholder="VA"></div><div class="field"><label>Minimum Payment</label><input id="incomeAmount" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Received</label><input id="incomeReceived" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Type</label><select id="incomeType"><option>Paycheck</option><option>Spouse / Partner</option><option>Side Income</option><option>VA / Disability</option><option>SSDI</option><option>Pension</option><option>Military BAH</option><option>Military BAS</option><option>Government Pay</option><option>Other</option></select></div><div class="field"><label>Frequency</label><select id="incomeFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Twice Monthly</option><option>Annual</option></select></div></form><div class="actions"><button class="btn primary" id="saveIncome">Save Income</button><button class="btn secondary" id="cancelIncome">Cancel</button></div><div class="feedback neutral" id="incomeFeedback">Income saves locally in this browser.</div></div></section>
   </div>
 
   <div id="billEditView" class="view">
     <header class="topbar"><a href="#" class="back" id="billEditBack"><span>‹</span>Back</a></header>
-    <section class="section bill-edit-card"><div class="section-head"><div><h2 class="section-title" id="billEditTitle">Add Debt</h2><div class="section-sub">Update bill details.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Debt name</label><input id="billName" placeholder="Mortgage"></div><div class="field"><label>Monthly Budget</label><input id="billAmount" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Payment Made</label><input id="billPaid" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Due Date</label><input id="billDueDay" type="number" min="1" max="31" placeholder="Day of month, e.g. 1"></div>
+    <section class="section bill-edit-card"><div class="section-head"><div><h2 class="section-title" id="billEditTitle">Add Debt</h2><div class="section-sub">Update bill details.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Debt name</label><input id="billName" placeholder="Mortgage"></div><div class="field"><label>Minimum Payment</label><input id="billAmount" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Paid</label><input id="billPaid" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Due Date</label><input id="billDueDay" type="number" min="1" max="31" placeholder="Day of month, e.g. 1"></div>
 <div class="field">
 <label>Debt Type</label>
 <select id="billDebtType">
@@ -1201,7 +1201,7 @@ cursor:pointer;
 </div>
 
 <div class="field">
-<label>Payoff Strategy</label>
+<label>Strategy Tag</label>
 <select id="billStrategyTag">
 <option>Aggressive Payoff</option>
 <option>Avalanche</option>
