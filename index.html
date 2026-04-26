@@ -984,6 +984,45 @@ cursor:pointer;
   .strategy-compare{grid-template-columns:1fr}
 }
 
+
+/* Zero-Based Budget */
+.zero-budget-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  padding:18px;
+  margin-bottom:18px;
+}
+.zero-budget-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-top:14px;
+}
+.zero-mini{
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+  text-align:center;
+}
+.zero-mini span{
+  display:block;
+  font-size:11px;
+  font-weight:900;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.zero-mini strong{
+  display:block;
+  font-size:18px;
+}
+@media(max-width:700px){
+  .zero-budget-grid{grid-template-columns:repeat(2,1fr)}
+}
+
 </style>
 </head>
 <body>
@@ -1004,6 +1043,23 @@ cursor:pointer;
       </div>
       <span class="info-wrap"><button class="meter-info" id="nextIncomeInfoBtn" type="button">i</button><span class="info-pop" id="nextIncomeInfoPop">This preview uses the income items you add here. Later it can connect to the paycheck anchor date from Budget Rules for exact deposit forecasting.</span></span>
     </section>
+
+<section class="zero-budget-card">
+  <div class="section-head compact-head" style="padding:0;border-bottom:0">
+    <h2 class="section-title">Zero-Based Budget</h2>
+  </div>
+  <div class="zero-budget-grid">
+    <div class="zero-mini"><span>Income</span><strong id="zeroIncome">$0</strong></div>
+    <div class="zero-mini"><span>Assigned</span><strong id="zeroAssigned">$0</strong></div>
+    <div class="zero-mini"><span>Leftover</span><strong id="zeroLeftover">$0</strong></div>
+    <div class="zero-mini"><span>Status</span><strong id="zeroStatus">Balanced</strong></div>
+  </div>
+  <div class="recommendation-card" style="margin-top:18px">
+    <h3>Smart Allocation Suggestion</h3>
+    <p id="zeroBudgetSuggestion">Your recommendations will appear here as income, debt, savings, and expenses are entered.</p>
+  </div>
+</section>
+
 <section class="smart-warnings">
       <h2>Smart Budget Warnings</h2>
       <div class="warning-list" id="smartWarningsList">
@@ -1535,6 +1591,44 @@ function saveBudgetSetupFn(){
  render();
  show('budgetView');
 }
+
+function renderZeroBudget(b, inc){
+ const debtTotal=(b.fixedBills||[]).reduce((s,i)=>s+Number(i.monthlyAmount||0),0);
+ const savingsMonthly=(b.sinkingFunds||[]).reduce((s,i)=>s+Number(i.monthlyContribution||i.monthly||0),0);
+ const expensesTotal=(b.variableSpending||[]).reduce((s,i)=>s+Number(i.planned||0),0);
+ const emergencyMonthly=Number(b.emergencyFund?.contribution||0);
+
+ const assigned=debtTotal+savingsMonthly+expensesTotal+emergencyMonthly;
+ const leftover=inc-assigned;
+
+ if(window.zeroIncome) zeroIncome.textContent=money(inc);
+ if(window.zeroAssigned) zeroAssigned.textContent=money(assigned);
+ if(window.zeroLeftover) zeroLeftover.textContent=money(leftover);
+
+ let status='Balanced';
+ let suggestion='';
+
+ if(leftover > 0){
+   status='Surplus';
+   const debts=(b.fixedBills||[]).filter(x=>Number(x.balanceOwed||0)>0);
+   if(debts.length){
+     const top=[...debts].sort((a,b)=>Number(b.apr||0)-Number(a.apr||0))[0];
+     suggestion='You have '+money(leftover)+' unassigned. Recommended: apply extra payments toward '+top.name+' first, then strengthen Emergency Fund.';
+   }else{
+     suggestion='You have '+money(leftover)+' unassigned. Recommended: boost Emergency Fund first, then Planned Savings.';
+   }
+ }else if(leftover < 0){
+   status='Over';
+   suggestion='You are over-assigned by '+money(Math.abs(leftover))+'. Reduce Monthly Expenses or adjust savings contributions to rebalance.';
+ }else{
+   status='Zero';
+   suggestion='Every dollar has a job. Your zero-based budget is fully assigned.';
+ }
+
+ if(window.zeroStatus) zeroStatus.textContent=status;
+ if(window.zeroBudgetSuggestion) zeroBudgetSuggestion.textContent=suggestion;
+}
+
 function renderSmartWarnings(b,inc,bills,left){
  const monthlyExpenses=b.variableSpending.reduce((s,i)=>s+Number(i.spent||0),0);
  const plannedExpenses=b.variableSpending.reduce((s,i)=>s+Number(i.planned||0),0);
@@ -1697,7 +1791,7 @@ function renderVariableList(items){
 function render(){
  const u=getUser(),b=budget(u);
  const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), left=inc-bills, load=inc?Math.round(bills/inc*100):0;
- summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';renderNextIncome(b.incomeSources);renderBudgetSetup(b.setup);renderEmergencyFund(b.emergencyFund);renderSmartWarnings(b,inc,bills,left);
+ summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';renderZeroBudget(b,inc);renderNextIncome(b.incomeSources);renderBudgetSetup(b.setup);renderEmergencyFund(b.emergencyFund);renderSmartWarnings(b,inc,bills,left);
  incomeList.innerHTML=b.incomeSources.map(i=>`<a href="#" class="budget-row compact-row" data-income="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type} · ${i.frequency}</span></div><div class="row-amount">${money(itemModeAmount(i,'income'))}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addIncomeRow"><div>Add Income</div><div class="chev">›</div></a>`;
  billList.innerHTML=groupBills(b.fixedBills).map(([group,items])=>`<div class="bill-group"><div class="bill-group-title">${group}</div>${items.map(i=>{const st=billStatus(i);const pct=progressPct(i.paid,i.monthlyAmount);return `<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">${progressText(i.paid,i.monthlyAmount)}</div><div class="priority-pill ${priorityClass(i.priority)}">${i.priority||'Essential'}</div></div><div class="row-amount">${money(itemModeAmount(i,'bill'))}</div><div class="chev">›</div></a>`}).join('')}</div>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Debt</div><div class="chev">›</div></a>`;
  document.querySelectorAll('[data-income]').forEach(r=>r.onclick=e=>{e.preventDefault();openIncomeDetail(r.dataset.income)});
