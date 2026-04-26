@@ -919,7 +919,7 @@ cursor:pointer;
     </section>
 <section class="next-income-preview">
       <div>
-        <div class="preview-label">Next Income Preview</div>
+        <div class="preview-label">Upcoming Paycheck</div>
         <strong id="nextIncomePreview">Add income to estimate your next deposit.</strong>
       </div>
       <span class="info-wrap"><button class="meter-info" id="nextIncomeInfoBtn" type="button">i</button><span class="info-pop" id="nextIncomeInfoPop">This preview uses the income items you add here. Later it can connect to the paycheck anchor date from Budget Rules for exact deposit forecasting.</span></span>
@@ -939,7 +939,7 @@ cursor:pointer;
       <div class="budget-setup-collapse-body">
       <div class="budget-setup-grid">
         <div class="setup-mini"><span>Pay Frequency</span><strong id="setupPayFrequency">Not set</strong></div>
-        <div class="setup-mini"><span>Budget Cycle</span><strong id="setupBudgetCycle">Monthly</strong></div>
+        <div class="setup-mini"><span>Budget Start Cycle</span><strong id="setupBudgetCycle">Monthly</strong></div>
         <div class="setup-mini"><span>Rollover</span><strong id="setupRollover">Off</strong></div>
         <div class="setup-mini"><span>Default Savings</span><strong id="setupSavingsRate">0%</strong></div>
       </div>
@@ -983,7 +983,7 @@ cursor:pointer;
       <div class="sinking-summary">
         <div class="mini"><span>Goal</span><strong id="sinkingGoalTotal">$0</strong></div>
         <div class="mini"><span>Saved</span><strong id="sinkingSavedTotal">$0</strong></div>
-        <div class="mini"><span>Remaining</span><strong id="sinkingRemainingTotal">$0</strong></div>
+        <div class="mini"><span>Available to Spend</span><strong id="sinkingAvailable to SpendTotal">$0</strong></div>
       </div>
       <div class="budget-list" id="sinkingList"></div>
     </div>
@@ -999,8 +999,8 @@ cursor:pointer;
     <div class="collapsible-section-body">
       <div class="variable-summary">
         <div class="mini"><span>Minimum Payment</span><strong id="variablePlannedTotal">$0</strong></div>
-        <div class="mini"><span>Spent</span><strong id="variableSpentTotal">$0</strong></div>
-        <div class="mini"><span>Remaining</span><strong id="variableRemainingTotal">$0</strong></div>
+        <div class="mini"><span>Spent This Month</span><strong id="variableSpent This MonthTotal">$0</strong></div>
+        <div class="mini"><span>Available to Spend</span><strong id="variableAvailable to SpendTotal">$0</strong></div>
       </div>
       <div class="budget-list" id="variableList"></div>
     </div>
@@ -1022,10 +1022,10 @@ cursor:pointer;
       <div class="section-body">
         <form class="form">
           <div class="field"><label>Pay Frequency</label><select id="budgetPayFrequency"><option>Monthly</option><option>Biweekly</option><option>Weekly</option><option>Twice Monthly</option></select></div>
-          <div class="field"><label>Budget Cycle</label><select id="budgetCycle"><option>Monthly</option><option>Paycheck Based</option><option>Custom</option></select></div>
+          <div class="field"><label>Budget Start Cycle</label><select id="budgetCycle"><option>Monthly</option><option>Paycheck Based</option><option>Custom</option></select></div>
           <div class="field"><label>Next Paycheck Date</label><input id="budgetAnchorDate" type="date"></div>
           <div class="field"><label>Rollover Unused Money</label><select id="budgetRollover"><option>Off</option><option>On</option></select></div>
-          <div class="field"><label>Default Savings %</label><input id="budgetSavingsRate" type="number" inputmode="decimal" min="0" max="100" placeholder="10"></div>
+          <div class="field"><label>Default Savings Rate</label><input id="budgetSavingsRate" type="number" inputmode="decimal" min="0" max="100" placeholder="10"></div>
           <div class="field"><label>Rollover Destination</label><select id="budgetRolloverDestination"><option>Planned Savings</option><option>Debt</option><option>Monthly Expenses</option><option>Leave Unassigned</option></select></div>
         </form>
         <div class="actions">
@@ -1039,12 +1039,12 @@ cursor:pointer;
 
   <div id="incomeDetailView" class="view">
     <header class="topbar"><a href="#" class="back" id="incomeDetailBack"><span>‹</span>Back to Budget</a></header>
-    <section class="detail"><div class="accent"><div class="avatar" id="incomeAvatar">$</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="incomeNameDetail">Income</div><div class="detail-sub"><span class="green" id="incomeReceivedDetail">$0</span> received of <span class="blue" id="incomePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Left to Receive</span><strong id="incomeLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Type</span><strong id="incomeTypeDetail">Paycheck</strong></div><div class="detail-mini"><span>Frequency</span><strong id="incomeFrequencyDetail">Monthly</strong></div><div class="detail-mini"><span>Monthly Equivalent</span><strong id="incomeMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Status</span><strong id="incomeStatusDetail">Planned</strong></div></div><button class="btn primary edit-main-btn" id="editIncomeDetails" type="button">Edit Details</button><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="incomeActivityName">this income</strong> yet.</p></div><button class="delete" id="deleteIncome">Delete Budget Item</button></div></section>
+    <section class="detail"><div class="accent"><div class="avatar" id="incomeAvatar">$</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="incomeNameDetail">Income</div><div class="detail-sub"><span class="green" id="incomeReceivedDetail">$0</span> received of <span class="blue" id="incomePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Left to Receive</span><strong id="incomeLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Type</span><strong id="incomeTypeDetail">Paycheck</strong></div><div class="detail-mini"><span>Frequency</span><strong id="incomeFrequencyDetail">Monthly</strong></div><div class="detail-mini"><span>Monthly Equivalent</span><strong id="incomeMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Account Status</span><strong id="incomeAccount StatusDetail">Monthly Budget</strong></div></div><button class="btn primary edit-main-btn" id="editIncomeDetails" type="button">Edit Details</button><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="incomeActivityName">this income</strong> yet.</p></div><button class="delete" id="deleteIncome">Delete Budget Item</button></div></section>
   </div>
 
   <div id="billDetailView" class="view">
     <header class="topbar"><a href="#" class="back" id="billDetailBack"><span>‹</span>Back to Budget</a></header>
-    <section class="detail"><div class="accent bill"><div class="avatar" id="billAvatar">B</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="billNameDetail">Debt</div><div class="detail-sub"><span class="green" id="billPaidDetail">$0</span> paid of <span class="blue" id="billPlannedDetail">$0</span> planned</div></div></div><div class="collapsible-panel open" id="debtSnapshotPanel">
+    <section class="detail"><div class="accent bill"><div class="avatar" id="billAvatar">B</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="billNameDetail">Debt</div><div class="detail-sub"><span class="green" id="billPayment MadeDetail">$0</span> paid of <span class="blue" id="billPlannedDetail">$0</span> planned</div></div></div><div class="collapsible-panel open" id="debtSnapshotPanel">
   <button class="collapse-toggle" type="button" data-collapse="debtSnapshotPanel">
     <span>Debt Snapshot</span><span class="chev-small">›</span>
   </button>
@@ -1062,7 +1062,7 @@ cursor:pointer;
       <div class="debt-extra-card"><span>Payoff Date</span><strong id="billPayoffDateDetail">Not set</strong></div>
       <div class="debt-extra-card"><span>Lender</span><strong id="billLenderDetail">Not set</strong></div>
       <div class="debt-extra-card"><span>Interest Type</span><strong id="billInterestTypeDetail">Fixed</strong></div>
-      <div class="debt-extra-card"><span>Status</span><strong id="billDebtStatusDetail">Current</strong></div>
+      <div class="debt-extra-card"><span>Account Status</span><strong id="billDebtAccount StatusDetail">Current</strong></div>
     </div>
   </div>
 </div>
@@ -1075,7 +1075,7 @@ cursor:pointer;
   <h3>Loan Details</h3>
   <div class="loan-details-grid">
     <div class="loan-detail-card"><span>Original Loan</span><strong id="billOriginalLoanDetail">$0</strong></div>
-    <div class="loan-detail-card"><span>Remaining Balance</span><strong id="billRemainingBalanceDetail">$0</strong></div>
+    <div class="loan-detail-card"><span>Available to Spend Balance</span><strong id="billAvailable to SpendBalanceDetail">$0</strong></div>
     <div class="loan-detail-card"><span>Escrow Balance</span><strong id="billEscrowBalanceDetail">$0</strong></div>
     <div class="loan-detail-card"><span>Interest Rate</span><strong id="billLoanRateDetail">0%</strong></div>
     <div class="loan-detail-card"><span>Origination Date</span><strong id="billOriginationDateDetail">Not set</strong></div>
@@ -1083,7 +1083,7 @@ cursor:pointer;
     <div class="loan-detail-card"><span>Term</span><strong id="billLoanTermDetail">Not set</strong></div>
     <div class="loan-detail-card"><span>Payment Frequency</span><strong id="billPaymentFrequencyDetail">Monthly</strong></div>
     <div class="loan-detail-card"><span>Lender / Account</span><strong id="billLoanLenderDetail">Not set</strong></div>
-    <div class="loan-detail-card"><span>Account Status</span><strong id="billLoanStatusDetail">Current</strong></div>
+    <div class="loan-detail-card"><span>Account Account Status</span><strong id="billLoanAccount StatusDetail">Current</strong></div>
   </div>
 </div>
   </div>
@@ -1104,13 +1104,13 @@ cursor:pointer;
 </div>
   </div>
 </div>
-<div class="recommendation-card"><h3>Debt Payoff Recommendation</h3><p id="billPayoffRecommendation">Add balance and APR to get a recommendation.</p></div><div class="bill-action-card"><button class="btn primary primary-action" id="markBillPaid" type="button">Mark Paid</button><div class="bill-secondary-actions"><button class="btn secondary" id="undoBillPaid" type="button">Undo Payment</button><button class="btn secondary" id="editBillDetails" type="button">Edit Details</button></div></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this debt</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
+<div class="recommendation-card"><h3>Debt Payoff Recommendation</h3><p id="billPayoffRecommendation">Add balance and APR to get a recommendation.</p></div><div class="bill-action-card"><button class="btn primary primary-action" id="markBillPayment Made" type="button">Mark Payment Made</button><div class="bill-secondary-actions"><button class="btn secondary" id="undoBillPayment Made" type="button">Undo Payment</button><button class="btn secondary" id="editBillDetails" type="button">Edit Details</button></div></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this debt</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
   </div>
 
 
   <div id="sinkingDetailView" class="view">
     <header class="topbar"><a href="#" class="back" id="sinkingDetailBack"><span>‹</span>Back to Budget</a></header>
-    <section class="detail"><div class="accent"><div class="avatar" id="sinkingAvatar">S</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="sinkingNameDetail">Planned Savings</div><div class="detail-sub"><span class="green" id="sinkingSavedDetail">$0</span> saved of <span class="blue" id="sinkingGoalDetail">$0</span> goal</div></div><div class="detail-total"><span>Remaining</span><strong id="sinkingLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Category</span><strong id="sinkingCategoryDetail">Car Maintenance</strong></div><div class="detail-mini"><span>Monthly Contribution</span><strong id="sinkingMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Target Date</span><strong id="sinkingTargetDateDetail">Not set</strong></div><div class="detail-mini"><span>Status</span><strong id="sinkingStatusDetail">In Progress</strong></div></div>
+    <section class="detail"><div class="accent"><div class="avatar" id="sinkingAvatar">S</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="sinkingNameDetail">Planned Savings</div><div class="detail-sub"><span class="green" id="sinkingSavedDetail">$0</span> saved of <span class="blue" id="sinkingGoalDetail">$0</span> goal</div></div><div class="detail-total"><span>Available to Spend</span><strong id="sinkingLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Category</span><strong id="sinkingCategoryDetail">Car Maintenance</strong></div><div class="detail-mini"><span>Monthly Contribution</span><strong id="sinkingMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Target Date</span><strong id="sinkingTargetDateDetail">Not set</strong></div><div class="detail-mini"><span>Account Status</span><strong id="sinkingAccount StatusDetail">In Progress</strong></div></div>
 <div class="debt-extra-grid">
   <div class="debt-extra-card"><span>Progress</span><strong id="sinkingProgressDetail">0%</strong></div>
   <div class="debt-extra-card"><span>Monthly Needed</span><strong id="sinkingNeededDetail">$0</strong></div>
@@ -1127,7 +1127,7 @@ cursor:pointer;
 
   <div id="variableDetailView" class="view">
     <header class="topbar"><a href="#" class="back" id="variableDetailBack"><span>‹</span>Back to Budget</a></header>
-    <section class="detail"><div class="accent"><div class="avatar" id="variableAvatar">V</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="variableNameDetail">Category</div><div class="detail-sub"><span class="green" id="variableSpentDetail">$0</span> spent of <span class="blue" id="variablePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Remaining</span><strong id="variableLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Type</span><strong id="variableTypeDetail">Variable</strong></div><div class="detail-mini"><span>Status</span><strong id="variableStatusDetail">On Track</strong></div><div class="detail-mini"><span>Monthly Planned</span><strong id="variableMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Spent</span><strong id="variableSpentMiniDetail">$0</strong></div></div>
+    <section class="detail"><div class="accent"><div class="avatar" id="variableAvatar">V</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="variableNameDetail">Category</div><div class="detail-sub"><span class="green" id="variableSpent This MonthDetail">$0</span> spent of <span class="blue" id="variablePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Available to Spend</span><strong id="variableLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Type</span><strong id="variableTypeDetail">Variable</strong></div><div class="detail-mini"><span>Account Status</span><strong id="variableAccount StatusDetail">On Track</strong></div><div class="detail-mini"><span>Monthly Planned</span><strong id="variableMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Spent This Month</span><strong id="variableSpent This MonthMiniDetail">$0</strong></div></div>
 <div class="debt-extra-grid">
   <div class="debt-extra-card"><span>Average Monthly</span><strong id="variableAverageDetail">$0</strong></div>
   <div class="debt-extra-card"><span>Last Month</span><strong id="variableLastMonthDetail">$0</strong></div>
@@ -1139,7 +1139,7 @@ cursor:pointer;
 
   <div id="variableEditView" class="view">
     <header class="topbar"><a href="#" class="back" id="variableEditBack"><span>‹</span>Back</a></header>
-    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="variableEditTitle">Add Variable Category</h2><div class="section-sub">Update flexible spending.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Category name</label><input id="variableName" placeholder="Groceries"></div><div class="field"><label>Minimum Payment</label><input id="variablePlanned" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Spent</label><input id="variableSpent" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field full"><label>Type</label><select id="variableType"><option>Groceries</option><option>Gas</option><option>Dining Out</option><option>Entertainment</option><option>Shopping</option><option>Household</option><option>Kids / Pets</option><option>Miscellaneous</option><option>Custom</option></select></div><div class="field"><label>Last Month</label><input id="variableLastMonth" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Average Monthly</label><input id="variableAverage" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Spending Tag</label><select id="variableTag"><option>Flexible</option><option>Recurring</option><option>Optional</option><option>Essential</option></select></div><div class="field"><label>Notes</label><input id="variableNotes" type="text" placeholder="Optional note"></div></form><div class="actions"><button class="btn primary" id="saveVariable" type="button">Save Category</button><button class="btn secondary" id="cancelVariable" type="button">Cancel</button></div><div class="feedback neutral" id="variableFeedback">Variable spending saves locally in this browser.</div></div></section>
+    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="variableEditTitle">Add Variable Category</h2><div class="section-sub">Update flexible spending.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Category name</label><input id="variableName" placeholder="Groceries"></div><div class="field"><label>Minimum Payment</label><input id="variablePlanned" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Spent This Month</label><input id="variableSpent This Month" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field full"><label>Type</label><select id="variableType"><option>Groceries</option><option>Gas</option><option>Dining Out</option><option>Entertainment</option><option>Shopping</option><option>Household</option><option>Kids / Pets</option><option>Miscellaneous</option><option>Custom</option></select></div><div class="field"><label>Last Month</label><input id="variableLastMonth" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Average Monthly</label><input id="variableAverage" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Spending Tag</label><select id="variableTag"><option>Flexible</option><option>Recurring</option><option>Optional</option><option>Essential</option></select></div><div class="field"><label>Notes</label><input id="variableNotes" type="text" placeholder="Optional note"></div></form><div class="actions"><button class="btn primary" id="saveVariable" type="button">Save Category</button><button class="btn secondary" id="cancelVariable" type="button">Cancel</button></div><div class="feedback neutral" id="variableFeedback">Variable spending saves locally in this browser.</div></div></section>
   </div>
 
 
@@ -1156,9 +1156,9 @@ cursor:pointer;
         <form class="form">
           <div class="field"><label>APR %</label><input id="billApr" type="number" inputmode="decimal" step="0.01" placeholder="6.25"></div>
           <div class="field"><label>Minimum Payment</label><input id="billMinimumPayment" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
-          <div class="field"><label>Additional Principal Payment</label><input id="billAdditionalPrincipal" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
+          <div class="field"><label>Extra Principal Payment</label><input id="billAdditionalPrincipal" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
           <div class="field"><label>Total Balance Owed</label><input id="billBalanceOwed" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
-          <div class="field"><label>Payoff / Maturity Date</label><input id="billPayoffDate" type="date"></div>
+          <div class="field"><label>Estimated Payoff Date</label><input id="billPayoffDate" type="date"></div>
           <div class="field"><label>Lender / Account</label><input id="billLender" type="text" placeholder="Chase Mortgage"></div>
           <div class="field"><label>Interest Type</label><select id="billInterestType"><option>Fixed</option><option>Variable</option></select></div>
           <div class="field"><label>Original Loan Amount</label><input id="billOriginalLoanAmount" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
@@ -1183,7 +1183,7 @@ cursor:pointer;
 
   <div id="billEditView" class="view">
     <header class="topbar"><a href="#" class="back" id="billEditBack"><span>‹</span>Back</a></header>
-    <section class="section bill-edit-card"><div class="section-head"><div><h2 class="section-title" id="billEditTitle">Add Debt</h2><div class="section-sub">Update bill details.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Debt name</label><input id="billName" placeholder="Mortgage"></div><div class="field"><label>Minimum Payment</label><input id="billAmount" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Paid</label><input id="billPaid" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Due Date</label><input id="billDueDay" type="number" min="1" max="31" placeholder="Day of month, e.g. 1"></div>
+    <section class="section bill-edit-card"><div class="section-head"><div><h2 class="section-title" id="billEditTitle">Add Debt</h2><div class="section-sub">Update bill details.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Debt name</label><input id="billName" placeholder="Mortgage"></div><div class="field"><label>Minimum Payment</label><input id="billAmount" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Payment Made</label><input id="billPayment Made" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Due Date</label><input id="billDueDay" type="number" min="1" max="31" placeholder="Day of month, e.g. 1"></div>
 <div class="field">
 <label>Debt Type</label>
 <select id="billDebtType">
@@ -1201,7 +1201,7 @@ cursor:pointer;
 </div>
 
 <div class="field">
-<label>Strategy Tag</label>
+<label>Payoff Strategy</label>
 <select id="billStrategyTag">
 <option>Aggressive Payoff</option>
 <option>Avalanche</option>
@@ -1227,9 +1227,9 @@ const KEY='budgetAppUser';
 const def={profile:{},preferences:{},security:{},budget:{incomeSources:[],fixedBills:[],sinkingFunds:[],variableSpending:[],setup:{}}};
 let selectedIncomeId=null,selectedBillId=null,selectedSinkingId=null,selectedVariableId=null;
 const fIncome={name:incomeName,amount:incomeAmount,received:incomeReceived,type:incomeType,frequency:incomeFrequency};
-const fBill={name:billName,amount:billAmount,paid:billPaid,dueDay:billDueDay,category:billCategory,priority:billPriority,frequency:billFrequency,apr:billApr,minimumPayment:billMinimumPayment,balanceOwed:billBalanceOwed,payoffDate:billPayoffDate,lender:billLender,interestType:billInterestType,additionalPrincipal:billAdditionalPrincipal,originalLoanAmount:billOriginalLoanAmount,escrowBalance:billEscrowBalance,originationDate:billOriginationDate,loanTerm:billLoanTerm,propertyAddress:billPropertyAddress};
+const fBill={name:billName,amount:billAmount,paid:billPayment Made,dueDay:billDueDay,category:billCategory,priority:billPriority,frequency:billFrequency,apr:billApr,minimumPayment:billMinimumPayment,balanceOwed:billBalanceOwed,payoffDate:billPayoffDate,lender:billLender,interestType:billInterestType,additionalPrincipal:billAdditionalPrincipal,originalLoanAmount:billOriginalLoanAmount,escrowBalance:billEscrowBalance,originationDate:billOriginationDate,loanTerm:billLoanTerm,propertyAddress:billPropertyAddress};
 const fSinking={name:sinkingName,goal:sinkingGoal,saved:sinkingSaved,monthly:sinkingMonthly,targetDate:sinkingTargetDate,category:sinkingCategory};
-const fVariable={name:variableName,planned:variablePlanned,spent:variableSpent,type:variableType,lastMonth:variableLastMonth,average:variableAverage,tag:variableTag,notes:variableNotes};
+const fVariable={name:variableName,planned:variablePlanned,spent:variableSpent This Month,type:variableType,lastMonth:variableLastMonth,average:variableAverage,tag:variableTag,notes:variableNotes};
 
 
 function parseMoneyInput(value){
@@ -1281,7 +1281,7 @@ function setupMainSectionCollapse(){
 }
 
 function setupMoneyFields(){
- const ids=['incomeAmount','incomeReceived','billAmount','billPaid','sinkingGoal','sinkingSaved','sinkingMonthly','variablePlanned','variableSpent','variableLastMonth','variableAverage','billMinimumPayment','billAdditionalPrincipal','billBalanceOwed','billOriginalLoanAmount','billEscrowBalance'];
+ const ids=['incomeAmount','incomeReceived','billAmount','billPayment Made','sinkingGoal','sinkingSaved','sinkingMonthly','variablePlanned','variableSpent This Month','variableLastMonth','variableAverage','billMinimumPayment','billAdditionalPrincipal','billBalanceOwed','billOriginalLoanAmount','billEscrowBalance'];
  ids.forEach(id=>{
   const el=window[id];
   if(!el || el.dataset.moneyReady==='1')return;
@@ -1310,7 +1310,7 @@ function itemModeAmount(item,type){
 }
 
 function setupInfo(btn,pop){if(!btn||!pop)return;btn.onclick=e=>{e.preventDefault();e.stopPropagation();document.querySelectorAll('.info-pop').forEach(p=>{if(p!==pop)p.classList.remove('show')});pop.classList.toggle('show')}}document.addEventListener('click',()=>document.querySelectorAll('.info-pop').forEach(p=>p.classList.remove('show')));
-function billStatus(item){const planned=Number(item.monthlyAmount||0),paid=Number(item.paid||0),due=Number(item.dueDay||0),today=new Date().getDate();if(planned>0&&paid>=planned)return {text:'Paid',cls:'status-paid'};if(due&&today>due)return {text:'Overdue by '+(today-due)+' day'+((today-due)===1?'':'s'),cls:'status-overdue'};if(due){const days=due-today;if(days===0)return {text:'Due today',cls:'status-due'};if(days===1)return {text:'Due tomorrow',cls:'status-due'};if(days>1)return {text:'Due in '+days+' days',cls:'status-due'}}return {text:'Upcoming',cls:''}}
+function billAccount Status(item){const planned=Number(item.monthlyAmount||0),paid=Number(item.paid||0),due=Number(item.dueDay||0),today=new Date().getDate();if(planned>0&&paid>=planned)return {text:'Payment Made',cls:'status-paid'};if(due&&today>due)return {text:'Overdue by '+(today-due)+' day'+((today-due)===1?'':'s'),cls:'status-overdue'};if(due){const days=due-today;if(days===0)return {text:'Due today',cls:'status-due'};if(days===1)return {text:'Due tomorrow',cls:'status-due'};if(days>1)return {text:'Due in '+days+' days',cls:'status-due'}}return {text:'Upcoming',cls:''}}
 function progressPct(paid,planned){planned=Number(planned||0);paid=Number(paid||0);if(planned<=0)return 0;return Math.min(100,Math.round(paid/planned*100))}
 function priorityClass(priority){if(priority==='Flexible')return 'priority-flexible';if(priority==='Can Delay')return 'priority-delay';return ''}
 function progressText(paid,planned){return money(paid||0)+' of '+money(planned||0)+' paid'}
@@ -1354,13 +1354,13 @@ function saveBudgetSetupFn(){
 function renderSmartWarnings(b,inc,bills,left){
  const monthlyExpenses=b.variableSpending.reduce((s,i)=>s+Number(i.spent||0),0);
  const plannedExpenses=b.variableSpending.reduce((s,i)=>s+Number(i.planned||0),0);
- const savingsRemaining=b.sinkingFunds.reduce((s,i)=>s+Math.max(Number(i.goal||0)-Number(i.saved||0),0),0);
+ const savingsAvailable to Spend=b.sinkingFunds.reduce((s,i)=>s+Math.max(Number(i.goal||0)-Number(i.saved||0),0),0);
  const warnings=[];
  if(inc<=0)warnings.push({cls:'bad',text:'Add income to unlock accurate budget warnings.'});
  if(inc>0 && bills/inc>.5)warnings.push({cls:'bad',text:'Debt load is above 50% of monthly income.'});
  if(left<0)warnings.push({cls:'bad',text:'Debt payments are higher than monthly income.'});
  if(plannedExpenses>0 && monthlyExpenses>plannedExpenses)warnings.push({cls:'bad',text:'Monthly expenses are over budget.'});
- if(savingsRemaining>0)warnings.push({cls:'blue',text:'You still have '+money(savingsRemaining)+' remaining across planned savings goals.'});
+ if(savingsAvailable to Spend>0)warnings.push({cls:'blue',text:'You still have '+money(savingsAvailable to Spend)+' remaining across planned savings goals.'});
  const dueSoon=b.fixedBills.filter(x=>{const due=Number(x.dueDay||0),today=new Date().getDate();return due>=today && due-today<=7 && Number(x.paid||0)<Number(x.monthlyAmount||0)});
  if(dueSoon.length)warnings.push({cls:'blue',text:dueSoon.length+' debt payment(s) due in the next 7 days.'});
  if(!warnings.length)warnings.push({cls:'good',text:'Budget looks balanced based on your current entries.'});
@@ -1377,7 +1377,7 @@ function bestDebtRecommendation(fixedBills){
  return 'Recommended extra payments: '+top.name+' first because it has the highest APR entered ('+(top.apr||0)+'%).';
 }
 function getSinking(i){return budget(getUser()).sinkingFunds.find(x=>x.id===i)}
-function sinkingStatus(item){
+function sinkingAccount Status(item){
  const goal=Number(item.goal||0),saved=Number(item.saved||0);
  if(goal>0 && saved>=goal)return {text:'Complete',cls:'status-paid'};
  if(goal>0 && saved/goal>=0.85)return {text:'Almost There',cls:'status-due'};
@@ -1390,12 +1390,12 @@ function renderSinkingList(items){
 
  sinkingGoalTotal.textContent=money(goal);
  sinkingSavedTotal.textContent=money(saved);
- sinkingRemainingTotal.textContent=money(remaining);
- sinkingRemainingTotal.className=remaining<0?'sinking-over':'sinking-ok';
+ sinkingAvailable to SpendTotal.textContent=money(remaining);
+ sinkingAvailable to SpendTotal.className=remaining<0?'sinking-over':'sinking-ok';
  
 
  sinkingList.innerHTML=items.map(i=>{
-  const st=sinkingStatus(i);
+  const st=sinkingAccount Status(i);
   const pct=progressPct(i.saved,i.goal);
   return `<a href="#" class="budget-row compact-row" data-sinking="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${Math.min(pct,100)}%"></div></div><div class="progress-text">${money(i.saved||0)} of ${money(i.goal||0)} saved</div><div class="category-pill">${i.category}</div></div><div class="row-amount">${money(i.monthly||0)}</div><div class="chev">›</div></a>`;
  }).join('')+`<a href="#" class="budget-row compact-row add-row" id="addSinkingRow"><div>Add Planned Savings</div><div class="chev">›</div></a>`;
@@ -1406,7 +1406,7 @@ function renderSinkingList(items){
 function openSinkingDetail(i){
  const item=getSinking(i);if(!item)return;
  selectedSinkingId=i;
- const goal=Number(item.goal||0),saved=Number(item.saved||0),left=Math.max(goal-saved,0),st=sinkingStatus(item);
+ const goal=Number(item.goal||0),saved=Number(item.saved||0),left=Math.max(goal-saved,0),st=sinkingAccount Status(item);
  sinkingAvatar.textContent=initials(item.name);
  sinkingNameDetail.textContent=item.name;
  sinkingSavedDetail.textContent=money(saved);
@@ -1422,7 +1422,7 @@ function openSinkingDetail(i){
  if(window.sinkingNeededDetail)sinkingNeededDetail.textContent=money(monthlyNeeded);
  if(window.sinkingCountdownDetail)sinkingCountdownDetail.textContent=months===null?'Not set':months+' mo';
  if(window.sinkingTransferTipDetail)sinkingTransferTipDetail.textContent=money(monthlyNeeded)+'/mo';
- sinkingStatusDetail.textContent=st.text;
+ sinkingAccount StatusDetail.textContent=st.text;
  sinkingActivityName.textContent=item.name;
  show('sinkingDetailView');
 }
@@ -1457,7 +1457,7 @@ function deleteSinkingFn(){
 function variableModeAmount(item){
  return Number(item.planned||0);
 }
-function variableStatus(item){
+function variableAccount Status(item){
  const planned=Number(item.planned||0),spent=Number(item.spent||0);
  if(spent>planned)return {text:'Over Budget',cls:'status-overdue'};
  if(planned>0 && spent/planned>=0.85)return {text:'Close to Limit',cls:'status-due'};
@@ -1469,13 +1469,13 @@ function renderVariableList(items){
  const remaining=planned-spent;
 
  variablePlannedTotal.textContent=money(planned);
- variableSpentTotal.textContent=money(spent);
- variableRemainingTotal.textContent=money(remaining);
- variableRemainingTotal.className=remaining<0?'variable-over':'variable-ok';
+ variableSpent This MonthTotal.textContent=money(spent);
+ variableAvailable to SpendTotal.textContent=money(remaining);
+ variableAvailable to SpendTotal.className=remaining<0?'variable-over':'variable-ok';
  
 
  variableList.innerHTML=items.map(i=>{
-  const st=variableStatus(i);
+  const st=variableAccount Status(i);
   const pct=progressPct(i.spent,i.planned);
   return `<a href="#" class="budget-row compact-row" data-variable="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${Math.min(pct,100)}%"></div></div><div class="progress-text">${money(i.spent||0)} of ${money(i.planned||0)} spent</div><div class="category-pill">${i.type}</div></div><div class="row-amount">${money(variableModeAmount(i))}</div><div class="chev">›</div></a>`;
  }).join('')+`<a href="#" class="budget-row compact-row add-row" id="addVariableRow"><div>Add Category</div><div class="chev">›</div></a>`;
@@ -1489,7 +1489,7 @@ function render(){
  const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), left=inc-bills, load=inc?Math.round(bills/inc*100):0;
  summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';renderNextIncome(b.incomeSources);renderBudgetSetup(b.setup);renderSmartWarnings(b,inc,bills,left);
  incomeList.innerHTML=b.incomeSources.map(i=>`<a href="#" class="budget-row compact-row" data-income="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type} · ${i.frequency}</span></div><div class="row-amount">${money(itemModeAmount(i,'income'))}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addIncomeRow"><div>Add Income</div><div class="chev">›</div></a>`;
- billList.innerHTML=groupBills(b.fixedBills).map(([group,items])=>`<div class="bill-group"><div class="bill-group-title">${group}</div>${items.map(i=>{const st=billStatus(i);const pct=progressPct(i.paid,i.monthlyAmount);return `<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">${progressText(i.paid,i.monthlyAmount)}</div><div class="priority-pill ${priorityClass(i.priority)}">${i.priority||'Essential'}</div></div><div class="row-amount">${money(itemModeAmount(i,'bill'))}</div><div class="chev">›</div></a>`}).join('')}</div>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Debt</div><div class="chev">›</div></a>`;
+ billList.innerHTML=groupBills(b.fixedBills).map(([group,items])=>`<div class="bill-group"><div class="bill-group-title">${group}</div>${items.map(i=>{const st=billAccount Status(i);const pct=progressPct(i.paid,i.monthlyAmount);return `<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">${progressText(i.paid,i.monthlyAmount)}</div><div class="priority-pill ${priorityClass(i.priority)}">${i.priority||'Essential'}</div></div><div class="row-amount">${money(itemModeAmount(i,'bill'))}</div><div class="chev">›</div></a>`}).join('')}</div>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Debt</div><div class="chev">›</div></a>`;
  document.querySelectorAll('[data-income]').forEach(r=>r.onclick=e=>{e.preventDefault();openIncomeDetail(r.dataset.income)});
  document.querySelectorAll('[data-bill]').forEach(r=>r.onclick=e=>{e.preventDefault();openBillDetail(r.dataset.bill)});
  addIncomeRow.onclick=e=>{e.preventDefault();openIncomeEditor(null)};
@@ -1596,9 +1596,9 @@ function formatDueDate(day){
  return day+suffix+' of month';
 }
 
-function openIncomeDetail(i){const item=getIncome(i);if(!item)return;selectedIncomeId=i;let planned=Number(item.monthlyAmount||0),received=Number(item.received||0),left=Math.max(planned-received,0);incomeAvatar.textContent=initials(item.name);incomeNameDetail.textContent=item.name;incomeReceivedDetail.textContent=money(received);incomePlannedDetail.textContent=money(planned);incomeLeftDetail.textContent=money(left);incomeTypeDetail.textContent=item.type;incomeFrequencyDetail.textContent=item.frequency;incomeMonthlyDetail.textContent=money(planned);incomeStatusDetail.textContent=left>0?'In Progress':'Complete';incomeActivityName.textContent=item.name;show('incomeDetailView')}
-function openBillDetail(i){const item=getBill(i);if(!item)return;selectedBillId=i;let planned=Number(item.monthlyAmount||0),paid=Number(item.paid||0),left=Math.max(planned-paid,0);billAvatar.textContent=initials(item.name);billNameDetail.textContent=item.name;billPaidDetail.textContent=money(paid);billPlannedDetail.textContent=money(planned);billLeftDetail.textContent=money(left);billCategoryDetail.textContent=item.category;billDueDayDetail.textContent=formatDueDate(item.dueDay);billPriorityDetail.textContent=item.priority||'Essential';billMonthlyDetail.textContent=money(item.minimumPayment||planned);if(window.billBalanceOwedDetail)billBalanceOwedDetail.textContent=money(item.balanceOwed||0);if(window.billAprDetail)billAprDetail.textContent=(item.apr||0)+'%';if(window.billPayoffDateDetail)billPayoffDateDetail.textContent=item.payoffDate||'Not set';if(window.billLenderDetail)billLenderDetail.textContent=item.lender||'Not set';if(window.billInterestTypeDetail)billInterestTypeDetail.textContent=item.interestType||'Fixed';if(window.billDebtStatusDetail)billDebtStatusDetail.textContent=item.status||'Current';if(window.billOriginalLoanDetail)billOriginalLoanDetail.textContent=money(item.originalLoanAmount||0);
-if(window.billRemainingBalanceDetail)billRemainingBalanceDetail.textContent=money(item.balanceOwed||0);
+function openIncomeDetail(i){const item=getIncome(i);if(!item)return;selectedIncomeId=i;let planned=Number(item.monthlyAmount||0),received=Number(item.received||0),left=Math.max(planned-received,0);incomeAvatar.textContent=initials(item.name);incomeNameDetail.textContent=item.name;incomeReceivedDetail.textContent=money(received);incomePlannedDetail.textContent=money(planned);incomeLeftDetail.textContent=money(left);incomeTypeDetail.textContent=item.type;incomeFrequencyDetail.textContent=item.frequency;incomeMonthlyDetail.textContent=money(planned);incomeAccount StatusDetail.textContent=left>0?'In Progress':'Complete';incomeActivityName.textContent=item.name;show('incomeDetailView')}
+function openBillDetail(i){const item=getBill(i);if(!item)return;selectedBillId=i;let planned=Number(item.monthlyAmount||0),paid=Number(item.paid||0),left=Math.max(planned-paid,0);billAvatar.textContent=initials(item.name);billNameDetail.textContent=item.name;billPayment MadeDetail.textContent=money(paid);billPlannedDetail.textContent=money(planned);billLeftDetail.textContent=money(left);billCategoryDetail.textContent=item.category;billDueDayDetail.textContent=formatDueDate(item.dueDay);billPriorityDetail.textContent=item.priority||'Essential';billMonthlyDetail.textContent=money(item.minimumPayment||planned);if(window.billBalanceOwedDetail)billBalanceOwedDetail.textContent=money(item.balanceOwed||0);if(window.billAprDetail)billAprDetail.textContent=(item.apr||0)+'%';if(window.billPayoffDateDetail)billPayoffDateDetail.textContent=item.payoffDate||'Not set';if(window.billLenderDetail)billLenderDetail.textContent=item.lender||'Not set';if(window.billInterestTypeDetail)billInterestTypeDetail.textContent=item.interestType||'Fixed';if(window.billDebtAccount StatusDetail)billDebtAccount StatusDetail.textContent=item.status||'Current';if(window.billOriginalLoanDetail)billOriginalLoanDetail.textContent=money(item.originalLoanAmount||0);
+if(window.billAvailable to SpendBalanceDetail)billAvailable to SpendBalanceDetail.textContent=money(item.balanceOwed||0);
 if(window.billEscrowBalanceDetail)billEscrowBalanceDetail.textContent=money(item.escrowBalance||0);
 if(window.billLoanRateDetail)billLoanRateDetail.textContent=(item.apr||0)+'%';
 if(window.billOriginationDateDetail)billOriginationDateDetail.textContent=displayDate(item.originationDate);
@@ -1606,7 +1606,7 @@ if(window.billMaturityDateDetail)billMaturityDateDetail.textContent=displayDate(
 if(window.billLoanTermDetail)billLoanTermDetail.textContent=item.loanTerm||'Not set';
 if(window.billPaymentFrequencyDetail)billPaymentFrequencyDetail.textContent=item.frequency||'Monthly';
 if(window.billLoanLenderDetail)billLoanLenderDetail.textContent=item.lender||item.propertyAddress||'Not set';
-if(window.billLoanStatusDetail)billLoanStatusDetail.textContent=item.status||'Current';
+if(window.billLoanAccount StatusDetail)billLoanAccount StatusDetail.textContent=item.status||'Current';
 renderPayoffImpact(item);if(window.billPayoffRecommendation)billPayoffRecommendation.textContent=bestDebtRecommendation(budget(getUser()).fixedBills);billActivityName.textContent=item.name;show('billDetailView')}
 
 function openIncomeEditor(i){selectedIncomeId=i;const item=i?getIncome(i):null;incomeEditTitle.textContent=item?'Edit Income':'Add Income';fIncome.name.value=item?.name||'';setMoneyFieldValue(fIncome.amount,item?.amount);setMoneyFieldValue(fIncome.received,item?.received);fIncome.type.value=item?.type||'Paycheck';fIncome.frequency.value=item?.frequency||'Monthly';show('incomeEditView');setupMoneyFields()}
@@ -1614,23 +1614,23 @@ function openBillEditor(i){selectedBillId=i;const item=i?getBill(i):null;billEdi
 
 function saveIncomeFn(){const name=fIncome.name.value.trim(),amount=parseMoneyInput(fIncome.amount.value);if(!name||amount<=0){feedback('incomeFeedback','Add an income name and planned amount first.');return}const u=getUser(),b=budget(u),item={id:selectedIncomeId||id('income'),name,amount,received:parseMoneyInput(fIncome.received.value),type:fIncome.type.value,frequency:fIncome.frequency.value,monthlyAmount:monthly(amount,fIncome.frequency.value)};const incomeSources=selectedIncomeId?b.incomeSources.map(x=>x.id===selectedIncomeId?item:x):[...b.incomeSources,item];const updated={...u,budget:{...b,incomeSources}};saveUser(updated);render();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')}
 function saveBillFn(){const name=fBill.name.value.trim(),amount=parseMoneyInput(fBill.amount.value),due=Number(fBill.dueDay.value||0);if(!name||amount<=0){feedback('billFeedback','Add a debt name and planned amount first.');return}if(due<1||due>31){feedback('billFeedback','Enter a due date day between 1 and 31.');return}const u=getUser(),b=budget(u),existing=selectedBillId?getBill(selectedBillId):{};const item={...existing,id:selectedBillId||id('bill'),name,amount,paid:parseMoneyInput(fBill.paid.value),dueDay:due,category:fBill.category.value,priority:fBill.priority.value,frequency:fBill.frequency.value,monthlyAmount:monthly(amount,fBill.frequency.value)};const fixedBills=selectedBillId?b.fixedBills.map(x=>x.id===selectedBillId?item:x):[...b.fixedBills,item];const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();selectedBillId?openBillDetail(selectedBillId):show('budgetView')}
-function markBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:Number(x.amount||x.monthlyAmount||0)}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
-function undoBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:0}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
+function markBillPayment MadeFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:Number(x.amount||x.monthlyAmount||0)}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
+function undoBillPayment MadeFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:0}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
 
 
 function openVariableDetail(i){
  const item=getVariable(i);if(!item)return;
  selectedVariableId=i;
- const planned=Number(item.planned||0),spent=Number(item.spent||0),left=planned-spent,st=variableStatus(item);
+ const planned=Number(item.planned||0),spent=Number(item.spent||0),left=planned-spent,st=variableAccount Status(item);
  variableAvatar.textContent=initials(item.name);
  variableNameDetail.textContent=item.name;
- variableSpentDetail.textContent=money(spent);
+ variableSpent This MonthDetail.textContent=money(spent);
  variablePlannedDetail.textContent=money(planned);
  variableLeftDetail.textContent=money(left);
  variableTypeDetail.textContent=item.type;
- variableStatusDetail.textContent=st.text;
+ variableAccount StatusDetail.textContent=st.text;
  variableMonthlyDetail.textContent=money(planned);
- variableSpentMiniDetail.textContent=money(spent);if(window.variableAverageDetail)variableAverageDetail.textContent=money(item.average||0);if(window.variableLastMonthDetail)variableLastMonthDetail.textContent=money(item.lastMonth||0);if(window.variableTrendDetail){const diff=spent-Number(item.lastMonth||0);variableTrendDetail.textContent=diff>0?'Up '+money(diff):diff<0?'Down '+money(Math.abs(diff)):'Stable'}if(window.variableTagDetail)variableTagDetail.textContent=item.tag||'Flexible';
+ variableSpent This MonthMiniDetail.textContent=money(spent);if(window.variableAverageDetail)variableAverageDetail.textContent=money(item.average||0);if(window.variableLastMonthDetail)variableLastMonthDetail.textContent=money(item.lastMonth||0);if(window.variableTrendDetail){const diff=spent-Number(item.lastMonth||0);variableTrendDetail.textContent=diff>0?'Up '+money(diff):diff<0?'Down '+money(Math.abs(diff)):'Stable'}if(window.variableTagDetail)variableTagDetail.textContent=item.tag||'Flexible';
  variableActivityName.textContent=item.name;
  show('variableDetailView');
 }
@@ -1711,7 +1711,7 @@ function deleteBillFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);
 
 budgetSetupBack.onclick=e=>{e.preventDefault();render();show('budgetView')};incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};sinkingDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};variableDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeDetails.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillDetails.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};editSinkingDetails.onclick=e=>{e.preventDefault();openSinkingEditor(selectedSinkingId)};editVariableDetails.onclick=e=>{e.preventDefault();openVariableEditor(selectedVariableId)};
 incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};sinkingEditBack.onclick=e=>{e.preventDefault();selectedSinkingId?openSinkingDetail(selectedSinkingId):show('budgetView')};variableEditBack.onclick=e=>{e.preventDefault();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');cancelSinking.onclick=()=>selectedSinkingId?openSinkingDetail(selectedSinkingId):show('budgetView');cancelVariable.onclick=()=>selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
-editBudgetSetup.onclick=e=>{e.preventDefault();openBudgetSetupEditor()};saveBudgetSetup.onclick=saveBudgetSetupFn;cancelBudgetSetup.onclick=()=>show('budgetView');saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;saveSinking.onclick=saveSinkingFn;saveVariable.onclick=saveVariableFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;deleteSinking.onclick=deleteSinkingFn;deleteVariable.onclick=deleteVariableFn;if(window.markBillPaid)markBillPaid.onclick=markBillPaidFn;if(window.undoBillPaid)undoBillPaid.onclick=undoBillPaidFn;setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
+editBudgetSetup.onclick=e=>{e.preventDefault();openBudgetSetupEditor()};saveBudgetSetup.onclick=saveBudgetSetupFn;cancelBudgetSetup.onclick=()=>show('budgetView');saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;saveSinking.onclick=saveSinkingFn;saveVariable.onclick=saveVariableFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;deleteSinking.onclick=deleteSinkingFn;deleteVariable.onclick=deleteVariableFn;if(window.markBillPayment Made)markBillPayment Made.onclick=markBillPayment MadeFn;if(window.undoBillPayment Made)undoBillPayment Made.onclick=undoBillPayment MadeFn;setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
 
 if(window.openAdvancedLoanDetails)openAdvancedLoanDetails.onclick=e=>{e.preventDefault();openAdvancedLoanEditor()};
 if(window.advancedLoanBack)advancedLoanBack.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};
