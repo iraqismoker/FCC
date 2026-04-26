@@ -812,7 +812,7 @@ cursor:pointer;
 }
 
 
-/* Section info icons + collapsible budget setup */
+/* Section info icons + collapsible budget rules */
 .section-info-wrap{
   position:relative;
   display:inline-flex;
@@ -882,7 +882,7 @@ cursor:pointer;
         <div class="preview-label">Next Income Preview</div>
         <strong id="nextIncomePreview">Add income to estimate your next deposit.</strong>
       </div>
-      <span class="info-wrap"><button class="meter-info" id="nextIncomeInfoBtn" type="button">i</button><span class="info-pop" id="nextIncomeInfoPop">This preview uses the income items you add here. Later it can connect to the paycheck anchor date from Budget Setup for exact deposit forecasting.</span></span>
+      <span class="info-wrap"><button class="meter-info" id="nextIncomeInfoBtn" type="button">i</button><span class="info-pop" id="nextIncomeInfoPop">This preview uses the income items you add here. Later it can connect to the paycheck anchor date from Budget Rules for exact deposit forecasting.</span></span>
     </section>
 <section class="smart-warnings">
       <h2>Smart Budget Warnings</h2>
@@ -893,7 +893,7 @@ cursor:pointer;
 
     <section class="budget-setup-card" id="budgetSetupSummarySection">
       <button class="main-collapse-toggle" type="button" data-main-collapse="budgetSetupSummarySection">
-        <h2 class="section-title">Budget Setup</h2>
+        <h2 class="section-title">Budget Rules</h2>
         <span class="main-collapse-right"><span class="main-collapse-chev">⌄</span></span>
       </button>
       <div class="budget-setup-collapse-body">
@@ -903,7 +903,7 @@ cursor:pointer;
         <div class="setup-mini"><span>Rollover</span><strong id="setupRollover">Off</strong></div>
         <div class="setup-mini"><span>Default Savings</span><strong id="setupSavingsRate">0%</strong></div>
       </div>
-      <button class="btn secondary edit-main-btn" id="editBudgetSetup" type="button">Edit Budget Setup</button>
+      <button class="btn secondary edit-main-btn" id="editBudgetSetup" type="button">Edit Budget Rules</button>
       </div>
     </section>
 
@@ -975,7 +975,7 @@ cursor:pointer;
     <section class="section income-edit-card">
       <div class="section-head">
         <div>
-          <h2 class="section-title">Budget Setup</h2>
+          <h2 class="section-title">Budget Rules</h2>
           <div class="section-sub">Set how this budget should calculate your monthly plan.</div>
         </div>
       </div>
@@ -989,10 +989,10 @@ cursor:pointer;
           <div class="field"><label>Rollover Destination</label><select id="budgetRolloverDestination"><option>Planned Savings</option><option>Debt</option><option>Monthly Expenses</option><option>Leave Unassigned</option></select></div>
         </form>
         <div class="actions">
-          <button class="btn primary" id="saveBudgetSetup" type="button">Save Budget Setup</button>
+          <button class="btn primary" id="saveBudgetSetup" type="button">Save Budget Rules</button>
           <button class="btn secondary" id="cancelBudgetSetup" type="button">Cancel</button>
         </div>
-        <div class="feedback neutral" id="budgetSetupFeedback">Budget setup saves locally in this browser.</div>
+        <div class="feedback neutral" id="budgetSetupFeedback">Budget rules saves locally in this browser.</div>
       </div>
     </section>
   </div>
