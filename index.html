@@ -943,6 +943,17 @@ cursor:pointer;
 .emergency-summary .mini{background:var(--card2);border:1px solid var(--line);border-radius:18px;padding:14px;text-align:center}
 .emergency-summary .mini span{display:block;color:var(--muted);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
 
+
+/* Emergency Fund deeper view */
+.emergency-readiness-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;margin-top:18px}
+.emergency-readiness-card h3{margin:0 0 8px;font-size:22px;letter-spacing:-.03em}
+.emergency-readiness-card p{margin:0;color:var(--muted);font-size:14px;font-weight:800;line-height:1.4}
+.emergency-progress{width:100%;height:10px;border-radius:999px;background:#e8edf4;overflow:hidden;margin-top:14px}
+.emergency-progress-fill{height:100%;width:0%;background:var(--primary);border-radius:999px}
+.emergency-education{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;margin-top:18px}
+.emergency-education h3{margin:0 0 10px;font-size:22px;letter-spacing:-.03em}
+.emergency-education ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px;font-weight:800;line-height:1.5}
+
 </style>
 </head>
 <body>
@@ -1068,7 +1079,33 @@ cursor:pointer;
   </div>
 
 
-  <div id="budgetSetupView" class="view">
+  
+<div id="emergencyFundView" class="view">
+  <header class="topbar"><a href="#" class="back" id="emergencyBack"><span>‹</span>Back to Budget</a></header>
+  <section class="section income-edit-card">
+    <div class="section-head"><div><h2 class="section-title">Emergency Fund</h2><div class="section-sub">Build 3–6 months of essential expenses for true emergencies.</div></div></div>
+    <div class="section-body">
+      <form class="form">
+        <div class="field"><label>Monthly Essential Expenses</label><input id="emergencyEssential" type="text" inputmode="decimal" placeholder="$0.00"></div>
+        <div class="field"><label>Current Emergency Savings</label><input id="emergencyCurrent" type="text" inputmode="decimal" placeholder="$0.00"></div>
+        <div class="field"><label>Target Goal</label><select id="emergencyGoalMonths"><option value="3">3 Months</option><option value="6">6 Months</option></select></div>
+        <div class="field"><label>Monthly Contribution</label><input id="emergencyContribution" type="text" inputmode="decimal" placeholder="$0.00"></div>
+      </form>
+      <div class="detail-grid">
+        <div class="detail-mini"><span>Target Amount</span><strong id="emergencyTargetDetail">$0</strong></div>
+        <div class="detail-mini"><span>Months Covered</span><strong id="emergencyMonthsDetail">0</strong></div>
+        <div class="detail-mini"><span>Still Needed</span><strong id="emergencyNeededDetail">$0</strong></div>
+        <div class="detail-mini"><span>Readiness</span><strong id="emergencyReadinessDetail">0%</strong></div>
+      </div>
+      <div class="emergency-readiness-card"><h3 id="emergencyStatusTitle">Emergency Readiness</h3><p id="emergencyStatusText">Add essential expenses and current savings to calculate readiness.</p><div class="emergency-progress"><div class="emergency-progress-fill" id="emergencyProgressFill"></div></div></div>
+      <div class="emergency-education"><h3>What Counts as an Emergency?</h3><ul><li>Job loss or major income disruption</li><li>Major medical costs</li><li>Critical home or vehicle repairs</li><li>Not vacations, shopping, gifts, or planned annual bills</li></ul></div>
+      <div class="actions"><button class="btn primary" id="saveEmergencyFund" type="button">Save Emergency Fund</button><button class="btn secondary" id="cancelEmergencyFund" type="button">Cancel</button></div>
+      <div class="feedback neutral" id="emergencyFeedback">Emergency fund saves locally in this browser.</div>
+    </div>
+  </section>
+</div>
+
+<div id="budgetSetupView" class="view">
     <header class="topbar"><a href="#" class="back" id="budgetSetupBack"><span>‹</span>Back to Budget</a></header>
     <section class="section income-edit-card">
       <div class="section-head">
@@ -1287,7 +1324,7 @@ Advanced Loan Details →
 
 <script>
 const KEY='budgetAppUser';
-const def={profile:{},preferences:{},security:{},budget:{incomeSources:[],fixedBills:[],sinkingFunds:[],variableSpending:[],setup:{}}};
+const def={profile:{},preferences:{},security:{},budget:{incomeSources:[],fixedBills:[],sinkingFunds:[],variableSpending:[],setup:{},emergencyFund:{}}};
 let selectedIncomeId=null,selectedBillId=null,selectedSinkingId=null,selectedVariableId=null;
 const fIncome={name:incomeName,amount:incomeAmount,received:incomeReceived,type:incomeType,frequency:incomeFrequency};
 const fBill={name:billName,amount:billAmount,paid:billPaid,dueDay:billDueDay,category:billCategory,priority:billPriority,frequency:billFrequency,apr:billApr,minimumPayment:billMinimumPayment,balanceOwed:billBalanceOwed,payoffDate:billPayoffDate,lender:billLender,interestType:billInterestType,additionalPrincipal:billAdditionalPrincipal,originalLoanAmount:billOriginalLoanAmount,escrowBalance:billEscrowBalance,originationDate:billOriginationDate,loanTerm:billLoanTerm,propertyAddress:billPropertyAddress};
@@ -1344,7 +1381,7 @@ function setupMainSectionCollapse(){
 }
 
 function setupMoneyFields(){
- const ids=['incomeAmount','incomeReceived','billAmount','billPaid','sinkingGoal','sinkingSaved','sinkingMonthly','variablePlanned','variableSpent','variableLastMonth','variableAverage','billMinimumPayment','billAdditionalPrincipal','billBalanceOwed','billOriginalLoanAmount','billEscrowBalance'];
+ const ids=['incomeAmount','incomeReceived','billAmount','billPaid','sinkingGoal','sinkingSaved','sinkingMonthly','variablePlanned','variableSpent','variableLastMonth','variableAverage','emergencyEssential','emergencyCurrent','emergencyContribution','billMinimumPayment','billAdditionalPrincipal','billBalanceOwed','billOriginalLoanAmount','billEscrowBalance'];
  ids.forEach(id=>{
   const el=window[id];
   if(!el || el.dataset.moneyReady==='1')return;
@@ -1361,7 +1398,7 @@ function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remo
 function money(v,cents=true){return Number(v||0).toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:cents?2:0,maximumFractionDigits:cents?2:0})}
 function monthly(v,f){v=Number(v||0);if(f==='Weekly')return v*52/12;if(f==='Biweekly')return v*26/12;if(f==='Twice Monthly')return v*2;if(f==='Quarterly')return v/3;if(f==='Semiannual')return v/6;if(f==='Annual')return v/12;return v}
 function id(p){return p+'-'+Date.now()+'-'+Math.random().toString(16).slice(2)}
-function budget(u){return {incomeSources:u.budget?.incomeSources||[],fixedBills:u.budget?.fixedBills||[],sinkingFunds:u.budget?.sinkingFunds||[],variableSpending:u.budget?.variableSpending||[],setup:u.budget?.setup||{}}}
+function budget(u){return {incomeSources:u.budget?.incomeSources||[],fixedBills:u.budget?.fixedBills||[],sinkingFunds:u.budget?.sinkingFunds||[],variableSpending:u.budget?.variableSpending||[],setup:u.budget?.setup||{},emergencyFund:u.budget?.emergencyFund||{}}}
 function initials(n){return String(n||'?').split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase()}
 function feedback(el,t,cls='neutral'){document.getElementById(el).textContent=t;document.getElementById(el).className='feedback show '+cls}
 
@@ -1391,6 +1428,43 @@ function monthsUntil(dateValue){
  const months=(target.getFullYear()-today.getFullYear())*12+(target.getMonth()-today.getMonth());
  return Math.max(months,0);
 }
+
+function emergencyNumbers(data){
+ const essential=Number(data?.essential||0), current=Number(data?.current||0), goalMonths=Number(data?.goalMonths||3), contribution=Number(data?.contribution||0);
+ const target=essential*goalMonths, monthsCovered=essential>0?current/essential:0, needed=Math.max(target-current,0), readiness=target>0?Math.min(100,Math.round(current/target*100)):0, monthsToGoal=contribution>0?Math.ceil(needed/contribution):null;
+ return {essential,current,goalMonths,contribution,target,monthsCovered,needed,readiness,monthsToGoal};
+}
+function renderEmergencyFund(data){
+ const n=emergencyNumbers(data||{});
+ if(window.emergencyTarget) emergencyTarget.textContent=money(n.target);
+ if(window.emergencySaved) emergencySaved.textContent=money(n.current);
+ if(window.emergencyMonths) emergencyMonths.textContent=n.monthsCovered.toFixed(1);
+ if(window.emergencyReadiness) emergencyReadiness.textContent=n.readiness+'%';
+ if(window.emergencyTargetDetail) emergencyTargetDetail.textContent=money(n.target);
+ if(window.emergencyMonthsDetail) emergencyMonthsDetail.textContent=n.monthsCovered.toFixed(1);
+ if(window.emergencyNeededDetail) emergencyNeededDetail.textContent=money(n.needed);
+ if(window.emergencyReadinessDetail) emergencyReadinessDetail.textContent=n.readiness+'%';
+ if(window.emergencyProgressFill) emergencyProgressFill.style.width=n.readiness+'%';
+ if(window.emergencyStatusTitle){
+  if(n.readiness>=100){emergencyStatusTitle.textContent='Fully Funded'; emergencyStatusText.textContent='Your emergency fund meets your selected target.';}
+  else if(n.readiness>=50){emergencyStatusTitle.textContent='Building Strong'; emergencyStatusText.textContent='You are over halfway to your selected emergency fund target.';}
+  else if(n.current>0){emergencyStatusTitle.textContent='Getting Started'; emergencyStatusText.textContent='Keep building. You still need '+money(n.needed)+' to reach your target.';}
+  else{emergencyStatusTitle.textContent='Not Started Yet'; emergencyStatusText.textContent='Start small, then build toward 3–6 months of essentials.';}
+  if(n.monthsToGoal!==null&&n.needed>0) emergencyStatusText.textContent+=' Estimated time to goal: '+n.monthsToGoal+' month'+(n.monthsToGoal===1?'':'s')+'.';
+ }
+}
+function openEmergencyEditor(){
+ const b=budget(getUser()), e=b.emergencyFund||{};
+ setMoneyFieldValue(emergencyEssential,e.essential); setMoneyFieldValue(emergencyCurrent,e.current); setMoneyFieldValue(emergencyContribution,e.contribution);
+ emergencyGoalMonths.value=String(e.goalMonths||3);
+ renderEmergencyFund(e); show('emergencyFundView'); setupMoneyFields();
+}
+function saveEmergencyFundFn(){
+ const u=getUser(), b=budget(u);
+ const emergencyFund={essential:parseMoneyInput(emergencyEssential.value),current:parseMoneyInput(emergencyCurrent.value),goalMonths:Number(emergencyGoalMonths.value||3),contribution:parseMoneyInput(emergencyContribution.value)};
+ saveUser({...u,budget:{...b,emergencyFund}}); render(); show('budgetView');
+}
+
 function renderBudgetSetup(setup){
  setupPayFrequency.textContent=setup.payFrequency||'Not set';
  setupBudgetCycle.textContent=setup.cycle||'Monthly';
@@ -1550,7 +1624,7 @@ function renderVariableList(items){
 function render(){
  const u=getUser(),b=budget(u);
  const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), left=inc-bills, load=inc?Math.round(bills/inc*100):0;
- summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';renderNextIncome(b.incomeSources);renderBudgetSetup(b.setup);renderSmartWarnings(b,inc,bills,left);
+ summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';renderNextIncome(b.incomeSources);renderBudgetSetup(b.setup);renderEmergencyFund(b.emergencyFund);renderSmartWarnings(b,inc,bills,left);
  incomeList.innerHTML=b.incomeSources.map(i=>`<a href="#" class="budget-row compact-row" data-income="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type} · ${i.frequency}</span></div><div class="row-amount">${money(itemModeAmount(i,'income'))}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addIncomeRow"><div>Add Income</div><div class="chev">›</div></a>`;
  billList.innerHTML=groupBills(b.fixedBills).map(([group,items])=>`<div class="bill-group"><div class="bill-group-title">${group}</div>${items.map(i=>{const st=billStatus(i);const pct=progressPct(i.paid,i.monthlyAmount);return `<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · Due day ${i.dueDay} · ${i.frequency}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">${progressText(i.paid,i.monthlyAmount)}</div><div class="priority-pill ${priorityClass(i.priority)}">${i.priority||'Essential'}</div></div><div class="row-amount">${money(itemModeAmount(i,'bill'))}</div><div class="chev">›</div></a>`}).join('')}</div>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Debt</div><div class="chev">›</div></a>`;
  document.querySelectorAll('[data-income]').forEach(r=>r.onclick=e=>{e.preventDefault();openIncomeDetail(r.dataset.income)});
@@ -1774,7 +1848,7 @@ function deleteBillFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);
 
 budgetSetupBack.onclick=e=>{e.preventDefault();render();show('budgetView')};incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};sinkingDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};variableDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeDetails.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillDetails.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};editSinkingDetails.onclick=e=>{e.preventDefault();openSinkingEditor(selectedSinkingId)};editVariableDetails.onclick=e=>{e.preventDefault();openVariableEditor(selectedVariableId)};
 incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};sinkingEditBack.onclick=e=>{e.preventDefault();selectedSinkingId?openSinkingDetail(selectedSinkingId):show('budgetView')};variableEditBack.onclick=e=>{e.preventDefault();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');cancelSinking.onclick=()=>selectedSinkingId?openSinkingDetail(selectedSinkingId):show('budgetView');cancelVariable.onclick=()=>selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
-editBudgetSetup.onclick=e=>{e.preventDefault();openBudgetSetupEditor()};saveBudgetSetup.onclick=saveBudgetSetupFn;cancelBudgetSetup.onclick=()=>show('budgetView');saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;saveSinking.onclick=saveSinkingFn;saveVariable.onclick=saveVariableFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;deleteSinking.onclick=deleteSinkingFn;deleteVariable.onclick=deleteVariableFn;if(window.markBillPaid)markBillPaid.onclick=markBillPaidFn;if(window.undoBillPaid)undoBillPaid.onclick=undoBillPaidFn;setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
+editBudgetSetup.onclick=e=>{e.preventDefault();openBudgetSetupEditor()};openEmergencyFund.onclick=e=>{e.preventDefault();openEmergencyEditor()};saveEmergencyFund.onclick=saveEmergencyFundFn;cancelEmergencyFund.onclick=()=>show('budgetView');emergencyBack.onclick=e=>{e.preventDefault();render();show('budgetView')};saveBudgetSetup.onclick=saveBudgetSetupFn;cancelBudgetSetup.onclick=()=>show('budgetView');saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;saveSinking.onclick=saveSinkingFn;saveVariable.onclick=saveVariableFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;deleteSinking.onclick=deleteSinkingFn;deleteVariable.onclick=deleteVariableFn;if(window.markBillPaid)markBillPaid.onclick=markBillPaidFn;if(window.undoBillPaid)undoBillPaid.onclick=undoBillPaidFn;setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
 
 if(window.openAdvancedLoanDetails)openAdvancedLoanDetails.onclick=e=>{e.preventDefault();openAdvancedLoanEditor()};
 if(window.advancedLoanBack)advancedLoanBack.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};
