@@ -1023,6 +1023,16 @@ cursor:pointer;
   .zero-budget-grid{grid-template-columns:repeat(2,1fr)}
 }
 
+
+/* Consistent Budget Rules + Zero Budget collapse */
+#budgetSetupSummarySection .main-collapse-toggle,
+#zeroBudgetSection .main-collapse-toggle{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
 </style>
 </head>
 <body>
@@ -1044,10 +1054,12 @@ cursor:pointer;
       <span class="info-wrap"><button class="meter-info" id="nextIncomeInfoBtn" type="button">i</button><span class="info-pop" id="nextIncomeInfoPop">This preview uses the income items you add here. Later it can connect to the paycheck anchor date from Budget Rules for exact deposit forecasting.</span></span>
     </section>
 
-<section class="zero-budget-card">
-  <div class="section-head compact-head" style="padding:0;border-bottom:0">
+<section class="zero-budget-card budget-main-section" id="zeroBudgetSection">
+  <button class="main-collapse-toggle" type="button" data-main-collapse="zeroBudgetSection">
     <h2 class="section-title">Zero-Based Budget</h2>
-  </div>
+    <span class="main-collapse-right"><span class="main-collapse-chev">⌄</span></span>
+  </button>
+  <div class="collapsible-section-body">
   <div class="zero-budget-grid">
     <div class="zero-mini"><span>Income</span><strong id="zeroIncome">$0</strong></div>
     <div class="zero-mini"><span>Assigned</span><strong id="zeroAssigned">$0</strong></div>
