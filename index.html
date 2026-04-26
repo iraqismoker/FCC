@@ -587,6 +587,46 @@ cursor:pointer;
   color:#a6b0bd;
 }
 
+
+/* Sinking Funds */
+.sinking-summary{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  box-shadow:var(--shadow);
+  padding:18px;
+  margin-top:18px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.sinking-summary .mini{
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px;
+  text-align:center;
+}
+.sinking-summary .mini span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:6px;
+}
+.sinking-summary .mini strong{
+  display:block;
+  font-size:20px;
+  color:var(--text);
+}
+.sinking-ok{color:var(--primary)!important}
+.sinking-over{color:var(--bad)!important}
+@media(max-width:520px){
+  .sinking-summary{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -619,6 +659,20 @@ cursor:pointer;
     <main class="stack">
       <section class="section"><div class="section-head compact-head"><h2 class="section-title">Income</h2><span class="list-mode-label" id="incomeModeLabel">Planned</span></div><div class="budget-list" id="incomeList"></div></section>
       <section class="section"><div class="section-head compact-head"><h2 class="section-title">Debt</h2><span class="list-mode-label" id="billModeLabel">Planned</span></div><div class="budget-list" id="billList"></div></section>
+
+
+      <section class="section">
+        <div class="section-head compact-head">
+          <h2 class="section-title">Sinking Funds</h2>
+          <span class="list-mode-label" id="sinkingModeLabel">Planned</span>
+        </div>
+        <div class="sinking-summary">
+          <div class="mini"><span>Goal</span><strong id="sinkingGoalTotal">$0</strong></div>
+          <div class="mini"><span>Saved</span><strong id="sinkingSavedTotal">$0</strong></div>
+          <div class="mini"><span>Remaining</span><strong id="sinkingRemainingTotal">$0</strong></div>
+        </div>
+        <div class="budget-list" id="sinkingList"></div>
+      </section>
 
       <section class="section">
         <div class="section-head compact-head">
@@ -703,6 +757,17 @@ cursor:pointer;
   </div>
 </div>
 <div class="bill-action-card"><button class="btn primary primary-action" id="markBillPaid" type="button">Mark Paid</button><div class="bill-secondary-actions"><button class="btn secondary" id="undoBillPaid" type="button">Undo Payment</button><button class="btn secondary" id="editBillDetails" type="button">Edit Details</button></div></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this debt</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
+  </div>
+
+
+  <div id="sinkingDetailView" class="view">
+    <header class="topbar"><a href="#" class="back" id="sinkingDetailBack"><span>‹</span>Back to Budget</a></header>
+    <section class="detail"><div class="accent"><div class="avatar" id="sinkingAvatar">S</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="sinkingNameDetail">Sinking Fund</div><div class="detail-sub"><span class="green" id="sinkingSavedDetail">$0</span> saved of <span class="blue" id="sinkingGoalDetail">$0</span> goal</div></div><div class="detail-total"><span>Remaining</span><strong id="sinkingLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Category</span><strong id="sinkingCategoryDetail">Car Maintenance</strong></div><div class="detail-mini"><span>Monthly Contribution</span><strong id="sinkingMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Target Date</span><strong id="sinkingTargetDateDetail">Not set</strong></div><div class="detail-mini"><span>Status</span><strong id="sinkingStatusDetail">In Progress</strong></div></div><button class="btn primary edit-main-btn" id="editSinkingDetails" type="button">Edit Details</button><div class="info-card"><h3>Activity This Month</h3><p>Contributions will be tracked here later for <strong id="sinkingActivityName">this sinking fund</strong>.</p></div><button class="delete" id="deleteSinking">Delete Budget Item</button></div></section>
+  </div>
+
+  <div id="sinkingEditView" class="view">
+    <header class="topbar"><a href="#" class="back" id="sinkingEditBack"><span>‹</span>Back</a></header>
+    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="sinkingEditTitle">Add Sinking Fund</h2><div class="section-sub">Plan for future expenses before they happen.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Fund name</label><input id="sinkingName" placeholder="Car Maintenance"></div><div class="field"><label>Goal</label><input id="sinkingGoal" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Saved</label><input id="sinkingSaved" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Monthly Contribution</label><input id="sinkingMonthly" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Target Date</label><input id="sinkingTargetDate" type="date"></div><div class="field full"><label>Category</label><select id="sinkingCategory"><option>Car Maintenance</option><option>Home Repairs</option><option>Holidays</option><option>Medical</option><option>Annual Fees</option><option>Insurance Premium</option><option>School / Kids</option><option>Pets</option><option>Travel</option><option>Other</option></select></div></form><div class="actions"><button class="btn primary" id="saveSinking" type="button">Save Fund</button><button class="btn secondary" id="cancelSinking" type="button">Cancel</button></div><div class="feedback neutral" id="sinkingFeedback">Sinking funds save locally in this browser.</div></div></section>
   </div>
 
   <div id="variableDetailView" class="view">
@@ -797,10 +862,11 @@ Advanced Loan Details →
 
 <script>
 const KEY='budgetAppUser';
-const def={profile:{},preferences:{},security:{},budget:{incomeSources:[],fixedBills:[],variableSpending:[]}};
-let selectedIncomeId=null,selectedBillId=null,selectedVariableId=null;
+const def={profile:{},preferences:{},security:{},budget:{incomeSources:[],fixedBills:[],sinkingFunds:[],variableSpending:[]}};
+let selectedIncomeId=null,selectedBillId=null,selectedSinkingId=null,selectedVariableId=null;
 const fIncome={name:incomeName,amount:incomeAmount,received:incomeReceived,type:incomeType,frequency:incomeFrequency};
 const fBill={name:billName,amount:billAmount,paid:billPaid,dueDay:billDueDay,category:billCategory,priority:billPriority,frequency:billFrequency,apr:billApr,minimumPayment:billMinimumPayment,balanceOwed:billBalanceOwed,payoffDate:billPayoffDate,lender:billLender,interestType:billInterestType,additionalPrincipal:billAdditionalPrincipal,originalLoanAmount:billOriginalLoanAmount,escrowBalance:billEscrowBalance,originationDate:billOriginationDate,loanTerm:billLoanTerm,propertyAddress:billPropertyAddress};
+const fSinking={name:sinkingName,goal:sinkingGoal,saved:sinkingSaved,monthly:sinkingMonthly,targetDate:sinkingTargetDate,category:sinkingCategory};
 const fVariable={name:variableName,planned:variablePlanned,spent:variableSpent,type:variableType};
 
 
@@ -821,7 +887,7 @@ function setMoneyFieldValue(el,value){
  el.value=num?num.toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}):'';
 }
 function setupMoneyFields(){
- const ids=['incomeAmount','incomeReceived','billAmount','billPaid','variablePlanned','variableSpent','billMinimumPayment','billAdditionalPrincipal','billBalanceOwed','billOriginalLoanAmount','billEscrowBalance'];
+ const ids=['incomeAmount','incomeReceived','billAmount','billPaid','sinkingGoal','sinkingSaved','sinkingMonthly','variablePlanned','variableSpent','billMinimumPayment','billAdditionalPrincipal','billBalanceOwed','billOriginalLoanAmount','billEscrowBalance'];
  ids.forEach(id=>{
   const el=window[id];
   if(!el || el.dataset.moneyReady==='1')return;
@@ -838,7 +904,7 @@ function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remo
 function money(v,cents=true){return Number(v||0).toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:cents?2:0,maximumFractionDigits:cents?2:0})}
 function monthly(v,f){v=Number(v||0);if(f==='Weekly')return v*52/12;if(f==='Biweekly')return v*26/12;if(f==='Twice Monthly')return v*2;if(f==='Quarterly')return v/3;if(f==='Semiannual')return v/6;if(f==='Annual')return v/12;return v}
 function id(p){return p+'-'+Date.now()+'-'+Math.random().toString(16).slice(2)}
-function budget(u){return {incomeSources:u.budget?.incomeSources||[],fixedBills:u.budget?.fixedBills||[],variableSpending:u.budget?.variableSpending||[]}}
+function budget(u){return {incomeSources:u.budget?.incomeSources||[],fixedBills:u.budget?.fixedBills||[],sinkingFunds:u.budget?.sinkingFunds||[],variableSpending:u.budget?.variableSpending||[]}}
 function initials(n){return String(n||'?').split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase()}
 function feedback(el,t,cls='neutral'){document.getElementById(el).textContent=t;document.getElementById(el).className='feedback show '+cls}
 
@@ -857,6 +923,78 @@ function progressText(paid,planned){return money(paid||0)+' of '+money(planned||
 function groupBills(items){const order=['Housing','Utilities','Insurance','Debt Payment','Subscription','Phone / Internet','Transportation','Childcare','Medical','Other'];const groups={};items.forEach(i=>{const key=i.category||'Other';groups[key]=groups[key]||[];groups[key].push(i)});return order.filter(k=>groups[k]).map(k=>[k,groups[k]])}
 function renderNextIncome(items){if(!window.nextIncomePreview)return;if(!items.length){nextIncomePreview.textContent='Add income to estimate your next deposit.';return}const item=[...items].sort((a,b)=>Number(b.monthlyAmount||0)-Number(a.monthlyAmount||0))[0];nextIncomePreview.textContent=`${item.name} · ${money(item.monthlyAmount)} planned monthly`}
 
+
+
+function getSinking(i){return budget(getUser()).sinkingFunds.find(x=>x.id===i)}
+function sinkingStatus(item){
+ const goal=Number(item.goal||0),saved=Number(item.saved||0);
+ if(goal>0 && saved>=goal)return {text:'Complete',cls:'status-paid'};
+ if(goal>0 && saved/goal>=0.85)return {text:'Almost There',cls:'status-due'};
+ return {text:'In Progress',cls:'status-paid'};
+}
+function renderSinkingList(items){
+ const goal=items.reduce((s,i)=>s+Number(i.goal||0),0);
+ const saved=items.reduce((s,i)=>s+Number(i.saved||0),0);
+ const remaining=goal-saved;
+
+ sinkingGoalTotal.textContent=money(goal);
+ sinkingSavedTotal.textContent=money(saved);
+ sinkingRemainingTotal.textContent=money(remaining);
+ sinkingRemainingTotal.className=remaining<0?'sinking-over':'sinking-ok';
+ sinkingModeLabel.textContent=modeLabel();
+
+ sinkingList.innerHTML=items.map(i=>{
+  const st=sinkingStatus(i);
+  const pct=progressPct(i.saved,i.goal);
+  return `<a href="#" class="budget-row compact-row" data-sinking="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${Math.min(pct,100)}%"></div></div><div class="progress-text">${money(i.saved||0)} of ${money(i.goal||0)} saved</div><div class="category-pill">${i.category}</div></div><div class="row-amount">${money(i.monthly||0)}</div><div class="chev">›</div></a>`;
+ }).join('')+`<a href="#" class="budget-row compact-row add-row" id="addSinkingRow"><div>Add Sinking Fund</div><div class="chev">›</div></a>`;
+
+ document.querySelectorAll('[data-sinking]').forEach(r=>r.onclick=e=>{e.preventDefault();openSinkingDetail(r.dataset.sinking)});
+ addSinkingRow.onclick=e=>{e.preventDefault();openSinkingEditor(null)};
+}
+function openSinkingDetail(i){
+ const item=getSinking(i);if(!item)return;
+ selectedSinkingId=i;
+ const goal=Number(item.goal||0),saved=Number(item.saved||0),left=Math.max(goal-saved,0),st=sinkingStatus(item);
+ sinkingAvatar.textContent=initials(item.name);
+ sinkingNameDetail.textContent=item.name;
+ sinkingSavedDetail.textContent=money(saved);
+ sinkingGoalDetail.textContent=money(goal);
+ sinkingLeftDetail.textContent=money(left);
+ sinkingCategoryDetail.textContent=item.category;
+ sinkingMonthlyDetail.textContent=money(item.monthly||0);
+ sinkingTargetDateDetail.textContent=displayDate(item.targetDate);
+ sinkingStatusDetail.textContent=st.text;
+ sinkingActivityName.textContent=item.name;
+ show('sinkingDetailView');
+}
+function openSinkingEditor(i){
+ selectedSinkingId=i;
+ const item=i?getSinking(i):null;
+ sinkingEditTitle.textContent=item?'Edit Sinking Fund':'Add Sinking Fund';
+ fSinking.name.value=item?.name||'';
+ setMoneyFieldValue(fSinking.goal,item?.goal);
+ setMoneyFieldValue(fSinking.saved,item?.saved);
+ setMoneyFieldValue(fSinking.monthly,item?.monthly);
+ fSinking.targetDate.value=item?.targetDate||'';
+ fSinking.category.value=item?.category||'Car Maintenance';
+ show('sinkingEditView');setupMoneyFields();
+}
+function saveSinkingFn(){
+ const name=fSinking.name.value.trim(),goal=parseMoneyInput(fSinking.goal.value);
+ if(!name||goal<=0){feedback('sinkingFeedback','Add a fund name and goal amount first.');return}
+ const u=getUser(),b=budget(u),item={id:selectedSinkingId||id('sinking'),name,goal,saved:parseMoneyInput(fSinking.saved.value),monthly:parseMoneyInput(fSinking.monthly.value),targetDate:fSinking.targetDate.value,category:fSinking.category.value};
+ const sinkingFunds=selectedSinkingId?b.sinkingFunds.map(x=>x.id===selectedSinkingId?item:x):[...b.sinkingFunds,item];
+ saveUser({...u,budget:{...b,sinkingFunds}});
+ render();
+ selectedSinkingId?openSinkingDetail(selectedSinkingId):show('budgetView');
+}
+function deleteSinkingFn(){
+ if(!selectedSinkingId)return;
+ const u=getUser(),b=budget(u);
+ saveUser({...u,budget:{...b,sinkingFunds:b.sinkingFunds.filter(x=>x.id!==selectedSinkingId)}});
+ selectedSinkingId=null;render();show('budgetView');
+}
 
 function variableModeAmount(item){
  return Number(item.planned||0);
@@ -898,6 +1036,7 @@ function render(){
  document.querySelectorAll('[data-bill]').forEach(r=>r.onclick=e=>{e.preventDefault();openBillDetail(r.dataset.bill)});
  addIncomeRow.onclick=e=>{e.preventDefault();openIncomeEditor(null)};
  addBillRow.onclick=e=>{e.preventDefault();openBillEditor(null)};
+ renderSinkingList(b.sinkingFunds);
  renderVariableList(b.variableSpending);
 }
 function getIncome(i){return budget(getUser()).incomeSources.find(x=>x.id===i)}
@@ -1112,9 +1251,9 @@ function saveAdvancedLoanDetailsFn(){
 function deleteIncomeFn(){if(!selectedIncomeId)return;const u=getUser(),b=budget(u);saveUser({...u,budget:{...b,incomeSources:b.incomeSources.filter(x=>x.id!==selectedIncomeId)}});selectedIncomeId=null;render();show('budgetView')}
 function deleteBillFn(){if(!selectedBillId)return;const u=getUser(),b=budget(u);saveUser({...u,budget:{...b,fixedBills:b.fixedBills.filter(x=>x.id!==selectedBillId)}});selectedBillId=null;render();show('budgetView')}
 
-incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};variableDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeDetails.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillDetails.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};editVariableDetails.onclick=e=>{e.preventDefault();openVariableEditor(selectedVariableId)};
-incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};variableEditBack.onclick=e=>{e.preventDefault();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');cancelVariable.onclick=()=>selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
-saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;saveVariable.onclick=saveVariableFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;deleteVariable.onclick=deleteVariableFn;if(window.markBillPaid)markBillPaid.onclick=markBillPaidFn;if(window.undoBillPaid)undoBillPaid.onclick=undoBillPaidFn;setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
+incomeDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};billDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};sinkingDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};variableDetailBack.onclick=e=>{e.preventDefault();render();show('budgetView')};editIncomeDetails.onclick=e=>{e.preventDefault();openIncomeEditor(selectedIncomeId)};editBillDetails.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};editSinkingDetails.onclick=e=>{e.preventDefault();openSinkingEditor(selectedSinkingId)};editVariableDetails.onclick=e=>{e.preventDefault();openVariableEditor(selectedVariableId)};
+incomeEditBack.onclick=e=>{e.preventDefault();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')};billEditBack.onclick=e=>{e.preventDefault();selectedBillId?openBillDetail(selectedBillId):show('budgetView')};sinkingEditBack.onclick=e=>{e.preventDefault();selectedSinkingId?openSinkingDetail(selectedSinkingId):show('budgetView')};variableEditBack.onclick=e=>{e.preventDefault();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView')};cancelIncome.onclick=()=>selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView');cancelBill.onclick=()=>selectedBillId?openBillDetail(selectedBillId):show('budgetView');cancelSinking.onclick=()=>selectedSinkingId?openSinkingDetail(selectedSinkingId):show('budgetView');cancelVariable.onclick=()=>selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
+saveIncome.onclick=saveIncomeFn;saveBill.onclick=saveBillFn;saveSinking.onclick=saveSinkingFn;saveVariable.onclick=saveVariableFn;deleteIncome.onclick=deleteIncomeFn;deleteBill.onclick=deleteBillFn;deleteSinking.onclick=deleteSinkingFn;deleteVariable.onclick=deleteVariableFn;if(window.markBillPaid)markBillPaid.onclick=markBillPaidFn;if(window.undoBillPaid)undoBillPaid.onclick=undoBillPaidFn;setupInfo(window.nextIncomeInfoBtn,window.nextIncomeInfoPop);
 
 if(window.openAdvancedLoanDetails)openAdvancedLoanDetails.onclick=e=>{e.preventDefault();openAdvancedLoanEditor()};
 if(window.advancedLoanBack)advancedLoanBack.onclick=e=>{e.preventDefault();openBillEditor(selectedBillId)};
