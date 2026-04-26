@@ -811,6 +811,50 @@ cursor:pointer;
   .budget-setup-grid{grid-template-columns:1fr 1fr}
 }
 
+
+/* Section info icons + collapsible budget setup */
+.section-info-wrap{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+}
+.section-info-btn{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  border:2px solid var(--primary);
+  background:#fff;
+  color:var(--primary);
+  font-size:14px;
+  font-weight:900;
+  display:inline-grid;
+  place-items:center;
+  cursor:pointer;
+  margin-left:4px;
+}
+.section-info-pop{
+  display:none;
+  position:absolute;
+  z-index:60;
+  right:0;
+  top:34px;
+  width:min(340px,82vw);
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:14px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:750;
+  line-height:1.45;
+  text-align:left;
+}
+.section-info-pop.show{display:block}
+.budget-setup-card.collapsed .budget-setup-collapse-body{display:none}
+.budget-setup-card .main-collapse-toggle{padding:0 0 14px}
+.budget-setup-card .main-collapse-toggle:hover{background:transparent}
+
 </style>
 </head>
 <body>
@@ -831,29 +875,19 @@ cursor:pointer;
       </div>
       <span class="info-wrap"><button class="meter-info" id="nextIncomeInfoBtn" type="button">i</button><span class="info-pop" id="nextIncomeInfoPop">This preview uses the income items you add here. Later it can connect to the paycheck anchor date from Budget Setup for exact deposit forecasting.</span></span>
     </section>
-
-    <section class="setup-link-card">
-      <div>
-        <span>Budget Setup Connection</span>
-        <strong>Pay frequency, paycheck anchor date, and budget cycle will connect here.</strong>
-      </div>
-      <a href="budget-setup.html">Review Setup</a>
-    </section>
-
-    
-
-    <section class="smart-warnings">
+<section class="smart-warnings">
       <h2>Smart Budget Warnings</h2>
       <div class="warning-list" id="smartWarningsList">
         <div class="warning-item good">Your budget warnings will appear here as you add income, debt, savings, and expenses.</div>
       </div>
     </section>
 
-    <section class="budget-setup-card">
-      <div class="section-head compact-head" style="padding:0 0 14px;border-bottom:0">
+    <section class="budget-setup-card" id="budgetSetupSummarySection">
+      <button class="main-collapse-toggle" type="button" data-main-collapse="budgetSetupSummarySection">
         <h2 class="section-title">Budget Setup</h2>
-        <span class="list-mode-label">Foundation</span>
-      </div>
+        <span class="main-collapse-right"><span class="list-mode-label">Foundation</span><span class="main-collapse-chev">⌄</span></span>
+      </button>
+      <div class="budget-setup-collapse-body">
       <div class="budget-setup-grid">
         <div class="setup-mini"><span>Pay Frequency</span><strong id="setupPayFrequency">Not set</strong></div>
         <div class="setup-mini"><span>Budget Cycle</span><strong id="setupBudgetCycle">Monthly</strong></div>
@@ -861,6 +895,7 @@ cursor:pointer;
         <div class="setup-mini"><span>Default Savings</span><strong id="setupSavingsRate">0%</strong></div>
       </div>
       <button class="btn secondary edit-main-btn" id="editBudgetSetup" type="button">Edit Budget Setup</button>
+      </div>
     </section>
 
     <main class="stack">
@@ -868,7 +903,7 @@ cursor:pointer;
     <div class="section-head compact-head">
       <button class="main-collapse-toggle" type="button" data-main-collapse="incomeSection">
         <h2 class="section-title">Income</h2>
-        <span class="main-collapse-right"><span class="list-mode-label" id="incomeModeLabel">Planned</span><span class="main-collapse-chev">⌄</span></span>
+        <span class="main-collapse-right"><span class="list-mode-label" id="incomeModeLabel">Planned</span><span class="section-info-wrap"><span class="section-info-btn" data-info="incomeSectionInfo">i</span><span class="section-info-pop" id="incomeSectionInfo">Income is the money expected to come in this month. It powers what is available before debt, planned savings, and monthly expenses.</span></span><span class="main-collapse-chev">⌄</span></span>
       </button>
     </div>
     <div class="collapsible-section-body">
@@ -880,7 +915,7 @@ cursor:pointer;
     <div class="section-head compact-head">
       <button class="main-collapse-toggle" type="button" data-main-collapse="debtSection">
         <h2 class="section-title">Debt</h2>
-        <span class="main-collapse-right"><span class="list-mode-label" id="billModeLabel">Planned</span><span class="main-collapse-chev">⌄</span></span>
+        <span class="main-collapse-right"><span class="list-mode-label" id="billModeLabel">Planned</span><span class="section-info-wrap"><span class="section-info-btn" data-info="debtSectionInfo">i</span><span class="section-info-pop" id="debtSectionInfo">Debt tracks recurring debt payments like mortgage, auto loans, credit cards, and loans. It helps calculate debt load, payoff progress, and payment status.</span></span><span class="main-collapse-chev">⌄</span></span>
       </button>
     </div>
     <div class="collapsible-section-body">
@@ -892,7 +927,7 @@ cursor:pointer;
     <div class="section-head compact-head">
       <button class="main-collapse-toggle" type="button" data-main-collapse="sinkingSection">
         <h2 class="section-title">Planned Savings</h2>
-        <span class="main-collapse-right"><span class="list-mode-label" id="sinkingModeLabel">Planned</span><span class="main-collapse-chev">⌄</span></span>
+        <span class="main-collapse-right"><span class="list-mode-label" id="sinkingModeLabel">Planned</span><span class="section-info-wrap"><span class="section-info-btn" data-info="savingsSectionInfo">i</span><span class="section-info-pop" id="savingsSectionInfo">Planned Savings sets aside money for future expenses before they happen, like car repairs, holidays, annual fees, medical costs, or home repairs.</span></span><span class="main-collapse-chev">⌄</span></span>
       </button>
     </div>
     <div class="collapsible-section-body">
@@ -909,7 +944,7 @@ cursor:pointer;
     <div class="section-head compact-head">
       <button class="main-collapse-toggle" type="button" data-main-collapse="variableSection">
         <h2 class="section-title">Monthly Expenses</h2>
-        <span class="main-collapse-right"><span class="list-mode-label" id="variableModeLabel">Planned</span><span class="main-collapse-chev">⌄</span></span>
+        <span class="main-collapse-right"><span class="list-mode-label" id="variableModeLabel">Planned</span><span class="section-info-wrap"><span class="section-info-btn" data-info="expensesSectionInfo">i</span><span class="section-info-pop" id="expensesSectionInfo">Monthly Expenses are flexible spending categories like groceries, gas, dining out, shopping, and household costs. They show planned, spent, and remaining amounts.</span></span><span class="main-collapse-chev">⌄</span></span>
       </button>
     </div>
     <div class="collapsible-section-body">
@@ -1163,6 +1198,22 @@ function setMoneyFieldValue(el,value){
  if(!el)return;
  const num=Number(value||0);
  el.value=num?num.toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}):'';
+}
+
+
+function setupSectionInfo(){
+ document.querySelectorAll('[data-info]').forEach(btn=>{
+  if(btn.dataset.infoReady==='1')return;
+  btn.dataset.infoReady='1';
+  btn.addEventListener('click',e=>{
+   e.preventDefault();
+   e.stopPropagation();
+   document.querySelectorAll('.section-info-pop').forEach(p=>{if(p.id!==btn.dataset.info)p.classList.remove('show')});
+   const pop=document.getElementById(btn.dataset.info);
+   if(pop)pop.classList.toggle('show');
+  });
+ });
+ document.addEventListener('click',()=>document.querySelectorAll('.section-info-pop').forEach(p=>p.classList.remove('show')));
 }
 
 function setupMainSectionCollapse(){
@@ -1625,6 +1676,7 @@ document.querySelectorAll('[data-collapse]').forEach(btn=>{
  };
 });
 setupMoneyFields();
+setupSectionInfo();
 setupMainSectionCollapse();
 render();
 </script>
