@@ -954,6 +954,36 @@ cursor:pointer;
 .emergency-education h3{margin:0 0 10px;font-size:22px;letter-spacing:-.03em}
 .emergency-education ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px;font-weight:800;line-height:1.5}
 
+
+/* Debt Strategy Engine */
+.strategy-compare{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:18px;
+}
+.strategy-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+}
+.strategy-card h4{
+  margin:0 0 8px;
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.strategy-card p{
+  margin:0;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:800;
+  line-height:1.4;
+}
+@media(max-width:700px){
+  .strategy-compare{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -1199,6 +1229,23 @@ cursor:pointer;
 </div>
   </div>
 </div>
+
+<div class="recommendation-card">
+  <h3>Debt Strategy Engine</h3>
+  <p id="debtStrategySummary">Add APR, balances, and minimum payments to unlock smarter debt strategy recommendations.</p>
+</div>
+
+<div class="strategy-compare">
+  <div class="strategy-card">
+    <h4>Avalanche Strategy</h4>
+    <p id="avalancheStrategyText">Focus highest APR first to minimize interest paid over time.</p>
+  </div>
+  <div class="strategy-card">
+    <h4>Snowball Strategy</h4>
+    <p id="snowballStrategyText">Focus smallest balance first for faster psychological wins.</p>
+  </div>
+</div>
+
 <div class="recommendation-card"><h3>Debt Payoff Recommendation</h3><p id="billPayoffRecommendation">Add balance and APR to get a recommendation.</p></div><div class="bill-action-card"><button class="btn primary primary-action" id="markBillPaid" type="button">Mark Paid</button><div class="bill-secondary-actions"><button class="btn secondary" id="undoBillPaid" type="button">Undo Payment</button><button class="btn secondary" id="editBillDetails" type="button">Edit Details</button></div></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this debt</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
   </div>
 
@@ -1506,6 +1553,32 @@ function renderSmartWarnings(b,inc,bills,left){
 function renderDebtRecommendation(b){
  if(!window.billActivityName)return;
 }
+
+function debtStrategyEngine(fixedBills){
+ const debts=(fixedBills||[]).filter(x=>Number(x.balanceOwed||0)>0);
+ if(!debts.length){
+   return {
+    summary:'Add APR, balances, and minimum payments to unlock smarter debt strategy recommendations.',
+    avalanche:'Highest APR strategy becomes available after entering APR values.',
+    snowball:'Smallest balance strategy becomes available after entering balances.'
+   };
+ }
+ const byApr=[...debts].sort((a,b)=>Number(b.apr||0)-Number(a.apr||0));
+ const byBalance=[...debts].sort((a,b)=>Number(a.balanceOwed||0)-Number(b.balanceOwed||0));
+
+ const topApr=byApr[0];
+ const smallBal=byBalance[0];
+
+ let summary='Recommended first target: '+topApr.name+' using Avalanche because it has the highest APR';
+ if(Number(topApr.apr||0)>0) summary += ' ('+Number(topApr.apr).toFixed(1)+'%)';
+ summary += '.';
+
+ const avalanche='Pay extra toward '+topApr.name+' first to reduce total interest faster and improve long-term payoff efficiency.';
+ const snowball='Pay extra toward '+smallBal.name+' first to create faster wins and free up monthly cash flow sooner.';
+
+ return {summary,avalanche,snowball};
+}
+
 function bestDebtRecommendation(fixedBills){
  const debts=fixedBills.filter(x=>Number(x.balanceOwed||0)>0);
  if(!debts.length)return 'Add balance and APR in Advanced Loan Details to get payoff recommendations.';
@@ -1744,7 +1817,13 @@ if(window.billLoanTermDetail)billLoanTermDetail.textContent=item.loanTerm||'Not 
 if(window.billPaymentFrequencyDetail)billPaymentFrequencyDetail.textContent=item.frequency||'Monthly';
 if(window.billLoanLenderDetail)billLoanLenderDetail.textContent=item.lender||item.propertyAddress||'Not set';
 if(window.billLoanStatusDetail)billLoanStatusDetail.textContent=item.status||'Current';
-renderPayoffImpact(item);if(window.billPayoffRecommendation)billPayoffRecommendation.textContent=bestDebtRecommendation(budget(getUser()).fixedBills);billActivityName.textContent=item.name;show('billDetailView')}
+renderPayoffImpact(item);
+const debtStrategy=debtStrategyEngine(budget(getUser()).fixedBills);
+if(window.billPayoffRecommendation) billPayoffRecommendation.textContent=bestDebtRecommendation(budget(getUser()).fixedBills);
+if(window.debtStrategySummary) debtStrategySummary.textContent=debtStrategy.summary;
+if(window.avalancheStrategyText) avalancheStrategyText.textContent=debtStrategy.avalanche;
+if(window.snowballStrategyText) snowballStrategyText.textContent=debtStrategy.snowball;
+billActivityName.textContent=item.name;show('billDetailView')}
 
 function openIncomeEditor(i){selectedIncomeId=i;const item=i?getIncome(i):null;incomeEditTitle.textContent=item?'Edit Income':'Add Income';fIncome.name.value=item?.name||'';setMoneyFieldValue(fIncome.amount,item?.amount);setMoneyFieldValue(fIncome.received,item?.received);fIncome.type.value=item?.type||'Paycheck';fIncome.frequency.value=item?.frequency||'Monthly';show('incomeEditView');setupMoneyFields()}
 function openBillEditor(i){selectedBillId=i;const item=i?getBill(i):null;billEditTitle.textContent=item?'Edit Debt':'Add Debt';fBill.name.value=item?.name||'';setMoneyFieldValue(fBill.amount,item?.amount);setMoneyFieldValue(fBill.paid,item?.paid);fBill.dueDay.value=item?.dueDay||'';fBill.category.value=item?.category||'Housing';fBill.priority.value=item?.priority||'Essential';fBill.frequency.value=item?.frequency||'Monthly';show('billEditView');setupMoneyFields()}
