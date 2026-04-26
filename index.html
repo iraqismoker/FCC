@@ -864,6 +864,30 @@ cursor:pointer;
   margin-right:8px;
 }
 
+
+/* Fix date input overflow in Advanced Loan Details and Budget Rules */
+.advanced-loan-card input[type="date"],
+#budgetSetupView input[type="date"]{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  font-size:13px !important;
+  padding:11px 10px !important;
+  text-align:left;
+  overflow:hidden;
+}
+.advanced-loan-card .field,
+#budgetSetupView .field{
+  min-width:0;
+}
+@media(max-width:520px){
+  .advanced-loan-card input[type="date"],
+  #budgetSetupView input[type="date"]{
+    font-size:12px !important;
+    padding:10px 8px !important;
+  }
+}
+
 </style>
 </head>
 <body>
