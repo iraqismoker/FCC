@@ -1671,28 +1671,56 @@ function renderDebtRecommendation(b){
 }
 
 function debtStrategyEngine(fixedBills){
- const debts=(fixedBills||[]).filter(x=>Number(x.balanceOwed||0)>0);
+ const debts=(fixedBills||[]).filter(d=>Number(d.balanceOwed||0)>0);
+
  if(!debts.length){
    return {
-    summary:'Add APR, balances, and minimum payments to unlock smarter debt strategy recommendations.',
-    avalanche:'Highest APR strategy becomes available after entering APR values.',
-    snowball:'Smallest balance strategy becomes available after entering balances.'
+     summary:'Add balances, APR, and minimum payments across all debts to unlock strategy recommendations.',
+     avalanche:'Highest APR strategy becomes available after entering APR values.',
+     snowball:'Smallest balance strategy becomes available after entering balances.',
+     bestMove:'Enter more debt details for smarter recommendations.'
    };
  }
- const byApr=[...debts].sort((a,b)=>Number(b.apr||0)-Number(a.apr||0));
- const byBalance=[...debts].sort((a,b)=>Number(a.balanceOwed||0)-Number(b.balanceOwed||0));
 
- const topApr=byApr[0];
- const smallBal=byBalance[0];
+ const normalized = debts.map(d=>{
+   const apr = Number(d.apr||0);
+   const balance = Number(d.balanceOwed||0);
+   const minimum = Number(d.minimumPayment||d.monthlyAmount||0);
 
- let summary='Recommended first target: '+topApr.name+' using Avalanche because it has the highest APR';
- if(Number(topApr.apr||0)>0) summary += ' ('+Number(topApr.apr).toFixed(1)+'%)';
- summary += '.';
+   // Weighted score:
+   // APR strongest, then balance pressure, then monthly cash flow relief
+   const score = (apr * 5) + (minimum * 0.03) + (balance * 0.0005);
 
- const avalanche='Pay extra toward '+topApr.name+' first to reduce total interest faster and improve long-term payoff efficiency.';
- const snowball='Pay extra toward '+smallBal.name+' first to create faster wins and free up monthly cash flow sooner.';
+   return {...d, apr, balance, minimum, score};
+ });
 
- return {summary,avalanche,snowball};
+ const avalancheTarget = [...normalized]
+   .sort((a,b)=> (b.apr - a.apr) || (a.balance - b.balance))[0];
+
+ const snowballTarget = [...normalized]
+   .sort((a,b)=> (a.balance - b.balance) || (b.apr - a.apr))[0];
+
+ const smartTarget = [...normalized]
+   .sort((a,b)=> b.score - a.score)[0];
+
+ const summary =
+     'Best first target: ' + smartTarget.name +
+     ' — highest overall payoff impact based on APR, balance, and monthly payment pressure.';
+
+ const avalanche =
+     'Avalanche: Focus ' + avalancheTarget.name +
+     ' first because it carries the highest interest pressure (' +
+     Number(avalancheTarget.apr||0).toFixed(1) + '% APR).';
+
+ const snowball =
+     'Snowball: Focus ' + snowballTarget.name +
+     ' first because it has the smallest balance and can create faster momentum.';
+
+ const bestMove =
+     'Recommended extra payments: ' + smartTarget.name +
+     ' first for the strongest overall financial improvement.';
+
+ return {summary, avalanche, snowball, bestMove};
 }
 
 function bestDebtRecommendation(fixedBills){
@@ -1936,9 +1964,9 @@ if(window.billLoanStatusDetail)billLoanStatusDetail.textContent=item.status||'Cu
 renderPayoffImpact(item);
 const debtStrategy=debtStrategyEngine(budget(getUser()).fixedBills);
 if(window.debtStrategySummary) debtStrategySummary.textContent=debtStrategy.summary;
-if(window.debtBestNextMove) debtBestNextMove.textContent=bestDebtRecommendation(budget(getUser()).fixedBills);
+if(window.debtBestNextMove) debtBestNextMove.textContent=debtStrategy.bestMove;
 if(window.avalancheStrategyText) avalancheStrategyText.textContent=debtStrategy.avalanche;
-if(window.snowballStrategyText) snowballStrategyText.textContent=debtStrategy.snowball;
+if(window.snowballStrategyText) avalancheStrategyText.textContent=debtStrategy.avalanche, snowballStrategyText.textContent=debtStrategy.snowball;
 billActivityName.textContent=item.name;show('billDetailView')}
 
 function openIncomeEditor(i){selectedIncomeId=i;const item=i?getIncome(i):null;incomeEditTitle.textContent=item?'Edit Income':'Add Income';fIncome.name.value=item?.name||'';setMoneyFieldValue(fIncome.amount,item?.amount);setMoneyFieldValue(fIncome.received,item?.received);fIncome.type.value=item?.type||'Paycheck';fIncome.frequency.value=item?.frequency||'Monthly';show('incomeEditView');setupMoneyFields()}
