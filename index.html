@@ -1135,6 +1135,18 @@ cursor:pointer;
   cursor:pointer;
 }
 
+
+/* Budget month picker interaction fix */
+#budgetMonthPicker{
+  appearance:auto;
+  -webkit-appearance:auto;
+  width:100%;
+  min-height:54px;
+}
+.budget-period-card .period-actions.single{
+  cursor:pointer;
+}
+
 </style>
 </head>
 <body>
@@ -1722,9 +1734,12 @@ function openEmergencyEditor(){
  setMoneyFieldValue(emergencyEssential,e.essential); setMoneyFieldValue(emergencyCurrent,e.current); setMoneyFieldValue(emergencyContribution,e.contribution);
  emergencyGoalMonths.value=String(e.goalMonths||3);
  renderEmergencyFund(e); show('emergencyFundView'); 
-if(window.prevBudgetMonth)prevBudgetMonth.onclick=()=>shiftBudgetMonth(-1);
-if(window.nextBudgetMonth)nextBudgetMonth.onclick=()=>shiftBudgetMonth(1);
-if(window.budgetMonthPicker)budgetMonthPicker.onchange=e=>setBudgetMonthFromPicker(e.target.value);
+if(window.prevBudgetMonth)prevBudgetMonth.addEventListener('click',()=>shiftBudgetMonth(-1));
+if(window.nextBudgetMonth)nextBudgetMonth.addEventListener('click',()=>shiftBudgetMonth(1));
+if(window.budgetMonthPicker){
+ budgetMonthPicker.addEventListener('input',e=>setBudgetMonthFromPicker(e.target.value));
+ budgetMonthPicker.addEventListener('change',e=>setBudgetMonthFromPicker(e.target.value));
+}
 updateBudgetPeriodLabel();
 setupMoneyFields();
 }
@@ -1983,7 +1998,15 @@ function renderVariableList(items){
 }
 
 
-let selectedBudgetDate=new Date();
+
+let selectedBudgetDate=(()=>{
+ const saved=localStorage.getItem('selectedBudgetMonth');
+ if(saved){
+  const [y,m]=saved.split('-').map(Number);
+  if(y&&m)return new Date(y,m-1,1);
+ }
+ return new Date(new Date().getFullYear(),new Date().getMonth(),1);
+})();
 
 function budgetPeriodKey(date=selectedBudgetDate){
  return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0');
@@ -1992,8 +2015,10 @@ function formatBudgetPeriod(date=selectedBudgetDate){
  return date.toLocaleDateString('en-US',{month:'long',year:'numeric'});
 }
 function updateBudgetPeriodLabel(){
+ const key=budgetPeriodKey(selectedBudgetDate);
+ localStorage.setItem('selectedBudgetMonth',key);
  if(window.budgetPeriodLabel)budgetPeriodLabel.textContent=formatBudgetPeriod(selectedBudgetDate);
- if(window.budgetMonthPicker)budgetMonthPicker.value=budgetPeriodKey(selectedBudgetDate);
+ if(window.budgetMonthPicker)budgetMonthPicker.value=key;
 }
 function shiftBudgetMonth(delta){
  selectedBudgetDate=new Date(selectedBudgetDate.getFullYear(),selectedBudgetDate.getMonth()+delta,1);
@@ -2002,16 +2027,18 @@ function shiftBudgetMonth(delta){
 }
 function setBudgetMonthFromPicker(value){
  if(!value)return;
- const parts=value.split('-');
- selectedBudgetDate=new Date(Number(parts[0]),Number(parts[1])-1,1);
+ const [year,month]=value.split('-').map(Number);
+ if(!year||!month)return;
+ selectedBudgetDate=new Date(year,month-1,1);
  updateBudgetPeriodLabel();
  render();
 }
 function calculatedVariableAverage(item){
- // Future-ready: when monthly history is stored by budgetPeriodKey(), this will average saved months.
+ // Future-ready: once monthly history is stored by budgetPeriodKey(), this will average saved months.
  // For now, it uses the selected month's spent amount as the baseline.
  return Number(item.spent||0);
 }
+
 
 function render(){
  const u=getUser(),b=budget(u);
