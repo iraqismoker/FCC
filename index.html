@@ -1033,6 +1033,15 @@ cursor:pointer;
   justify-content:space-between;
 }
 
+
+.strategy-best-move{
+  margin-top:10px !important;
+  padding-top:10px;
+  border-top:1px solid var(--line);
+  color:var(--text) !important;
+  font-weight:900 !important;
+}
+
 </style>
 </head>
 <body>
@@ -1299,8 +1308,9 @@ cursor:pointer;
 </div>
 
 <div class="recommendation-card">
-  <h3>Debt Strategy Engine</h3>
+  <h3>Debt Strategy</h3>
   <p id="debtStrategySummary">Add APR, balances, and minimum payments to unlock smarter debt strategy recommendations.</p>
+  <p id="debtBestNextMove" class="strategy-best-move">Best next move will appear here.</p>
 </div>
 
 <div class="strategy-compare">
@@ -1314,7 +1324,7 @@ cursor:pointer;
   </div>
 </div>
 
-<div class="recommendation-card"><h3>Debt Payoff Recommendation</h3><p id="billPayoffRecommendation">Add balance and APR to get a recommendation.</p></div><div class="bill-action-card"><button class="btn primary primary-action" id="markBillPaid" type="button">Mark Paid</button><div class="bill-secondary-actions"><button class="btn secondary" id="undoBillPaid" type="button">Undo Payment</button><button class="btn secondary" id="editBillDetails" type="button">Edit Details</button></div></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this debt</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
+<div class="bill-action-card"><button class="btn primary primary-action" id="markBillPaid" type="button">Mark Paid</button><div class="bill-secondary-actions"><button class="btn secondary" id="undoBillPaid" type="button">Undo Payment</button><button class="btn secondary" id="editBillDetails" type="button">Edit Details</button></div></div><div class="info-card"><h3>Activity This Month</h3><p>No transactions have been tracked to <strong id="billActivityName">this debt</strong> yet.</p></div><button class="delete" id="deleteBill">Delete Budget Item</button></div></section>
   </div>
 
 
@@ -1925,8 +1935,8 @@ if(window.billLoanLenderDetail)billLoanLenderDetail.textContent=item.lender||ite
 if(window.billLoanStatusDetail)billLoanStatusDetail.textContent=item.status||'Current';
 renderPayoffImpact(item);
 const debtStrategy=debtStrategyEngine(budget(getUser()).fixedBills);
-if(window.billPayoffRecommendation) billPayoffRecommendation.textContent=bestDebtRecommendation(budget(getUser()).fixedBills);
 if(window.debtStrategySummary) debtStrategySummary.textContent=debtStrategy.summary;
+if(window.debtBestNextMove) debtBestNextMove.textContent=bestDebtRecommendation(budget(getUser()).fixedBills);
 if(window.avalancheStrategyText) avalancheStrategyText.textContent=debtStrategy.avalanche;
 if(window.snowballStrategyText) snowballStrategyText.textContent=debtStrategy.snowball;
 billActivityName.textContent=item.name;show('billDetailView')}
