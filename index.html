@@ -1059,6 +1059,62 @@ cursor:pointer;
   display:none !important;
 }
 
+
+/* Budget Month Selector */
+.budget-period-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  padding:14px 16px;
+  margin-bottom:18px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:12px;
+  align-items:center;
+}
+.period-nav{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:var(--card2);
+  color:var(--text);
+  font-size:24px;
+  font-weight:900;
+  cursor:pointer;
+}
+.period-center{
+  text-align:center;
+}
+.period-center span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:4px;
+}
+.period-center strong{
+  display:block;
+  font-size:22px;
+  letter-spacing:-.03em;
+}
+.period-actions{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.period-actions .btn{
+  width:100%;
+}
+@media(max-width:520px){
+  .budget-period-card{grid-template-columns:auto 1fr auto}
+  .period-center strong{font-size:20px}
+}
+
 </style>
 </head>
 <body>
@@ -1066,6 +1122,20 @@ cursor:pointer;
   <div id="budgetView" class="view active">
     <header class="topbar"><a href="overview.html" class="back"><span>‹</span>Back to Overview</a></header>
     <section class="head"><p class="eyebrow">Budget Tab • Phase 1</p><h1>Income & Debt</h1><p>Start with predictable money first. Income and debt power your available-to-spend and forecast.</p></section>
+
+    <section class="budget-period-card">
+      <button class="period-nav" id="prevBudgetMonth" type="button">‹</button>
+      <div class="period-center">
+        <span>Budget Month</span>
+        <strong id="budgetPeriodLabel">Current Month</strong>
+      </div>
+      <button class="period-nav" id="nextBudgetMonth" type="button">›</button>
+      <div class="period-actions">
+        <button class="btn secondary" id="currentBudgetMonth" type="button">Current Month</button>
+        <button class="btn secondary" id="futureBudgetMonth" type="button">Plan Next Month</button>
+      </div>
+    </section>
+
     <section class="summary">
       <div class="sum"><div class="label">Monthly Income</div><div class="value" id="summaryIncome">$0</div><div class="note">All active income sources</div></div>
       <div class="sum"><div class="label">Debt</div><div class="value" id="summaryBills">$0</div><div class="note">Recurring debt obligations</div></div>
@@ -1366,7 +1436,7 @@ cursor:pointer;
     <header class="topbar"><a href="#" class="back" id="variableDetailBack"><span>‹</span>Back to Budget</a></header>
     <section class="detail"><div class="accent"><div class="avatar" id="variableAvatar">V</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="variableNameDetail">Category</div><div class="detail-sub"><span class="green" id="variableSpentDetail">$0</span> spent of <span class="blue" id="variablePlannedDetail">$0</span> planned</div></div><div class="detail-total"><span>Available to Spend</span><strong id="variableLeftDetail">$0</strong></div></div><div class="detail-grid"><div class="detail-mini"><span>Expense Type</span><strong id="variableTypeDetail">Monthly</strong></div><div class="detail-mini"><span>Status</span><strong id="variableStatusDetail">On Track</strong></div><div class="detail-mini"><span>Monthly Budget</span><strong id="variableMonthlyDetail">$0</strong></div><div class="detail-mini"><span>Spent This Month</span><strong id="variableSpentMiniDetail">$0</strong></div></div>
 <div class="debt-extra-grid">
-  <div class="debt-extra-card"><span>Average Monthly</span><strong id="variableAverageDetail">$0</strong></div>
+  <div class="debt-extra-card"><span>Average Monthly (Auto)</span><strong id="variableAverageDetail">$0</strong></div>
   <div class="debt-extra-card"><span>Last Month</span><strong id="variableLastMonthDetail">$0</strong></div>
   <div class="debt-extra-card"><span>Trend</span><strong id="variableTrendDetail">Stable</strong></div>
   <div class="debt-extra-card"><span>Tag</span><strong id="variableTagDetail">Flexible</strong></div>
@@ -1381,7 +1451,7 @@ cursor:pointer;
 
   <div id="variableEditView" class="view">
     <header class="topbar"><a href="#" class="back" id="variableEditBack"><span>‹</span>Back</a></header>
-    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="variableEditTitle">Add Monthly Expense</h2><div class="section-sub">Update monthly expense tracking.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Expense name</label><input id="variableName" placeholder="Groceries"></div><div class="field"><label>Monthly Budget</label><input id="variablePlanned" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Spent This Month</label><input id="variableSpent" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field full"><label>Type</label><select id="variableType"><option>Groceries</option><option>Gas</option><option>Dining Out</option><option>Entertainment</option><option>Shopping</option><option>Household</option><option>Kids / Pets</option><option>Miscellaneous</option><option>Custom</option></select></div><div class="field"><label>Last Month</label><input id="variableLastMonth" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Average Monthly</label><input id="variableAverage" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Spending Tag</label><select id="variableTag"><option>Flexible</option><option>Recurring</option><option>Optional</option><option>Essential</option></select></div><div class="field"><label>Notes</label><input id="variableNotes" type="text" placeholder="Optional note"></div></form><div class="actions"><button class="btn primary" id="saveVariable" type="button">Save Expense</button><button class="btn secondary" id="cancelVariable" type="button">Cancel</button></div><div class="feedback neutral" id="variableFeedback">Monthly expenses save locally in this browser.</div></div></section>
+    <section class="section income-edit-card"><div class="section-head"><div><h2 class="section-title" id="variableEditTitle">Add Monthly Expense</h2><div class="section-sub">Update monthly expense tracking.</div></div></div><div class="section-body"><form class="form"><div class="field full"><label>Expense name</label><input id="variableName" placeholder="Groceries"></div><div class="field"><label>Monthly Budget</label><input id="variablePlanned" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Spent This Month</label><input id="variableSpent" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field full"><label>Type</label><select id="variableType"><option>Groceries</option><option>Gas</option><option>Dining Out</option><option>Entertainment</option><option>Shopping</option><option>Household</option><option>Kids / Pets</option><option>Miscellaneous</option><option>Custom</option></select></div><div class="field"><label>Last Month</label><input id="variableLastMonth" type="text" inputmode="decimal" placeholder="$0.00"></div><div class="field"><label>Spending Tag</label><select id="variableTag"><option>Flexible</option><option>Recurring</option><option>Optional</option><option>Essential</option></select></div><div class="field"><label>Notes</label><input id="variableNotes" type="text" placeholder="Optional note"></div></form><div class="actions"><button class="btn primary" id="saveVariable" type="button">Save Expense</button><button class="btn secondary" id="cancelVariable" type="button">Cancel</button></div><div class="feedback neutral" id="variableFeedback">Monthly expenses save locally in this browser.</div></div></section>
   </div>
 
 
@@ -1478,7 +1548,7 @@ let selectedIncomeId=null,selectedBillId=null,selectedSinkingId=null,selectedVar
 const fIncome={name:incomeName,amount:incomeAmount,received:incomeReceived,type:incomeType,frequency:incomeFrequency};
 const fBill={name:billName,amount:billAmount,paid:billPaid,dueDay:billDueDay,category:billCategory,priority:billPriority,frequency:billFrequency,apr:billApr,minimumPayment:billMinimumPayment,balanceOwed:billBalanceOwed,payoffDate:billPayoffDate,lender:billLender,interestType:billInterestType,additionalPrincipal:billAdditionalPrincipal,originalLoanAmount:billOriginalLoanAmount,escrowBalance:billEscrowBalance,originationDate:billOriginationDate,loanTerm:billLoanTerm,propertyAddress:billPropertyAddress,creditLimit:billCreditLimit,availableCredit:billAvailableCredit,promoAprEndDate:billPromoAprEndDate,vehicleValue:billVehicleValue,studentLoanServicer:billStudentLoanServicer};
 const fSinking={name:sinkingName,goal:sinkingGoal,saved:sinkingSaved,monthly:sinkingMonthly,targetDate:sinkingTargetDate,category:sinkingCategory};
-const fVariable={name:variableName,planned:variablePlanned,spent:variableSpent,type:variableType,lastMonth:variableLastMonth,average:variableAverage,tag:variableTag,notes:variableNotes};
+const fVariable={name:variableName,planned:variablePlanned,spent:variableSpent,type:variableType,lastMonth:variableLastMonth,tag:variableTag,notes:variableNotes};
 
 
 function parseMoneyInput(value){
@@ -1555,7 +1625,7 @@ function setupMainSectionCollapse(){
 }
 
 function setupMoneyFields(){
- const ids=['incomeAmount','incomeReceived','billAmount','billPaid','sinkingGoal','sinkingSaved','sinkingMonthly','variablePlanned','variableSpent','variableLastMonth','variableAverage','emergencyEssential','emergencyCurrent','emergencyContribution','billMinimumPayment','billAdditionalPrincipal','billBalanceOwed','billOriginalLoanAmount','billEscrowBalance','billCreditLimit','billAvailableCredit','billVehicleValue'];
+ const ids=['incomeAmount','incomeReceived','billAmount','billPaid','sinkingGoal','sinkingSaved','sinkingMonthly','variablePlanned','variableSpent','variableLastMonth','emergencyEssential','emergencyCurrent','emergencyContribution','billMinimumPayment','billAdditionalPrincipal','billBalanceOwed','billOriginalLoanAmount','billEscrowBalance','billCreditLimit','billAvailableCredit','billVehicleValue'];
  ids.forEach(id=>{
   const el=window[id];
   if(!el || el.dataset.moneyReady==='1')return;
@@ -1631,7 +1701,13 @@ function openEmergencyEditor(){
  const b=budget(getUser()), e=b.emergencyFund||{};
  setMoneyFieldValue(emergencyEssential,e.essential); setMoneyFieldValue(emergencyCurrent,e.current); setMoneyFieldValue(emergencyContribution,e.contribution);
  emergencyGoalMonths.value=String(e.goalMonths||3);
- renderEmergencyFund(e); show('emergencyFundView'); setupMoneyFields();
+ renderEmergencyFund(e); show('emergencyFundView'); 
+if(window.prevBudgetMonth)prevBudgetMonth.onclick=()=>shiftBudgetMonth(-1);
+if(window.nextBudgetMonth)nextBudgetMonth.onclick=()=>shiftBudgetMonth(1);
+if(window.currentBudgetMonth)currentBudgetMonth.onclick=setCurrentBudgetMonth;
+if(window.futureBudgetMonth)futureBudgetMonth.onclick=planNextBudgetMonth;
+updateBudgetPeriodLabel();
+setupMoneyFields();
 }
 function saveEmergencyFundFn(){
  const u=getUser(), b=budget(u);
@@ -1887,6 +1963,40 @@ function renderVariableList(items){
  addVariableRow.onclick=e=>{e.preventDefault();openVariableEditor(null)};
 }
 
+
+let selectedBudgetDate=new Date();
+
+function budgetPeriodKey(date=selectedBudgetDate){
+ return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0');
+}
+function formatBudgetPeriod(date=selectedBudgetDate){
+ return date.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+}
+function updateBudgetPeriodLabel(){
+ if(window.budgetPeriodLabel)budgetPeriodLabel.textContent=formatBudgetPeriod(selectedBudgetDate);
+}
+function shiftBudgetMonth(delta){
+ selectedBudgetDate.setMonth(selectedBudgetDate.getMonth()+delta);
+ updateBudgetPeriodLabel();
+ render();
+}
+function setCurrentBudgetMonth(){
+ selectedBudgetDate=new Date();
+ updateBudgetPeriodLabel();
+ render();
+}
+function planNextBudgetMonth(){
+ selectedBudgetDate=new Date();
+ selectedBudgetDate.setMonth(selectedBudgetDate.getMonth()+1);
+ updateBudgetPeriodLabel();
+ render();
+}
+function calculatedVariableAverage(item){
+ // Future-ready: when monthly history is stored by budgetPeriodKey(), this will average saved months.
+ // For now, it uses the selected month's spent amount as the baseline.
+ return Number(item.spent||0);
+}
+
 function render(){
  const u=getUser(),b=budget(u);
  const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0), left=inc-bills, load=inc?Math.round(bills/inc*100):0;
@@ -2039,7 +2149,7 @@ function openVariableDetail(i){
  variableTypeDetail.textContent=item.type||'Monthly';
  variableStatusDetail.textContent=st.text;
  variableMonthlyDetail.textContent=money(planned);
- variableSpentMiniDetail.textContent=money(spent);if(window.variableAverageDetail)variableAverageDetail.textContent=money(item.average||0);if(window.variableLastMonthDetail)variableLastMonthDetail.textContent=money(item.lastMonth||0);if(window.variableTrendDetail){const diff=spent-Number(item.lastMonth||0);variableTrendDetail.textContent=diff>0?'Up '+money(diff):diff<0?'Down '+money(Math.abs(diff)):'Stable'}if(window.variableTagDetail)variableTagDetail.textContent=item.tag||'Flexible';if(window.variableWarningCard){variableWarningCard.className='expense-warning-card';if(spent>planned){variableWarningCard.classList.add('over');variableWarningTitle.textContent='Over Budget';variableWarningText.textContent='This expense is over budget by '+money(spent-planned)+'.';}else if(planned>0&&spent/planned>=0.85){variableWarningCard.classList.add('close');variableWarningTitle.textContent='Close to Limit';variableWarningText.textContent='This expense is close to the monthly budget. Available: '+money(planned-spent)+'.';}else{variableWarningTitle.textContent='On Track';variableWarningText.textContent='This expense is within the monthly budget. Available: '+money(planned-spent)+'.';}}
+ variableSpentMiniDetail.textContent=money(spent);if(window.variableAverageDetail)variableAverageDetail.textContent=money(calculatedVariableAverage(item));if(window.variableLastMonthDetail)variableLastMonthDetail.textContent=money(item.lastMonth||0);if(window.variableTrendDetail){const diff=spent-Number(item.lastMonth||0);variableTrendDetail.textContent=diff>0?'Up '+money(diff):diff<0?'Down '+money(Math.abs(diff)):'Stable'}if(window.variableTagDetail)variableTagDetail.textContent=item.tag||'Flexible';if(window.variableWarningCard){variableWarningCard.className='expense-warning-card';if(spent>planned){variableWarningCard.classList.add('over');variableWarningTitle.textContent='Over Budget';variableWarningText.textContent='This expense is over budget by '+money(spent-planned)+'.';}else if(planned>0&&spent/planned>=0.85){variableWarningCard.classList.add('close');variableWarningTitle.textContent='Close to Limit';variableWarningText.textContent='This expense is close to the monthly budget. Available: '+money(planned-spent)+'.';}else{variableWarningTitle.textContent='On Track';variableWarningText.textContent='This expense is within the monthly budget. Available: '+money(planned-spent)+'.';}}
  variableActivityName.textContent=item.name;
  show('variableDetailView');
 }
@@ -2050,13 +2160,13 @@ function openVariableEditor(i){
  fVariable.name.value=item?.name||'';
  setMoneyFieldValue(fVariable.planned,item?.planned);
  setMoneyFieldValue(fVariable.spent,item?.spent);
- fVariable.type.value=item?.type||'Groceries';setMoneyFieldValue(fVariable.lastMonth,item?.lastMonth);setMoneyFieldValue(fVariable.average,item?.average);fVariable.tag.value=item?.tag||'Flexible';fVariable.notes.value=item?.notes||'';
+ fVariable.type.value=item?.type||'Groceries';setMoneyFieldValue(fVariable.lastMonth,item?.lastMonth);fVariable.tag.value=item?.tag||'Flexible';fVariable.notes.value=item?.notes||'';
  show('variableEditView');setupMoneyFields();
 }
 function saveVariableFn(){
  const name=fVariable.name.value.trim(),planned=parseMoneyInput(fVariable.planned.value);
  if(!name||planned<=0){feedback('variableFeedback','Add a category name and planned amount first.');return}
- const u=getUser(),b=budget(u),item={id:selectedVariableId||id('variable'),name,planned,spent:parseMoneyInput(fVariable.spent.value),type:fVariable.type.value,lastMonth:parseMoneyInput(fVariable.lastMonth.value),average:parseMoneyInput(fVariable.average.value),tag:fVariable.tag.value,notes:fVariable.notes.value};
+ const u=getUser(),b=budget(u),item={id:selectedVariableId||id('variable'),name,planned,spent:parseMoneyInput(fVariable.spent.value),type:fVariable.type.value,lastMonth:parseMoneyInput(fVariable.lastMonth.value),tag:fVariable.tag.value,notes:fVariable.notes.value};
  const variableSpending=selectedVariableId?b.variableSpending.map(x=>x.id===selectedVariableId?item:x):[...b.variableSpending,item];
  const updated={...u,budget:{...b,variableSpending}};
  saveUser(updated);render();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
