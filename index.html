@@ -1162,6 +1162,12 @@ cursor:pointer;
   grid-template-columns:1fr;
 }
 
+
+/* Apply month button */
+#applyBudgetMonth{
+  min-height:48px;
+}
+
 </style>
 </head>
 <body>
@@ -1179,7 +1185,7 @@ cursor:pointer;
       <button class="period-nav" id="nextBudgetMonth" type="button">›</button>
       <div class="period-actions single">
         <label class="period-picker-label" for="budgetMonthPicker">Change Budget Month</label>
-        <input id="budgetMonthPicker" type="month"><div class="month-data-note">Each month can have its own income, debt, savings, and expense amounts.</div>
+        <input id="budgetMonthPicker" type="month"><button class="btn primary" id="applyBudgetMonth" type="button" style="margin-top:10px;width:100%">Apply Budget Month</button><div class="month-data-note">Each month can have its own income, debt, savings, and expense amounts.</div>
       </div>
     </section>
 
@@ -1755,6 +1761,7 @@ if(window.budgetMonthPicker){
  budgetMonthPicker.addEventListener('input',e=>setBudgetMonthFromPicker(e.target.value));
  budgetMonthPicker.addEventListener('change',e=>setBudgetMonthFromPicker(e.target.value));
 }
+if(window.applyBudgetMonth)applyBudgetMonth.onclick=applyBudgetMonthFromPicker;
 updateBudgetPeriodLabel();
 ensureMonthBudget();
 setupMoneyFields();
@@ -2042,13 +2049,19 @@ function shiftBudgetMonth(delta){
  ensureMonthBudget();
  render();
 }
+
+function applyBudgetMonthFromPicker(){
+ if(!window.budgetMonthPicker || !budgetMonthPicker.value)return;
+ setBudgetMonthFromPicker(budgetMonthPicker.value);
+}
+
 function setBudgetMonthFromPicker(value){
  if(!value)return;
  const [year,month]=value.split('-').map(Number);
  if(!year||!month)return;
  selectedBudgetDate=new Date(year,month-1,1);
  updateBudgetPeriodLabel();
- ensureMonthBudget();
+ ensureMonthBudget(budgetPeriodKey());
  render();
 }
 
