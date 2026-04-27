@@ -1168,6 +1168,26 @@ cursor:pointer;
   min-height:48px;
 }
 
+
+/* Controlled month/year selector */
+.budget-month-select-grid{
+  display:grid;
+  grid-template-columns:1fr 120px;
+  gap:10px;
+  margin-top:8px;
+}
+.budget-month-select-grid select,
+.budget-month-select-grid input{
+  text-align:center;
+  font-weight:900;
+  color:var(--primary);
+  background:var(--primarySoft);
+  min-height:54px;
+}
+@media(max-width:520px){
+  .budget-month-select-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -1185,7 +1205,15 @@ cursor:pointer;
       <button class="period-nav" id="nextBudgetMonth" type="button">›</button>
       <div class="period-actions single">
         <label class="period-picker-label" for="budgetMonthPicker">Change Budget Month</label>
-        <input id="budgetMonthPicker" type="month"><button class="btn primary" id="applyBudgetMonth" type="button" style="margin-top:10px;width:100%">Apply Budget Month</button><div class="month-data-note">Each month can have its own income, debt, savings, and expense amounts.</div>
+        <div class="budget-month-select-grid">
+          <select id="budgetMonthSelect">
+            <option value="0">January</option><option value="1">February</option><option value="2">March</option><option value="3">April</option>
+            <option value="4">May</option><option value="5">June</option><option value="6">July</option><option value="7">August</option>
+            <option value="8">September</option><option value="9">October</option><option value="10">November</option><option value="11">December</option>
+          </select>
+          <input id="budgetYearInput" type="number" inputmode="numeric" min="1900" max="2200" placeholder="2026">
+        </div>
+        <button class="btn primary" id="applyBudgetMonth" type="button" style="margin-top:10px;width:100%">Apply Budget Month</button><div class="month-data-note">Each month can have its own income, debt, savings, and expense amounts.</div>
       </div>
     </section>
 
@@ -1757,10 +1785,6 @@ function openEmergencyEditor(){
  renderEmergencyFund(e); show('emergencyFundView'); 
 if(window.prevBudgetMonth)prevBudgetMonth.addEventListener('click',()=>shiftBudgetMonth(-1));
 if(window.nextBudgetMonth)nextBudgetMonth.addEventListener('click',()=>shiftBudgetMonth(1));
-if(window.budgetMonthPicker){
- budgetMonthPicker.addEventListener('input',e=>setBudgetMonthFromPicker(e.target.value));
- budgetMonthPicker.addEventListener('change',e=>setBudgetMonthFromPicker(e.target.value));
-}
 if(window.applyBudgetMonth)applyBudgetMonth.onclick=applyBudgetMonthFromPicker;
 updateBudgetPeriodLabel();
 ensureMonthBudget();
@@ -2022,6 +2046,7 @@ function renderVariableList(items){
 
 
 
+
 let selectedBudgetDate=(()=>{
  const saved=localStorage.getItem('selectedBudgetMonth');
  if(saved){
@@ -2041,7 +2066,8 @@ function updateBudgetPeriodLabel(){
  const key=budgetPeriodKey(selectedBudgetDate);
  localStorage.setItem('selectedBudgetMonth',key);
  if(window.budgetPeriodLabel)budgetPeriodLabel.textContent=formatBudgetPeriod(selectedBudgetDate);
- if(window.budgetMonthPicker)budgetMonthPicker.value=key;
+ if(window.budgetMonthSelect)budgetMonthSelect.value=String(selectedBudgetDate.getMonth());
+ if(window.budgetYearInput)budgetYearInput.value=String(selectedBudgetDate.getFullYear());
 }
 function shiftBudgetMonth(delta){
  selectedBudgetDate=new Date(selectedBudgetDate.getFullYear(),selectedBudgetDate.getMonth()+delta,1);
@@ -2049,57 +2075,28 @@ function shiftBudgetMonth(delta){
  ensureMonthBudget();
  render();
 }
-
 function applyBudgetMonthFromPicker(){
- if(!window.budgetMonthPicker || !budgetMonthPicker.value)return;
- setBudgetMonthFromPicker(budgetMonthPicker.value);
+ const month=window.budgetMonthSelect?Number(budgetMonthSelect.value):selectedBudgetDate.getMonth();
+ const year=window.budgetYearInput?Number(budgetYearInput.value):selectedBudgetDate.getFullYear();
+ if(!year || year<1900 || year>2200)return;
+ selectedBudgetDate=new Date(year,month,1);
+ updateBudgetPeriodLabel();
+ ensureMonthBudget();
+ render();
 }
-
 function setBudgetMonthFromPicker(value){
  if(!value)return;
  const [year,month]=value.split('-').map(Number);
  if(!year||!month)return;
  selectedBudgetDate=new Date(year,month-1,1);
  updateBudgetPeriodLabel();
- ensureMonthBudget(budgetPeriodKey());
+ ensureMonthBudget();
  render();
 }
-
-function cloneBudgetTemplate(b){
- return JSON.parse(JSON.stringify({
-  incomeSources:b.incomeSources||[],
-  fixedBills:b.fixedBills||[],
-  sinkingFunds:b.sinkingFunds||[],
-  variableSpending:b.variableSpending||[],
-  setup:b.setup||{},
-  emergencyFund:b.emergencyFund||{}
- }));
-}
-function getBudgetMonths(){
- const u=getUser();
- return u.budgetMonths||{};
-}
-function getMonthBudget(key=budgetPeriodKey()){
- const u=getUser(), months=getBudgetMonths();
- if(months[key]?.budget)return months[key].budget;
- return cloneBudgetTemplate(budget(u));
-}
-function saveMonthBudget(monthBudget,key=budgetPeriodKey()){
- const u=getUser(), months=getBudgetMonths(), existing=months[key]||{};
- saveUser({...u,budgetMonths:{...months,[key]:{...existing,budget:monthBudget}}});
-}
-function ensureMonthBudget(key=budgetPeriodKey()){
- const u=getUser(), months=getBudgetMonths();
- if(!months[key]?.budget){
-  saveUser({...u,budgetMonths:{...months,[key]:{...(months[key]||{}),budget:cloneBudgetTemplate(budget(u))}}});
- }
-}
-
 function calculatedVariableAverage(item){
- // Future-ready: once monthly history is stored by budgetPeriodKey(), this will average saved months.
- // For now, it uses the selected month's spent amount as the baseline.
  return Number(item.spent||0);
 }
+
 
 
 
