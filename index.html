@@ -1169,10 +1169,37 @@ cursor:pointer;
 }
 
 
-/* Reliable Budget Month selector */
-.budget-month-select-grid{display:grid;grid-template-columns:1fr 120px;gap:10px;margin-top:8px}
-.budget-month-select-grid select,.budget-month-select-grid input{min-height:54px;text-align:center;font-weight:900;color:var(--primary);background:var(--primarySoft)}
-@media(max-width:520px){.budget-month-select-grid{grid-template-columns:1fr}}
+/* Reliable Budget Month picker while keeping the same card design */
+.budget-month-custom-picker{
+  display:grid;
+  grid-template-columns:1fr 120px;
+  gap:10px;
+  background:var(--primarySoft);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:10px;
+  min-height:74px;
+  align-items:center;
+}
+.budget-month-custom-picker select,
+.budget-month-custom-picker input{
+  border:0;
+  background:transparent;
+  color:var(--primary);
+  text-align:center;
+  font-weight:900;
+  font-size:20px;
+  min-height:48px;
+  padding:8px;
+}
+.budget-month-custom-picker select:focus,
+.budget-month-custom-picker input:focus{
+  background:#fff;
+  border:1px solid #b8d3ff;
+}
+@media(max-width:520px){
+  .budget-month-custom-picker{grid-template-columns:1fr}
+}
 
 </style>
 </head>
@@ -1191,16 +1218,25 @@ cursor:pointer;
       <button class="period-nav" id="nextBudgetMonth" type="button">›</button>
       <div class="period-actions single">
         <label class="period-picker-label">Change Budget Month</label>
-        <div class="budget-month-select-grid">
-          <select id="budgetMonthSelect">
-            <option value="0">January</option><option value="1">February</option><option value="2">March</option><option value="3">April</option>
-            <option value="4">May</option><option value="5">June</option><option value="6">July</option><option value="7">August</option>
-            <option value="8">September</option><option value="9">October</option><option value="10">November</option><option value="11">December</option>
+        <div class="budget-month-custom-picker">
+          <select id="budgetMonthSelect" aria-label="Budget month">
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7">August</option>
+            <option value="8">September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
           </select>
-          <input id="budgetYearInput" type="number" inputmode="numeric" min="1900" max="2200" placeholder="2026">
+          <input id="budgetYearInput" aria-label="Budget year" type="number" inputmode="numeric" min="1900" max="2200" placeholder="2026">
         </div>
         <button class="btn primary" id="applyBudgetMonth" type="button" style="margin-top:10px;width:100%">Apply Budget Month</button>
-        <div class="month-data-note">The selected month controls the income, debt, savings, and expense totals below.</div>
+        <div class="month-data-note">Each month can have its own income, debt, savings, and expense amounts.</div>
       </div>
     </section>
 
@@ -1772,11 +1808,10 @@ function openEmergencyEditor(){
  renderEmergencyFund(e); show('emergencyFundView'); 
 if(window.prevBudgetMonth)prevBudgetMonth.addEventListener('click',()=>shiftBudgetMonth(-1));
 if(window.nextBudgetMonth)nextBudgetMonth.addEventListener('click',()=>shiftBudgetMonth(1));
-if(window.applyBudgetMonth)applyBudgetMonth.onclick=applyBudgetMonthFromPicker;
-updateBudgetPeriodLabel();
-ensureMonthBudget();
-if(window.prevBudgetMonth)prevBudgetMonth.onclick=()=>shiftBudgetMonth(-1);
-if(window.nextBudgetMonth)nextBudgetMonth.onclick=()=>shiftBudgetMonth(1);
+if(window.budgetMonthPicker){
+ budgetMonthPicker.addEventListener('input',e=>setBudgetMonthFromPicker(e.target.value));
+ budgetMonthPicker.addEventListener('change',e=>setBudgetMonthFromPicker(e.target.value));
+}
 if(window.applyBudgetMonth)applyBudgetMonth.onclick=applyBudgetMonthFromPicker;
 updateBudgetPeriodLabel();
 ensureMonthBudget();
@@ -2038,77 +2073,140 @@ function renderVariableList(items){
 
 
 
-
 let selectedBudgetDate=(()=>{
-  const saved=localStorage.getItem('selectedBudgetMonth');
-  if(saved){
-    const [y,m]=saved.split('-').map(Number);
-    if(y&&m)return new Date(y,m-1,1);
-  }
-  return new Date(new Date().getFullYear(),new Date().getMonth(),1);
+ const saved=localStorage.getItem('selectedBudgetMonth');
+ if(saved){
+  const [y,m]=saved.split('-').map(Number);
+  if(y&&m)return new Date(y,m-1,1);
+ }
+ return new Date(new Date().getFullYear(),new Date().getMonth(),1);
 })();
-function budgetPeriodKey(date=selectedBudgetDate){return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')}
-function formatBudgetPeriod(date=selectedBudgetDate){return date.toLocaleDateString('en-US',{month:'long',year:'numeric'})}
+
+function budgetPeriodKey(date=selectedBudgetDate){
+ return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0');
+}
+function formatBudgetPeriod(date=selectedBudgetDate){
+ return date.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+}
 function updateBudgetPeriodLabel(){
-  const key=budgetPeriodKey(selectedBudgetDate);
-  localStorage.setItem('selectedBudgetMonth',key);
-  if(window.budgetPeriodLabel)budgetPeriodLabel.textContent=formatBudgetPeriod(selectedBudgetDate);
-  if(window.budgetMonthSelect)budgetMonthSelect.value=String(selectedBudgetDate.getMonth());
-  if(window.budgetYearInput)budgetYearInput.value=String(selectedBudgetDate.getFullYear());
-}
-function cloneBudgetTemplate(b){
-  return JSON.parse(JSON.stringify({incomeSources:b.incomeSources||[],fixedBills:b.fixedBills||[],sinkingFunds:b.sinkingFunds||[],variableSpending:b.variableSpending||[],setup:b.setup||{},emergencyFund:b.emergencyFund||{}}));
-}
-function getMonthBudget(key=budgetPeriodKey()){
-  const u=getUser(),months=u.budgetMonths||{};
-  return months[key]?.budget || cloneBudgetTemplate(budget(u));
-}
-function saveMonthBudget(monthBudget,key=budgetPeriodKey()){
-  const u=getUser(),months=u.budgetMonths||{},existing=months[key]||{};
-  saveUser({...u,budgetMonths:{...months,[key]:{...existing,budget:monthBudget}}});
-}
-function ensureMonthBudget(key=budgetPeriodKey()){
-  const u=getUser(),months=u.budgetMonths||{};
-  if(!months[key]?.budget)saveUser({...u,budgetMonths:{...months,[key]:{...(months[key]||{}),budget:cloneBudgetTemplate(budget(u))}}});
+ const key=budgetPeriodKey(selectedBudgetDate);
+ localStorage.setItem('selectedBudgetMonth',key);
+ if(window.budgetPeriodLabel)budgetPeriodLabel.textContent=formatBudgetPeriod(selectedBudgetDate);
+ if(window.budgetMonthPicker)budgetMonthPicker.value=key;
 }
 function shiftBudgetMonth(delta){
-  selectedBudgetDate=new Date(selectedBudgetDate.getFullYear(),selectedBudgetDate.getMonth()+delta,1);
-  updateBudgetPeriodLabel();ensureMonthBudget();render();
+ selectedBudgetDate=new Date(selectedBudgetDate.getFullYear(),selectedBudgetDate.getMonth()+delta,1);
+ updateBudgetPeriodLabel();
+ ensureMonthBudget();
+ render();
 }
+
 function applyBudgetMonthFromPicker(){
-  const month=window.budgetMonthSelect?Number(budgetMonthSelect.value):selectedBudgetDate.getMonth();
-  const year=window.budgetYearInput?Number(budgetYearInput.value):selectedBudgetDate.getFullYear();
-  if(!year||year<1900||year>2200)return;
-  selectedBudgetDate=new Date(year,month,1);
-  updateBudgetPeriodLabel();ensureMonthBudget();render();
+ if(!window.budgetMonthPicker || !budgetMonthPicker.value)return;
+ setBudgetMonthFromPicker(budgetMonthPicker.value);
 }
-function calculatedVariableAverage(item){return Number(item.spent||0)}
 
+function setBudgetMonthFromPicker(value){
+ if(!value)return;
+ const [year,month]=value.split('-').map(Number);
+ if(!year||!month)return;
+ selectedBudgetDate=new Date(year,month-1,1);
+ updateBudgetPeriodLabel();
+ ensureMonthBudget(budgetPeriodKey());
+ render();
+}
 
+function cloneBudgetTemplate(b){
+ return JSON.parse(JSON.stringify({
+  incomeSources:b.incomeSources||[],
+  fixedBills:b.fixedBills||[],
+  sinkingFunds:b.sinkingFunds||[],
+  variableSpending:b.variableSpending||[],
+  setup:b.setup||{},
+  emergencyFund:b.emergencyFund||{}
+ }));
+}
+function getBudgetMonths(){
+ const u=getUser();
+ return u.budgetMonths||{};
+}
+function getMonthBudget(key=budgetPeriodKey()){
+ const u=getUser(), months=getBudgetMonths();
+ if(months[key]?.budget)return months[key].budget;
+ return cloneBudgetTemplate(budget(u));
+}
+function saveMonthBudget(monthBudget,key=budgetPeriodKey()){
+ const u=getUser(), months=getBudgetMonths(), existing=months[key]||{};
+ saveUser({...u,budgetMonths:{...months,[key]:{...existing,budget:monthBudget}}});
+}
+function ensureMonthBudget(key=budgetPeriodKey()){
+ const u=getUser(), months=getBudgetMonths();
+ if(!months[key]?.budget){
+  saveUser({...u,budgetMonths:{...months,[key]:{...(months[key]||{}),budget:cloneBudgetTemplate(budget(u))}}});
+ }
+}
+
+function calculatedVariableAverage(item){
+ // Future-ready: once monthly history is stored by budgetPeriodKey(), this will average saved months.
+ // For now, it uses the selected month's spent amount as the baseline.
+ return Number(item.spent||0);
+}
 
 
 
 function render(){
- const b=getMonthBudget();
- const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||i.amount||0),0);
- const bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0);
- const left=inc-bills, load=inc?Math.round(bills/inc*100):0;
- summaryIncome.textContent=money(inc,false);summaryBills.textContent=money(bills,false);summaryLeft.textContent=money(left,false);summaryLoad.textContent=load+'%';
- renderZeroBudget(b,inc);renderNextIncome(b.incomeSources);renderBudgetSetup(b.setup||{});renderEmergencyFund(b.emergencyFund||{});renderSmartWarnings(b,inc,bills,left);
+ const u=getUser(),b=getMonthBudget();
+ const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||i.amount||0),0),
+       bills=b.fixedBills.reduce((s,i)=>s+Number(i.monthlyAmount||0),0),
+       left=inc-bills,
+       load=inc?Math.round(bills/inc*100):0;
+
+ summaryIncome.textContent=money(inc,false);
+ summaryBills.textContent=money(bills,false);
+ summaryLeft.textContent=money(left,false);
+ summaryLoad.textContent=load+'%';
+
+ renderZeroBudget(b,inc);
+ renderNextIncome(b.incomeSources);
+ renderBudgetSetup(b.setup||{});
+ renderEmergencyFund(b.emergencyFund||{});
+ renderSmartWarnings(b,inc,bills,left);
 
  incomeList.innerHTML=b.incomeSources.map(i=>`<a href="#" class="budget-row compact-row" data-income="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type} · ${i.frequency}</span></div><div class="row-amount">${money(i.monthlyAmount||i.amount||0)}</div><div class="chev">›</div></a>`).join('')+`<a href="#" class="budget-row compact-row add-row" id="addIncomeRow"><div>Add Income</div><div class="chev">›</div></a>`;
- billList.innerHTML=b.fixedBills.map(i=>{const paid=Number(i.paid||0),planned=Number(i.monthlyAmount||0),pct=progressPct(paid,planned),st=billStatus(i);return `<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · ${i.frequency}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${Math.min(pct,100)}%"></div></div><div class="progress-text">${money(paid)} of ${money(planned)} paid</div><div class="priority-pill">${i.priority||'Essential'}</div></div><div class="row-amount">${money(planned)}</div><div class="chev">›</div></a>`}).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Debt</div><div class="chev">›</div></a>`;
+
+ billList.innerHTML=b.fixedBills.map(i=>{
+  const paid=Number(i.paid||0),planned=Number(i.monthlyAmount||0),pct=progressPct(paid,planned),st=billStatus(i);
+  return `<a href="#" class="budget-row compact-row" data-bill="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category} · ${i.frequency}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${Math.min(pct,100)}%"></div></div><div class="progress-text">${money(paid)} of ${money(planned)} paid</div><div class="priority-pill">${i.priority||'Essential'}</div></div><div class="row-amount">${money(planned)}</div><div class="chev">›</div></a>`;
+ }).join('')+`<a href="#" class="budget-row compact-row add-row" id="addBillRow"><div>Add Debt</div><div class="chev">›</div></a>`;
 
  if(window.sinkingList){
-  const goal=b.sinkingFunds.reduce((s,i)=>s+Number(i.goal||0),0),saved=b.sinkingFunds.reduce((s,i)=>s+Number(i.saved||0),0),remaining=goal-saved;
-  sinkingGoalTotal.textContent=money(goal);sinkingSavedTotal.textContent=money(saved);sinkingRemainingTotal.textContent=money(remaining);sinkingRemainingTotal.className=remaining<0?'sinking-over':'sinking-ok';
-  sinkingList.innerHTML=b.sinkingFunds.map(i=>{const st=sinkingStatus(i),pct=progressPct(i.saved,i.goal);return `<a href="#" class="budget-row compact-row" data-sinking="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${Math.min(pct,100)}%"></div></div><div class="progress-text">${money(i.saved||0)} of ${money(i.goal||0)} saved</div><div class="category-pill">${i.category}</div></div><div class="row-amount">${money(i.monthly||0)}</div><div class="chev">›</div></a>`}).join('')+`<a href="#" class="budget-row compact-row add-row" id="addSinkingRow"><div>Add Planned Savings</div><div class="chev">›</div></a>`;
+  const goal=b.sinkingFunds.reduce((s,i)=>s+Number(i.goal||0),0);
+  const saved=b.sinkingFunds.reduce((s,i)=>s+Number(i.saved||0),0);
+  const remaining=goal-saved;
+  sinkingGoalTotal.textContent=money(goal);
+  sinkingSavedTotal.textContent=money(saved);
+  sinkingRemainingTotal.textContent=money(remaining);
+  sinkingRemainingTotal.className=remaining<0?'sinking-over':'sinking-ok';
+  sinkingList.innerHTML=b.sinkingFunds.map(i=>{
+   const st=sinkingStatus(i),pct=progressPct(i.saved,i.goal);
+   return `<a href="#" class="budget-row compact-row" data-sinking="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.category}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${Math.min(pct,100)}%"></div></div><div class="progress-text">${money(i.saved||0)} of ${money(i.goal||0)} saved</div><div class="category-pill">${i.category}</div></div><div class="row-amount">${money(i.monthly||0)}</div><div class="chev">›</div></a>`;
+  }).join('')+`<a href="#" class="budget-row compact-row add-row" id="addSinkingRow"><div>Add Planned Savings</div><div class="chev">›</div></a>`;
  }
+
  if(window.variableList){
-  const planned=b.variableSpending.reduce((s,i)=>s+Number(i.planned||0),0),spent=b.variableSpending.reduce((s,i)=>s+Number(i.spent||0),0),rem=planned-spent;
-  variablePlannedTotal.textContent=money(planned);variableSpentTotal.textContent=money(spent);variableRemainingTotal.textContent=money(rem);variableRemainingTotal.className=rem<0?'variable-over':'variable-ok';
-  variableList.innerHTML=b.variableSpending.map(i=>{const spent=Number(i.spent||0),planned=Number(i.planned||0),left=planned-spent,st=variableStatus(i);return `<a href="#" class="budget-row compact-row" data-variable="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${Math.min(progressPct(spent,planned),100)}%"></div></div><div class="progress-text">${money(spent)} spent • ${money(left)} available</div><div class="category-pill">${i.type}</div></div><div class="row-amount">${money(planned)}</div><div class="chev">›</div></a>`}).join('')+`<a href="#" class="budget-row compact-row add-row" id="addVariableRow"><div>Add Monthly Expense</div><div class="chev">›</div></a>`;
+  const planned=b.variableSpending.reduce((s,i)=>s+Number(i.planned||0),0);
+  const spent=b.variableSpending.reduce((s,i)=>s+Number(i.spent||0),0);
+  const rem=planned-spent;
+  variablePlannedTotal.textContent=money(planned);
+  variableSpentTotal.textContent=money(spent);
+  variableRemainingTotal.textContent=money(rem);
+  variableRemainingTotal.className=rem<0?'variable-over':'variable-ok';
+  variableList.innerHTML=b.variableSpending.map(i=>{
+   const spent=Number(i.spent||0),planned=Number(i.planned||0),left=planned-spent,st=variableStatus(i);
+   return `<a href="#" class="budget-row compact-row" data-variable="${i.id}"><div class="row-left"><strong>${i.name}</strong><span>${i.type}</span><div class="status-line ${st.cls}">${st.text}</div><div class="progress"><div class="progress-fill" style="width:${Math.min(progressPct(spent,planned),100)}%"></div></div><div class="progress-text">${money(spent)} spent • ${money(left)} available</div><div class="category-pill">${i.type}</div></div><div class="row-amount">${money(planned)}</div><div class="chev">›</div></a>`;
+  }).join('')+`<a href="#" class="budget-row compact-row add-row" id="addVariableRow"><div>Add Monthly Expense</div><div class="chev">›</div></a>`;
  }
+
  document.querySelectorAll('[data-income]').forEach(r=>r.onclick=e=>{e.preventDefault();openIncomeDetail(r.dataset.income)});
  document.querySelectorAll('[data-bill]').forEach(r=>r.onclick=e=>{e.preventDefault();openBillDetail(r.dataset.bill)});
  document.querySelectorAll('[data-sinking]').forEach(r=>r.onclick=e=>{e.preventDefault();openSinkingDetail(r.dataset.sinking)});
@@ -2118,7 +2216,6 @@ function render(){
  if(window.addSinkingRow)addSinkingRow.onclick=e=>{e.preventDefault();openSinkingEditor(null)};
  if(window.addVariableRow)addVariableRow.onclick=e=>{e.preventDefault();openVariableEditor(null)};
 }
-
 
 function getIncome(i){return getMonthBudget().incomeSources.find(x=>x.id===i)}
 function getBill(i){return getMonthBudget().fixedBills.find(x=>x.id===i)}
@@ -2359,5 +2456,78 @@ setupSectionInfo();
 setupMainSectionCollapse();
 render();
 </script>
+
+<script>
+(function(){
+  function getSavedBudgetDate(){
+    const saved = localStorage.getItem('selectedBudgetMonth');
+    if(saved && /^\d{4}-\d{2}$/.test(saved)){
+      const parts = saved.split('-').map(Number);
+      return new Date(parts[0], parts[1]-1, 1);
+    }
+    return new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  }
+
+  let activeBudgetDate = getSavedBudgetDate();
+
+  function budgetKey(date){
+    return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0');
+  }
+
+  function budgetLabel(date){
+    return date.toLocaleDateString('en-US', { month:'long', year:'numeric' });
+  }
+
+  function syncBudgetMonthUI(){
+    const label = document.getElementById('budgetPeriodLabel');
+    const month = document.getElementById('budgetMonthSelect');
+    const year = document.getElementById('budgetYearInput');
+
+    if(label) label.textContent = budgetLabel(activeBudgetDate);
+    if(month) month.value = String(activeBudgetDate.getMonth());
+    if(year) year.value = String(activeBudgetDate.getFullYear());
+
+    localStorage.setItem('selectedBudgetMonth', budgetKey(activeBudgetDate));
+  }
+
+  function applyBudgetMonth(){
+    const month = document.getElementById('budgetMonthSelect');
+    const year = document.getElementById('budgetYearInput');
+    if(!month || !year) return;
+
+    const y = Number(year.value);
+    const m = Number(month.value);
+    if(!y || y < 1900 || y > 2200) return;
+
+    activeBudgetDate = new Date(y, m, 1);
+    syncBudgetMonthUI();
+
+    // Keep current render behavior for now. Next step will make summary tiles read from selected month.
+    if(typeof render === 'function') render();
+  }
+
+  function shiftBudgetMonth(delta){
+    activeBudgetDate = new Date(activeBudgetDate.getFullYear(), activeBudgetDate.getMonth()+delta, 1);
+    syncBudgetMonthUI();
+    if(typeof render === 'function') render();
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    syncBudgetMonthUI();
+
+    const apply = document.getElementById('applyBudgetMonth');
+    const prev = document.getElementById('prevBudgetMonth');
+    const next = document.getElementById('nextBudgetMonth');
+
+    if(apply) apply.onclick = applyBudgetMonth;
+    if(prev) prev.onclick = function(){ shiftBudgetMonth(-1); };
+    if(next) next.onclick = function(){ shiftBudgetMonth(1); };
+  });
+
+  // Expose selected month for the next summary-tile step.
+  window.getSelectedBudgetMonthKey = function(){ return budgetKey(activeBudgetDate); };
+})();
+</script>
+
 </body>
 </html>
