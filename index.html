@@ -1042,6 +1042,23 @@ cursor:pointer;
   font-weight:900 !important;
 }
 
+
+/* Debt type driven advanced details */
+.debt-type-note{
+  background:var(--primarySoft);
+  color:var(--primary);
+  border:1px solid #cfe0ff;
+  border-radius:16px;
+  padding:12px 14px;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.35;
+  margin-bottom:14px;
+}
+.debt-field-hidden{
+  display:none !important;
+}
+
 </style>
 </head>
 <body>
@@ -1192,7 +1209,7 @@ cursor:pointer;
   <section class="section income-edit-card">
     <div class="section-head"><div><h2 class="section-title">Emergency Fund</h2><div class="section-sub">Build 3–6 months of essential expenses for true emergencies.</div></div></div>
     <div class="section-body">
-      <form class="form">
+      <div class="debt-type-note" id="advancedDebtTypeNote">Advanced fields adjust based on the selected Debt Type.</div><form class="form">
         <div class="field"><label>Monthly Essential Expenses</label><input id="emergencyEssential" type="text" inputmode="decimal" placeholder="$0.00"></div>
         <div class="field"><label>Current Emergency Savings</label><input id="emergencyCurrent" type="text" inputmode="decimal" placeholder="$0.00"></div>
         <div class="field"><label>Target Goal</label><select id="emergencyGoalMonths"><option value="3">3 Months</option><option value="6">6 Months</option></select></div>
@@ -1379,18 +1396,25 @@ cursor:pointer;
       </div>
       <div class="section-body">
         <form class="form">
-          <div class="field"><label>APR %</label><input id="billApr" type="number" inputmode="decimal" step="0.01" placeholder="6.25"></div>
-          <div class="field"><label>Monthly Budget</label><input id="billMinimumPayment" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
-          <div class="field"><label>Extra Principal Payment</label><input id="billAdditionalPrincipal" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
-          <div class="field"><label>Total Balance Owed</label><input id="billBalanceOwed" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
-          <div class="field"><label>Estimated Payoff Date</label><input id="billPayoffDate" type="date"></div>
-          <div class="field"><label>Lender / Account</label><input id="billLender" type="text" placeholder="Chase Mortgage"></div>
-          <div class="field"><label>Interest Type</label><select id="billInterestType"><option>Fixed</option><option>Variable</option></select></div>
-          <div class="field"><label>Original Loan Amount</label><input id="billOriginalLoanAmount" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
-          <div class="field"><label>Escrow Balance</label><input id="billEscrowBalance" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
-          <div class="field"><label>Origination Date</label><input id="billOriginationDate" type="date"></div>
-          <div class="field"><label>Loan Term</label><input id="billLoanTerm" type="text" placeholder="180 months"></div>
-          <div class="field full"><label>Property Address / Account Note</label><input id="billPropertyAddress" type="text" placeholder="12752 Fairfax St"></div>
+          <div class="field" data-debt-field="apr"><label>APR %</label><input id="billApr" type="number" inputmode="decimal" step="0.01" placeholder="6.25"></div>
+          <div class="field" data-debt-field="minimumPayment"><label>Monthly Budget</label><input id="billMinimumPayment" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
+          <div class="field" data-debt-field="additionalPrincipal"><label>Extra Principal Payment</label><input id="billAdditionalPrincipal" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
+          <div class="field" data-debt-field="balanceOwed"><label>Total Balance Owed</label><input id="billBalanceOwed" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
+          <div class="field" data-debt-field="payoffDate"><label>Estimated Payoff Date</label><input id="billPayoffDate" type="date"></div>
+          <div class="field" data-debt-field="lender"><label>Lender / Account</label><input id="billLender" type="text" placeholder="Chase Mortgage"></div>
+          <div class="field" data-debt-field="interestType"><label>Interest Type</label><select id="billInterestType"><option>Fixed</option><option>Variable</option></select></div>
+          <div class="field" data-debt-field="originalLoanAmount"><label>Original Loan Amount</label><input id="billOriginalLoanAmount" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
+          <div class="field" data-debt-field="escrowBalance"><label>Escrow Balance</label><input id="billEscrowBalance" type="text" inputmode="decimal" step="0.01" placeholder="$0.00"></div>
+          <div class="field" data-debt-field="originationDate"><label>Origination Date</label><input id="billOriginationDate" type="date"></div>
+          <div class="field" data-debt-field="loanTerm"><label>Loan Term</label><input id="billLoanTerm" type="text" placeholder="180 months"></div>
+          <div class="field full" data-debt-field="propertyAddress"><label>Property Address / Account Note</label><input id="billPropertyAddress" type="text" placeholder="12752 Fairfax St"></div>
+
+          <div class="field" data-debt-field="creditLimit"><label>Credit Limit</label><input id="billCreditLimit" type="text" inputmode="decimal" placeholder="$0.00"></div>
+          <div class="field" data-debt-field="availableCredit"><label>Available Credit</label><input id="billAvailableCredit" type="text" inputmode="decimal" placeholder="$0.00"></div>
+          <div class="field" data-debt-field="promoAprEndDate"><label>Promo APR End Date</label><input id="billPromoAprEndDate" type="date"></div>
+          <div class="field" data-debt-field="vehicleValue"><label>Vehicle Value</label><input id="billVehicleValue" type="text" inputmode="decimal" placeholder="$0.00"></div>
+          <div class="field" data-debt-field="studentLoanServicer"><label>Loan Servicer</label><input id="billStudentLoanServicer" type="text" placeholder="Nelnet, Mohela, etc."></div>
+
         </form>
         <div class="actions">
           <button class="btn primary" id="saveAdvancedLoanDetails" type="button">Save Loan Details</button>
@@ -1452,7 +1476,7 @@ const KEY='budgetAppUser';
 const def={profile:{},preferences:{},security:{},budget:{incomeSources:[],fixedBills:[],sinkingFunds:[],variableSpending:[],setup:{},emergencyFund:{}}};
 let selectedIncomeId=null,selectedBillId=null,selectedSinkingId=null,selectedVariableId=null;
 const fIncome={name:incomeName,amount:incomeAmount,received:incomeReceived,type:incomeType,frequency:incomeFrequency};
-const fBill={name:billName,amount:billAmount,paid:billPaid,dueDay:billDueDay,category:billCategory,priority:billPriority,frequency:billFrequency,apr:billApr,minimumPayment:billMinimumPayment,balanceOwed:billBalanceOwed,payoffDate:billPayoffDate,lender:billLender,interestType:billInterestType,additionalPrincipal:billAdditionalPrincipal,originalLoanAmount:billOriginalLoanAmount,escrowBalance:billEscrowBalance,originationDate:billOriginationDate,loanTerm:billLoanTerm,propertyAddress:billPropertyAddress};
+const fBill={name:billName,amount:billAmount,paid:billPaid,dueDay:billDueDay,category:billCategory,priority:billPriority,frequency:billFrequency,apr:billApr,minimumPayment:billMinimumPayment,balanceOwed:billBalanceOwed,payoffDate:billPayoffDate,lender:billLender,interestType:billInterestType,additionalPrincipal:billAdditionalPrincipal,originalLoanAmount:billOriginalLoanAmount,escrowBalance:billEscrowBalance,originationDate:billOriginationDate,loanTerm:billLoanTerm,propertyAddress:billPropertyAddress,creditLimit:billCreditLimit,availableCredit:billAvailableCredit,promoAprEndDate:billPromoAprEndDate,vehicleValue:billVehicleValue,studentLoanServicer:billStudentLoanServicer};
 const fSinking={name:sinkingName,goal:sinkingGoal,saved:sinkingSaved,monthly:sinkingMonthly,targetDate:sinkingTargetDate,category:sinkingCategory};
 const fVariable={name:variableName,planned:variablePlanned,spent:variableSpent,type:variableType,lastMonth:variableLastMonth,average:variableAverage,tag:variableTag,notes:variableNotes};
 
@@ -1474,6 +1498,31 @@ function setMoneyFieldValue(el,value){
  el.value=num?num.toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}):'';
 }
 
+
+
+const debtTypeSchemas={
+ 'Mortgage':['apr','minimumPayment','additionalPrincipal','balanceOwed','payoffDate','lender','interestType','originalLoanAmount','escrowBalance','originationDate','loanTerm','propertyAddress'],
+ 'Credit Card':['apr','minimumPayment','additionalPrincipal','balanceOwed','lender','creditLimit','availableCredit','promoAprEndDate'],
+ 'Auto Loan':['apr','minimumPayment','additionalPrincipal','balanceOwed','payoffDate','lender','interestType','originalLoanAmount','originationDate','loanTerm','vehicleValue'],
+ 'Personal Loan':['apr','minimumPayment','additionalPrincipal','balanceOwed','payoffDate','lender','interestType','originalLoanAmount','originationDate','loanTerm'],
+ 'Student Loan':['apr','minimumPayment','additionalPrincipal','balanceOwed','payoffDate','interestType','originalLoanAmount','originationDate','loanTerm','studentLoanServicer'],
+ 'HELOC':['apr','minimumPayment','additionalPrincipal','balanceOwed','lender','interestType','creditLimit','availableCredit','propertyAddress'],
+ 'Medical Debt':['minimumPayment','additionalPrincipal','balanceOwed','payoffDate','lender'],
+ 'IRS / Tax Debt':['minimumPayment','additionalPrincipal','balanceOwed','payoffDate','lender'],
+ 'Buy Now Pay Later':['minimumPayment','additionalPrincipal','balanceOwed','payoffDate','lender'],
+ 'Other':['apr','minimumPayment','additionalPrincipal','balanceOwed','payoffDate','lender','interestType']
+};
+function renderAdvancedDebtFields(){
+ if(!window.billDebtType)return;
+ const type=billDebtType.value||'Other';
+ const visible=debtTypeSchemas[type]||debtTypeSchemas.Other;
+ document.querySelectorAll('[data-debt-field]').forEach(field=>{
+   field.classList.toggle('debt-field-hidden',!visible.includes(field.dataset.debtField));
+ });
+ if(window.advancedDebtTypeNote){
+   advancedDebtTypeNote.textContent='Showing advanced fields for '+type+'. Change Debt Type to switch criteria.';
+ }
+}
 
 function setupSectionInfo(){
  document.querySelectorAll('[data-info]').forEach(btn=>{
@@ -1506,7 +1555,7 @@ function setupMainSectionCollapse(){
 }
 
 function setupMoneyFields(){
- const ids=['incomeAmount','incomeReceived','billAmount','billPaid','sinkingGoal','sinkingSaved','sinkingMonthly','variablePlanned','variableSpent','variableLastMonth','variableAverage','emergencyEssential','emergencyCurrent','emergencyContribution','billMinimumPayment','billAdditionalPrincipal','billBalanceOwed','billOriginalLoanAmount','billEscrowBalance'];
+ const ids=['incomeAmount','incomeReceived','billAmount','billPaid','sinkingGoal','sinkingSaved','sinkingMonthly','variablePlanned','variableSpent','variableLastMonth','variableAverage','emergencyEssential','emergencyCurrent','emergencyContribution','billMinimumPayment','billAdditionalPrincipal','billBalanceOwed','billOriginalLoanAmount','billEscrowBalance','billCreditLimit','billAvailableCredit','billVehicleValue'];
  ids.forEach(id=>{
   const el=window[id];
   if(!el || el.dataset.moneyReady==='1')return;
@@ -2033,12 +2082,12 @@ function loadAdvancedLoanFields(item){
  setMoneyFieldValue(fBill.escrowBalance,item.escrowBalance);
  fBill.originationDate.value=item.originationDate||'';
  fBill.loanTerm.value=item.loanTerm||'';
- fBill.propertyAddress.value=item.propertyAddress||'';
+ fBill.propertyAddress.value=item.propertyAddress||'';setMoneyFieldValue(fBill.creditLimit,item.creditLimit);setMoneyFieldValue(fBill.availableCredit,item.availableCredit);fBill.promoAprEndDate.value=item.promoAprEndDate||'';setMoneyFieldValue(fBill.vehicleValue,item.vehicleValue);fBill.studentLoanServicer.value=item.studentLoanServicer||'';
 }
 function openAdvancedLoanEditor(){
  const item=selectedBillId?getBill(selectedBillId):null;
  loadAdvancedLoanFields(item);
- show('advancedLoanEditView');setupMoneyFields();
+ show('advancedLoanEditView');setupMoneyFields();renderAdvancedDebtFields();
 }
 function saveAdvancedLoanDetailsFn(){
  if(!selectedBillId){
@@ -2059,7 +2108,7 @@ function saveAdvancedLoanDetailsFn(){
   
   
   
-  propertyAddress:fBill.propertyAddress.value
+  propertyAddress:fBill.propertyAddress.value,creditLimit:parseMoneyInput(fBill.creditLimit.value),availableCredit:parseMoneyInput(fBill.availableCredit.value),promoAprEndDate:fBill.promoAprEndDate.value,vehicleValue:parseMoneyInput(fBill.vehicleValue.value),studentLoanServicer:fBill.studentLoanServicer.value
  }:x);
  saveUser({...u,budget:{...b,fixedBills}});
  render();
@@ -2085,6 +2134,7 @@ document.querySelectorAll('[data-collapse]').forEach(btn=>{
  };
 });
 setupMoneyFields();
+if(window.billDebtType)billDebtType.addEventListener('change',renderAdvancedDebtFields);
 setupSectionInfo();
 setupMainSectionCollapse();
 render();
