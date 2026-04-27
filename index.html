@@ -1168,6 +1168,54 @@ cursor:pointer;
   min-height:48px;
 }
 
+
+/* Reliable Budget Month picker while keeping the same card design */
+.budget-month-custom-picker{
+  display:grid;
+  grid-template-columns:1fr 120px;
+  gap:10px;
+  background:var(--primarySoft);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:10px;
+  min-height:74px;
+  align-items:center;
+}
+.budget-month-custom-picker select,
+.budget-month-custom-picker input{
+  border:0;
+  background:transparent;
+  color:var(--primary);
+  text-align:center;
+  font-weight:900;
+  font-size:20px;
+  min-height:48px;
+  padding:8px;
+}
+.budget-month-custom-picker select:focus,
+.budget-month-custom-picker input:focus{
+  background:#fff;
+  border:1px solid #b8d3ff;
+}
+@media(max-width:520px){
+  .budget-month-custom-picker{grid-template-columns:1fr}
+}
+
+
+/* Calendar-style budget month picker */
+.budget-month-display{width:100%;min-height:74px;border:1px solid #c9d8f5;background:var(--primarySoft);color:var(--primary);border-radius:18px;font-size:22px;font-weight:900;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(43,127,255,.08)}
+.month-picker-overlay{display:none;position:fixed;inset:0;z-index:999;background:rgba(16,33,60,.18);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:22px}
+.month-picker-overlay.show{display:flex}
+.month-picker-popover{width:min(520px,92vw);background:rgba(250,252,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:36px;box-shadow:0 25px 70px rgba(16,33,60,.22);padding:26px;position:relative}
+.month-picker-popover:after{content:"";position:absolute;left:50%;bottom:-18px;transform:translateX(-50%) rotate(45deg);width:36px;height:36px;background:rgba(250,252,255,.94);border-right:1px solid rgba(255,255,255,.9);border-bottom:1px solid rgba(255,255,255,.9)}
+.month-picker-wheels{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding:18px 14px 28px;position:relative}
+.month-picker-wheels:before{content:"";position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:58px;border-radius:28px;background:rgba(16,33,60,.09);pointer-events:none}
+.month-picker-wheels select{position:relative;z-index:1;border:0;background:transparent;color:var(--text);font-size:28px;font-weight:500;text-align:center;text-align-last:center;min-height:170px;appearance:auto;-webkit-appearance:menulist}
+.month-picker-actions{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:4px}
+.month-reset-btn{border:0;background:var(--primarySoft);color:var(--text);border-radius:24px;padding:18px 26px;font-size:22px;font-weight:800}
+.month-confirm-btn{width:72px;height:72px;border-radius:50%;border:0;background:var(--primary);color:#bdf7df;font-size:46px;line-height:1;font-weight:500;display:grid;place-items:center}
+@media(max-width:520px){.month-picker-popover{border-radius:32px;padding:22px 18px}.month-picker-wheels{gap:10px}.month-picker-wheels select{font-size:24px}}
+
 </style>
 </head>
 <body>
@@ -1184,10 +1232,31 @@ cursor:pointer;
       </div>
       <button class="period-nav" id="nextBudgetMonth" type="button">›</button>
       <div class="period-actions single">
-        <label class="period-picker-label" for="budgetMonthPicker">Change Budget Month</label>
-        <input id="budgetMonthPicker" type="month"><button class="btn primary" id="applyBudgetMonth" type="button" style="margin-top:10px;width:100%">Apply Budget Month</button><div class="month-data-note">Each month can have its own income, debt, savings, and expense amounts.</div>
+        <label class="period-picker-label">Change Budget Month</label>
+        <button class="budget-month-display" id="openBudgetMonthPicker" type="button">
+          <span id="budgetMonthDisplayText">April 2026</span>
+        </button>
+        <div class="month-data-note">Each month can have its own income, debt, savings, and expense amounts.</div>
       </div>
     </section>
+
+<div class="month-picker-overlay" id="budgetMonthOverlay">
+  <div class="month-picker-popover">
+    <div class="month-picker-wheels">
+      <select id="budgetMonthSelect" aria-label="Budget month">
+        <option value="0">January</option><option value="1">February</option><option value="2">March</option><option value="3">April</option>
+        <option value="4">May</option><option value="5">June</option><option value="6">July</option><option value="7">August</option>
+        <option value="8">September</option><option value="9">October</option><option value="10">November</option><option value="11">December</option>
+      </select>
+      <select id="budgetYearInput" aria-label="Budget year"></select>
+    </div>
+    <div class="month-picker-actions">
+      <button class="month-reset-btn" id="resetBudgetMonth" type="button">Reset</button>
+      <button class="month-confirm-btn" id="applyBudgetMonth" type="button">✓</button>
+    </div>
+  </div>
+</div>
+
 
     <section class="summary">
       <div class="sum"><div class="label">Monthly Income</div><div class="value" id="summaryIncome">$0</div><div class="note">All active income sources</div></div>
@@ -2405,5 +2474,80 @@ setupSectionInfo();
 setupMainSectionCollapse();
 render();
 </script>
+
+
+
+
+<script>
+(function(){
+  function getSavedBudgetDate(){
+    const saved = localStorage.getItem('selectedBudgetMonth');
+    if(saved && /^\d{4}-\d{2}$/.test(saved)){
+      const parts = saved.split('-').map(Number);
+      return new Date(parts[0], parts[1]-1, 1);
+    }
+    return new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  }
+  let activeBudgetDate = getSavedBudgetDate();
+  function budgetKey(date){return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0');}
+  function budgetLabel(date){return date.toLocaleDateString('en-US', { month:'long', year:'numeric' });}
+  function populateYears(){
+    const year = document.getElementById('budgetYearInput');
+    if(!year || year.options.length) return;
+    const current = new Date().getFullYear();
+    for(let y=current-5; y<=current+10; y++){
+      const opt = document.createElement('option');
+      opt.value = String(y);
+      opt.textContent = String(y);
+      year.appendChild(opt);
+    }
+  }
+  function syncBudgetMonthUI(){
+    populateYears();
+    const label = document.getElementById('budgetPeriodLabel');
+    const display = document.getElementById('budgetMonthDisplayText');
+    const month = document.getElementById('budgetMonthSelect');
+    const year = document.getElementById('budgetYearInput');
+    const text = budgetLabel(activeBudgetDate);
+    if(label) label.textContent = text;
+    if(display) display.textContent = text;
+    if(month) month.value = String(activeBudgetDate.getMonth());
+    if(year) year.value = String(activeBudgetDate.getFullYear());
+    localStorage.setItem('selectedBudgetMonth', budgetKey(activeBudgetDate));
+  }
+  function openPicker(){syncBudgetMonthUI(); const overlay=document.getElementById('budgetMonthOverlay'); if(overlay) overlay.classList.add('show');}
+  function closePicker(){const overlay=document.getElementById('budgetMonthOverlay'); if(overlay) overlay.classList.remove('show');}
+  function applyBudgetMonth(){
+    const month = document.getElementById('budgetMonthSelect');
+    const year = document.getElementById('budgetYearInput');
+    if(!month || !year) return;
+    const y = Number(year.value), m = Number(month.value);
+    if(!y || y < 1900 || y > 2200) return;
+    activeBudgetDate = new Date(y, m, 1);
+    syncBudgetMonthUI();
+    closePicker();
+    if(typeof render === 'function') render();
+  }
+  function resetBudgetMonth(){activeBudgetDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1); syncBudgetMonthUI();}
+  function shiftBudgetMonth(delta){activeBudgetDate = new Date(activeBudgetDate.getFullYear(), activeBudgetDate.getMonth()+delta, 1); syncBudgetMonthUI(); if(typeof render === 'function') render();}
+  document.addEventListener('DOMContentLoaded', function(){
+    syncBudgetMonthUI();
+    const open = document.getElementById('openBudgetMonthPicker');
+    const apply = document.getElementById('applyBudgetMonth');
+    const reset = document.getElementById('resetBudgetMonth');
+    const prev = document.getElementById('prevBudgetMonth');
+    const next = document.getElementById('nextBudgetMonth');
+    const overlay = document.getElementById('budgetMonthOverlay');
+    if(open) open.onclick = openPicker;
+    if(apply) apply.onclick = applyBudgetMonth;
+    if(reset) reset.onclick = resetBudgetMonth;
+    if(prev) prev.onclick = function(){ shiftBudgetMonth(-1); };
+    if(next) next.onclick = function(){ shiftBudgetMonth(1); };
+    if(overlay) overlay.onclick = function(e){ if(e.target === overlay) closePicker(); };
+  });
+  window.getSelectedBudgetMonthKey = function(){ return budgetKey(activeBudgetDate); };
+})();
+</script>
+
 </body>
 </html>
