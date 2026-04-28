@@ -1339,7 +1339,7 @@ cursor:pointer;
         <button class="budget-month-display" id="openBudgetMonthPicker" type="button">
           <span id="budgetMonthDisplayText">April 2026</span>
         </button>
-        <div class="month-data-note">Each month can have its own income, debt, savings, and expense amounts.</div>
+        <div class="month-data-note">Selected month controls the income, debt, savings, and expense amounts below.</div>
       </div>
     </section>
 
@@ -1960,7 +1960,7 @@ ensureMonthBudget();
 setupMoneyFields();
 }
 function saveEmergencyFundFn(){
- const u=getUser(), b=budget(u);
+ const u=getUser(), b=getMonthBudget();
  const emergencyFund={essential:parseMoneyInput(emergencyEssential.value),current:parseMoneyInput(emergencyCurrent.value),goalMonths:Number(emergencyGoalMonths.value||3),contribution:parseMoneyInput(emergencyContribution.value)};
  saveMonthBudget({...b,emergencyFund}); render(); show('budgetView');
 }
@@ -2480,10 +2480,10 @@ billActivityName.textContent=item.name;show('billDetailView')}
 function openIncomeEditor(i){selectedIncomeId=i;const item=i?getIncome(i):null;incomeEditTitle.textContent=item?'Edit Income':'Add Income';fIncome.name.value=item?.name||'';setMoneyFieldValue(fIncome.amount,item?.amount);setMoneyFieldValue(fIncome.received,item?.received);fIncome.type.value=item?.type||'Paycheck';fIncome.frequency.value=item?.frequency||'Monthly';show('incomeEditView');setupMoneyFields()}
 function openBillEditor(i){selectedBillId=i;const item=i?getBill(i):null;billEditTitle.textContent=item?'Edit Debt':'Add Debt';fBill.name.value=item?.name||'';setMoneyFieldValue(fBill.amount,item?.amount);setMoneyFieldValue(fBill.paid,item?.paid);fBill.dueDay.value=item?.dueDay||'';fBill.category.value=item?.category||'Housing';fBill.priority.value=item?.priority||'Essential';fBill.frequency.value=item?.frequency||'Monthly';show('billEditView');setupMoneyFields()}
 
-function saveIncomeFn(){const name=fIncome.name.value.trim(),amount=parseMoneyInput(fIncome.amount.value);if(!name||amount<=0){feedback('incomeFeedback','Add an income name and planned amount first.');return}const u=getUser(),b=getMonthBudget(),item={id:selectedIncomeId||id('income'),name,amount,received:parseMoneyInput(fIncome.received.value),type:fIncome.type.value,frequency:fIncome.frequency.value,monthlyAmount:monthly(amount,fIncome.frequency.value)};const incomeSources=selectedIncomeId?b.incomeSources.map(x=>x.id===selectedIncomeId?item:x):[...b.incomeSources,item];const updated={...u,budget:{...b,incomeSources}};saveUser(updated);render();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')}
-function saveBillFn(){const name=fBill.name.value.trim(),amount=parseMoneyInput(fBill.amount.value),due=Number(fBill.dueDay.value||0);if(!name||amount<=0){feedback('billFeedback','Add a debt name and planned amount first.');return}if(due<1||due>31){feedback('billFeedback','Enter a due date day between 1 and 31.');return}const u=getUser(),b=budget(u),existing=selectedBillId?getBill(selectedBillId):{};const item={...existing,id:selectedBillId||id('bill'),name,amount,paid:parseMoneyInput(fBill.paid.value),dueDay:due,category:fBill.category.value,priority:fBill.priority.value,frequency:fBill.frequency.value,monthlyAmount:monthly(amount,fBill.frequency.value)};const fixedBills=selectedBillId?b.fixedBills.map(x=>x.id===selectedBillId?item:x):[...b.fixedBills,item];const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();selectedBillId?openBillDetail(selectedBillId):show('budgetView')}
-function markBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=getMonthBudget();const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:Number(x.amount||x.monthlyAmount||0)}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
-function undoBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=getMonthBudget();const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:0}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
+function saveIncomeFn(){const name=fIncome.name.value.trim(),amount=parseMoneyInput(fIncome.amount.value);if(!name||amount<=0){feedback('incomeFeedback','Add an income name and planned amount first.');return}const u=getUser(),b=getMonthBudget(),item={id:selectedIncomeId||id('income'),name,amount,received:parseMoneyInput(fIncome.received.value),type:fIncome.type.value,frequency:fIncome.frequency.value,monthlyAmount:monthly(amount,fIncome.frequency.value)};const incomeSources=selectedIncomeId?b.incomeSources.map(x=>x.id===selectedIncomeId?item:x):[...b.incomeSources,item];saveMonthBudget({...b,incomeSources});render();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')}
+function saveBillFn(){const name=fBill.name.value.trim(),amount=parseMoneyInput(fBill.amount.value),due=Number(fBill.dueDay.value||0);if(!name||amount<=0){feedback('billFeedback','Add a debt name and planned amount first.');return}if(due<1||due>31){feedback('billFeedback','Enter a due date day between 1 and 31.');return}const u=getUser(),b=getMonthBudget(),existing=selectedBillId?getBill(selectedBillId):{};const item={...existing,id:selectedBillId||id('bill'),name,amount,paid:parseMoneyInput(fBill.paid.value),dueDay:due,category:fBill.category.value,priority:fBill.priority.value,frequency:fBill.frequency.value,monthlyAmount:monthly(amount,fBill.frequency.value)};const fixedBills=selectedBillId?b.fixedBills.map(x=>x.id===selectedBillId?item:x):[...b.fixedBills,item];saveMonthBudget({...b,fixedBills});render();selectedBillId?openBillDetail(selectedBillId):show('budgetView')}
+function markBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=getMonthBudget();const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:Number(x.amount||x.monthlyAmount||0)}:x);saveMonthBudget({...b,fixedBills});render();openBillDetail(selectedBillId)}
+function undoBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=getMonthBudget();const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:0}:x);saveMonthBudget({...b,fixedBills});render();openBillDetail(selectedBillId)}
 
 
 function openVariableDetail(i){
@@ -2517,8 +2517,7 @@ function saveVariableFn(){
  if(!name||planned<=0){feedback('variableFeedback','Add a category name and planned amount first.');return}
  const u=getUser(),b=getMonthBudget(),item={id:selectedVariableId||id('variable'),name,planned,spent:parseMoneyInput(fVariable.spent.value),type:fVariable.type.value,lastMonth:parseMoneyInput(fVariable.lastMonth.value),tag:fVariable.tag.value,notes:fVariable.notes.value};
  const variableSpending=selectedVariableId?b.variableSpending.map(x=>x.id===selectedVariableId?item:x):[...b.variableSpending,item];
- const updated={...u,budget:{...b,variableSpending}};
- saveUser(updated);render();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
+ saveMonthBudget({...b,variableSpending});render();selectedVariableId?openVariableDetail(selectedVariableId):show('budgetView');
 }
 function deleteVariableFn(){
  if(!selectedVariableId)return;
@@ -2605,6 +2604,7 @@ render();
 
 
 
+
 <script>
 (function(){
   const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -2630,7 +2630,17 @@ render();
     return monthNames[date.getMonth()] + ' ' + date.getFullYear();
   }
 
+  function syncCoreSelectedBudgetDate(){
+    try{
+      selectedBudgetDate = new Date(activeBudgetDate.getFullYear(), activeBudgetDate.getMonth(), 1);
+      updateBudgetPeriodLabel();
+      ensureMonthBudget();
+    }catch(e){}
+  }
+
   function syncMainBudgetMonthUI(){
+    syncCoreSelectedBudgetDate();
+
     const text = budgetLabel(activeBudgetDate);
     const label = document.getElementById('budgetPeriodLabel');
     const display = document.getElementById('budgetMonthDisplayText');
@@ -2687,6 +2697,7 @@ render();
 
   document.addEventListener('DOMContentLoaded', function(){
     syncMainBudgetMonthUI();
+    if(typeof render === 'function') render();
 
     const open = document.getElementById('openBudgetMonthPicker');
     const apply = document.getElementById('applyBudgetMonth');
@@ -2717,6 +2728,7 @@ render();
   window.getSelectedBudgetMonthKey = function(){ return budgetKey(activeBudgetDate); };
 })();
 </script>
+
 
 </body>
 </html>
