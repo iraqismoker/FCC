@@ -5,7 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Budget App – Budget</title>
 <style>
-:root{--bg:#f4f6f9;--card:#fff;--card2:#f8fafc;--text:#10213c;--muted:#66758b;--line:#d7dee8;--primary:#2b7fff;--primarySoft:#e9f1ff;--good:#2bb5a8;--bad:#e26b5b;--badSoft:#fff0ee;--shadow:0 10px 30px rgba(16,33,60,.08);--r:28px}
+:root{--bg:#f4f6f9;--card:#fff;--card2:#f8fafc;--text:#10213c;--muted:#66758b;--line:#d7dee8;--primary:#2b7fff;--primarySoft:#e9f1ff;--good:#2bb5a8;--bad:#e26b5b;--badSoft:#fff0ee;--shadow:0 10px 30px rgba(16,33,60,.08);--r:28px
+  --space-xs:8px;
+  --space-sm:12px;
+  --space-md:16px;
+  --space-lg:20px;
+  --space-xl:24px;
+
+}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#f7f8fb,#eef2f7);color:var(--text)}.app{max-width:900px;margin:auto;padding:20px 16px 36px}.view{display:none}.active{display:block}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.back{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:800}.back span{width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:#fff;box-shadow:var(--shadow);display:grid;place-items:center}
 .head{background:linear-gradient(135deg,#eef5ff,#fff);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:24px;margin-bottom:18px}.eyebrow{margin:0 0 8px;color:var(--muted);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.head h1{margin:0;font-size:clamp(34px,7vw,52px);line-height:.98;letter-spacing:-.045em}.head p{margin:12px 0 0;color:#43536d;font-size:16px;line-height:1.45;font-weight:700}
@@ -1215,6 +1222,55 @@ cursor:pointer;
 .month-reset-btn{border:0;background:var(--primarySoft);color:var(--text);border-radius:24px;padding:18px 26px;font-size:22px;font-weight:800}
 .month-confirm-btn{width:72px;height:72px;border-radius:50%;border:0;background:var(--primary);color:#bdf7df;font-size:46px;line-height:1;font-weight:500;display:grid;place-items:center}
 @media(max-width:520px){.month-picker-popover{border-radius:32px;padding:22px 18px}.month-picker-wheels{gap:10px}.month-picker-wheels select{font-size:24px}}
+
+
+/* ===== FINAL POLISH (non-destructive) ===== */
+
+.section-body{ padding:var(--space-lg) !important; }
+.section-head{ padding:var(--space-lg) var(--space-xl) !important; }
+.budget-row{ padding:var(--space-lg) !important; }
+
+.section-title{
+  font-size:22px !important;
+  font-weight:900;
+  letter-spacing:-.03em;
+}
+.row-left strong{
+  font-size:18px !important;
+  font-weight:700;
+}
+.row-amount{
+  font-size:18px !important;
+  font-weight:800;
+}
+.sum .value{
+  font-size:24px !important;
+  font-weight:900;
+}
+
+.btn{
+  border:0;
+  border-radius:16px;
+  padding:14px;
+  font-size:15px;
+  font-weight:900;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.primary{ background:var(--primary); color:#fff; }
+.secondary{ background:var(--card2); color:var(--text); }
+button:active{ transform:scale(.97); }
+
+.summary .sum{
+  min-height:130px !important;
+  padding:16px !important;
+}
+
+.budget-row:hover{ background:transparent !important; }
+
+.collapsible-section-body{ padding-top:0 !important; }
 
 </style>
 </head>
@@ -2615,67 +2671,6 @@ render();
 
   window.getSelectedBudgetMonthKey = function(){ return budgetKey(activeBudgetDate); };
 })();
-</script>
-
-
-<!-- SIMPLE LIST MONTH PICKER -->
-<div id="monthListOverlay" style="
-position:fixed; inset:0; background:rgba(0,0,0,.3);
-display:none; align-items:center; justify-content:center; z-index:999;
-">
-  <div style="
-    width:90%; max-width:420px;
-    background:#fff; border-radius:20px;
-    overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.3);
-  ">
-    <div id="monthListContainer"></div>
-  </div>
-</div>
-
-
-<script>
-const overlayList = document.getElementById('monthListOverlay');
-const listContainer = document.getElementById('monthListContainer');
-const openBtn = document.getElementById('openBudgetMonthPicker');
-
-const months = [
-"January","February","March","April","May","June",
-"July","August","September","October","November","December"
-];
-
-function buildMonthList(){
-  listContainer.innerHTML = "";
-  const currentYear = currentBudgetDate.getFullYear();
-
-  months.forEach((m, i)=>{
-    const div = document.createElement("div");
-    div.innerText = m + " " + currentYear;
-    div.style.padding = "16px";
-    div.style.textAlign = "center";
-    div.style.fontWeight = "800";
-    div.style.borderBottom = "1px solid #eee";
-
-    div.onclick = ()=>{
-      currentBudgetDate = new Date(currentYear, i, 1);
-      updateBudgetPeriodUI();
-      saveBudgetMonth();
-      overlayList.style.display = "none";
-    };
-
-    listContainer.appendChild(div);
-  });
-}
-
-openBtn.onclick = ()=>{
-  buildMonthList();
-  overlayList.style.display = "flex";
-};
-
-overlayList.onclick = (e)=>{
-  if(e.target === overlayList){
-    overlayList.style.display = "none";
-  }
-};
 </script>
 
 </body>
