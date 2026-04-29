@@ -1236,7 +1236,7 @@ cursor:pointer;
         <button class="budget-month-display" id="openBudgetMonthPicker" type="button">
           <span id="budgetMonthDisplayText">April 2026</span>
         </button>
-        <div class="month-data-note">Each month can have its own income, debt, savings, and expense amounts.</div>
+        <div class="month-data-note">Selected month controls the income, debt, savings, and expense amounts below.</div>
       </div>
     </section>
 
@@ -2148,21 +2148,42 @@ function getBudgetMonths(){
  const u=getUser();
  return u.budgetMonths||{};
 }
+
+function emptyMonthBudget(){
+ return {
+  incomeSources:[],
+  fixedBills:[],
+  sinkingFunds:[],
+  variableSpending:[],
+  setup:{},
+  emergencyFund:{}
+ };
+}
+function baseBudgetKey(){
+ const d=new Date();
+ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+}
 function getMonthBudget(key=budgetPeriodKey()){
  const u=getUser(), months=getBudgetMonths();
- if(months[key]?.budget)return months[key].budget;
- return cloneBudgetTemplate(budget(u));
+ if(months[key]?.monthSpecific && months[key]?.budget)return months[key].budget;
+
+ // Keep the main/current budget as the starting base.
+ // Other months stay separate so changing the date changes the totals.
+ if(key===baseBudgetKey())return cloneBudgetTemplate(budget(u));
+
+ return emptyMonthBudget();
 }
 function saveMonthBudget(monthBudget,key=budgetPeriodKey()){
  const u=getUser(), months=getBudgetMonths(), existing=months[key]||{};
- saveUser({...u,budgetMonths:{...months,[key]:{...existing,budget:monthBudget}}});
+ saveUser({...u,budgetMonths:{...months,[key]:{...existing,monthSpecific:true,budget:monthBudget}}});
 }
 function ensureMonthBudget(key=budgetPeriodKey()){
  const u=getUser(), months=getBudgetMonths();
- if(!months[key]?.budget){
-  saveUser({...u,budgetMonths:{...months,[key]:{...(months[key]||{}),budget:cloneBudgetTemplate(budget(u))}}});
+ if(!months[key]?.monthSpecific){
+  saveUser({...u,budgetMonths:{...months,[key]:{...(months[key]||{}),monthSpecific:true,budget:getMonthBudget(key)}}});
  }
 }
+
 
 function calculatedVariableAverage(item){
  // Future-ready: once monthly history is stored by budgetPeriodKey(), this will average saved months.
@@ -2356,10 +2377,10 @@ billActivityName.textContent=item.name;show('billDetailView')}
 function openIncomeEditor(i){selectedIncomeId=i;const item=i?getIncome(i):null;incomeEditTitle.textContent=item?'Edit Income':'Add Income';fIncome.name.value=item?.name||'';setMoneyFieldValue(fIncome.amount,item?.amount);setMoneyFieldValue(fIncome.received,item?.received);fIncome.type.value=item?.type||'Paycheck';fIncome.frequency.value=item?.frequency||'Monthly';show('incomeEditView');setupMoneyFields()}
 function openBillEditor(i){selectedBillId=i;const item=i?getBill(i):null;billEditTitle.textContent=item?'Edit Debt':'Add Debt';fBill.name.value=item?.name||'';setMoneyFieldValue(fBill.amount,item?.amount);setMoneyFieldValue(fBill.paid,item?.paid);fBill.dueDay.value=item?.dueDay||'';fBill.category.value=item?.category||'Housing';fBill.priority.value=item?.priority||'Essential';fBill.frequency.value=item?.frequency||'Monthly';show('billEditView');setupMoneyFields()}
 
-function saveIncomeFn(){const name=fIncome.name.value.trim(),amount=parseMoneyInput(fIncome.amount.value);if(!name||amount<=0){feedback('incomeFeedback','Add an income name and planned amount first.');return}const u=getUser(),b=getMonthBudget(),item={id:selectedIncomeId||id('income'),name,amount,received:parseMoneyInput(fIncome.received.value),type:fIncome.type.value,frequency:fIncome.frequency.value,monthlyAmount:monthly(amount,fIncome.frequency.value)};const incomeSources=selectedIncomeId?b.incomeSources.map(x=>x.id===selectedIncomeId?item:x):[...b.incomeSources,item];const updated={...u,budget:{...b,incomeSources}};saveUser(updated);render();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')}
-function saveBillFn(){const name=fBill.name.value.trim(),amount=parseMoneyInput(fBill.amount.value),due=Number(fBill.dueDay.value||0);if(!name||amount<=0){feedback('billFeedback','Add a debt name and planned amount first.');return}if(due<1||due>31){feedback('billFeedback','Enter a due date day between 1 and 31.');return}const u=getUser(),b=budget(u),existing=selectedBillId?getBill(selectedBillId):{};const item={...existing,id:selectedBillId||id('bill'),name,amount,paid:parseMoneyInput(fBill.paid.value),dueDay:due,category:fBill.category.value,priority:fBill.priority.value,frequency:fBill.frequency.value,monthlyAmount:monthly(amount,fBill.frequency.value)};const fixedBills=selectedBillId?b.fixedBills.map(x=>x.id===selectedBillId?item:x):[...b.fixedBills,item];const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();selectedBillId?openBillDetail(selectedBillId):show('budgetView')}
-function markBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=getMonthBudget();const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:Number(x.amount||x.monthlyAmount||0)}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
-function undoBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=getMonthBudget();const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:0}:x);const updated={...u,budget:{...b,fixedBills}};saveUser(updated);render();openBillDetail(selectedBillId)}
+function saveIncomeFn(){const name=fIncome.name.value.trim(),amount=parseMoneyInput(fIncome.amount.value);if(!name||amount<=0){feedback('incomeFeedback','Add an income name and planned amount first.');return}const u=getUser(),b=getMonthBudget(),item={id:selectedIncomeId||id('income'),name,amount,received:parseMoneyInput(fIncome.received.value),type:fIncome.type.value,frequency:fIncome.frequency.value,monthlyAmount:monthly(amount,fIncome.frequency.value)};const incomeSources=selectedIncomeId?b.incomeSources.map(x=>x.id===selectedIncomeId?item:x):[...b.incomeSources,item];saveMonthBudget({...b,incomeSources});render();selectedIncomeId?openIncomeDetail(selectedIncomeId):show('budgetView')}
+function saveBillFn(){const name=fBill.name.value.trim(),amount=parseMoneyInput(fBill.amount.value),due=Number(fBill.dueDay.value||0);if(!name||amount<=0){feedback('billFeedback','Add a debt name and planned amount first.');return}if(due<1||due>31){feedback('billFeedback','Enter a due date day between 1 and 31.');return}const u=getUser(),b=getMonthBudget(),existing=selectedBillId?getBill(selectedBillId):{};const item={...existing,id:selectedBillId||id('bill'),name,amount,paid:parseMoneyInput(fBill.paid.value),dueDay:due,category:fBill.category.value,priority:fBill.priority.value,frequency:fBill.frequency.value,monthlyAmount:monthly(amount,fBill.frequency.value)};const fixedBills=selectedBillId?b.fixedBills.map(x=>x.id===selectedBillId?item:x):[...b.fixedBills,item];saveMonthBudget({...b,fixedBills});render();selectedBillId?openBillDetail(selectedBillId):show('budgetView')}
+function markBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=getMonthBudget();const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:Number(x.amount||x.monthlyAmount||0)}:x);saveMonthBudget({...b,fixedBills});render();openBillDetail(selectedBillId)}
+function undoBillPaidFn(){if(!selectedBillId)return;const u=getUser(),b=getMonthBudget();const fixedBills=b.fixedBills.map(x=>x.id===selectedBillId?{...x,paid:0}:x);saveMonthBudget({...b,fixedBills});render();openBillDetail(selectedBillId)}
 
 
 function openVariableDetail(i){
@@ -2478,6 +2499,7 @@ render();
 
 
 
+
 <script>
 (function(){
   function getSavedBudgetDate(){
@@ -2488,9 +2510,17 @@ render();
     }
     return new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   }
+
   let activeBudgetDate = getSavedBudgetDate();
-  function budgetKey(date){return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0');}
-  function budgetLabel(date){return date.toLocaleDateString('en-US', { month:'long', year:'numeric' });}
+
+  function budgetKey(date){
+    return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0');
+  }
+
+  function budgetLabel(date){
+    return date.toLocaleDateString('en-US', { month:'long', year:'numeric' });
+  }
+
   function populateYears(){
     const year = document.getElementById('budgetYearInput');
     if(!year || year.options.length) return;
@@ -2502,42 +2532,79 @@ render();
       year.appendChild(opt);
     }
   }
+
+  function makeSelectedDateActive(){
+    try{
+      selectedBudgetDate = new Date(activeBudgetDate.getFullYear(), activeBudgetDate.getMonth(), 1);
+      localStorage.setItem('selectedBudgetMonth', budgetKey(activeBudgetDate));
+    }catch(e){}
+  }
+
   function syncBudgetMonthUI(){
     populateYears();
+    makeSelectedDateActive();
+
     const label = document.getElementById('budgetPeriodLabel');
     const display = document.getElementById('budgetMonthDisplayText');
     const month = document.getElementById('budgetMonthSelect');
     const year = document.getElementById('budgetYearInput');
+
     const text = budgetLabel(activeBudgetDate);
     if(label) label.textContent = text;
     if(display) display.textContent = text;
     if(month) month.value = String(activeBudgetDate.getMonth());
     if(year) year.value = String(activeBudgetDate.getFullYear());
-    localStorage.setItem('selectedBudgetMonth', budgetKey(activeBudgetDate));
   }
-  function openPicker(){syncBudgetMonthUI(); const overlay=document.getElementById('budgetMonthOverlay'); if(overlay) overlay.classList.add('show');}
-  function closePicker(){const overlay=document.getElementById('budgetMonthOverlay'); if(overlay) overlay.classList.remove('show');}
+
+  function openPicker(){
+    syncBudgetMonthUI();
+    const overlay=document.getElementById('budgetMonthOverlay');
+    if(overlay) overlay.classList.add('show');
+  }
+
+  function closePicker(){
+    const overlay=document.getElementById('budgetMonthOverlay');
+    if(overlay) overlay.classList.remove('show');
+  }
+
   function applyBudgetMonth(){
     const month = document.getElementById('budgetMonthSelect');
     const year = document.getElementById('budgetYearInput');
     if(!month || !year) return;
+
     const y = Number(year.value), m = Number(month.value);
     if(!y || y < 1900 || y > 2200) return;
+
     activeBudgetDate = new Date(y, m, 1);
     syncBudgetMonthUI();
     closePicker();
+
     if(typeof render === 'function') render();
+    if(typeof show === 'function') show('budgetView');
   }
-  function resetBudgetMonth(){activeBudgetDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1); syncBudgetMonthUI();}
-  function shiftBudgetMonth(delta){activeBudgetDate = new Date(activeBudgetDate.getFullYear(), activeBudgetDate.getMonth()+delta, 1); syncBudgetMonthUI(); if(typeof render === 'function') render();}
+
+  function resetBudgetMonth(){
+    activeBudgetDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    syncBudgetMonthUI();
+  }
+
+  function shiftBudgetMonth(delta){
+    activeBudgetDate = new Date(activeBudgetDate.getFullYear(), activeBudgetDate.getMonth()+delta, 1);
+    syncBudgetMonthUI();
+    if(typeof render === 'function') render();
+    if(typeof show === 'function') show('budgetView');
+  }
+
   document.addEventListener('DOMContentLoaded', function(){
     syncBudgetMonthUI();
+
     const open = document.getElementById('openBudgetMonthPicker');
     const apply = document.getElementById('applyBudgetMonth');
     const reset = document.getElementById('resetBudgetMonth');
     const prev = document.getElementById('prevBudgetMonth');
     const next = document.getElementById('nextBudgetMonth');
     const overlay = document.getElementById('budgetMonthOverlay');
+
     if(open) open.onclick = openPicker;
     if(apply) apply.onclick = applyBudgetMonth;
     if(reset) reset.onclick = resetBudgetMonth;
@@ -2545,9 +2612,11 @@ render();
     if(next) next.onclick = function(){ shiftBudgetMonth(1); };
     if(overlay) overlay.onclick = function(e){ if(e.target === overlay) closePicker(); };
   });
+
   window.getSelectedBudgetMonthKey = function(){ return budgetKey(activeBudgetDate); };
 })();
 </script>
 
 </body>
+
 </html>
