@@ -1272,10 +1272,6 @@ button:active{ transform:scale(.97); }
 
 .collapsible-section-body{ padding-top:0 !important; }
 
-
-#frequencyRow{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
-#frequencySelect{padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--card2);font-weight:600;}
-
 </style>
 </head>
 <body>
@@ -2554,17 +2550,6 @@ if(window.billDebtType)billDebtType.addEventListener('change',renderAdvancedDebt
 setupSectionInfo();
 setupMainSectionCollapse();
 render();
-
-<script>
-const recurringToggle = document.getElementById("recurringToggle");
-const frequencyRow = document.getElementById("frequencyRow");
-if(recurringToggle){
-  recurringToggle.addEventListener("change", () => {
-    frequencyRow.style.display = recurringToggle.checked ? "flex" : "none";
-  });
-}
-</script>
-
 </script>
 
 
@@ -2686,27 +2671,7 @@ if(recurringToggle){
 
   window.getSelectedBudgetMonthKey = function(){ return budgetKey(activeBudgetDate); };
 })();
-
-<script>
-const recurringToggle = document.getElementById("recurringToggle");
-const frequencyRow = document.getElementById("frequencyRow");
-if(recurringToggle){
-  recurringToggle.addEventListener("change", () => {
-    frequencyRow.style.display = recurringToggle.checked ? "flex" : "none";
-  });
-}
 </script>
-
-</script>
-
-
-<div class="form-row" id="frequencyRow" style="display:none;">
-  <label>Frequency</label>
-  <select id="frequencySelect">
-    <option value="monthly">Monthly</option>
-    <option value="weekly">Weekly</option>
-  </select>
-</div>
 
 </body>
 
