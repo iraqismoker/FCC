@@ -6,10 +6,16 @@
 <title>Budget App – Budget</title>
 <style>
 :root{--bg:#f4f6f9;--card:#fff;--card2:#f8fafc;--text:#10213c;--muted:#66758b;--line:#d7dee8;--primary:#2b7fff;--primarySoft:#e9f1ff;--good:#2bb5a8;--bad:#e26b5b;--badSoft:#fff0ee;--shadow:0 10px 30px rgba(16,33,60,.08);--r:28px}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#f7f8fb,#eef2f7);color:var(--text)}.app{max-width:900px;margin:auto;padding:20px 16px 36px}.view{display:none}.app>.view.active{display:block}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#f7f8fb,#eef2f7);color:var(--text)}.app{max-width:900px;margin:auto;padding:20px 16px 36px}.view{display:none}.active{display:block}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.back{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:800}.back span{width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:#fff;box-shadow:var(--shadow);display:grid;place-items:center}
 .head{background:linear-gradient(135deg,#eef5ff,#fff);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:24px;margin-bottom:18px}.eyebrow{margin:0 0 8px;color:var(--muted);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.head h1{margin:0;font-size:clamp(34px,7vw,52px);line-height:.98;letter-spacing:-.045em}.head p{margin:12px 0 0;color:#43536d;font-size:16px;line-height:1.45;font-weight:700}
 .summary{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:18px;margin-bottom:18px;display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.sum{background:var(--card2);border:1px solid var(--line);border-radius:18px;padding:14px}.sum .label{color:var(--muted);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}.sum .value{font-size:26px;font-weight:900;letter-spacing:-.035em;line-height:1}.sum .note{color:var(--muted);font-size:12px;font-weight:700;margin-top:7px}
+
+
+
+
+
+
 
 .meter-info{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:2px solid var(--primary);color:var(--primary);font-size:13px;font-weight:900;margin-left:6px}
 .stack{display:grid;gap:18px}.section{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:20px 22px;border-bottom:1px solid #edf1f5}.section-title{margin:0;font-size:22px;letter-spacing:-.03em}.section-sub{margin-top:5px;color:var(--muted);font-size:14px;font-weight:650}.section-body{padding:20px 22px 22px}
@@ -70,6 +76,26 @@
   }
 }
 
+
+
+.budget-row.compact-row .row-left strong{
+  font-size:18px !important;
+  font-weight:650 !important;
+}
+.budget-row.compact-row .row-amount{
+  font-size:18px !important;
+  font-weight:650 !important;
+}
+@media(max-width:520px){
+  .budget-row.compact-row .row-left strong{
+    font-size:20px !important;
+  }
+  .budget-row.compact-row .row-amount{
+    font-size:20px !important;
+  }
+}
+
+
 .budget-row.compact-row .row-left strong{
   font-size:16px !important;
   font-weight:650 !important;
@@ -116,7 +142,11 @@
 .priority-pill{display:inline-flex;width:max-content;margin-top:6px;border-radius:999px;padding:4px 8px;background:var(--primarySoft);color:var(--primary);font-size:11px;font-weight:900}
 .priority-flexible{background:#fff7e6;color:#a96b00}
 .priority-delay{background:var(--badSoft);color:var(--bad)}
-.setup-link-card a{width:100%;text-align:center}}
+.setup-link-card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.setup-link-card span{color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.setup-link-card strong{display:block;font-size:17px;margin-top:4px}
+.setup-link-card a{color:var(--primary);background:var(--primarySoft);border-radius:14px;padding:10px 12px;text-decoration:none;font-weight:900;white-space:nowrap}
+@media(max-width:520px){.setup-link-card{display:grid}.setup-link-card a{width:100%;text-align:center}}
 
 /* Compact Edit Debt form + cleaner detail actions */
 .bill-action-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;margin-top:18px}
@@ -219,6 +249,33 @@
     min-height:128px;
   }
 }
+
+
+/* True centered summary cards */
+.summary .sum{
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:center !important;
+  text-align:center !important;
+  min-height:220px !important;
+  padding:24px !important;
+}
+.summary .sum .eyebrow{
+  width:100%;
+  text-align:center !important;
+}
+.summary .sum .big{
+  width:100%;
+  text-align:center !important;
+}
+.summary .sum .muted{
+  width:100%;
+  text-align:center !important;
+  max-width:260px;
+  margin:0 auto;
+}
+
 
 /* Smaller centered summary tiles */
 .summary .sum{
@@ -397,6 +454,58 @@ cursor:pointer;
 }
 
 
+.collapsible-panel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:20px;
+  margin-top:18px;
+  overflow:hidden;
+}
+.collapse-toggle{
+  width:100%;
+  border:0;
+  background:#fff;
+  color:var(--text);
+  padding:18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:-.03em;
+  cursor:pointer;
+}
+.collapse-toggle .chev-small{
+  color:#7a8ba4;
+  font-size:26px;
+  transition:.18s;
+}
+.collapsible-panel.open .chev-small{
+  transform:rotate(90deg);
+}
+.collapse-content{
+  display:none;
+  padding:0 18px 18px;
+}
+.collapsible-panel.open .collapse-content{
+  display:block;
+}
+.collapsible-panel .loan-details,
+.collapsible-panel .payoff-impact{
+  margin-top:0;
+  border:0;
+  padding:0;
+  box-shadow:none;
+}
+
+
+.collapsible-panel .loan-details > h3,
+.collapsible-panel .payoff-impact > h3{
+  display:none;
+}
+
+
 /* Clean collapsible panels */
 .collapsible-panel{
   background:#fff;
@@ -517,6 +626,51 @@ cursor:pointer;
 @media(max-width:520px){
   .sinking-summary{grid-template-columns:1fr}
 }
+
+
+/* Collapsible budget main sections */
+.main-collapse-toggle{
+  width:100%;
+  border:0;
+  background:#fff;
+  color:var(--text);
+  padding:20px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  cursor:pointer;
+  text-align:left;
+}
+.main-collapse-toggle .section-title{
+  pointer-events:none;
+}
+.main-collapse-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--muted);
+  font-size:16px;
+  font-weight:700;
+}
+.main-collapse-chev{
+  color:#7a8ba4;
+  font-size:26px;
+  transition:.18s;
+}
+.section.collapsed .main-collapse-chev{
+  transform:rotate(-90deg);
+}
+.section.collapsed .collapsible-section-body{
+  display:none;
+}
+.collapsible-section-body{
+  display:block;
+}
+.main-collapse-toggle:hover{
+  background:#fbfcfe;
+}
+
 
 /* Main Budget section collapse */
 .budget-main-section .section-head{
@@ -961,6 +1115,39 @@ cursor:pointer;
   .period-center strong{font-size:20px}
 }
 
+
+/* Single budget month picker */
+.period-actions.single{
+  grid-template-columns:1fr !important;
+}
+.period-picker-label{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+#budgetMonthPicker{
+  text-align:center;
+  font-weight:900;
+  color:var(--primary);
+  background:var(--primarySoft);
+  cursor:pointer;
+}
+
+
+/* Budget month picker interaction fix */
+#budgetMonthPicker{
+  appearance:auto;
+  -webkit-appearance:auto;
+  width:100%;
+  min-height:54px;
+}
+.budget-period-card .period-actions.single{
+  cursor:pointer;
+}
+
+
 /* Month-specific budget data notice */
 .month-data-note{
   margin-top:10px;
@@ -969,235 +1156,65 @@ cursor:pointer;
   font-weight:800;
   text-align:center;
 }
-
-/* Budget Month picker */
-.budget-period-card{
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:20px;
-  box-shadow:var(--shadow);
-  padding:18px;
-  margin-bottom:18px;
-  display:grid;
-  grid-template-columns:52px 1fr 52px;
-  gap:12px;
-  align-items:center;
-}
-.period-nav{
-  width:52px;
-  height:52px;
-  border-radius:16px;
-  border:1px solid var(--line);
-  background:var(--card2);
-  color:var(--text);
-  font-size:28px;
-  font-weight:900;
-  cursor:pointer;
-}
-.period-center{text-align:center}
-.period-center span{
-  display:block;
-  color:var(--muted);
-  font-size:12px;
-  font-weight:900;
-  text-transform:uppercase;
-  letter-spacing:.1em;
-  margin-bottom:5px;
-}
-.period-center strong{
-  display:block;
-  font-size:27px;
-  line-height:1.05;
-  letter-spacing:-.04em;
-}
-.period-actions.single{
-  grid-column:1/-1;
+.month-template-actions{
+  margin-top:12px;
   display:grid;
   grid-template-columns:1fr;
-  gap:10px;
-  margin-top:8px;
 }
-.period-picker-label{
-  color:var(--muted);
-  font-size:13px;
-  font-weight:900;
-  text-transform:uppercase;
-  letter-spacing:.08em;
+
+
+/* Apply month button */
+#applyBudgetMonth{
+  min-height:48px;
 }
-.budget-month-display{
-  width:100%;
-  min-height:72px;
-  border:1px solid #c9d8f5;
-  background:var(--primarySoft);
-  color:var(--primary);
-  border-radius:18px;
-  font-size:28px;
-  font-weight:900;
-  cursor:pointer;
-  box-shadow:inset 0 0 0 1px rgba(43,127,255,.08);
-}
-.month-data-note{
-  color:var(--muted);
-  font-size:13px;
-  font-weight:800;
-  line-height:1.35;
-  text-align:center;
-  max-width:560px;
-  margin:6px auto 0;
-}
-.month-picker-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:999;
-  background:rgba(16,33,60,.22);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-  align-items:center;
-  justify-content:center;
-  padding:22px;
-}
-.month-picker-overlay.show{display:flex}
-.month-picker-popover{
-  width:min(520px,92vw);
-  background:linear-gradient(180deg,#fff,#f8fbff);
-  border:1px solid rgba(215,222,232,.95);
-  border-radius:30px;
-  box-shadow:0 28px 80px rgba(16,33,60,.28);
-  padding:24px;
-}
-.month-picker-header{
-  text-align:center;
-  margin-bottom:16px;
-}
-.month-picker-header span{
-  display:block;
-  color:var(--muted);
-  font-size:12px;
-  font-weight:900;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-  margin-bottom:6px;
-}
-.month-picker-header strong{
-  display:block;
-  color:var(--text);
-  font-size:32px;
-  line-height:1;
-  letter-spacing:-.045em;
-}
-.month-picker-year{
+
+
+/* Reliable Budget Month picker while keeping the same card design */
+.budget-month-custom-picker{
   display:grid;
-  grid-template-columns:54px 1fr 54px;
-  align-items:center;
-  gap:12px;
-  background:var(--card2);
+  grid-template-columns:1fr 120px;
+  gap:10px;
+  background:var(--primarySoft);
   border:1px solid var(--line);
-  border-radius:22px;
+  border-radius:18px;
+  padding:10px;
+  min-height:74px;
+  align-items:center;
+}
+.budget-month-custom-picker select,
+.budget-month-custom-picker input{
+  border:0;
+  background:transparent;
+  color:var(--primary);
+  text-align:center;
+  font-weight:900;
+  font-size:20px;
+  min-height:48px;
   padding:8px;
-  margin-bottom:16px;
 }
-.month-picker-year button{
-  height:48px;
-  border:0;
-  border-radius:15px;
+.budget-month-custom-picker select:focus,
+.budget-month-custom-picker input:focus{
   background:#fff;
-  color:var(--text);
-  font-size:30px;
-  font-weight:900;
-  box-shadow:0 5px 14px rgba(16,33,60,.06);
-}
-.month-picker-year strong{
-  text-align:center;
-  font-size:26px;
-  font-weight:900;
-  letter-spacing:-.03em;
-}
-.month-picker-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-}
-.month-picker-grid button{
-  min-height:52px;
-  border:1px solid var(--line);
-  border-radius:17px;
-  background:#fff;
-  color:var(--text);
-  font-size:16px;
-  font-weight:900;
-  box-shadow:0 5px 14px rgba(16,33,60,.04);
-  cursor:pointer;
-}
-.month-picker-grid button.active{
-  background:var(--primary);
-  color:#fff;
-  border-color:var(--primary);
-  box-shadow:0 12px 24px rgba(43,127,255,.28);
-}
-.month-picker-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-top:18px;
-}
-.month-reset-btn,
-.month-confirm-btn{
-  width:100%;
-  height:58px;
-  border-radius:18px;
-  border:0;
-  font-size:18px;
-  font-weight:900;
-  cursor:pointer;
-}
-.month-reset-btn{
-  background:var(--primarySoft);
-  color:var(--primary);
-}
-.month-confirm-btn{
-  background:var(--primary);
-  color:#fff;
+  border:1px solid #b8d3ff;
 }
 @media(max-width:520px){
-  .budget-period-card{
-    padding:16px;
-    grid-template-columns:48px 1fr 48px;
-  }
-  .period-nav{
-    width:48px;
-    height:48px;
-  }
-  .period-center strong{
-    font-size:24px;
-  }
-  .budget-month-display{
-    min-height:66px;
-    font-size:25px;
-  }
-  .month-picker-popover{
-    width:90vw;
-    padding:20px;
-    border-radius:28px;
-  }
-  .month-picker-header strong{
-    font-size:29px;
-  }
-  .month-picker-grid{
-    grid-template-columns:repeat(3,1fr);
-    gap:9px;
-  }
-  .month-picker-grid button{
-    min-height:49px;
-    font-size:15px;
-  }
+  .budget-month-custom-picker{grid-template-columns:1fr}
 }
 
 
-
-/* Top-level view switching */
-.app > .view{display:none}
-.app > .view.active{display:block}
+/* Calendar-style budget month picker */
+.budget-month-display{width:100%;min-height:74px;border:1px solid #c9d8f5;background:var(--primarySoft);color:var(--primary);border-radius:18px;font-size:22px;font-weight:900;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(43,127,255,.08)}
+.month-picker-overlay{display:none;position:fixed;inset:0;z-index:999;background:rgba(16,33,60,.18);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:22px}
+.month-picker-overlay.show{display:flex}
+.month-picker-popover{width:min(520px,92vw);background:rgba(250,252,255,.94);border:1px solid rgba(255,255,255,.9);border-radius:36px;box-shadow:0 25px 70px rgba(16,33,60,.22);padding:26px;position:relative}
+.month-picker-popover:after{content:"";position:absolute;left:50%;bottom:-18px;transform:translateX(-50%) rotate(45deg);width:36px;height:36px;background:rgba(250,252,255,.94);border-right:1px solid rgba(255,255,255,.9);border-bottom:1px solid rgba(255,255,255,.9)}
+.month-picker-wheels{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding:18px 14px 28px;position:relative}
+.month-picker-wheels:before{content:"";position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:58px;border-radius:28px;background:rgba(16,33,60,.09);pointer-events:none}
+.month-picker-wheels select{position:relative;z-index:1;border:0;background:transparent;color:var(--text);font-size:28px;font-weight:500;text-align:center;text-align-last:center;min-height:170px;appearance:auto;-webkit-appearance:menulist}
+.month-picker-actions{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:4px}
+.month-reset-btn{border:0;background:var(--primarySoft);color:var(--text);border-radius:24px;padding:18px 26px;font-size:22px;font-weight:800}
+.month-confirm-btn{width:72px;height:72px;border-radius:50%;border:0;background:var(--primary);color:#bdf7df;font-size:46px;line-height:1;font-weight:500;display:grid;place-items:center}
+@media(max-width:520px){.month-picker-popover{border-radius:32px;padding:22px 18px}.month-picker-wheels{gap:10px}.month-picker-wheels select{font-size:24px}}
 
 </style>
 </head>
@@ -1223,37 +1240,21 @@ cursor:pointer;
       </div>
     </section>
 
-<div class="month-picker-overlay" id="budgetMonthOverlay" aria-hidden="true">
-  <div class="month-picker-popover" role="dialog" aria-modal="true" aria-label="Choose budget month">
-    <div class="month-picker-header">
-      <span>Choose Budget Month</span>
-      <strong id="pickerPreviewLabel">March 2026</strong>
-    </div>
-    <div class="month-picker-year">
-      <button id="pickerYearDown" type="button" aria-label="Previous year">‹</button>
-      <strong id="pickerYearLabel">2026</strong>
-      <button id="pickerYearUp" type="button" aria-label="Next year">›</button>
-    </div>
-    <div class="month-picker-grid" id="monthPillGrid">
-      <button type="button" data-month="0">Jan</button>
-      <button type="button" data-month="1">Feb</button>
-      <button type="button" data-month="2">Mar</button>
-      <button type="button" data-month="3">Apr</button>
-      <button type="button" data-month="4">May</button>
-      <button type="button" data-month="5">Jun</button>
-      <button type="button" data-month="6">Jul</button>
-      <button type="button" data-month="7">Aug</button>
-      <button type="button" data-month="8">Sep</button>
-      <button type="button" data-month="9">Oct</button>
-      <button type="button" data-month="10">Nov</button>
-      <button type="button" data-month="11">Dec</button>
+<div class="month-picker-overlay" id="budgetMonthOverlay">
+  <div class="month-picker-popover">
+    <div class="month-picker-wheels">
+      <select id="budgetMonthSelect" aria-label="Budget month">
+        <option value="0">January</option><option value="1">February</option><option value="2">March</option><option value="3">April</option>
+        <option value="4">May</option><option value="5">June</option><option value="6">July</option><option value="7">August</option>
+        <option value="8">September</option><option value="9">October</option><option value="10">November</option><option value="11">December</option>
+      </select>
+      <select id="budgetYearInput" aria-label="Budget year"></select>
     </div>
     <div class="month-picker-actions">
       <button class="month-reset-btn" id="resetBudgetMonth" type="button">Reset</button>
-      <button class="month-confirm-btn" id="applyBudgetMonth" type="button">Apply</button>
+      <button class="month-confirm-btn" id="applyBudgetMonth" type="button">✓</button>
     </div>
   </div>
-</div>
 </div>
 
 
@@ -1286,7 +1287,6 @@ cursor:pointer;
   <div class="recommendation-card" style="margin-top:18px">
     <h3>Smart Allocation Suggestion</h3>
     <p id="zeroBudgetSuggestion">Your recommendations will appear here as income, debt, savings, and expenses are entered.</p>
-  </div>
   </div>
 </section>
 
@@ -1401,7 +1401,7 @@ cursor:pointer;
   <section class="section income-edit-card">
     <div class="section-head"><div><h2 class="section-title">Emergency Fund</h2><div class="section-sub">Build 3–6 months of essential expenses for true emergencies.</div></div></div>
     <div class="section-body">
-      <form class="form">
+      <div class="debt-type-note" id="advancedDebtTypeNote">Advanced fields adjust based on the selected Debt Type.</div><form class="form">
         <div class="field"><label>Monthly Essential Expenses</label><input id="emergencyEssential" type="text" inputmode="decimal" placeholder="$0.00"></div>
         <div class="field"><label>Current Emergency Savings</label><input id="emergencyCurrent" type="text" inputmode="decimal" placeholder="$0.00"></div>
         <div class="field"><label>Target Goal</label><select id="emergencyGoalMonths"><option value="3">3 Months</option><option value="6">6 Months</option></select></div>
@@ -1690,6 +1690,8 @@ function setMoneyFieldValue(el,value){
  el.value=num?num.toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}):'';
 }
 
+
+
 const debtTypeSchemas={
  'Mortgage':['apr','minimumPayment','additionalPrincipal','balanceOwed','payoffDate','lender','interestType','originalLoanAmount','escrowBalance','originationDate','loanTerm','propertyAddress'],
  'Credit Card':['apr','minimumPayment','additionalPrincipal','balanceOwed','lender','creditLimit','availableCredit','promoAprEndDate'],
@@ -1758,12 +1760,7 @@ function setupMoneyFields(){
 
 function getUser(){try{const raw=localStorage.getItem(KEY);const u=raw?JSON.parse(raw):structuredClone(def);return {...def,...u,budget:{...def.budget,...(u.budget||{})}}}catch(e){return structuredClone(def)}}
 function saveUser(u){localStorage.setItem(KEY,JSON.stringify(u,null,2))}
-function show(id){
-  document.querySelectorAll('.app > .view').forEach(v=>v.classList.remove('active'));
-  const target=document.getElementById(id);
-  if(target)target.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-})}
+function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');scrollTo({top:0,behavior:'smooth'})}
 function money(v,cents=true){return Number(v||0).toLocaleString('en-US',{style:'currency',currency:'USD',minimumFractionDigits:cents?2:0,maximumFractionDigits:cents?2:0})}
 function monthly(v,f){v=Number(v||0);if(f==='Weekly')return v*52/12;if(f==='Biweekly')return v*26/12;if(f==='Twice Monthly')return v*2;if(f==='Quarterly')return v/3;if(f==='Semiannual')return v/6;if(f==='Annual')return v/12;return v}
 function id(p){return p+'-'+Date.now()+'-'+Math.random().toString(16).slice(2)}
@@ -1785,6 +1782,9 @@ function priorityClass(priority){if(priority==='Flexible')return 'priority-flexi
 function progressText(paid,planned){return money(paid||0)+' of '+money(planned||0)+' paid'}
 function groupBills(items){const order=['Housing','Utilities','Insurance','Debt Payment','Subscription','Phone / Internet','Transportation','Childcare','Medical','Other'];const groups={};items.forEach(i=>{const key=i.category||'Other';groups[key]=groups[key]||[];groups[key].push(i)});return order.filter(k=>groups[k]).map(k=>[k,groups[k]])}
 function renderNextIncome(items){if(!window.nextIncomePreview)return;if(!items.length){nextIncomePreview.textContent='Add income to estimate your next deposit.';return}const item=[...items].sort((a,b)=>Number(b.monthlyAmount||0)-Number(a.monthlyAmount||0))[0];nextIncomePreview.textContent=`${item.name} · ${money(item.monthlyAmount)} planned monthly`}
+
+
+
 
 function monthsUntil(dateValue){
  if(!dateValue)return null;
@@ -2089,6 +2089,8 @@ function renderVariableList(items){
  addVariableRow.onclick=e=>{e.preventDefault();openVariableEditor(null)};
 }
 
+
+
 let selectedBudgetDate=(()=>{
  const saved=localStorage.getItem('selectedBudgetMonth');
  if(saved){
@@ -2189,6 +2191,8 @@ function calculatedVariableAverage(item){
  return Number(item.spent||0);
 }
 
+
+
 function render(){
  const u=getUser(),b=getMonthBudget();
  const inc=b.incomeSources.reduce((s,i)=>s+Number(i.monthlyAmount||i.amount||0),0),
@@ -2255,6 +2259,8 @@ function render(){
 function getIncome(i){return getMonthBudget().incomeSources.find(x=>x.id===i)}
 function getBill(i){return getMonthBudget().fixedBills.find(x=>x.id===i)}
 function getVariable(i){return getMonthBudget().variableSpending.find(x=>x.id===i)}
+
+
 
 function displayDate(value){
  if(!value)return 'Not set';
@@ -2490,10 +2496,12 @@ setupMainSectionCollapse();
 render();
 </script>
 
+
+
+
+
 <script>
 (function(){
-  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
   function getSavedBudgetDate(){
     const saved = localStorage.getItem('selectedBudgetMonth');
     if(saved && /^\d{4}-\d{2}$/.test(saved)){
@@ -2504,15 +2512,25 @@ render();
   }
 
   let activeBudgetDate = getSavedBudgetDate();
-  let draftMonth = activeBudgetDate.getMonth();
-  let draftYear = activeBudgetDate.getFullYear();
 
   function budgetKey(date){
     return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0');
   }
 
   function budgetLabel(date){
-    return monthNames[date.getMonth()] + ' ' + date.getFullYear();
+    return date.toLocaleDateString('en-US', { month:'long', year:'numeric' });
+  }
+
+  function populateYears(){
+    const year = document.getElementById('budgetYearInput');
+    if(!year || year.options.length) return;
+    const current = new Date().getFullYear();
+    for(let y=current-5; y<=current+10; y++){
+      const opt = document.createElement('option');
+      opt.value = String(y);
+      opt.textContent = String(y);
+      year.appendChild(opt);
+    }
   }
 
   function makeSelectedDateActive(){
@@ -2523,57 +2541,51 @@ render();
   }
 
   function syncBudgetMonthUI(){
+    populateYears();
     makeSelectedDateActive();
-    const text = budgetLabel(activeBudgetDate);
+
     const label = document.getElementById('budgetPeriodLabel');
     const display = document.getElementById('budgetMonthDisplayText');
+    const month = document.getElementById('budgetMonthSelect');
+    const year = document.getElementById('budgetYearInput');
+
+    const text = budgetLabel(activeBudgetDate);
     if(label) label.textContent = text;
     if(display) display.textContent = text;
-  }
-
-  function syncPickerUI(){
-    const preview = document.getElementById('pickerPreviewLabel');
-    const year = document.getElementById('pickerYearLabel');
-    if(preview) preview.textContent = monthNames[draftMonth] + ' ' + draftYear;
-    if(year) year.textContent = String(draftYear);
-
-    document.querySelectorAll('#monthPillGrid [data-month]').forEach(btn=>{
-      btn.classList.toggle('active', Number(btn.dataset.month) === draftMonth);
-    });
+    if(month) month.value = String(activeBudgetDate.getMonth());
+    if(year) year.value = String(activeBudgetDate.getFullYear());
   }
 
   function openPicker(){
-    draftMonth = activeBudgetDate.getMonth();
-    draftYear = activeBudgetDate.getFullYear();
-    syncPickerUI();
-    const overlay = document.getElementById('budgetMonthOverlay');
-    if(overlay){
-      overlay.classList.add('show');
-      overlay.setAttribute('aria-hidden','false');
-    }
+    syncBudgetMonthUI();
+    const overlay=document.getElementById('budgetMonthOverlay');
+    if(overlay) overlay.classList.add('show');
   }
 
   function closePicker(){
-    const overlay = document.getElementById('budgetMonthOverlay');
-    if(overlay){
-      overlay.classList.remove('show');
-      overlay.setAttribute('aria-hidden','true');
-    }
+    const overlay=document.getElementById('budgetMonthOverlay');
+    if(overlay) overlay.classList.remove('show');
   }
 
   function applyBudgetMonth(){
-    activeBudgetDate = new Date(draftYear, draftMonth, 1);
+    const month = document.getElementById('budgetMonthSelect');
+    const year = document.getElementById('budgetYearInput');
+    if(!month || !year) return;
+
+    const y = Number(year.value), m = Number(month.value);
+    if(!y || y < 1900 || y > 2200) return;
+
+    activeBudgetDate = new Date(y, m, 1);
     syncBudgetMonthUI();
     closePicker();
+
     if(typeof render === 'function') render();
     if(typeof show === 'function') show('budgetView');
   }
 
   function resetBudgetMonth(){
-    const now = new Date();
-    draftMonth = now.getMonth();
-    draftYear = now.getFullYear();
-    syncPickerUI();
+    activeBudgetDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    syncBudgetMonthUI();
   }
 
   function shiftBudgetMonth(delta){
@@ -2592,24 +2604,13 @@ render();
     const prev = document.getElementById('prevBudgetMonth');
     const next = document.getElementById('nextBudgetMonth');
     const overlay = document.getElementById('budgetMonthOverlay');
-    const yearDown = document.getElementById('pickerYearDown');
-    const yearUp = document.getElementById('pickerYearUp');
 
     if(open) open.onclick = openPicker;
     if(apply) apply.onclick = applyBudgetMonth;
     if(reset) reset.onclick = resetBudgetMonth;
     if(prev) prev.onclick = function(){ shiftBudgetMonth(-1); };
     if(next) next.onclick = function(){ shiftBudgetMonth(1); };
-    if(yearDown) yearDown.onclick = function(){ draftYear--; syncPickerUI(); };
-    if(yearUp) yearUp.onclick = function(){ draftYear++; syncPickerUI(); };
     if(overlay) overlay.onclick = function(e){ if(e.target === overlay) closePicker(); };
-
-    document.querySelectorAll('#monthPillGrid [data-month]').forEach(btn=>{
-      btn.onclick = function(){
-        draftMonth = Number(btn.dataset.month);
-        syncPickerUI();
-      };
-    });
   });
 
   window.getSelectedBudgetMonthKey = function(){ return budgetKey(activeBudgetDate); };
