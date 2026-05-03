@@ -2673,6 +2673,30 @@ document.addEventListener('click', function(e){
 });
 </script>
 
+
+<script>
+// Minimal collapse only (safe)
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('[data-main-collapse]');
+  if(btn){
+    const id = btn.getAttribute('data-main-collapse');
+    const section = document.getElementById(id);
+    if(section){
+      section.classList.toggle('collapsed');
+    }
+  }
+
+  const panelBtn = e.target.closest('[data-collapse]');
+  if(panelBtn){
+    const id = panelBtn.getAttribute('data-collapse');
+    const panel = document.getElementById(id);
+    if(panel){
+      panel.classList.toggle('open');
+    }
+  }
+});
+</script>
+
 </body>
 
 </html>
