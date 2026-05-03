@@ -2644,6 +2644,35 @@ render();
 })();
 </script>
 
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+
+  // Main section collapse
+  document.querySelectorAll('[data-main-collapse]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id = btn.getAttribute('data-main-collapse');
+      const section = document.getElementById(id);
+      if(section){
+        section.classList.toggle('collapsed');
+      }
+    });
+  });
+
+  // Small collapsible panels
+  document.querySelectorAll('[data-collapse]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id = btn.getAttribute('data-collapse');
+      const panel = document.getElementById(id);
+      if(panel){
+        panel.classList.toggle('open');
+      }
+    });
+  });
+
+});
+</script>
+
 </body>
 
 </html>
