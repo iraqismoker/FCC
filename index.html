@@ -1300,7 +1300,7 @@ button:active{ transform:scale(.97); }
     </section>
 
 <section class="zero-budget-card budget-main-section" id="zeroBudgetSection">
-  <button class="main-collapse-toggle" type="button" data-main-collapse="zeroBudgetSection">
+  <button class="main-collapse-toggle" type="button" data-main-collapse="zeroBudgetSection" onclick="document.getElementById(\'zeroBudgetSection\').classList.toggle(\'collapsed\')">
     <h2 class="section-title">Zero-Based Budget</h2>
     <span class="main-collapse-right"><span class="main-collapse-chev">⌄</span></span>
   </button>
@@ -1325,7 +1325,7 @@ button:active{ transform:scale(.97); }
     </section>
 
     <section class="budget-setup-card" id="budgetSetupSummarySection">
-      <button class="main-collapse-toggle" type="button" data-main-collapse="budgetSetupSummarySection">
+      <button class="main-collapse-toggle" type="button" data-main-collapse="budgetSetupSummarySection" onclick="document.getElementById(\'budgetSetupSummarySection\').classList.toggle(\'collapsed\')">
         <h2 class="section-title">Budget Rules</h2>
         <span class="main-collapse-right"><span class="main-collapse-chev">⌄</span></span>
       </button>
@@ -1343,7 +1343,7 @@ button:active{ transform:scale(.97); }
     <main class="stack">
   <section class="section budget-main-section" id="incomeSection">
     <div class="section-head compact-head">
-      <button class="main-collapse-toggle" type="button" data-main-collapse="incomeSection">
+      <button class="main-collapse-toggle" type="button" data-main-collapse="incomeSection" onclick="document.getElementById(\'incomeSection\').classList.toggle(\'collapsed\')">
         <h2 class="section-title">Income</h2>
         <span class="main-collapse-right"><span class="section-info-wrap"><span class="section-info-btn" data-info="incomeSectionInfo">i</span><span class="section-info-pop" id="incomeSectionInfo">Income is the money expected to come in this month. It powers what is available before debt, planned savings, and monthly expenses.</span></span><span class="main-collapse-chev">⌄</span></span>
       </button>
@@ -1355,7 +1355,7 @@ button:active{ transform:scale(.97); }
 
   <section class="section budget-main-section" id="debtSection">
     <div class="section-head compact-head">
-      <button class="main-collapse-toggle" type="button" data-main-collapse="debtSection">
+      <button class="main-collapse-toggle" type="button" data-main-collapse="debtSection" onclick="document.getElementById(\'debtSection\').classList.toggle(\'collapsed\')">
         <h2 class="section-title">Debt</h2>
         <span class="main-collapse-right"><span class="section-info-wrap"><span class="section-info-btn" data-info="debtSectionInfo">i</span><span class="section-info-pop" id="debtSectionInfo">Debt tracks recurring debt payments like mortgage, auto loans, credit cards, and loans. It helps calculate debt load, payoff progress, and payment status.</span></span><span class="main-collapse-chev">⌄</span></span>
       </button>
@@ -1367,7 +1367,7 @@ button:active{ transform:scale(.97); }
 
   <section class="section budget-main-section" id="sinkingSection">
     <div class="section-head compact-head">
-      <button class="main-collapse-toggle" type="button" data-main-collapse="sinkingSection">
+      <button class="main-collapse-toggle" type="button" data-main-collapse="sinkingSection" onclick="document.getElementById(\'sinkingSection\').classList.toggle(\'collapsed\')">
         <h2 class="section-title">Planned Savings</h2>
         <span class="main-collapse-right"><span class="section-info-wrap"><span class="section-info-btn" data-info="savingsSectionInfo">i</span><span class="section-info-pop" id="savingsSectionInfo">Planned Savings sets aside money for future expenses before they happen, like car repairs, holidays, annual fees, medical costs, or home repairs.</span></span><span class="main-collapse-chev">⌄</span></span>
       </button>
@@ -1385,7 +1385,7 @@ button:active{ transform:scale(.97); }
   
 <section class="section budget-main-section" id="emergencySection">
 <div class="section-head compact-head">
-<button class="main-collapse-toggle" type="button" data-main-collapse="emergencySection">
+<button class="main-collapse-toggle" type="button" data-main-collapse="emergencySection" onclick="document.getElementById(\'emergencySection\').classList.toggle(\'collapsed\')">
 <h2 class="section-title">Emergency Fund</h2>
 <span class="main-collapse-right"><span class="section-info-wrap"><span class="section-info-btn" data-info="emergencySectionInfo">i</span><span class="section-info-pop" id="emergencySectionInfo">Emergency Fund protects against job loss, medical issues, and true emergencies. It stays separate from Planned Savings.</span></span><span class="main-collapse-chev">⌄</span></span>
 </button>
@@ -1403,7 +1403,7 @@ button:active{ transform:scale(.97); }
 
 <section class="section budget-main-section" id="variableSection">
     <div class="section-head compact-head">
-      <button class="main-collapse-toggle" type="button" data-main-collapse="variableSection">
+      <button class="main-collapse-toggle" type="button" data-main-collapse="variableSection" onclick="document.getElementById(\'variableSection\').classList.toggle(\'collapsed\')">
         <h2 class="section-title">Monthly Expenses</h2>
         <span class="main-collapse-right"><span class="section-info-wrap"><span class="section-info-btn" data-info="expensesSectionInfo">i</span><span class="section-info-pop" id="expensesSectionInfo">Monthly Expenses are flexible spending categories like groceries, gas, dining out, shopping, and household costs. They show planned, spent, and remaining amounts.</span></span><span class="main-collapse-chev">⌄</span></span>
       </button>
@@ -1483,7 +1483,7 @@ button:active{ transform:scale(.97); }
   <div id="billDetailView" class="view">
     <header class="topbar"><a href="#" class="back" id="billDetailBack"><span>‹</span>Back to Budget</a></header>
     <section class="detail"><div class="accent bill"><div class="avatar" id="billAvatar">B</div></div><div class="detail-body"><div class="detail-main"><div><div class="detail-name" id="billNameDetail">Debt</div><div class="detail-sub"><span class="green" id="billPaidDetail">$0</span> paid of <span class="blue" id="billPlannedDetail">$0</span> planned</div></div></div><div class="collapsible-panel open" id="debtSnapshotPanel">
-  <button class="collapse-toggle" type="button" data-collapse="debtSnapshotPanel">
+  <button class="collapse-toggle" type="button" data-collapse="debtSnapshotPanel" onclick="document.getElementById(\'debtSnapshotPanel\').classList.toggle(\'open\')">
     <span>Debt Snapshot</span><span class="chev-small">›</span>
   </button>
   <div class="collapse-content">
@@ -1505,7 +1505,7 @@ button:active{ transform:scale(.97); }
   </div>
 </div>
   <div class="collapsible-panel" id="loanDetailsPanel">
-  <button class="collapse-toggle" type="button" data-collapse="loanDetailsPanel">
+  <button class="collapse-toggle" type="button" data-collapse="loanDetailsPanel" onclick="document.getElementById(\'loanDetailsPanel\').classList.toggle(\'open\')">
     <span>Loan Details</span><span class="chev-small">›</span>
   </button>
   <div class="collapse-content">
@@ -1527,7 +1527,7 @@ button:active{ transform:scale(.97); }
   </div>
 </div>
 <div class="collapsible-panel" id="payoffImpactPanel">
-  <button class="collapse-toggle" type="button" data-collapse="payoffImpactPanel">
+  <button class="collapse-toggle" type="button" data-collapse="payoffImpactPanel" onclick="document.getElementById(\'payoffImpactPanel\').classList.toggle(\'open\')">
     <span>Payoff Impact</span><span class="chev-small">›</span>
   </button>
   <div class="collapse-content">
@@ -1692,144 +1692,11 @@ Advanced Loan Details →
 
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-
-  // MAIN COLLAPSE (use closest to guarantee correct section)
-  document.querySelectorAll('[data-main-collapse]').forEach(btn=>{
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      const section = this.closest('.budget-main-section');
-      if(section){
-        section.classList.toggle('collapsed');
-      }
-    });
-  });
-
-  // INNER PANELS
-  document.querySelectorAll('[data-collapse]').forEach(btn=>{
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      const panel = document.getElementById(this.getAttribute('data-collapse'));
-      if(panel){
-        panel.classList.toggle('open');
-      }
-    });
-  });
-
-});
-</script>
 
 
 
 
 
-
-
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-
-  // MAIN COLLAPSE (use closest to guarantee correct section)
-  document.querySelectorAll('[data-main-collapse]').forEach(btn=>{
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      const section = this.closest('.budget-main-section');
-      if(section){
-        section.classList.toggle('collapsed');
-      }
-    });
-  });
-
-  // INNER PANELS
-  document.querySelectorAll('[data-collapse]').forEach(btn=>{
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      const panel = document.getElementById(this.getAttribute('data-collapse'));
-      if(panel){
-        panel.classList.toggle('open');
-      }
-    });
-  });
-
-});
-</script>
-
-
-
-
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-
-  // MAIN COLLAPSE (use closest to guarantee correct section)
-  document.querySelectorAll('[data-main-collapse]').forEach(btn=>{
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      const section = this.closest('.budget-main-section');
-      if(section){
-        section.classList.toggle('collapsed');
-      }
-    });
-  });
-
-  // INNER PANELS
-  document.querySelectorAll('[data-collapse]').forEach(btn=>{
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      const panel = document.getElementById(this.getAttribute('data-collapse'));
-      if(panel){
-        panel.classList.toggle('open');
-      }
-    });
-  });
-
-});
-</script>
-
-
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-
-  // MAIN SECTIONS
-  document.querySelectorAll('[data-main-collapse]').forEach(btn=>{
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-
-      const id = this.getAttribute('data-main-collapse');
-      let section = document.getElementById(id);
-
-      // Fallback if ID fails
-      if(!section){
-        section = this.closest('.section');
-      }
-
-      if(section){
-        section.classList.toggle('collapsed');
-      }
-    });
-  });
-
-  // INNER PANELS
-  document.querySelectorAll('[data-collapse]').forEach(btn=>{
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-
-      const id = this.getAttribute('data-collapse');
-      const panel = document.getElementById(id);
-
-      if(panel){
-        panel.classList.toggle('open');
-      }
-    });
-  });
-
-});
-</script>
 
 </body>
 
