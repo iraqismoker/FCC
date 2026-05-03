@@ -200,12 +200,7 @@
 .summary{
   justify-items:stretch;
 }
-.summary .sum{
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  min-height:138px;
-}
+
 .next-income-preview{
   text-align:center;
   justify-content:center !important;
@@ -232,22 +227,12 @@
   .income-edit-card .section-body{
     padding:14px !important;
   }
-  .summary .sum{
-    min-height:128px;
-  }
+  
 }
 
 
 /* True centered summary cards */
-.summary .sum{
-  display:flex !important;
-  flex-direction:column !important;
-  justify-content:center !important;
-  align-items:center !important;
-  text-align:center !important;
-  min-height:220px !important;
-  padding:24px !important;
-}
+
 .summary .sum .eyebrow{
   width:100%;
   text-align:center !important;
@@ -265,10 +250,7 @@
 
 
 /* Smaller centered summary tiles */
-.summary .sum{
-  min-height:150px !important;
-  padding:18px !important;
-}
+
 .summary .sum .muted{
   max-width:220px !important;
 }
@@ -1243,14 +1225,23 @@ cursor:pointer;
 .secondary{ background:var(--card2); color:var(--text); }
 button:active{ transform:scale(.97); }
 
-.summary .sum{
-  min-height:130px !important;
-  padding:16px !important;
-}
+
 
 .budget-row:hover{ background:transparent !important; }
 
 .collapsible-section-body{ padding-top:0 !important; }
+
+
+/* Clean summary tiles */
+.summary .sum{
+  min-height:130px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
 
 </style>
 </head>
