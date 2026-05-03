@@ -1791,6 +1791,46 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+
+  // MAIN SECTIONS
+  document.querySelectorAll('[data-main-collapse]').forEach(btn=>{
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+
+      const id = this.getAttribute('data-main-collapse');
+      let section = document.getElementById(id);
+
+      // Fallback if ID fails
+      if(!section){
+        section = this.closest('.section');
+      }
+
+      if(section){
+        section.classList.toggle('collapsed');
+      }
+    });
+  });
+
+  // INNER PANELS
+  document.querySelectorAll('[data-collapse]').forEach(btn=>{
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+
+      const id = this.getAttribute('data-collapse');
+      const panel = document.getElementById(id);
+
+      if(panel){
+        panel.classList.toggle('open');
+      }
+    });
+  });
+
+});
+</script>
+
 </body>
 
 </html>
