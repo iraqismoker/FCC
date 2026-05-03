@@ -1691,16 +1691,15 @@ Advanced Loan Details →
 </div>
 
 
+
 <script>
 document.addEventListener('DOMContentLoaded', function(){
 
-  // MAIN COLLAPSE (robust)
+  // MAIN COLLAPSE (use closest to guarantee correct section)
   document.querySelectorAll('[data-main-collapse]').forEach(btn=>{
     btn.addEventListener('click', function(e){
       e.preventDefault();
-      e.stopPropagation();
-      const id = this.getAttribute('data-main-collapse');
-      const section = document.getElementById(id);
+      const section = this.closest('.budget-main-section');
       if(section){
         section.classList.toggle('collapsed');
       }
@@ -1711,9 +1710,7 @@ document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('[data-collapse]').forEach(btn=>{
     btn.addEventListener('click', function(e){
       e.preventDefault();
-      e.stopPropagation();
-      const id = this.getAttribute('data-collapse');
-      const panel = document.getElementById(id);
+      const panel = document.getElementById(this.getAttribute('data-collapse'));
       if(panel){
         panel.classList.toggle('open');
       }
@@ -1729,16 +1726,16 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 
+
+
 <script>
 document.addEventListener('DOMContentLoaded', function(){
 
-  // MAIN COLLAPSE (robust)
+  // MAIN COLLAPSE (use closest to guarantee correct section)
   document.querySelectorAll('[data-main-collapse]').forEach(btn=>{
     btn.addEventListener('click', function(e){
       e.preventDefault();
-      e.stopPropagation();
-      const id = this.getAttribute('data-main-collapse');
-      const section = document.getElementById(id);
+      const section = this.closest('.budget-main-section');
       if(section){
         section.classList.toggle('collapsed');
       }
@@ -1749,9 +1746,7 @@ document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('[data-collapse]').forEach(btn=>{
     btn.addEventListener('click', function(e){
       e.preventDefault();
-      e.stopPropagation();
-      const id = this.getAttribute('data-collapse');
-      const panel = document.getElementById(id);
+      const panel = document.getElementById(this.getAttribute('data-collapse'));
       if(panel){
         panel.classList.toggle('open');
       }
@@ -1764,16 +1759,16 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
 
+
+
 <script>
 document.addEventListener('DOMContentLoaded', function(){
 
-  // MAIN COLLAPSE (robust)
+  // MAIN COLLAPSE (use closest to guarantee correct section)
   document.querySelectorAll('[data-main-collapse]').forEach(btn=>{
     btn.addEventListener('click', function(e){
       e.preventDefault();
-      e.stopPropagation();
-      const id = this.getAttribute('data-main-collapse');
-      const section = document.getElementById(id);
+      const section = this.closest('.budget-main-section');
       if(section){
         section.classList.toggle('collapsed');
       }
@@ -1784,9 +1779,7 @@ document.addEventListener('DOMContentLoaded', function(){
   document.querySelectorAll('[data-collapse]').forEach(btn=>{
     btn.addEventListener('click', function(e){
       e.preventDefault();
-      e.stopPropagation();
-      const id = this.getAttribute('data-collapse');
-      const panel = document.getElementById(id);
+      const panel = document.getElementById(this.getAttribute('data-collapse'));
       if(panel){
         panel.classList.toggle('open');
       }
@@ -1795,6 +1788,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
 });
 </script>
+
 
 
 </body>
