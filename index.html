@@ -2673,24 +2673,6 @@ document.addEventListener('click', function(e){
 });
 </script>
 
-
-<script>
-// Populate recurring field if bill data exists in window.currentBill
-document.addEventListener('DOMContentLoaded', function(){
-  if(window.currentBill){
-    const el = document.getElementById('billRecurringDetail');
-    if(el){
-      if(window.currentBill.recurring){
-        el.textContent = 'Recurring';
-        el.classList.add('category-pill');
-      } else {
-        el.textContent = 'One-Time';
-      }
-    }
-  }
-});
-</script>
-
 </body>
 
 </html>
