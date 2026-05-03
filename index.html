@@ -1435,6 +1435,11 @@ button:active{ transform:scale(.97); }
         <div class="field"><label>Monthly Contribution</label><input id="emergencyContribution" type="text" inputmode="decimal" placeholder="$0.00"></div>
       </form>
       <div class="detail-grid">
+<div class="detail-mini">
+  <span>Recurring</span>
+  <strong id="billRecurringDetail" class="category-pill">No</strong>
+</div>
+
         <div class="detail-mini"><span>Target Amount</span><strong id="emergencyTargetDetail">$0</strong></div>
         <div class="detail-mini"><span>Months Covered</span><strong id="emergencyMonthsDetail">0</strong></div>
         <div class="detail-mini"><span>Still Needed</span><strong id="emergencyNeededDetail">$0</strong></div>
@@ -2670,23 +2675,17 @@ document.addEventListener('click', function(e){
 
 
 <script>
-// Minimal, non-destructive collapse fix
-document.addEventListener('click', function(e){
-  const btn = e.target.closest('[data-main-collapse]');
-  if(btn){
-    const id = btn.getAttribute('data-main-collapse');
-    const section = document.getElementById(id);
-    if(section){
-      section.classList.toggle('collapsed');
-    }
-  }
-
-  const panelBtn = e.target.closest('[data-collapse]');
-  if(panelBtn){
-    const id = panelBtn.getAttribute('data-collapse');
-    const panel = document.getElementById(id);
-    if(panel){
-      panel.classList.toggle('open');
+// Populate recurring field if bill data exists in window.currentBill
+document.addEventListener('DOMContentLoaded', function(){
+  if(window.currentBill){
+    const el = document.getElementById('billRecurringDetail');
+    if(el){
+      if(window.currentBill.recurring){
+        el.textContent = 'Recurring';
+        el.classList.add('category-pill');
+      } else {
+        el.textContent = 'One-Time';
+      }
     }
   }
 });
