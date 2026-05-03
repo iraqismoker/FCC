@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Budget App – Budget</title>
 <style>
-:root{--bg:#f4f6f9;--card:#fff;--card2:#f8fafc;--text:#10213c;--muted:#66758b;--line:#d7dee8;--primary:#2b7fff;--primarySoft:#e9f1ff;--good:#2bb5a8;--bad:#e26b5b;--badSoft:#fff0ee;--shadow:0 10px 30px rgba(16,33,60,.08);--r:28px
+:root{--bg:#f4f6f9;--card:#fff;--card2:#f8fafc;--text:#10213c;--muted:#66758b;--line:#d7dee8;--primary:#2b7fff;--primarySoft:#e9f1ff;--good:#2bb5a8;--bad:#e26b5b;--badSoft:#fff0ee;--shadow:0 10px 30px rgba(16,33,60,.08);--r:28px;
   --space-xs:8px;
   --space-sm:12px;
   --space-md:16px;
@@ -38,7 +38,7 @@
 .section-head.compact-head .section-sub{display:none}
 .list-mode-label{color:var(--muted);font-size:20px;font-weight:750}
 .budget-row.compact-row{grid-template-columns:1fr auto auto;padding:16px 22px;gap:12px}
-.budget-row.compact-row .row-left strong{font-size:20px;font-weight:650;letter-spacing:-.02em;margin:0}
+
 .budget-row.compact-row .row-left span{display:none}
 .budget-row.compact-row .row-amount{font-size:20px;font-weight:650;color:#3f4a4d}
 .budget-row.compact-row.add-row{grid-template-columns:1fr auto;padding:18px 22px}
@@ -48,7 +48,7 @@
  .section-head.compact-head .section-title{font-size:24px}
  .list-mode-label{font-size:22px}
  .budget-row.compact-row{grid-template-columns:1fr auto auto;padding:18px 22px}
- .budget-row.compact-row .row-left strong{font-size:23px}
+ 
  .budget-row.compact-row .row-amount{font-size:22px}
  .budget-row.compact-row.add-row div:first-child{font-size:24px}
 }
@@ -85,28 +85,20 @@
 
 
 
-.budget-row.compact-row .row-left strong{
-  font-size:18px !important;
-  font-weight:650 !important;
-}
+
 .budget-row.compact-row .row-amount{
   font-size:18px !important;
   font-weight:650 !important;
 }
 @media(max-width:520px){
-  .budget-row.compact-row .row-left strong{
-    font-size:20px !important;
-  }
+  
   .budget-row.compact-row .row-amount{
     font-size:20px !important;
   }
 }
 
 
-.budget-row.compact-row .row-left strong{
-  font-size:16px !important;
-  font-weight:650 !important;
-}
+
 .budget-row.compact-row .row-amount{
   font-size:16px !important;
   font-weight:650 !important;
@@ -116,9 +108,7 @@
   font-weight:700 !important;
 }
 @media(max-width:520px){
-  .budget-row.compact-row .row-left strong{
-    font-size:18px !important;
-  }
+  
   .budget-row.compact-row .row-amount{
     font-size:18px !important;
   }
