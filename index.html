@@ -2697,6 +2697,33 @@ document.addEventListener('click', function(e){
 });
 </script>
 
+
+<script>
+// SAFE recurring logic (non-destructive)
+function getBillsForMonth(selectedMonth){
+  const bills = JSON.parse(localStorage.getItem('bills')) || [];
+
+  return bills.filter(bill => {
+    if(bill.month === selectedMonth) return true;
+    if(bill.recurring && bill.month < selectedMonth) return true;
+    return false;
+  });
+}
+
+// Hook into existing render if available
+if(typeof window.renderBills === "function"){
+  const originalRender = window.renderBills;
+  window.renderBills = function(){
+    try{
+      const currentMonth = window.currentBudgetMonth;
+      const filtered = getBillsForMonth(currentMonth);
+      console.log("Recurring filtered bills:", filtered);
+    }catch(e){}
+    return originalRender.apply(this, arguments);
+  };
+}
+</script>
+
 </body>
 
 </html>
